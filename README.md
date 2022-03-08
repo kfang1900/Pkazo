@@ -3,6 +3,8 @@
 1. `npm i`
 2. Use VSCode, make sure the recommended eslint and prettier plugins are installed. Automatic linting should occur when you save!
 3. `npx husky install`. Automatic linting should occur when you commit!
+4. `firebase login` for local emulator
+5. Fill in the environmental variables listed below
 
 ## Commands
 
