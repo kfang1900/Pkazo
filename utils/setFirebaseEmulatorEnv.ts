@@ -1,0 +1,9 @@
+export default function setFirebaseEmulatorEnv() {
+  if (process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST)
+    process.env.FIREBASE_AUTH_EMULATOR_HOST =
+      process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST;
+
+  if (process.env.NEXT_PUBLIC_FIREBASE_DATABASE_EMULATOR_HOST)
+    process.env.FIREBASE_DATABASE_EMULATOR_HOST =
+      process.env.NEXT_PUBLIC_FIREBASE_DATABASE_EMULATOR_HOST;
+}
