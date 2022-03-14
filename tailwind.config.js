@@ -1,7 +1,14 @@
 module.exports = {
-  content: ['./**/**/*.{html,js}'],
+  content: [
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+  ],
   theme: {
     extend: {
+      // can be removed once twin.macro fully supports Tailwind v3
+      outline: {
+        'theme-red': '#E24E4D',
+      },
       // [COLORS]
       colors: {
         'theme-red': '#E24E4D',
