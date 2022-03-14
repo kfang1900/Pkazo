@@ -2,7 +2,9 @@ import { createGlobalStyle } from 'styled-components';
 import { GlobalStyles as BaseStyles } from 'twin.macro';
 
 const CustomStyles = createGlobalStyle`
-  body {}
+  body {
+    font-family: Open Sans
+  }
 `;
 
 const GlobalStyles = () => (
