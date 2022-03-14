@@ -1,6 +1,6 @@
 import tw, { styled } from 'twin.macro';
 import Image from 'next/image';
-import PkazoLogo from '/assets/images/Pkazo.svg';
+import PkazoLogo from '/public/assets/images/Pkazo.svg';
 
 const Wrapper = styled.div`
   ${tw`mx-auto w-full overflow-hidden pb-20`}
@@ -14,32 +14,27 @@ const NavbarContainer = styled.div`
   ${tw`mx-auto flex w-full max-w-[1300px] flex-col items-center justify-center gap-4 sm:flex-row sm:justify-between`}
 `;
 
-const NavbarItem1 = styled.div`
-  ${tw`flex w-full max-w-sm items-center justify-center gap-4 sm:justify-between`}
-`;
-
 function CompleteWrapper(props) {
   return (
     <Wrapper>
       <Navbar>
         <NavbarContainer>
-          <NavbarItem1>
-            {/*<div className="flex w-full max-w-sm items-center justify-center gap-4 sm:justify-between">*/}
-            <a href="#" className="block">
+          <div tw="flex w-full max-w-sm items-center justify-center gap-4 sm:justify-between">
+            <a href="#" tw="block">
               <Image
                 src={PkazoLogo}
                 alt="Logo"
-                className="h-auto w-20 object-contain sm:w-24"
+                tw="h-auto w-20 object-contain sm:w-24"
               />
             </a>
 
-            <div className="relative hidden w-full max-w-[240px] lg:block">
+            <div tw="relative hidden w-full max-w-[240px] lg:block">
               <input
                 type="text"
-                className="block h-10 w-full rounded-2xl bg-light-200 py-3 pl-10 pr-3 text-xs text-dark-300 placeholder-dark-300 focus:outline-theme-red"
+                tw="block h-10 w-full rounded-2xl bg-light-200 py-3 pl-10 pr-3 text-xs text-dark-300 placeholder-dark-300 focus:outline-theme-red"
                 placeholder="Search Here..."
               />
-              <button className="absolute top-1/2 left-4 -translate-y-1/2 transform">
+              <button tw="absolute top-1/2 left-4 -translate-y-1/2 transform">
                 <svg
                   width="16"
                   height="16"
@@ -54,8 +49,7 @@ function CompleteWrapper(props) {
                 </svg>
               </button>
             </div>
-            {/*</div>*/}
-          </NavbarItem1>
+          </div>
         </NavbarContainer>
       </Navbar>
       {props.children}
