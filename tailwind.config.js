@@ -7,7 +7,7 @@ module.exports = {
     extend: {
       // can be removed once twin.macro fully supports Tailwind v3
       outline: {
-        'theme-red': '#E24E4D',
+        'theme-red': '2px solid #E24E4D',
       },
       // [COLORS]
       colors: {
