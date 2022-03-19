@@ -24,10 +24,27 @@ module.exports = {
           300: '#D8D8D8',
           400: '#8B8B8B',
         },
+        black: {
+          light: '#575757',
+          lighter: '#333333',
+          DEFAULT: '#000000',
+        },
+        grey: {
+          DEFAULT: '#8B8B8B',
+          D8: '#D8D8D8',
+          '8B': '#8B8B8B',
+        },
       },
       // [FONT FAMILY]
       fontFamily: {
         primary: "'Open Sans', sans-serif",
+        'open-sans': ['Open Sans', 'sans-serif'],
+      },
+      borderRadius: {
+        10: '10px',
+      },
+      borderWidth: {
+        1.5: '1.5px',
       },
     },
   },
