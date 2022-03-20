@@ -11,7 +11,7 @@ const ImageUpload = styled.div``;
 
 const Form = styled.div``;
 
-function SocialPostUploadForm(props) {
+function SocialPostUploadForm() {
   return (
     <div>
       <Title>Upload Social Post</Title>
