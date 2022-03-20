@@ -12,6 +12,8 @@ module.exports = {
       // [COLORS]
       colors: {
         'theme-red': '#E24E4D',
+        'soft-red': '#E44C4D',
+
         dark: {
           100: '#8E8E93',
           200: '#65676B',
