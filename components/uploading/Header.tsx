@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import Logo from '/public/assets/images/pkazo.svg';
+import Logo from '/public/assets/images/Pkazo.svg';
 import HouseLogo from '/public/assets/images/house.svg';
 import ShopLogo from '/public/assets/images/shop.svg';
 import PlusLogo from '/public/assets/images/plus.svg';
