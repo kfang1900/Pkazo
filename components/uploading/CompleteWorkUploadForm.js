@@ -15,8 +15,8 @@ function CompleteWorkUploadForm(props) {
     <>
       <Header />
       <CompleteWorkTabSelector stage={stage} setStage={setStage} />
-      {stage === 0 && <CompleteWorkInfo />}
-      {stage === 1 && <CompleteWorkPosts />}
+      {stage === 0 && <CompleteWorkInfo goNext={() => setStage(1)} />}
+      {stage === 1 && <CompleteWorkPosts goNext={() => setStage(2)} />}
       {stage === 2 && <CompleteWorkPortfolio />}
     </>
   );

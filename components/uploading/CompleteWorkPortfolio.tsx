@@ -46,7 +46,7 @@ function ImageSelector(props: {
   );
 }
 
-const CompleteWorkPortfolio = () => {
+const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
   const [selectedImage, setSelectedImage] = useState(1);
 
   return (
@@ -98,11 +98,12 @@ const CompleteWorkPortfolio = () => {
       </div>
 
       <div tw="px-[40px] flex items-center text-white text-lg justify-start mb-20 mt-20">
-        <Link href="/complete-post" passHref>
-          <div tw="py-4 px-16 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040]">
-            Post Completed Work
-          </div>
-        </Link>
+        <div
+          tw="py-4 px-16 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] cursor-pointer"
+          onClick={props.goNext}
+        >
+          Post Completed Work
+        </div>
       </div>
 
       <input value="true" tw="" type="radio" id="series1" />

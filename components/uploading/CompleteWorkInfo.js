@@ -437,7 +437,10 @@ function CompleteWorkInfo(props) {
         </div>
 
         <div tw="mt-14 text-right lg:mt-24">
-          <button tw="rounded-full bg-theme-red py-3 px-6 font-semibold text-white">
+          <button
+            tw="rounded-full bg-theme-red py-3 px-6 font-semibold text-white"
+            onClick={props.goNext}
+          >
             Next
           </button>
         </div>
