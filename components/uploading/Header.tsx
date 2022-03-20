@@ -9,8 +9,19 @@ import CompassLogo from '/public/assets/images/compass.svg';
 import CartLogo from '/public/assets/images/cart.svg';
 import ProfileImg from '/public/assets/images/profile.png';
 import tw from 'twin.macro';
+import { UrlObject } from 'url';
 
-function NavbarIcon(props) {
+/* Copied from image.tsx source */
+interface StaticRequire {
+  default: StaticImageData;
+}
+type StaticImport = StaticRequire | StaticImageData;
+
+function NavbarIcon(props: {
+  href: string | UrlObject;
+  src: string | StaticImport;
+  alt: string;
+}) {
   return (
     <div tw="flex flex-none transform w-10 h-10">
       <Link href={props.href} passHref>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, ReactNode } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -9,7 +9,12 @@ import ImageSrc3 from '/public/assets/images/image3.svg';
 import ImageSrc4 from '/public/assets/images/image4.svg';
 import ImageSrc9 from '/public/assets/images/image9.svg';
 
-function ImageSelector(props) {
+function ImageSelector(props: {
+  isSelected: boolean;
+  selectImage: () => void;
+  src: any;
+  children: ReactNode;
+}) {
   return (
     <div onClick={() => props.selectImage()}>
       <div

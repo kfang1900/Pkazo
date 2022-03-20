@@ -1,3 +1,5 @@
+// This file should not be used anywhere !!
+
 import { useState } from 'react';
 import { FileUploader } from 'react-drag-drop-files';
 import Link from 'next/link';
@@ -5,8 +7,8 @@ import Link from 'next/link';
 const fileTypes = ['JPEG', 'PNG', 'GIF'];
 
 const Main = () => {
-  const [file, setFile] = useState(null);
-  const handleChange = (file) => {
+  const [file, setFile] = useState<File | null>(null);
+  const handleChange = (file: File) => {
     setFile(file);
   };
 
