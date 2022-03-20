@@ -9,7 +9,7 @@ import CompleteWorkPosts from './CompleteWorkPosts';
 import CompleteWorkPortfolio from './CompleteWorkPortfolio';
 
 function CompleteWorkUploadForm(props) {
-  const [stage, setStage] = useState(1);
+  const [stage, setStage] = useState(0);
 
   return (
     <>
