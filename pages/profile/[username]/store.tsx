@@ -1,6 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import Header from 'components/Header';
 import tw, { styled } from 'twin.macro';
 
 import StorePortfolio from 'components/StorePortfolio';
@@ -23,7 +24,7 @@ const Store: NextPage = () => {
       <Head>
         <title>Store</title>
       </Head>
-      Header
+      <Header />
       <div>
         {/* Cover Photo */}
         <div tw="relative w-full h-[180px] lg:h-[300px]">

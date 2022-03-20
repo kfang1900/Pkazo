@@ -3,7 +3,7 @@ import tw, { styled } from 'twin.macro';
 import Wrapper from 'components/wrapper/Wrapper.js';
 import Image from 'next/image';
 import CompleteWorkInfo from './CompleteWorkInfo';
-import Header from './Header.tsx';
+import Header from '../Header.tsx';
 import CompleteWorkTabSelector from './CompleteWorkTabSelector';
 import CompleteWorkPosts from './CompleteWorkPosts';
 import CompleteWorkPortfolio from './CompleteWorkPortfolio';
