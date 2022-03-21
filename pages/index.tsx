@@ -29,6 +29,10 @@ const Home: NextPage = () => {
         <Link href="/upload_complete_work">
           <a>upload complete work</a>
         </Link>
+        <br />
+        <Link href="/product_post_popup">
+          <a>Product post popup</a>
+        </Link>
       </div>
     </div>
   );
