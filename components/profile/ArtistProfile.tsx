@@ -82,7 +82,7 @@ const ArtistProfile = () => {
                 <button
                   onClick={follwButtonHandler}
                   css={[
-                    tw`duration-150 h-[40px] rounded-full font-bold text-base px-9 border text-center`,
+                    tw`h-[40px] rounded-full font-bold text-base px-9 border text-center`,
                     isFollowing
                       ? tw`border-[#C6C5C3] bg-white text-black hover:bg-black/5`
                       : tw`border-soft-red bg-soft-red hover:bg-red-600 hover:border-red-600 text-white`,
