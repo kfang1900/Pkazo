@@ -32,11 +32,9 @@ const Portfolio: NextPage = () => {
         {/* Cover Photo --End-- */}
 
         {/* Profile Section Start */}
-        <section tw="py-10">
-          <Container>
-            <ArtistProfile />
-          </Container>
-        </section>
+        <Container>
+          <ArtistProfile />
+        </Container>
         {/* Profile Section End */}
 
         {/* Tab Section Start*/}

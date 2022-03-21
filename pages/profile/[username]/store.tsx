@@ -9,14 +9,6 @@ import tw, { styled } from 'twin.macro';
 import ArtistProfile from 'components/profile/ArtistProfile';
 import StorePortfolio from 'components/profile/StorePortfolio';
 
-const numFormatter = (x: number) => {
-  if (x > 999 && x < 1000000) {
-    return (x / 1000).toFixed(1).replace(/\.?0+$/, '') + 'K'; // convert to K for number from > 1000 < 1 million
-  } else if (x > 1000000) {
-    return (x / 1000000).toFixed(1).replace(/\.?0+$/, '') + 'M'; // convert to M for number from > 1 million
-  } else return x; // if value < 1000, nothing to do
-};
-
 export const Container = styled.div`
   ${tw`px-5 2xl:max-w-[1400px] mx-auto`}
 `;
@@ -43,11 +35,9 @@ const Store: NextPage = () => {
         {/* Cover Photo --End-- */}
 
         {/* Profile Section Start */}
-        <section tw="py-10">
-          <Container>
-            <ArtistProfile />
-          </Container>
-        </section>
+        <Container>
+          <ArtistProfile />
+        </Container>
         {/* Profile Section End */}
 
         {/* Tab Section Start*/}
