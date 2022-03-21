@@ -5,7 +5,7 @@ import tw from 'twin.macro';
 
 const Modal = (props: {
   open: boolean;
-  onClose: MouseEventHandler<HTMLButtonElement>;
+  onClose: MouseEventHandler;
   children: ReactNode;
 }) => {
   return (
@@ -19,9 +19,11 @@ const Modal = (props: {
         <div tw="relative flex max-w-7xl w-full h-full p-3 md:p-5 lg:p-7 bg-white rounded-lg lg:rounded-2xl">
           <button
             onClick={props.onClose}
-            tw="absolute h-6 w-6 lg:h-auto lg:w-auto -top-2 lg:top-0 -right-2.5 lg:-right-10 border-1.5 border-transparent bg-black lg:bg-transparent text-white hover:border-white rounded-full p-1 lg:p-1.5"
+            tw="absolute h-6 w-6 lg:h-auto lg:w-auto -top-2 lg:top-0 -right-2.5 lg:-right-9 border-1.5 border-transparent bg-black lg:bg-transparent text-white hover:border-white rounded-full p-1 lg:p-1.5"
           >
-            <Image src={crossIcon} alt="" />
+            <div tw="transform w-4 h-4">
+              <Image src={crossIcon} alt="close" layout="fill" />
+            </div>
           </button>
           {props.children}
         </div>
