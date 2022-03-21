@@ -64,7 +64,7 @@ const ArtistProfile = () => {
       {isShowUnfollowConfirmModal && <UnFollowConfirmationModal />}
       <section tw="mt-[48px] mb-[40px]">
         <div className="container">
-          <div tw="w-[90%] grid grid-cols-[200px auto] gap-[85px] mx-[15%]">
+          <div tw="grid grid-cols-[200px auto] gap-[85px] mx-[15%]">
             <div tw="w-[200px] h-[200px] overflow-hidden rounded-full">
               <Image
                 src="/store_assets/img/user.png"
@@ -96,7 +96,7 @@ const ArtistProfile = () => {
               </div>
               <p tw="text-gray-600 text-lg mt-1">Taiwan, United States</p>
               <div tw="mt-[12px]">
-                <p tw="text-black w-[80%]">
+                <p tw="text-black">
                   In his wide-ranging practice, Mike Kelley mined the banal
                   objects of everyday life and repurposed them in dark,
                   imaginative multimedia artworks. Throughout his oeuvre, the
