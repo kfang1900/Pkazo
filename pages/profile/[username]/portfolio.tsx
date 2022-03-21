@@ -1,33 +1,22 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import Header from 'components/Header';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import Header from 'components/Header';
 import tw, { styled } from 'twin.macro';
 
+import { Container } from './store';
 import ArtistProfile from 'components/profile/ArtistProfile';
-import StorePortfolio from 'components/profile/StorePortfolio';
+import Gallery from 'components/profile/ProfilePortfolio';
 
-const numFormatter = (x: number) => {
-  if (x > 999 && x < 1000000) {
-    return (x / 1000).toFixed(1).replace(/\.?0+$/, '') + 'K'; // convert to K for number from > 1000 < 1 million
-  } else if (x > 1000000) {
-    return (x / 1000000).toFixed(1).replace(/\.?0+$/, '') + 'M'; // convert to M for number from > 1 million
-  } else return x; // if value < 1000, nothing to do
-};
-
-export const Container = styled.div`
-  ${tw`px-5 2xl:max-w-[1400px] mx-auto`}
-`;
-
-const Store: NextPage = () => {
+const Portfolio: NextPage = () => {
   const router = useRouter();
   const { username } = router.query;
   return (
     <>
       <Head>
-        <title>Store</title>
+        <title>Portfolio</title>
       </Head>
       <Header />
       <div>
@@ -60,12 +49,12 @@ const Store: NextPage = () => {
                 </a>
               </Link>
               <Link href={'../' + username + '/portfolio'}>
-                <a tw="text-lg relative z-10 font-semibold text-gray-600 hover:bg-black/5 duration-150 px-8 md:px-20 py-2 border-b-4 border-transparent cursor-pointer">
+                <a tw="text-lg relative z-10 font-semibold text-gray-600 duration-150 px-8 md:px-20 py-2 border-b-4 border-transparent  border-soft-red pointer-events-none">
                   Portfolio
                 </a>
               </Link>
               <Link href={'../' + username + '/store'}>
-                <a tw="text-lg relative z-10 font-semibold text-gray-600 duration-150 px-8 md:px-20 py-2 border-b-4 border-transparent border-soft-red pointer-events-none">
+                <a tw="text-lg relative z-10 font-semibold text-gray-600 hover:bg-black/5 duration-150 px-8 md:px-20 py-2 border-b-4 border-transparent cursor-pointer">
                   Store
                 </a>
               </Link>
@@ -75,14 +64,15 @@ const Store: NextPage = () => {
         {/* Tab Section End*/}
 
         {/* Portfolio Area */}
-        <StorePortfolio />
 
         {/* <ProfileSection /> */}
         {/* <TabsSection /> */}
-        {/* <Gallery /> */}
+        <Container>
+          <Gallery />
+        </Container>
       </div>
     </>
   );
 };
 
-export default Store;
+export default Portfolio;
