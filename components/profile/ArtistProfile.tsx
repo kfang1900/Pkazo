@@ -65,7 +65,7 @@ const ArtistProfile = () => {
       <section tw="mt-[48px] mb-[40px]">
         <div className="container">
           <div tw="grid grid-cols-[200px auto] gap-[85px] mx-[15%]">
-            <div tw="w-[200px] h-[200px] overflow-hidden rounded-full">
+            <div tw="w-[200px] h-full overflow-hidden rounded-full flex items-center">
               <Image
                 src="/store_assets/img/user.png"
                 alt="profile_image"
@@ -82,20 +82,20 @@ const ArtistProfile = () => {
                 <button
                   onClick={follwButtonHandler}
                   css={[
-                    tw`h-[40px] rounded-full font-bold text-base px-9 border text-center`,
+                    tw`h-[40px] rounded-full font-bold text-base px-9 text-center`,
                     isFollowing
-                      ? tw`border-[#C6C5C3] bg-white text-black hover:bg-black/5`
+                      ? tw`border-2 border-[#C6C5C3] bg-white text-black hover:bg-black/5`
                       : tw`border-soft-red bg-soft-red hover:bg-red-600 hover:border-red-600 text-white`,
                   ]}
                 >
                   {isFollowing ? 'Following' : 'Follow'}
                 </button>
-                <button tw="ml-[20px] w-[40px] h-[40px] rounded-full border border-[#C6C5C3] bg-white text-[#8E8E93] hover:bg-black/5 text-center">
+                <button tw="ml-[20px] w-[40px] h-[40px] rounded-full border-2 border-[#C6C5C3] bg-white text-[#8E8E93] hover:bg-black/5 text-center">
                   •••
                 </button>
               </div>
               <p tw="text-gray-600 text-lg mt-1">Taiwan, United States</p>
-              <div tw="mt-[12px]">
+              <div tw="mt-[15px]">
                 <p tw="text-black">
                   In his wide-ranging practice, Mike Kelley mined the banal
                   objects of everyday life and repurposed them in dark,
