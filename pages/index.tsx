@@ -25,9 +25,11 @@ const Home: NextPage = () => {
         <Link href="/profile/username/posts">
           <a>profile posts</a>
         </Link>
+        <br />
         <Link href="/profile/username/portfolio">
           <a>profile portfolio</a>
         </Link>
+        <br />
         <Link href="/profile/username/store">
           <a>profile store</a>
         </Link>
