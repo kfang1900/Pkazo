@@ -12,21 +12,21 @@ function CompleteWorkInfo(props) {
           <input
             type="text"
             placeholder="Title"
-            tw="block w-full rounded-[10px] border border-light-300 py-3 px-4 text-sm text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:py-5 md:text-lg"
+            tw="block w-full rounded-[10px] border border-light-300 py-1 px-4 text-sm text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:py-2 md:text-lg"
           />
         </div>
 
         <div tw="mb-8">
           <textarea
             placeholder="Write a description..."
-            tw="block h-[122px] w-full resize-none rounded-[10px] border border-light-300 py-3 px-4 text-sm text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:py-5 md:text-lg"
+            tw="block h-[122px] w-full resize-none rounded-[10px] border border-light-300 py-1 px-4 text-sm text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:py-2 md:text-lg"
           ></textarea>
         </div>
 
         <div tw="mb-2.5 flex w-full items-center justify-between gap-4 md:mb-4">
           <p tw="text-sm text-dark-300 md:text-lg">Year</p>
           <div tw="relative w-full max-w-[170px]">
-            <select tw="block w-full appearance-none rounded-full border border-light-300 py-2.5 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
+            <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
               <option value=""></option>
               <option value="">Option-1</option>
               <option value="">Option-2</option>
@@ -53,7 +53,7 @@ function CompleteWorkInfo(props) {
         <div tw="mb-2.5 flex w-full items-center justify-between gap-4 md:mb-4">
           <p tw="text-sm text-dark-300 md:text-lg">Medium</p>
           <div tw="relative w-full max-w-[170px]">
-            <select tw="block w-full appearance-none rounded-full border border-light-300 py-2.5 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
+            <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
               <option value=""></option>
               <option value="">Option-1</option>
               <option value="">Option-2</option>
@@ -87,7 +87,7 @@ function CompleteWorkInfo(props) {
               <input
                 type="text"
                 id="height"
-                tw="block w-full max-w-[106px] rounded-full border border-light-300 py-2 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
+                tw="block w-full max-w-[90px] rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
               />
             </div>
             <div tw="flex items-center gap-1.5">
@@ -97,11 +97,11 @@ function CompleteWorkInfo(props) {
               <input
                 type="text"
                 id="width"
-                tw="block w-full max-w-[106px] rounded-full border border-light-300 py-2 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
+                tw="block w-full max-w-[90px] rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
               />
             </div>
-            <div tw="relative w-full max-w-[106px]">
-              <select tw="block w-full appearance-none rounded-full border border-light-300 py-2.5 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
+            <div tw="relative w-full max-w-[130px]">
+              <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
                 <option value=""></option>
                 <option value="">Option-1</option>
                 <option value="">Option-2</option>
@@ -129,7 +129,7 @@ function CompleteWorkInfo(props) {
         <div tw="mb-2.5 flex w-full items-center justify-between gap-4 md:mb-4">
           <p tw="text-sm text-dark-300 md:text-lg">Group Tags</p>
           <div tw="relative w-full max-w-[170px]">
-            <select tw="block w-full appearance-none rounded-full border border-light-300 py-2.5 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
+            <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
               <option value=""></option>
               <option value="">Option-1</option>
               <option value="">Option-2</option>
@@ -225,10 +225,10 @@ function CompleteWorkInfo(props) {
                 <div tw="grid w-full max-w-[256px] grid-cols-2 items-center gap-3.5">
                   <input
                     type="text"
-                    tw="block w-full appearance-none rounded-full border border-light-300 py-2 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
+                    tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
                   />
                   <div tw="relative w-full">
-                    <select tw="block w-full appearance-none rounded-full border border-light-300 py-2.5 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
+                    <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
                       <option value=""></option>
                       <option value="">Option-1</option>
                       <option value="">Option-2</option>
@@ -256,7 +256,7 @@ function CompleteWorkInfo(props) {
               <div tw="mb-4 flex w-full items-center justify-between gap-4">
                 <p tw="text-sm text-dark-300 md:text-lg">Price</p>
                 <div tw="relative w-full max-w-[170px]">
-                  <select tw="block w-full appearance-none rounded-full border border-light-300 py-2.5 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
+                  <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
                     <option value=""></option>
                     <option value="">Option-1</option>
                     <option value="">Option-2</option>
@@ -283,7 +283,7 @@ function CompleteWorkInfo(props) {
               <div tw="mb-4 flex w-full items-center justify-between gap-4">
                 <p tw="text-sm text-dark-300 md:text-lg">Subject</p>
                 <div tw="relative w-full max-w-[170px]">
-                  <select tw="block w-full appearance-none rounded-full border border-light-300 py-2.5 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
+                  <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
                     <option value=""></option>
                     <option value="">Option-1</option>
                     <option value="">Option-2</option>
@@ -310,7 +310,7 @@ function CompleteWorkInfo(props) {
               <div tw="mb-4 flex w-full items-center justify-between gap-4">
                 <p tw="text-sm text-dark-300 md:text-lg">Style</p>
                 <div tw="relative w-full max-w-[170px]">
-                  <select tw="block w-full appearance-none rounded-full border border-light-300 py-2.5 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
+                  <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
                     <option value=""></option>
                     <option value="">Option-1</option>
                     <option value="">Option-2</option>
@@ -337,7 +337,7 @@ function CompleteWorkInfo(props) {
               <div tw="mb-4 flex w-full items-center justify-between gap-4">
                 <p tw="text-sm text-dark-300 md:text-lg">Market Tags</p>
                 <div tw="relative w-full max-w-[170px]">
-                  <select tw="block w-full appearance-none rounded-full border border-light-300 py-2.5 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
+                  <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
                     <option value=""></option>
                     <option value="">Option-1</option>
                     <option value="">Option-2</option>
@@ -368,7 +368,7 @@ function CompleteWorkInfo(props) {
                     <input
                       type="radio"
                       id="framed"
-                      name="work-type"
+                      name="orientation"
                       tw="h-4 w-4"
                       css={{ 'accent-color': '#E24E4D' }}
                     />
@@ -383,7 +383,7 @@ function CompleteWorkInfo(props) {
                     <input
                       type="radio"
                       id="unframed"
-                      name="work-type"
+                      name="orientation"
                       tw="h-4 w-4"
                       css={{ 'accent-color': '#E24E4D' }}
                     />
