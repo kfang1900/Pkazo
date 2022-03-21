@@ -8,14 +8,15 @@ import tw, { styled } from 'twin.macro';
 
 import { Container } from './store';
 import ArtistProfile from 'components/profile/ArtistProfile';
+import Gallery from 'components/profile/ProfilePortfolio';
 
-const Posts: NextPage = () => {
+const Portfolio: NextPage = () => {
   const router = useRouter();
   const { username } = router.query;
   return (
     <>
       <Head>
-        <title>Posts</title>
+        <title>Portfolio</title>
       </Head>
       <Header />
       <div>
@@ -43,12 +44,12 @@ const Posts: NextPage = () => {
           <Container>
             <div tw="flex items-center justify-around relative before:absolute before:w-full before:h-1 before:bottom-0 before:left-0 before:bg-gray-200">
               <Link href={'../' + username + '/posts'}>
-                <a tw="text-lg relative z-10 font-semibold text-gray-600 duration-150 px-8 md:px-20 py-2 border-b-4 border-transparent border-soft-red pointer-events-none">
+                <a tw="text-lg relative z-10 font-semibold text-gray-600 hover:bg-black/5 duration-150 px-8 md:px-20 py-2 border-b-4 border-transparent cursor-pointer">
                   Posts
                 </a>
               </Link>
               <Link href={'../' + username + '/portfolio'}>
-                <a tw="text-lg relative z-10 font-semibold text-gray-600 hover:bg-black/5 duration-150 px-8 md:px-20 py-2 border-b-4 border-transparent cursor-pointer">
+                <a tw="text-lg relative z-10 font-semibold text-gray-600 duration-150 px-8 md:px-20 py-2 border-b-4 border-transparent  border-soft-red pointer-events-none">
                   Portfolio
                 </a>
               </Link>
@@ -66,10 +67,12 @@ const Posts: NextPage = () => {
 
         {/* <ProfileSection /> */}
         {/* <TabsSection /> */}
-        {/* <Gallery /> */}
+        <Container>
+          <Gallery />
+        </Container>
       </div>
     </>
   );
 };
 
-export default Posts;
+export default Portfolio;

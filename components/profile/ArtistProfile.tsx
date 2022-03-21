@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
-import 'twin.macro';
+import tw from 'twin.macro';
 
 const ArtistProfile = () => {
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
@@ -71,21 +71,17 @@ const ArtistProfile = () => {
                 <h1 tw="text-3xl font-semibold text-black">James Jean</h1>
                 <p tw="text-gray-600 text-lg mt-1">Taiwan, United States</p>
                 <div tw="mt-[25px]">
-                  {isFollowing ? (
-                    <button
-                      onClick={follwButtonHandler}
-                      tw="duration-150 rounded-full font-bold text-base py-2.5 px-9 border border-[#C6C5C3] bg-white text-black hover:bg-black/5"
-                    >
-                      Following
-                    </button>
-                  ) : (
-                    <button
-                      onClick={follwButtonHandler}
-                      tw="duration-150 rounded-full font-bold text-base py-2.5 px-9 border border-soft-red bg-soft-red hover:bg-red-600 hover:border-red-600 text-white"
-                    >
-                      Follow
-                    </button>
-                  )}
+                  <button
+                    onClick={follwButtonHandler}
+                    css={[
+                      tw`duration-150 rounded-full font-bold text-base py-2.5 px-9 border`,
+                      isFollowing
+                        ? tw`border-[#C6C5C3] bg-white text-black hover:bg-black/5`
+                        : tw`border-soft-red bg-soft-red hover:bg-red-600 hover:border-red-600 text-white`,
+                    ]}
+                  >
+                    {isFollowing ? 'Following' : 'Follow'}
+                  </button>
                 </div>
               </div>
             </div>
