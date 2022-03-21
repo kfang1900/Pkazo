@@ -8,6 +8,7 @@ import tw, { styled } from 'twin.macro';
 
 import { Container } from './store';
 import ArtistProfile from 'components/profile/ArtistProfile';
+import ProfilePosts from 'components/profile/ProfilePosts';
 
 const Posts: NextPage = () => {
   const router = useRouter();
@@ -62,6 +63,9 @@ const Posts: NextPage = () => {
         </section>
         {/* Tab Section End*/}
 
+        <Container>
+          <ProfilePosts />
+        </Container>
         {/* Portfolio Area */}
 
         {/* <ProfileSection /> */}
