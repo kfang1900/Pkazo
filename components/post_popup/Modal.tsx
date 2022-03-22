@@ -16,7 +16,7 @@ const Modal = (props: {
           tw`flex w-full h-full lg:h-screen lg:overflow-y-auto p-6 lg:p-10 items-center justify-center bg-black bg-opacity-70`,
         ]}
       >
-        <div tw="relative flex max-w-7xl w-full h-full p-3 md:p-5 lg:p-7 bg-white rounded-lg lg:rounded-2xl">
+        <div tw="relative flex w-auto p-[39px 30px 39px 39px] bg-white rounded-lg lg:rounded-2xl">
           <button
             onClick={props.onClose}
             tw="absolute h-6 w-6 lg:h-auto lg:w-auto -top-2 lg:top-0 -right-2.5 lg:-right-9 border-1.5 border-transparent bg-black lg:bg-transparent text-white hover:border-white rounded-full p-1 lg:p-1.5"
