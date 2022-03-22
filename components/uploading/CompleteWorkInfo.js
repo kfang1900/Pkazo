@@ -6,7 +6,7 @@ function CompleteWorkInfo(props) {
   const [workForSale, setWorkForSale] = useState(false);
 
   return (
-    <div tw="mx-auto flex flex-row w-full max-w-7xl items-start justify-between gap-5 px-4">
+    <div tw="mx-auto flex flex-row w-full max-w-7xl items-start justify-between gap-5 px-4 mt-20">
       <div tw="flex-auto w-64 ml-10 mr-10">
         <div tw="mb-2.5 md:mb-4">
           <input

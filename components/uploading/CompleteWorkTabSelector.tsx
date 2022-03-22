@@ -3,10 +3,10 @@ import Head from 'next/head';
 import { Dispatch, SetStateAction } from 'react';
 
 const inactiveButton = css`
-  ${tw`opacity-25 cursor-default`}
+  ${tw`opacity-10 cursor-default`}
 `;
 const activeButton = css`
-  ${tw`opacity-75 cursor-pointer`}
+  ${tw`opacity-60 cursor-pointer`}
 `;
 
 const activeTab = css`
@@ -35,10 +35,10 @@ function CompleteWorkTabSelector(props: {
         ></link>
       </Head>
 
-      <div tw="flex mt-16 items-center justify-between gap-10 px-[40px] max-w-[1250px] my-6 mx-auto">
+      <div tw="flex mt-16 items-center justify-between gap-10 px-[40px] max-w-[1250px] my-0 mx-auto">
         <div
           css={[
-            tw`flex items-center gap-1`,
+            tw`flex-shrink items-center gap-1`,
             props.stage === 0 ? inactiveButton : activeButton,
           ]}
           onClick={
@@ -48,12 +48,51 @@ function CompleteWorkTabSelector(props: {
           }
         >
           <i className="far fa-angle-left text-2xl"></i>
-          <span>Back</span>
+          <span> Back</span>
+        </div>
+
+        <div tw="flex-1 grid grid-cols-3 grid-rows-2 gap-y-5 px-[40px] max-w-[1000px] mt-10 mx-auto">
+          <div
+            css={[tw`h-[3px]`, (props.stage === 0 && activeTab) || inactiveTab]}
+          ></div>
+          <div
+            css={[tw`h-[3px]`, (props.stage === 1 && activeTab) || inactiveTab]}
+          ></div>
+          <div
+            css={[tw`h-[3px]`, (props.stage === 2 && activeTab) || inactiveTab]}
+          ></div>
+          <div
+            css={[
+              tw`flex items-center justify-center leading-[0.4] opacity-90`,
+              props.stage === 0 ? undefined : tw`cursor-pointer`,
+            ]}
+            onClick={props.stage === 0 ? undefined : () => props.setStage(0)}
+          >
+            Work Information
+          </div>
+          <div
+            css={[
+              tw`flex items-center justify-center leading-[0.4] opacity-90`,
+              props.stage === 1 ? undefined : tw`cursor-pointer`,
+            ]}
+            onClick={props.stage === 1 ? undefined : () => props.setStage(1)}
+          >
+            In Progress Posts
+          </div>
+          <div
+            css={[
+              tw`flex items-center justify-center leading-[0.4] opacity-90`,
+              props.stage === 2 ? undefined : tw`cursor-pointer`,
+            ]}
+            onClick={props.stage === 2 ? undefined : () => props.setStage(2)}
+          >
+            Include In Portfolios
+          </div>
         </div>
 
         <div
           css={[
-            tw`flex items-center gap-1`,
+            tw`flex flex-shrink items-center gap-1`,
             props.stage === NUM_STAGES ? inactiveButton : activeButton,
           ]}
           onClick={
@@ -67,48 +106,6 @@ function CompleteWorkTabSelector(props: {
         >
           <span>Skip</span>
           <i className="far fa-angle-right text-2xl"></i>
-        </div>
-      </div>
-
-      <div tw="grid grid-cols-3  px-[40px] max-w-[1000px]  my-6 mx-auto ">
-        <div
-          css={[tw`h-[3px]`, (props.stage === 0 && activeTab) || inactiveTab]}
-        ></div>
-        <div
-          css={[tw`h-[3px]`, (props.stage === 1 && activeTab) || inactiveTab]}
-        ></div>
-        <div
-          css={[tw`h-[3px]`, (props.stage === 2 && activeTab) || inactiveTab]}
-        ></div>
-      </div>
-
-      <div tw="grid grid-cols-3  px-[40px] max-w-[1000px] my-6 mx-auto">
-        <div
-          css={[
-            tw`flex items-center justify-center leading-[0.4] opacity-90`,
-            props.stage === 0 ? undefined : tw`cursor-pointer`,
-          ]}
-          onClick={props.stage === 0 ? undefined : () => props.setStage(0)}
-        >
-          Work Information
-        </div>
-        <div
-          css={[
-            tw`flex items-center justify-center leading-[0.4] opacity-90`,
-            props.stage === 1 ? undefined : tw`cursor-pointer`,
-          ]}
-          onClick={props.stage === 1 ? undefined : () => props.setStage(1)}
-        >
-          In Progress Posts
-        </div>
-        <div
-          css={[
-            tw`flex items-center justify-center leading-[0.4] opacity-90`,
-            props.stage === 2 ? undefined : tw`cursor-pointer`,
-          ]}
-          onClick={props.stage === 2 ? undefined : () => props.setStage(2)}
-        >
-          Include In Portfolios
         </div>
       </div>
     </>

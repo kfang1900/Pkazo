@@ -55,7 +55,7 @@ const CompleteWorkPosts = (props) => {
 
   return (
     <>
-      <div tw="text-2xl max-w-[1000px] px-[40px]  leading-[1.5] mx-auto text-center opacity-80 mt-20 font-bold">
+      <div tw="text-2xl max-w-[1000px] px-[40px] leading-[1.5] mx-auto text-center opacity-80 mt-20 font-bold">
         Attach in progress posts of the same work to this completed work. <br />
         <span tw="font-normal text-xl">(Select a maximum of 8 posts)</span>
       </div>
