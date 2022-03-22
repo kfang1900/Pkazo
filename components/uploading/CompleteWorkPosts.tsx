@@ -94,7 +94,7 @@ const CompleteWorkPosts = (props: {
 
       <div tw="px-[40px] flex items-center text-white text-lg justify-start mb-20 mt-10">
         <div
-          tw="py-4 px-16 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] cursor-pointer"
+          tw="py-2.5 px-8 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"
           onClick={props.goNext}
         >
           Next

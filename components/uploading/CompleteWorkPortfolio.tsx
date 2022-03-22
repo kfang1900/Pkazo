@@ -69,7 +69,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
         Include this completed work in your portfolio!
       </div>
 
-      <div tw="max-w-[1100px] gap-5 px-[40px] mx-auto flex items-center justify-between flex-wrap mt-24 mb-10">
+      <div tw="max-w-[1100px] gap-5 px-[40px] mx-auto flex items-center justify-between flex-wrap mt-20 mb-10">
         <ImageSelector
           id={1}
           selectedImage={selectedImage}
@@ -118,7 +118,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
 
       <div tw="px-[40px] flex items-center text-white text-lg justify-start mb-20 mt-20">
         <div
-          tw="py-4 px-16 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] cursor-pointer"
+          tw="py-2.5 px-14 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"
           onClick={props.goNext}
         >
           Post Completed Work
