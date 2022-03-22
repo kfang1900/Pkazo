@@ -28,11 +28,11 @@ function ImageSelector(props: {
     >
       <div
         css={[
-          tw`w-[130px] h-[130px] transform cursor-pointer rounded-full overflow-hidden duration-150 ease-in-out`,
+          tw`w-[130px] h-[130px] transform cursor-pointer rounded-full overflow-hidden`,
           {
             border:
               props.id === props.selectedImage
-                ? '5px solid rgba(128, 128, 128, 0.61)'
+                ? '6px solid rgba(128, 128, 128, 0.61)'
                 : '',
             transform: `scale(${
               props.id === props.selectedImage ? '1.12' : '1'
@@ -44,7 +44,7 @@ function ImageSelector(props: {
           src={props.src}
           alt="Portfolio Image"
           css={[
-            tw`w-full h-full object-cover duration-150 ease-in-out`,
+            tw`w-full h-full object-cover`,
             {
               transform: `scale(${
                 props.id === props.selectedImage ? '1.12' : '1'
@@ -53,7 +53,12 @@ function ImageSelector(props: {
           ]}
         />
       </div>
-      <div tw="mx-auto opacity-90 mt-3 flex items-center justify-center">
+      <div
+        css={[
+          tw`mx-auto opacity-90 mt-3 flex items-center justify-center relative`,
+          props.id === props.selectedImage && tw`top-2`,
+        ]}
+      >
         {props.children}
       </div>
     </div>
