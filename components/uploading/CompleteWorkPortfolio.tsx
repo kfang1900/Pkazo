@@ -1,6 +1,4 @@
 import React, { useState, ReactNode, Dispatch, SetStateAction } from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
 import Image from 'next/image';
 import tw from 'twin.macro';
 import ImageSrc1 from '/public/assets/images/image1.svg';
@@ -9,11 +7,17 @@ import ImageSrc3 from '/public/assets/images/image3.svg';
 import ImageSrc4 from '/public/assets/images/image4.svg';
 import ImageSrc9 from '/public/assets/images/image9.svg';
 
+/* copied from image.tsx */
+interface StaticRequire {
+  default: StaticImageData;
+}
+type StaticImport = StaticRequire | StaticImageData;
+
 function ImageSelector(props: {
   id: number;
   selectedImage: number;
   setSelectedImage: Dispatch<SetStateAction<number>>;
-  src: any;
+  src: string | StaticImport;
   children: ReactNode;
 }) {
   return (
