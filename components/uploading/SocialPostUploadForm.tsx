@@ -67,7 +67,7 @@ function SocialPostUploadForm() {
         >
           <FontAwesomeIcon
             icon={solid('plus')}
-            tw="text-4xl text-gray-300 absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
+            tw="p-4 text-gray-300 absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
           />
         </div>
       </div>
