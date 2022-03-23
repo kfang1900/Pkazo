@@ -8,6 +8,7 @@ const App = () => {
         imgs={['/post_assets/social.png']}
         type="social"
         comments={[]}
+        onClose={() => 0}
       />
     </div>
   );

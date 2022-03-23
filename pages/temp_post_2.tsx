@@ -18,6 +18,7 @@ const App = () => {
         ]}
         type="wip"
         comments={[]}
+        onClose={() => 0}
       />
     </div>
   );

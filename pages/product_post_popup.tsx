@@ -8,6 +8,7 @@ const App = () => {
         imgs={['/assets/images/jammer.jpg']}
         type="complete"
         comments={[]}
+        onClose={() => 0}
       />
     </div>
   );
