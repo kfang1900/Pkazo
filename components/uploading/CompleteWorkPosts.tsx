@@ -24,13 +24,13 @@ function ImageSelector(props: { src: string | StaticImport }) {
       tw="h-auto transform rounded-xl overflow-hidden cursor-pointer"
       onClick={() => setSelected((state: boolean) => !state)}
     >
-      <i
-        className="far fa-check"
+      <FontAwesomeIcon
+        icon={solid('check')}
         css={[
-          tw`text-white z-20 text-6xl absolute top-1/2 right-1/2 -translate-y-1/2 translate-x-1/2`,
+          tw`text-white z-20 p-5 absolute top-1/2 right-1/2 -translate-y-1/2 translate-x-1/2`,
           !selected && tw`hidden`,
         ]}
-      ></i>
+      />
       <div
         css={[
           tw`bg-black opacity-50 z-10 absolute w-full h-full`,

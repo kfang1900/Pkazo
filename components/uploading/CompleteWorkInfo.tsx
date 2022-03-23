@@ -484,7 +484,7 @@ function CompleteWorkInfo(props: {
             />
           </div>
           <div tw="flex-auto grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
-            {[0, 0, 0, 0, 0, 0].map((value, index) => (
+            {[0, 0, 0, 0, 0].map((value, index) => (
               <UploadedImage
                 key={index}
                 id={index}
@@ -493,10 +493,13 @@ function CompleteWorkInfo(props: {
                 setSelected={setSelected}
               />
             ))}
-            <div tw="h-full w-full transform rounded-md overflow-hidden bg-gray-100 cursor-pointer">
+            <div
+              tw="h-full transform rounded-md overflow-hidden bg-gray-100 cursor-pointer"
+              css={{ 'aspect-ratio': '1/1' }}
+            >
               <FontAwesomeIcon
                 icon={solid('plus')}
-                tw="text-2xl text-gray-300 absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
+                tw="p-1 text-gray-300 absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
               />
             </div>
           </div>
