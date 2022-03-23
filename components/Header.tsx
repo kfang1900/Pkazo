@@ -8,7 +8,7 @@ import MessageLogo from '/public/assets/images/message.svg';
 import CompassLogo from '/public/assets/images/compass.svg';
 import CartLogo from '/public/assets/images/cart.svg';
 import ProfileImg from '/public/assets/images/profile.png';
-import tw from 'twin.macro';
+import 'twin.macro';
 import { UrlObject } from 'url';
 
 /* Copied from image.tsx source */
@@ -60,13 +60,21 @@ const Header = () => {
           <NavbarIcon href="/" src={HouseLogo} alt="House Logo" />
           <NavbarIcon href="/" src={ShopLogo} alt="Shop Logo" />
           <NavbarIcon href="/" src={CompassLogo} alt="Compass Logo" />
-          <NavbarIcon href="/" src={PlusLogo} alt="Plus Logo" />
+          <NavbarIcon
+            href="/choose_social_work"
+            src={PlusLogo}
+            alt="Plus Logo"
+          />
           <NavbarIcon href="/" src={MessageLogo} alt="Message Logo" />
         </div>
 
         <div tw="flex flex-auto flex-row-reverse w-36 justify-start h-8 gap-3">
           <NavbarIcon href="/" src={CartLogo} alt="Cart Logo" />
-          <NavbarIcon href="/" src={PlusLogo} alt="Plus Logo" />
+          <NavbarIcon
+            href="/choose_social_work"
+            src={PlusLogo}
+            alt="Plus Logo"
+          />
           <NavbarIcon href="/" src={ProfileImg} alt="Profile Picture" />
         </div>
       </div>
