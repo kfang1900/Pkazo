@@ -41,6 +41,14 @@ const Home: NextPage = () => {
         <Link href="/product_post_popup">
           <a>Product post popup</a>
         </Link>
+        <br />
+        <Link href="/temp_post_1">
+          <a>Social post popup</a>
+        </Link>
+        <br />
+        <Link href="/temp_post_2">
+          <a>Wip post popup</a>
+        </Link>
       </div>
     </div>
   );
