@@ -42,7 +42,7 @@ const Feed: NextPage = () => {
       <Head>
         <title>Feed</title>
       </Head>
-      <Header tw="border-b border-[#D8D8D8]" />
+      <Header tw="border-b border-[#D8D8D8]" isBuyer />
       <Container>
         <div tw="w-[50%] mx-auto">
           {posts.map((p, i) => (
