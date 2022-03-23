@@ -27,7 +27,7 @@ function FeedPost(props: Props) {
   const completedDesc = () => {
     return (
       <>
-        <div tw="border border-grey-D8 hover:border-gray-400 mt-5 mb-2 w-full rounded-[5px] py-5 px-6">
+        <div tw="border border-grey-D8 hover:border-gray-400 mt-5 mb-2 w-full rounded-[5px] py-5 px-6 hover:cursor-pointer">
           <div tw="flex items-center justify-between">
             <div tw="flex flex-col">
               <h3 tw="text-lg font-semibold font-open-sans">Jammer</h3>
@@ -106,16 +106,14 @@ function FeedPost(props: Props) {
         {props.post.type === 'complete' && completedDesc()}
         {props.post.type === 'wip' && wipDesc()}
         {props.post.type === 'social' && socialDesc()}
-        <div tw="flex items-center space-x-6 w-full">
-          <div tw="flex">
-            <button onClick={() => setLiked(!liked)}>
-              <Image
-                src={'/assets/svgs/' + (liked ? 'red_like.svg' : 'like.svg')}
-                width="22px"
-                height="20px"
-                alt="like"
-              />
-            </button>
+        <div tw="flex justify-start items-center w-full">
+          <button onClick={() => setLiked(!liked)} tw="flex">
+            <Image
+              src={'/assets/svgs/' + (liked ? 'red_like.svg' : 'like.svg')}
+              width="22px"
+              height="20px"
+              alt="like"
+            />
             <div
               css={[
                 tw`ml-3 mt-[-2px] font-semibold`,
@@ -124,21 +122,19 @@ function FeedPost(props: Props) {
             >
               {liked ? 12 : 11}
             </div>
-          </div>
-          <div tw="flex">
-            <button onClick={() => setPopup(true)}>
-              <Image
-                src="/assets/svgs/comment.svg"
-                width="22px"
-                height="20px"
-                alt="comment"
-              />
-            </button>
+          </button>
+          <button onClick={() => setPopup(true)} tw="flex ml-6">
+            <Image
+              src="/assets/svgs/comment.svg"
+              width="22px"
+              height="20px"
+              alt="comment"
+            />
             <div tw="ml-3 mt-[-2px] font-semibold text-[#5A5A5A]">
               {props.post.comments.length}
             </div>
-          </div>
-          <button>
+          </button>
+          <button tw="ml-6">
             <Image
               src="/assets/svgs/share.svg"
               width="22px"
@@ -146,7 +142,7 @@ function FeedPost(props: Props) {
               alt="share"
             />
           </button>
-          <button tw="justify-self-end">
+          <button tw="ml-auto">
             <Image
               src="/assets/svgs/save.svg"
               width="22px"
