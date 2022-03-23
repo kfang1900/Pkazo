@@ -1,25 +1,31 @@
+import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import Header from 'components/Header';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import Header from 'components/Header';
 import tw, { styled } from 'twin.macro';
 
 import ArtistProfile from 'components/profile/ArtistProfile';
+import Gallery from 'components/profile/ProfilePortfolio';
+import ProfilePosts from 'components/profile/ProfilePosts';
 import StorePortfolio from 'components/profile/StorePortfolio';
 
 export const Container = styled.div`
   ${tw`px-5 2xl:max-w-[1400px] mx-auto`}
 `;
 
-const Store: NextPage = () => {
+const Portfolio: NextPage = () => {
   const router = useRouter();
   const { username } = router.query;
+
+  const [page, setPage] = useState(0);
+  const pages = ['Posts', 'Portfolio', 'Store'];
   return (
     <>
       <Head>
-        <title>Store</title>
+        <title>James Jean</title>
       </Head>
       <Header />
       <div>
@@ -44,35 +50,31 @@ const Store: NextPage = () => {
         <section tw="mb-10">
           <Container>
             <div tw="flex items-center justify-around relative before:absolute before:w-full before:h-1 before:bottom-0 before:left-0 before:bg-gray-200">
-              <Link href={'../' + username + '/posts'}>
-                <a tw="text-lg relative z-10 font-semibold text-gray-600 hover:bg-black/5 duration-150 px-8 md:px-20 py-2 border-b-4 border-transparent cursor-pointer">
-                  Posts
-                </a>
-              </Link>
-              <Link href={'../' + username + '/portfolio'}>
-                <a tw="text-lg relative z-10 font-semibold text-gray-600 hover:bg-black/5 duration-150 px-8 md:px-20 py-2 border-b-4 border-transparent cursor-pointer">
-                  Portfolio
-                </a>
-              </Link>
-              <Link href={'../' + username + '/store'}>
-                <a tw="text-lg relative z-10 font-semibold text-gray-600 duration-150 px-8 md:px-20 py-2 border-b-4 border-transparent border-soft-red pointer-events-none">
-                  Store
-                </a>
-              </Link>
+              {pages.map((p, index) => (
+                <button
+                  key={index}
+                  onClick={() => setPage(index)}
+                  css={[
+                    tw`text-lg relative z-10 font-semibold text-gray-600 hover:bg-black/5 duration-150 px-8 md:px-20 py-2 border-b-4 border-transparent cursor-pointer`,
+                    page === index &&
+                      tw`border-soft-red pointer-events-none hover:bg-transparent`,
+                  ]}
+                >
+                  {p}
+                </button>
+              ))}
             </div>
           </Container>
         </section>
-        {/* Tab Section End*/}
 
-        {/* Portfolio Area */}
-        <StorePortfolio />
-
-        {/* <ProfileSection /> */}
-        {/* <TabsSection /> */}
-        {/* <Gallery /> */}
+        <Container>
+          {page === 0 && <ProfilePosts />}
+          {page === 1 && <Gallery />}
+          {page === 2 && <StorePortfolio />}
+        </Container>
       </div>
     </>
   );
 };
 
-export default Store;
+export default Portfolio;

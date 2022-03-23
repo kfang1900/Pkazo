@@ -2,6 +2,7 @@ import tw, { css } from 'twin.macro';
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import dots from '/public/assets/svgs/dots.svg';
 import arrowRight from '/public/assets/svgs/arrow_right.svg';
 import like from '/public/assets/svgs/like.svg';
@@ -25,6 +26,7 @@ interface Props {
     comment: string;
     imgSrc: string;
   }>;
+  onClose: () => void;
 }
 function PostDetails(props: Props) {
   const [comments, setComments] = useState<
@@ -34,6 +36,7 @@ function PostDetails(props: Props) {
   const [following, setFollowing] = useState(false);
   const [isShowUnfollowConfirmModal, setIsShowUnfollwConfirmModal] =
     useState(false);
+  const [liked, setLiked] = useState(false);
   const onFollow = () => {
     setFollowing((prev) => {
       if (prev) {
@@ -56,6 +59,22 @@ function PostDetails(props: Props) {
         },
       ];
     });
+  };
+  const postTags = (tags: Array<string>) => {
+    return (
+      <div tw="flex">
+        {tags.map((tag, index) => (
+          <Link href="#" key={index} passHref={true}>
+            <button
+              css={buttons.red}
+              tw="h-7 bg-[#C4C4C4] hover:bg-[#B9B9B9] text-white mt-5 px-5 font-normal text-[12px] mr-5"
+            >
+              {tag}
+            </button>
+          </Link>
+        ))}
+      </div>
+    );
   };
   const completedDesc = () => {
     return (
@@ -102,14 +121,14 @@ function PostDetails(props: Props) {
   };
   const wipDesc = () => {
     return (
-      <div tw="mt-5">
+      <div tw="mt-5 mb-5">
         <div tw="text-2xl font-bold to-black-light">Acrylic is Hard!</div>
         <div tw="text-[14px] to-black-light mt-3">
           This painting is finally coming together after I’ve been putting it
           off for quite a while. Acrylic is a tough medium that requires a lot
           of over-painting, something I’m not accustomed to as an oil painter.
         </div>
-        <div tw="border border-grey-D8 mt-5 mb-5 w-full rounded-[5px] py-4 px-6">
+        <div tw="border border-grey-D8 mt-5 w-full rounded-[5px] py-4 px-6">
           <div tw="flex flex-col">
             <div tw="flex items-center justify-between">
               <div tw="flex flex-col">
@@ -125,6 +144,7 @@ function PostDetails(props: Props) {
             </div>
           </div>
         </div>
+        {postTags(['surrealism', 'pastel', 'rollerblades'])}
       </div>
     );
   };
@@ -137,6 +157,7 @@ function PostDetails(props: Props) {
           off for quite a while. Acrylic is a tough medium that requires a lot
           of over-painting, something I’m not accustomed to as an oil painter.
         </div>
+        {postTags(['surrealism', 'pastel', 'doggo'])}
       </div>
     );
   };
@@ -150,120 +171,135 @@ function PostDetails(props: Props) {
           setIsShowUnfollwConfirmModal(false);
         }}
       />
-      <div tw="flex bg-white rounded-lg h-[85%] z-20 p-[39px]">
-        <PostImage imgs={props.imgs} />
-        <div tw="w-[560px] flex flex-col pl-[30px]">
-          <div tw="flex items-center justify-between">
-            <div tw="flex items-center space-x-3.5">
-              <img
-                src="store_assets/img/user.png"
-                alt="profile"
-                tw="w-[64px] h-[64px]"
-              />
-              <div tw="flex flex-col justify-center -space-y-1">
-                <h5 tw="text-lg font-bold text-black-light">James Jean</h5>
-                <p tw="text-xs font-semibold text-grey-8B">Los Angeles, CA</p>
-              </div>
-            </div>
-            <div tw="flex items-center">
-              <button
-                onClick={onFollow}
-                css={following ? buttons.white : buttons.red}
-                tw="px-6"
-              >
-                {following ? 'Following' : 'Follow'}
-              </button>
-              <button
-                css={buttons.white}
-                tw="ml-[10px] w-[40px] h-[40px] px-0 border-0"
-              >
-                •••
-              </button>
-            </div>
-          </div>
-          {props.type === 'complete' && completedDesc()}
-          {props.type === 'wip' && wipDesc()}
-          {props.type === 'social' && socialDesc()}
-          <div tw="h-full overflow-y-auto">
-            {comments.map((comment, index) => (
-              <div key={index} tw="flex mb-[24px]">
-                <div tw="w-[36px] h-full overflow-hidden rounded-full flex items-center">
-                  <Image
-                    src={comment.imgSrc}
-                    alt="profile_image"
-                    width="36px"
-                    height="36px"
-                    objectFit="cover"
-                  />
-                </div>
-                <div tw="ml-[12px]">
-                  <div tw="flex">
-                    <div tw="text-[12px] leading-[18px] font-bold text-black">
-                      {comment.user}
-                    </div>
-                    <div tw="text-[12px] leading-[18px] text-[#7F838B] ml-[12px]">
-                      {comment.time}
-                    </div>
-                  </div>
-                  <div tw="text-[12px] leading-[18px] text-black">
-                    {comment.comment}
-                  </div>
+      <div tw="flex h-[85%]">
+        <div tw="flex bg-white rounded-lg z-20 p-[39px]">
+          <PostImage imgs={props.imgs} />
+          <div tw="w-[560px] flex flex-col pl-[30px]">
+            <div tw="flex items-center justify-between">
+              <div tw="flex items-center space-x-3.5">
+                <img
+                  src="store_assets/img/user.png"
+                  alt="profile"
+                  tw="w-[64px] h-[64px]"
+                />
+                <div tw="flex flex-col justify-center -space-y-1">
+                  <h5 tw="text-lg font-bold text-black-light">James Jean</h5>
+                  <p tw="text-xs font-semibold text-grey-8B">Los Angeles, CA</p>
                 </div>
               </div>
-            ))}
-          </div>
-          <hr tw="border-grey-D8" />
-          <div tw="text-sm font-open-sans py-3.5">
-            Liked by{' '}
-            <a tw="font-semibold" href="#">
-              Amanda Evans
-            </a>{' '}
-            and{' '}
-            <a tw="font-semibold" href="#">
-              10 others
-            </a>
-          </div>
-          <div tw="flex items-center space-x-6">
-            <button>
-              <Image src={like} alt="like" />
-            </button>
-            <button>
-              <Image src={save} alt="like" />
-            </button>
-            <button>
-              <Image src={share} alt="like" />
-            </button>
-          </div>
-          <div tw="flex mt-[15px] w-full relative">
-            <input
-              type="text"
-              placeholder="Add a comment..."
-              tw="pl-4 pr-12 py-2 border border-[#D8D8D8] outline-none focus:border-[#B0B0B0] rounded-[5px] w-full"
-              value={curComment}
-              onChange={(event) => setCurComment(event.target.value)}
-            />
-            <button
-              tw="w-[48px] h-[40px] absolute top-[0px] right-[0px] z-10"
-              onClick={() => {
-                onPost(curComment);
-                setCurComment('');
-              }}
-            >
-              <img
-                src={
-                  '../../post_assets/img/' +
-                  (curComment.trim() === '' ? 'grey_send.svg' : 'blue_send.svg')
-                }
-                tw="w-[18px] h-[18px] m-auto"
+              <div tw="flex items-center">
+                <button
+                  onClick={onFollow}
+                  css={following ? buttons.white : buttons.red}
+                  tw="px-6"
+                >
+                  {following ? 'Following' : 'Follow'}
+                </button>
+                <button
+                  css={buttons.white}
+                  tw="ml-[10px] w-[40px] h-[40px] px-0 border-0"
+                >
+                  •••
+                </button>
+              </div>
+            </div>
+            {props.type === 'complete' && completedDesc()}
+            {props.type === 'wip' && wipDesc()}
+            {props.type === 'social' && socialDesc()}
+            <div tw="h-full overflow-y-auto">
+              {comments.map((comment, index) => (
+                <div key={index} tw="flex mb-[24px]">
+                  <div tw="w-[36px] h-full overflow-hidden rounded-full flex items-center">
+                    <Image
+                      src={comment.imgSrc}
+                      alt="profile_image"
+                      width="36px"
+                      height="36px"
+                      objectFit="cover"
+                    />
+                  </div>
+                  <div tw="ml-[12px]">
+                    <div tw="flex">
+                      <div tw="text-[12px] leading-[18px] font-bold text-black">
+                        {comment.user}
+                      </div>
+                      <div tw="text-[12px] leading-[18px] text-[#7F838B] ml-[12px]">
+                        {comment.time}
+                      </div>
+                    </div>
+                    <div tw="text-[12px] leading-[18px] text-black">
+                      {comment.comment}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <hr tw="border-grey-D8" />
+            <div tw="text-sm font-open-sans py-3.5">
+              Liked by{' '}
+              <a tw="font-semibold" href="#">
+                Amanda Evans
+              </a>{' '}
+              and{' '}
+              <a tw="font-semibold" href="#">
+                {10 + ~~liked} others
+              </a>
+            </div>
+            <div tw="flex items-center space-x-6">
+              <button onClick={() => setLiked(!liked)}>
+                <Image
+                  src={'/assets/svgs/' + (liked ? 'red_like.svg' : 'like.svg')}
+                  width="22px"
+                  height="20px"
+                  alt="like"
+                />
+              </button>
+              <button>
+                <Image src={save} alt="like" />
+              </button>
+              <button>
+                <Image src={share} alt="like" />
+              </button>
+            </div>
+            <div tw="flex mt-[15px] w-full relative">
+              <input
+                type="text"
+                placeholder="Add a comment..."
+                tw="pl-4 pr-12 py-2 border border-[#D8D8D8] outline-none focus:border-[#B0B0B0] rounded-[5px] w-full"
+                value={curComment}
+                onChange={(event) => setCurComment(event.target.value)}
               />
-            </button>
+              <button
+                tw="w-[48px] h-[40px] absolute top-[0px] right-[0px] z-10"
+                onClick={() => {
+                  onPost(curComment);
+                  setCurComment('');
+                }}
+              >
+                <img
+                  src={
+                    '../../post_assets/img/' +
+                    (curComment.trim() === ''
+                      ? 'grey_send.svg'
+                      : 'blue_send.svg')
+                  }
+                  tw="w-[18px] h-[18px] m-auto"
+                />
+              </button>
+            </div>
           </div>
         </div>
+        <button
+          onClick={props.onClose}
+          tw="ml-5 w-7 h-7 border-0 outline-none p-1"
+        >
+          <img
+            src="/assets/svgs/close.svg"
+            tw="w-full h-full"
+            alt="close button"
+          />
+        </button>
       </div>
-      {/* <div tw="relative max-h-[85%] grid grid-cols-[minmax(0,1fr) 560px] bg-white rounded-lg p-[39px 30px 39px 39px]">
-        <div></div>
-        
-              </div> */}
     </div>
   );
 }
