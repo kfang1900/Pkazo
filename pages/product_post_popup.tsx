@@ -5,9 +5,11 @@ const App = () => {
   return (
     <div className="App">
       <PostDetails
-        imgs={['/assets/images/jammer.jpg']}
-        type="complete"
-        comments={[]}
+        post={{
+          imgs: ['/assets/images/jammer.jpg'],
+          type: 'complete',
+          comments: [],
+        }}
         onClose={() => 0}
       />
     </div>

@@ -3,6 +3,7 @@ import tw, { css } from 'twin.macro';
 
 interface Props {
   imgs: Array<string>;
+  layout: string; // 'w' or 'h'
 }
 const PostImage = (props: Props) => {
   const [imgIndex, setImgIndex] = useState(0);
@@ -11,7 +12,11 @@ const PostImage = (props: Props) => {
   const prevImg = () => setImgIndex(Math.max(imgIndex - 1, 0));
   return (
     <div tw="relative">
-      <img tw="h-full" src={props.imgs[imgIndex]} alt="post-image" />
+      <img
+        css={[props.layout === 'h' ? tw`h-full` : tw`w-full`]}
+        src={props.imgs[imgIndex]}
+        alt="post-image"
+      />
       {props.imgs.length > 1 && (
         <div tw="absolute mx-auto w-full bottom-[10px] flex justify-center">
           {props.imgs.map((_, i) => {

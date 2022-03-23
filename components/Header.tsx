@@ -38,7 +38,7 @@ function NavbarIcon(props: {
 
 const Header = () => {
   return (
-    <div tw="w-full">
+    <div tw="w-full border-b border-[#D8D8D8]">
       <div tw="px-5 flex flex-row items-center justify-between py-3">
         <div tw="flex flex-none items-center gap-10">
           <div tw="flex-none cursor-pointer -mr-5">

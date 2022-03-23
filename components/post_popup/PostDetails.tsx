@@ -3,35 +3,28 @@ import tw, { css } from 'twin.macro';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import dots from '/public/assets/svgs/dots.svg';
-import arrowRight from '/public/assets/svgs/arrow_right.svg';
-import like from '/public/assets/svgs/like.svg';
-import share from '/public/assets/svgs/share.svg';
-import save from '/public/assets/svgs/save.svg';
 
 import buttons from '../../styles/Button';
 import ConfirmUnfollowModal from '../profile/ConfirmUnfollow';
 import PostImage from './PostImage';
 
-const followingStyle = css`
-  ${tw`hover:bg-red-500 hover:bg-opacity-40 hover:text-red-600`}
-`;
-
 interface Props {
-  imgs: Array<string>;
-  type: string;
-  comments: Array<{
-    user: string;
-    time: string;
-    comment: string;
-    imgSrc: string;
-  }>;
+  post: {
+    imgs: Array<string>;
+    type: string;
+    comments: Array<{
+      user: string;
+      time: string;
+      comment: string;
+      imgSrc: string;
+    }>;
+  };
   onClose: () => void;
 }
 function PostDetails(props: Props) {
   const [comments, setComments] = useState<
     { user: string; time: string; comment: string; imgSrc: string }[]
-  >(props.comments);
+  >(props.post.comments);
   const [curComment, setCurComment] = useState('');
   const [following, setFollowing] = useState(false);
   const [isShowUnfollowConfirmModal, setIsShowUnfollwConfirmModal] =
@@ -173,7 +166,7 @@ function PostDetails(props: Props) {
       />
       <div tw="flex h-[85%]">
         <div tw="flex bg-white rounded-lg z-20 p-[39px]">
-          <PostImage imgs={props.imgs} />
+          <PostImage imgs={props.post.imgs} layout="h" />
           <div tw="w-[560px] flex flex-col pl-[30px]">
             <div tw="flex items-center justify-between">
               <div tw="flex items-center space-x-3.5">
@@ -203,9 +196,9 @@ function PostDetails(props: Props) {
                 </button>
               </div>
             </div>
-            {props.type === 'complete' && completedDesc()}
-            {props.type === 'wip' && wipDesc()}
-            {props.type === 'social' && socialDesc()}
+            {props.post.type === 'complete' && completedDesc()}
+            {props.post.type === 'wip' && wipDesc()}
+            {props.post.type === 'social' && socialDesc()}
             <div tw="h-full overflow-y-auto">
               {comments.map((comment, index) => (
                 <div key={index} tw="flex mb-[24px]">
@@ -255,10 +248,20 @@ function PostDetails(props: Props) {
                 />
               </button>
               <button>
-                <Image src={save} alt="like" />
+                <Image
+                  src="/assets/svgs/save.svg"
+                  width="22px"
+                  height="20px"
+                  alt="save"
+                />
               </button>
               <button>
-                <Image src={share} alt="like" />
+                <Image
+                  src="/assets/svgs/share.svg"
+                  width="22px"
+                  height="20px"
+                  alt="share"
+                />
               </button>
             </div>
             <div tw="flex mt-[15px] w-full relative">
@@ -268,6 +271,7 @@ function PostDetails(props: Props) {
                 tw="pl-4 pr-12 py-2 border border-[#D8D8D8] outline-none focus:border-[#B0B0B0] rounded-[5px] w-full"
                 value={curComment}
                 onChange={(event) => setCurComment(event.target.value)}
+                autoFocus
               />
               <button
                 tw="w-[48px] h-[40px] absolute top-[0px] right-[0px] z-10"
