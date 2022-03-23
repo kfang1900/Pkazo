@@ -45,11 +45,11 @@ function ProfilePosts() {
 
   return (
     <div tw="mb-10 mx-[5%]">
-      <div tw="grid gap-6 lg:gap-10 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+      <div tw="grid gap-6 lg:gap-10 sm:grid-cols-2 sm:w-[595px] lg:w-[915px] 2xl:w-[1235px] lg:grid-cols-3 2xl:grid-cols-4 mx-auto items-center">
         {/* Single Portfolio */}
         {postList.map((post, idx) => (
           <button key={idx}>
-            <div tw="w-full">
+            <div tw="w-[full]">
               <img
                 src={post.imgSrc}
                 alt="Image Alt"
