@@ -38,7 +38,7 @@ function CompleteWorkTabSelector(props: {
       <div tw="flex mt-16 items-center justify-between gap-10 px-[40px] max-w-[1250px] my-0 mx-auto">
         <div
           css={[
-            tw`flex-shrink items-center gap-1`,
+            tw`flex flex-shrink items-center gap-2`,
             props.stage === 0 ? inactiveButton : activeButton,
           ]}
           onClick={
@@ -47,8 +47,8 @@ function CompleteWorkTabSelector(props: {
               : () => props.setStage((state: number) => Math.max(0, state - 1))
           }
         >
-          <i className="far fa-angle-left text-2xl"></i>
-          <span> Back</span>
+          <i className="far fa-angle-left" tw="text-2xl"></i>
+          <span>Back</span>
         </div>
 
         <div tw="flex-1 grid grid-cols-3 grid-rows-2 gap-y-5 px-[40px] max-w-[1000px] mt-10 mx-auto">
@@ -92,7 +92,7 @@ function CompleteWorkTabSelector(props: {
 
         <div
           css={[
-            tw`flex flex-shrink items-center gap-1`,
+            tw`flex flex-shrink items-center gap-2`,
             props.stage === NUM_STAGES ? inactiveButton : activeButton,
           ]}
           onClick={
@@ -105,7 +105,7 @@ function CompleteWorkTabSelector(props: {
           }
         >
           <span>Skip</span>
-          <i className="far fa-angle-right text-2xl"></i>
+          <i className="far fa-angle-right" tw="text-2xl"></i>
         </div>
       </div>
     </>

@@ -20,6 +20,13 @@ declare module 'react' {
   }
 }
 
+// todo: Not sure why this is necessary
+declare module '@fortawesome/react-fontawesome' {
+  interface FontAwesomeIconProps extends FontAwesomeIconProps {
+    css?: CSSProp;
+  }
+}
+
 // The 'as' prop on styled components
 declare global {
   namespace JSX {

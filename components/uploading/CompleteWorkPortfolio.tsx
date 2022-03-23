@@ -28,11 +28,11 @@ function ImageSelector(props: {
     >
       <div
         css={[
-          tw`w-[130px] h-[130px] transform cursor-pointer rounded-full overflow-hidden duration-150 ease-in-out`,
+          tw`w-[130px] h-[130px] transform cursor-pointer rounded-full overflow-hidden`,
           {
             border:
               props.id === props.selectedImage
-                ? '5px solid rgba(128, 128, 128, 0.61)'
+                ? '6px solid rgba(128, 128, 128, 0.61)'
                 : '',
             transform: `scale(${
               props.id === props.selectedImage ? '1.12' : '1'
@@ -44,7 +44,7 @@ function ImageSelector(props: {
           src={props.src}
           alt="Portfolio Image"
           css={[
-            tw`w-full h-full object-cover duration-150 ease-in-out`,
+            tw`w-full h-full object-cover`,
             {
               transform: `scale(${
                 props.id === props.selectedImage ? '1.12' : '1'
@@ -53,7 +53,12 @@ function ImageSelector(props: {
           ]}
         />
       </div>
-      <div tw="mx-auto opacity-90 mt-3 flex items-center justify-center">
+      <div
+        css={[
+          tw`mx-auto opacity-90 mt-3 flex items-center justify-center relative`,
+          props.id === props.selectedImage && tw`top-2`,
+        ]}
+      >
         {props.children}
       </div>
     </div>
@@ -69,7 +74,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
         Include this completed work in your portfolio!
       </div>
 
-      <div tw="max-w-[1100px] gap-5 px-[40px] mx-auto flex items-center justify-between flex-wrap mt-24 mb-10">
+      <div tw="max-w-[1100px] gap-5 px-[40px] mx-auto flex items-center justify-between flex-wrap mt-20 mb-10">
         <ImageSelector
           id={1}
           selectedImage={selectedImage}
@@ -118,7 +123,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
 
       <div tw="px-[40px] flex items-center text-white text-lg justify-start mb-20 mt-20">
         <div
-          tw="py-4 px-16 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] cursor-pointer"
+          tw="py-2.5 px-14 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"
           onClick={props.goNext}
         >
           Post Completed Work
