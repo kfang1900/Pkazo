@@ -3,44 +3,10 @@ import tw, { styled } from 'twin.macro';
 
 function ProfilePosts() {
   const postList = [
-    {
-      imgSrc: '/store_assets/img/gallery/gallery_1.png',
-    },
-    {
-      imgSrc: '/store_assets/img/gallery/gallery_2.png',
-    },
-    {
-      imgSrc: '/store_assets/img/gallery/gallery_3.png',
-    },
-    {
-      imgSrc: '/store_assets/img/gallery/gallery_4.png',
-    },
-    {
-      imgSrc: '/store_assets/img/gallery/gallery_5.png',
-    },
-    {
-      imgSrc: '/store_assets/img/gallery/gallery_6.png',
-    },
-    {
-      imgSrc: '/store_assets/img/gallery/gallery_7.png',
-    },
-    {
-      imgSrc: '/store_assets/img/gallery/gallery_8.png',
-    },
-    {
-      imgSrc: '/store_assets/img/gallery/gallery_9.png',
-    },
-    { imgSrc: '/store_assets/img/product-placeholder.jpg' },
-    { imgSrc: '/store_assets/img/product-placeholder.jpg' },
-    { imgSrc: '/store_assets/img/product-placeholder.jpg' },
-    { imgSrc: '/store_assets/img/product-placeholder.jpg' },
-    { imgSrc: '/store_assets/img/product-placeholder.jpg' },
-    { imgSrc: '/store_assets/img/product-placeholder.jpg' },
-    { imgSrc: '/store_assets/img/product-placeholder.jpg' },
-    { imgSrc: '/store_assets/img/product-placeholder.jpg' },
-    { imgSrc: '/store_assets/img/product-placeholder.jpg' },
-    { imgSrc: '/store_assets/img/product-placeholder.jpg' },
-    { imgSrc: '/store_assets/img/product-placeholder.jpg' },
+    { imgSrc: '/assets/images/posts/1.png' },
+    { imgSrc: '/assets/images/posts/2.png' },
+    { imgSrc: '/assets/images/posts/3.png' },
+    { imgSrc: '/assets/images/posts/4.png' },
   ];
 
   return (

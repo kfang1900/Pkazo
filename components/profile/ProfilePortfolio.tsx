@@ -3,6 +3,8 @@ import { ReactNode, useState } from 'react';
 import Masonry from 'react-masonry-css';
 import tw, { styled } from 'twin.macro';
 
+import { portfolio_images } from 'utils/Cancer_Imports';
+
 import styles from '../../styles/ProfilePortfolio.module.css';
 
 type GalleryDataType = {
@@ -16,7 +18,7 @@ type GalleryDataType = {
 };
 
 type GalleryType = {
-  imgSrc: string;
+  imgSrc: StaticImageData;
 };
 
 const galleryData: GalleryDataType[] = [
@@ -28,35 +30,9 @@ const galleryData: GalleryDataType[] = [
       description:
         'One famous piece, Day is Done (2005), is a massive multimedia project that explores the rituals and traditions of American adolescence through imagined, reconstructed high school yearbook photographs. ',
     },
-    galleries: [
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_1.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_2.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_3.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_4.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_5.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_6.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_7.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_8.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_9.png',
-      },
-    ],
+    galleries: portfolio_images[0].map((value: StaticImageData) => ({
+      imgSrc: value,
+    })),
   },
   {
     circleImgSrc: '/store_assets/img/circle_img_2.png',
@@ -66,35 +42,9 @@ const galleryData: GalleryDataType[] = [
       description:
         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, adipisci expedita voluptates vero neque quo deserunt soluta? amet consectetur adipisicing elit. Ut, adipisci expedit',
     },
-    galleries: [
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_1.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_2.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_3.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_4.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_5.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_6.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_7.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_8.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_9.png',
-      },
-    ],
+    galleries: portfolio_images[1].map((value: StaticImageData) => ({
+      imgSrc: value,
+    })),
   },
   {
     circleImgSrc: '/store_assets/img/circle_img_3.png',
@@ -104,35 +54,9 @@ const galleryData: GalleryDataType[] = [
       description:
         'magni voluptatum nesciunt perferendis rem reprehenderit necessitatibus ea provident, sed ullam. Quam, sapiente explicabo ab perferendis molestiae sint officia. Possimus, eos at!',
     },
-    galleries: [
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_1.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_2.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_3.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_4.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_5.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_6.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_7.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_8.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_9.png',
-      },
-    ],
+    galleries: portfolio_images[2].map((value: StaticImageData) => ({
+      imgSrc: value,
+    })),
   },
   {
     circleImgSrc: '/store_assets/img/circle_img_4.png',
@@ -142,35 +66,9 @@ const galleryData: GalleryDataType[] = [
       description:
         'Quidem expedita nostrum et neque blanditiis consectetur rerum nulla. Illum eligendi nemo, sapiente sunt libero similique perspiciatis neque iusto cumque, doloremque tenetur voluptatem totam? ',
     },
-    galleries: [
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_1.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_2.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_3.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_4.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_5.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_6.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_7.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_8.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_9.png',
-      },
-    ],
+    galleries: portfolio_images[3].map((value: StaticImageData) => ({
+      imgSrc: value,
+    })),
   },
   {
     circleImgSrc: '/store_assets/img/circle_img_2.png',
@@ -180,35 +78,9 @@ const galleryData: GalleryDataType[] = [
       description:
         'Dicta, accusamus et perspiciatis facere, beatae sunt est nesciunt cumque doloribus a assumenda provident sequi eligendi? Cumque cupiditate exercitationem, necessitatibus, nesciunt voluptates consectetur',
     },
-    galleries: [
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_1.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_2.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_3.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_4.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_5.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_6.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_7.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_8.png',
-      },
-      {
-        imgSrc: '/store_assets/img/gallery/gallery_9.png',
-      },
-    ],
+    galleries: portfolio_images[4].map((value: StaticImageData) => ({
+      imgSrc: value,
+    })),
   },
 ];
 
@@ -235,10 +107,6 @@ function shuffle(array: any[]) {
 
 function GallerySection() {
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
-
-  const activeIndexHandler = (index: number) => {
-    setActiveIndex(index);
-  };
   return (
     <>
       {/* Circle Images Section --Start-- */}
@@ -249,7 +117,11 @@ function GallerySection() {
               <div
                 key={index}
                 tw="cursor-pointer"
-                onClick={() => activeIndexHandler(index)}
+                onClick={() =>
+                  setActiveIndex((state: number | null) =>
+                    state === index ? null : index
+                  )
+                }
               >
                 <div
                   css={[
@@ -257,7 +129,11 @@ function GallerySection() {
                     activeIndex === index && tw`border-[#C6C5C3] scale-[1.15]`,
                   ]}
                 >
-                  <Image src={gallery.circleImgSrc} layout="fill" />
+                  <Image
+                    src={gallery.circleImgSrc}
+                    alt="Portfolio Image"
+                    layout="fill"
+                  />
                 </div>
                 <p tw="text-black mt-2 text-center">{gallery.circleTitle}</p>
               </div>
@@ -281,7 +157,7 @@ function GallerySection() {
               .slice(0, 9)
               .map((gallery, index) => (
                 <button key={index} tw="my-[10px]">
-                  <img src={gallery.imgSrc} tw="w-full h-auto" alt="" />
+                  <Image src={gallery.imgSrc} tw="w-full h-auto" alt="" />
                 </button>
               ))}
           </Masonry>
