@@ -237,14 +237,7 @@ function GallerySection() {
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
 
   const activeIndexHandler = (index: number) => {
-    setActiveIndex((prev) => {
-      if (prev === null && document.documentElement.clientWidth > 700) {
-        setTimeout(() => {
-          document.documentElement.scrollTop = 600;
-        }, 100);
-      }
-      return index;
-    });
+    setActiveIndex(index);
   };
   return (
     <>
@@ -277,31 +270,36 @@ function GallerySection() {
       {/* Circle Images Section --End-- */}
 
       {/* Gallery Section --Start-- */}
-      {activeIndex !== null && (
-        <section tw="mt-[55px]">
-          <div className="container">
-            <Masonry
-              breakpointCols={{ default: 3, 800: 2, 400: 1 }}
-              className={styles['my-masonry-grid']}
-              columnClassName={styles['my-masonry-grid_column']}
-            >
-              {shuffle(galleryData[activeIndex].galleries).map(
-                (gallery, index) => (
-                  <button key={index} tw="my-[10px]">
-                    <img src={gallery.imgSrc} tw="w-full h-auto" alt="" />
-                  </button>
-                )
-              )}
-            </Masonry>
-          </div>
-        </section>
-      )}
+      <section tw="mt-[55px]">
+        <div className="container">
+          <Masonry
+            breakpointCols={{ default: 3, 800: 2, 400: 1 }}
+            className={styles['my-masonry-grid']}
+            columnClassName={styles['my-masonry-grid_column']}
+          >
+            {shuffle(getGalleryData(activeIndex))
+              .slice(0, 9)
+              .map((gallery, index) => (
+                <button key={index} tw="my-[10px]">
+                  <img src={gallery.imgSrc} tw="w-full h-auto" alt="" />
+                </button>
+              ))}
+          </Masonry>
+        </div>
+      </section>
       {/* Gallery Section --End-- */}
     </>
   );
 }
 
 export default GallerySection;
+
+const getGalleryData = (activeIndex: null | number) => {
+  if (activeIndex === null) {
+    return galleryData.map((i) => i.galleries).flat();
+  }
+  return galleryData[activeIndex].galleries;
+};
 
 const CircleDescriptionBox = ({
   activeIndex,

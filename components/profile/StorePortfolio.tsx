@@ -10,7 +10,7 @@ import { FiX } from 'react-icons/fi';
 import Image from 'next/image';
 import tw, { styled } from 'twin.macro';
 
-import { Container } from 'pages/profile/[username]/store';
+import { Container } from 'pages/profile/[username]/index';
 
 const ListCheckGroup = styled.ul`
   .check-group input[type='radio'],

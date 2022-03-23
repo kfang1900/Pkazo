@@ -3,11 +3,13 @@ import Image from 'next/image';
 import Logo from '/public/assets/images/Pkazo.svg';
 import HouseLogo from '/public/assets/images/house.svg';
 import ShopLogo from '/public/assets/images/shop.svg';
+import GroupsLogo from '/public/assets/images/groups.svg';
 import PlusLogo from '/public/assets/images/plus.svg';
 import MessageLogo from '/public/assets/images/message.svg';
 import CompassLogo from '/public/assets/images/compass.svg';
 import CartLogo from '/public/assets/images/cart.svg';
 import ProfileImg from '/public/assets/images/profile.png';
+import ProfileImgBuyer from '/public/assets/images/kevin.png';
 import 'twin.macro';
 import { UrlObject } from 'url';
 
@@ -36,9 +38,9 @@ function NavbarIcon(props: {
   );
 }
 
-const Header = () => {
+const Header = (props: { isBuyer?: boolean | undefined }) => {
   return (
-    <div tw="w-full">
+    <div tw="w-full border-b border-[#D8D8D8]">
       <div tw="px-5 flex flex-row items-center justify-between py-3">
         <div tw="flex flex-auto items-center gap-10 w-36">
           <div tw="flex-none cursor-pointer -mr-5">
@@ -60,22 +62,33 @@ const Header = () => {
           <NavbarIcon href="/" src={HouseLogo} alt="House Logo" />
           <NavbarIcon href="/" src={ShopLogo} alt="Shop Logo" />
           <NavbarIcon href="/" src={CompassLogo} alt="Compass Logo" />
-          <NavbarIcon
-            href="/choose_social_work"
-            src={PlusLogo}
-            alt="Plus Logo"
-          />
+          <NavbarIcon href="/" src={GroupsLogo} alt="Groups Logo" />
           <NavbarIcon href="/" src={MessageLogo} alt="Message Logo" />
         </div>
 
         <div tw="flex flex-auto flex-row-reverse w-36 justify-start h-8 gap-3">
           <NavbarIcon href="/" src={CartLogo} alt="Cart Logo" />
+          {((props.isBuyer === undefined || !props.isBuyer) && (
+            <NavbarIcon
+              href="/choose_social_work"
+              src={PlusLogo}
+              alt="Plus Logo"
+            />
+          )) || (
+            <input
+              type="button"
+              value="Create on Pkazo"
+              tw="h-9 relative -top-0.5 text-white bg-theme-red rounded-full px-4 py-1 cursor-pointer hover:bg-[#be4040]"
+            />
+          )}
           <NavbarIcon
-            href="/choose_social_work"
-            src={PlusLogo}
-            alt="Plus Logo"
+            href="/"
+            src={
+              ((props.isBuyer === undefined || !props.isBuyer) && ProfileImg) ||
+              ProfileImgBuyer
+            }
+            alt="Profile Picture"
           />
-          <NavbarIcon href="/" src={ProfileImg} alt="Profile Picture" />
         </div>
       </div>
     </div>
