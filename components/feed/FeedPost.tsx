@@ -6,8 +6,8 @@ import Link from 'next/link';
 
 import buttons from '../../styles/Button';
 import ConfirmUnfollowModal from '../profile/ConfirmUnfollow';
-import PostImage from '../post_popup/PostImage';
-import PostDetails from '../post_popup/PostDetails';
+import PostImage from '../popups/PostImage';
+import PostDetails from '../popups/PostDetails';
 
 interface Props {
   post: {
