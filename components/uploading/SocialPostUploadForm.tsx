@@ -38,7 +38,7 @@ function SimpleFormBox(props: { prompt: string; name: string }) {
       <input
         type="text"
         name={props.name}
-        tw="border border-light-300 rounded-2xl w-32 px-3 py-1 text-black text-sm text-opacity-50"
+        tw="border border-light-300 rounded-2xl w-32 px-3 py-1 text-black text-sm text-opacity-50 focus:caret-theme-red focus:outline-theme-red"
       />
     </div>
   );
