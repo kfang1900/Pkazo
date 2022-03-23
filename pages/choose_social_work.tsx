@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import Modal from 'components/popups/Modal';
-import SocialPostUploadForm from 'components/uploading/SocialPostUploadForm';
+import ChooseUploadType from 'components/popups/ChooseUploadType';
 
-const App = () => {
+function ChooseSocialWork() {
   const [isOpen, setIsOpen] = useState(true);
   const closeModal = () => {
     setIsOpen(false);
@@ -13,10 +13,10 @@ const App = () => {
   return (
     <div className="App">
       <Modal open={isOpen} onClose={closeModal}>
-        <SocialPostUploadForm />
+        <ChooseUploadType />
       </Modal>
     </div>
   );
-};
+}
 
-export default App;
+export default ChooseSocialWork;

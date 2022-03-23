@@ -8,7 +8,7 @@ import MessageLogo from '/public/assets/images/message.svg';
 import CompassLogo from '/public/assets/images/compass.svg';
 import CartLogo from '/public/assets/images/cart.svg';
 import ProfileImg from '/public/assets/images/profile.png';
-import tw from 'twin.macro';
+import 'twin.macro';
 import { UrlObject } from 'url';
 
 /* Copied from image.tsx source */
@@ -23,7 +23,7 @@ function NavbarIcon(props: {
   alt: string;
 }) {
   return (
-    <div tw="flex flex-none transform w-10 h-10">
+    <div tw="flex flex-none transform w-8">
       <Link href={props.href} passHref>
         <Image
           src={props.src}
@@ -40,7 +40,7 @@ const Header = () => {
   return (
     <div tw="w-full border-b border-[#D8D8D8]">
       <div tw="px-5 flex flex-row items-center justify-between py-3">
-        <div tw="flex flex-none items-center gap-10">
+        <div tw="flex flex-auto items-center gap-10 w-36">
           <div tw="flex-none cursor-pointer -mr-5">
             <Link href="/" passHref>
               <Image src={Logo} tw="w-28" alt="Pkazo" />
@@ -56,18 +56,25 @@ const Header = () => {
           </div>
         </div>
 
-        <div tw="flex flex-auto flex-row w-36 justify-start h-10 gap-7">
-          <div tw="flex-initial w-32"></div>
+        <div tw="flex flex-auto flex-row justify-center h-8 gap-7">
           <NavbarIcon href="/" src={HouseLogo} alt="House Logo" />
           <NavbarIcon href="/" src={ShopLogo} alt="Shop Logo" />
           <NavbarIcon href="/" src={CompassLogo} alt="Compass Logo" />
-          <NavbarIcon href="/" src={PlusLogo} alt="Plus Logo" />
+          <NavbarIcon
+            href="/choose_social_work"
+            src={PlusLogo}
+            alt="Plus Logo"
+          />
           <NavbarIcon href="/" src={MessageLogo} alt="Message Logo" />
         </div>
 
-        <div tw="flex flex-auto flex-row-reverse w-36 justify-start h-10 gap-3">
+        <div tw="flex flex-auto flex-row-reverse w-36 justify-start h-8 gap-3">
           <NavbarIcon href="/" src={CartLogo} alt="Cart Logo" />
-          <NavbarIcon href="/" src={PlusLogo} alt="Plus Logo" />
+          <NavbarIcon
+            href="/choose_social_work"
+            src={PlusLogo}
+            alt="Plus Logo"
+          />
           <NavbarIcon href="/" src={ProfileImg} alt="Profile Picture" />
         </div>
       </div>
