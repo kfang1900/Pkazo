@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Modal from 'components/post_popup/Modal';
-import PostDetails from 'components/post_popup/PostDetails';
+import Modal from 'components/popups/Modal';
+import PostDetails from 'components/popups/PostDetails';
 
 const App = () => {
   const [isOpen, setIsOpen] = useState(true);
