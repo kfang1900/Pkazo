@@ -2,6 +2,7 @@ import { useState } from 'react';
 import tw from 'twin.macro';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import avatar from '/public/assets/images/user.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
@@ -180,13 +181,15 @@ function SocialPostUploadForm() {
             </div>
           )}
         </div>
-        <div tw="flex-1 flex items-end text-white text-lg mt-4">
-          <input
-            type="button"
-            tw="py-2 w-3/4 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"
-            value="Share"
-          />
-        </div>
+        <Link href="/profile/username" passHref>
+          <div tw="flex-1 flex items-end text-white text-lg mt-4">
+            <input
+              type="button"
+              tw="py-2 w-3/4 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"
+              value="Share"
+            />
+          </div>
+        </Link>
       </div>
     </div>
   );
