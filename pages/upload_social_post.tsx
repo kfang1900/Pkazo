@@ -1,8 +1,10 @@
+import { NextPage } from 'next';
 import { useState } from 'react';
 import Modal from 'components/popups/Modal';
 import SocialPostUploadForm from 'components/uploading/SocialPostUploadForm';
+import { FileUploader } from 'react-drag-drop-files';
 
-const App = () => {
+const UploadSocialPost: NextPage = () => {
   const [isOpen, setIsOpen] = useState(true);
   const closeModal = () => {
     setIsOpen(false);
@@ -11,7 +13,7 @@ const App = () => {
     setIsOpen(true);
   };
   return (
-    <div className="App">
+    <div>
       <Modal open={isOpen} onClose={closeModal}>
         <SocialPostUploadForm />
       </Modal>
@@ -19,4 +21,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default UploadSocialPost;
