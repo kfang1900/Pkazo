@@ -214,9 +214,115 @@ const IndividualWork: NextPage = () => {
                 <p tw="text-black text-xl">Accepted</p>
               </div>
             </div>
+            <a tw="underline" href="#">
+              Shipping and Return Policies
+            </a>
+          </div>
+          <div tw="ml-12 mt-14 flex flex-col gap-y-3 text-gray-500">
+            <p tw="font-bold text-xl mb-3">Frequently Asked Questions</p>
+            <div tw="p-4 border border-gray-500 rounded-full flex">
+              {/* flex-grow should just be grow, wait for twin.macro to update */}
+              <p tw="flex-grow text-sm font-bold">How do I hang it?</p>
+              <button tw="flex items-center">
+                <svg
+                  width="15"
+                  height="9"
+                  viewBox="0 0 15 9"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M14.6871 0.273877C14.3219 -0.0912924 13.7298 -0.0912924 13.3646 0.273877L7.48026 6.15828L1.59586 0.273877C1.23071 -0.091293 0.638616 -0.091293 0.273465 0.273876C-0.0916853 0.639055 -0.0916853 1.23111 0.273465 1.59629L6.81906 8.14188C7.18421 8.50703 7.77631 8.50703 8.14146 8.14188L14.6871 1.59629C15.0522 1.23112 15.0522 0.639056 14.6871 0.273877Z"
+                    fill="#8B8B8B"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div tw="p-4 border border-gray-500 rounded-full flex">
+              {/* flex-grow should just be grow, wait for twin.macro to update */}
+              <p tw="flex-grow text-sm font-bold">Do you accept commissions?</p>
+              <button tw="flex items-center">
+                <svg
+                  width="15"
+                  height="9"
+                  viewBox="0 0 15 9"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M14.6871 0.273877C14.3219 -0.0912924 13.7298 -0.0912924 13.3646 0.273877L7.48026 6.15828L1.59586 0.273877C1.23071 -0.091293 0.638616 -0.091293 0.273465 0.273876C-0.0916853 0.639055 -0.0916853 1.23111 0.273465 1.59629L6.81906 8.14188C7.18421 8.50703 7.77631 8.50703 8.14146 8.14188L14.6871 1.59629C15.0522 1.23112 15.0522 0.639056 14.6871 0.273877Z"
+                    fill="#8B8B8B"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div tw="p-4 border border-gray-500 rounded-full flex">
+              {/* flex-grow should just be grow, wait for twin.macro to update */}
+              <p tw="flex-grow text-sm font-bold">
+                Do you sell prints of this original work?
+              </p>
+              <button tw="flex items-center">
+                <svg
+                  width="15"
+                  height="9"
+                  viewBox="0 0 15 9"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M14.6871 0.273877C14.3219 -0.0912924 13.7298 -0.0912924 13.3646 0.273877L7.48026 6.15828L1.59586 0.273877C1.23071 -0.091293 0.638616 -0.091293 0.273465 0.273876C-0.0916853 0.639055 -0.0916853 1.23111 0.273465 1.59629L6.81906 8.14188C7.18421 8.50703 7.77631 8.50703 8.14146 8.14188L14.6871 1.59629C15.0522 1.23112 15.0522 0.639056 14.6871 0.273877Z"
+                    fill="#8B8B8B"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div tw="p-4 border border-gray-500 rounded-full flex">
+              {/* flex-grow should just be grow, wait for twin.macro to update */}
+              <p tw="flex-grow text-sm font-bold">Care Instructions.</p>
+              <button tw="flex items-center">
+                <svg
+                  width="15"
+                  height="9"
+                  viewBox="0 0 15 9"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M14.6871 0.273877C14.3219 -0.0912924 13.7298 -0.0912924 13.3646 0.273877L7.48026 6.15828L1.59586 0.273877C1.23071 -0.091293 0.638616 -0.091293 0.273465 0.273876C-0.0916853 0.639055 -0.0916853 1.23111 0.273465 1.59629L6.81906 8.14188C7.18421 8.50703 7.77631 8.50703 8.14146 8.14188L14.6871 1.59629C15.0522 1.23112 15.0522 0.639056 14.6871 0.273877Z"
+                    fill="#8B8B8B"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div tw="p-4 border border-gray-500 rounded-[27px]">
+              <div tw="flex">
+                {/* flex-grow should just be grow, wait for twin.macro to update */}
+                <p tw="flex-grow text-sm font-bold">
+                  Do you accept commissions?
+                </p>
+                <button tw="flex items-center">
+                  <svg
+                    width="15"
+                    height="9"
+                    viewBox="0 0 15 9"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M14.6871 0.273877C14.3219 -0.0912924 13.7298 -0.0912924 13.3646 0.273877L7.48026 6.15828L1.59586 0.273877C1.23071 -0.091293 0.638616 -0.091293 0.273465 0.273876C-0.0916853 0.639055 -0.0916853 1.23111 0.273465 1.59629L6.81906 8.14188C7.18421 8.50703 7.77631 8.50703 8.14146 8.14188L14.6871 1.59629C15.0522 1.23112 15.0522 0.639056 14.6871 0.273877Z"
+                      fill="#8B8B8B"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <p tw="mt-3 text-sm">Toenail.</p>
+            </div>
           </div>
         </div>
       </div>
+      <br />
+      <br />
+      <br />
     </>
   );
 };
