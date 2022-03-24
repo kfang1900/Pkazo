@@ -13,6 +13,7 @@ import progress1 from 'public/assets/indiv_work/progress1.png';
 import progress2 from 'public/assets/indiv_work/progress2.png';
 import progress3 from 'public/assets/indiv_work/progress3.png';
 import progress4 from 'public/assets/indiv_work/progress4.png';
+import PostDetails from 'components/popups/PostDetails';
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },
@@ -42,6 +43,7 @@ const comments = [
 
 const IndividualWork: NextPage = () => {
   const [selectedImage, setSelectedImage] = useState(0);
+  const [popup, setPopup] = useState(false);
 
   const selectedBigImage = workImages[selectedImage].big;
 
@@ -51,6 +53,26 @@ const IndividualWork: NextPage = () => {
         <title>Portfolio</title>
       </Head>
       <Header />
+      {popup && (
+        <PostDetails
+          post={{
+            imgs: [
+              '/post_assets/wip/img1.png',
+              '/post_assets/wip/img2.png',
+              '/post_assets/wip/img3.png',
+              '/post_assets/wip/img4.png',
+              '/post_assets/wip/img5.png',
+              '/post_assets/wip/img6.png',
+              '/post_assets/wip/img7.png',
+              '/post_assets/wip/img8.png',
+              '/post_assets/wip/img9.png',
+            ],
+            type: 'wip',
+            comments: [],
+          }}
+          onClose={() => setPopup(false)}
+        />
+      )}
       <div tw="flex mt-8">
         {/* flex-grow should just be grow, wait for twin.macro to update */}
         <div tw="flex-grow">
@@ -145,7 +167,7 @@ const IndividualWork: NextPage = () => {
             <p tw="mt-10 text-2xl font-semibold">Progress Posts</p>
             <div tw="mt-8 flex h-[150px] gap-x-8">
               {progressImages.map((x, i) => (
-                <button key={i}>
+                <button key={i} onClick={() => setPopup(true)}>
                   <Image
                     src={x.src}
                     width={150}
