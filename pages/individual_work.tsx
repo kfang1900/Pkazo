@@ -19,6 +19,26 @@ const workImages = [
   { small: smallpic2, big: bigpic2 },
 ];
 const progressImages = [progress1, progress2, progress3, progress4];
+const comments = [
+  {
+    user: 'Jake Hill',
+    time: '1h',
+    comment: 'Super cool. Kinda creepy. I love it.',
+    imgSrc: '/assets/indiv_work/commenter1.png',
+  },
+  {
+    user: 'Amanda Evans',
+    time: '2h',
+    comment: 'This is amazing! The red really adds to the painting.',
+    imgSrc: '/assets/indiv_work/commenter2.png',
+  },
+  {
+    user: 'Prashant Singh',
+    time: '5h',
+    comment: 'Ugh! 😧 Your talent is out of our orbit. Seriously!',
+    imgSrc: '/assets/indiv_work/commenter3.png',
+  },
+];
 
 const IndividualWork: NextPage = () => {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -136,7 +156,34 @@ const IndividualWork: NextPage = () => {
               ))}
             </div>
             <p tw="my-10 text-2xl font-semibold">Comments</p>
-            <div tw="flex flex-col gap-y-8"></div>
+            <div tw="flex flex-col gap-y-8">
+              {comments.map((comment, i) => (
+                <div key={i} tw="flex">
+                  <div tw="w-[36px] h-full overflow-hidden rounded-full flex items-center">
+                    <Image
+                      src={comment.imgSrc}
+                      alt="profile_image"
+                      width="36px"
+                      height="36px"
+                      objectFit="cover"
+                    />
+                  </div>
+                  <div tw="ml-[12px]">
+                    <div tw="flex">
+                      <div tw="text-[12px] leading-[18px] font-bold text-black">
+                        {comment.user}
+                      </div>
+                      <div tw="text-[12px] leading-[18px] text-[#7F838B] ml-[12px]">
+                        {comment.time}
+                      </div>
+                    </div>
+                    <div tw="text-[12px] leading-[18px] text-black">
+                      {comment.comment}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         <div tw="min-w-[428px] mr-14">
