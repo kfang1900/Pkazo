@@ -8,7 +8,7 @@ import { portfolio_images } from 'utils/Cancer_Imports';
 import styles from '../../styles/ProfilePortfolio.module.css';
 
 type GalleryDataType = {
-  circleImgSrc: string;
+  circleImgSrc: string | StaticImageData;
   circleTitle: ReactNode;
   descriptionBox: {
     title: ReactNode;
@@ -23,7 +23,7 @@ type GalleryType = {
 
 const galleryData: GalleryDataType[] = [
   {
-    circleImgSrc: '/store_assets/img/circle_img_1.png',
+    circleImgSrc: portfolio_images[0][0],
     circleTitle: 'Moon Child',
     descriptionBox: {
       title: 'Moon Child',
@@ -35,7 +35,7 @@ const galleryData: GalleryDataType[] = [
     })),
   },
   {
-    circleImgSrc: '/store_assets/img/circle_img_2.png',
+    circleImgSrc: portfolio_images[1][0],
     circleTitle: 'Seven Phases',
     descriptionBox: {
       title: 'Seven Phases',
@@ -47,7 +47,7 @@ const galleryData: GalleryDataType[] = [
     })),
   },
   {
-    circleImgSrc: '/store_assets/img/circle_img_3.png',
+    circleImgSrc: portfolio_images[2][0],
     circleTitle: 'Meowtide',
     descriptionBox: {
       title: 'Meowtide',
@@ -59,7 +59,7 @@ const galleryData: GalleryDataType[] = [
     })),
   },
   {
-    circleImgSrc: '/store_assets/img/circle_img_4.png',
+    circleImgSrc: portfolio_images[3][0],
     circleTitle: 'Kali',
     descriptionBox: {
       title: 'Kali',
@@ -71,7 +71,7 @@ const galleryData: GalleryDataType[] = [
     })),
   },
   {
-    circleImgSrc: '/store_assets/img/circle_img_2.png',
+    circleImgSrc: portfolio_images[4][0],
     circleTitle: 'Sadhu',
     descriptionBox: {
       title: 'Sadhu',
