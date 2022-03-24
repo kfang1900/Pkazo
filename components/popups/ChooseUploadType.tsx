@@ -12,7 +12,7 @@ function Panel(props: {
   href: string;
 }) {
   return (
-    <div tw="flex-auto flex flex-col w-1 p-5 sm:m-3 sm:p-7 md:mx-5 md:p-10 lg:mx-8 lg:p-12 gap-10">
+    <div tw="justify-center flex-auto flex flex-col w-1 p-5 sm:m-3 sm:p-7 md:mx-5 md:p-10 lg:mx-8 lg:p-12 gap-10">
       <div tw="flex justify-center">
         <Image src={props.src} alt={props.alt} />
       </div>
