@@ -53,15 +53,7 @@ const CompleteWorkPosts = (props: {
   goNext: MouseEventHandler<HTMLInputElement>;
 }) => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([
-    '/assets/images/image1.svg',
-    '/assets/images/image2.svg',
-    '/assets/images/image3.svg',
-    '/assets/images/image4.svg',
-    '/assets/images/image5.svg',
-    '/assets/images/image6.svg',
-    '/assets/images/image7.svg',
-    '/assets/images/image8.svg',
-    '/assets/images/image9.svg',
+    '/assets/images/wip/img1.png',
   ]);
   const handleChange = (files: File[]) =>
     setUploadedImages((state: string[]) =>
