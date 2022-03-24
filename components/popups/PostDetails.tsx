@@ -9,7 +9,7 @@ import ConfirmUnfollowModal from '../profile/ConfirmUnfollow';
 import PostImage from './PostImage';
 import Comment from './Comment';
 
-interface Props {
+export interface PostDetailsProps {
   post: {
     imgs: Array<string>;
     type: string;
@@ -22,7 +22,7 @@ interface Props {
   };
   onClose: () => void;
 }
-function PostDetails(props: Props) {
+function PostDetails(props: PostDetailsProps) {
   const [comments, setComments] = useState<
     { user: string; time: string; comment: string; imgSrc: string }[]
   >(props.post.comments);
@@ -172,7 +172,7 @@ function PostDetails(props: Props) {
             <div tw="flex items-center justify-between">
               <div tw="flex items-center space-x-3.5">
                 <img
-                  src="store_assets/img/user.png"
+                  src="/assets/images/user.png"
                   alt="profile"
                   tw="w-[64px] h-[64px]"
                 />
