@@ -11,6 +11,12 @@ import Image from 'next/image';
 import tw, { styled } from 'twin.macro';
 
 import { Container } from 'pages/profile/[username]/index';
+import Img01 from 'public/assets/images/portfolios/pf1/1.jpeg';
+import Img02 from 'public/assets/images/portfolios/pf1/2.jpeg';
+import Img03 from 'public/assets/images/portfolios/pf2/3.jpeg';
+import Img04 from 'public/assets/images/portfolios/pf3/4.jpeg';
+import Img05 from 'public/assets/images/portfolios/pf4/2.jpeg';
+import Img06 from 'public/assets/images/portfolios/pf5/7.jpeg';
 
 const ListCheckGroup = styled.ul`
   .check-group input[type='radio'],
@@ -123,40 +129,40 @@ const StorePortFolio = () => {
 
   const portfolioList = [
     {
-      label: 'Abstract',
+      src: Img01,
+      label: 'Ugly Painting',
+      medium: 'Medium 1',
+      price: 69,
     },
     {
-      label: 'Abstract',
+      src: Img02,
+      label: 'Ugly Painting',
+      medium: 'Medium 2',
+      price: 69.42,
     },
     {
-      label: 'Abstract',
+      src: Img03,
+      label: 'Ugly Painting',
+      medium: 'Medium 3',
+      price: 420,
     },
     {
-      label: 'Abstract',
+      src: Img04,
+      label: 'Ugly Painting',
+      medium: 'Medium 4',
+      price: 420.69,
     },
     {
-      label: 'Abstract',
+      src: Img05,
+      label: 'Ugly Painting',
+      medium: 'Medium 5',
+      price: 42069,
     },
     {
-      label: 'Abstract',
-    },
-    {
-      label: 'Abstract',
-    },
-    {
-      label: 'Abstract',
-    },
-    {
-      label: 'Abstract',
-    },
-    {
-      label: 'Abstract',
-    },
-    {
-      label: 'Abstract',
-    },
-    {
-      label: 'Abstract',
+      src: Img06,
+      label: 'Ugly Painting',
+      medium: 'Medium 6',
+      price: 69420,
     },
   ];
 
@@ -493,18 +499,16 @@ const StorePortFolio = () => {
               <div key={idx}>
                 <div tw="w-full mb-6">
                   <Image
-                    width={401}
-                    height={477}
-                    src="/store_assets/img/product-placeholder.jpg"
+                    src={portfolio.src}
                     alt="Image Alt"
                     layout="responsive"
                   />
                 </div>
                 <div>
-                  <h4>Abstract</h4>
+                  <h4>{portfolio.label}</h4>
                   <div tw="flex items-center justify-between">
-                    <p tw="text-gray-600">Oil Painting</p>
-                    <strong>$650</strong>
+                    <p tw="text-gray-600">{portfolio.medium}</p>
+                    <strong>${portfolio.price}</strong>
                   </div>
                 </div>
               </div>
