@@ -315,7 +315,7 @@ const IndividualWork: NextPage = () => {
                   </svg>
                 </button>
               </div>
-              <p tw="mt-3 text-sm">Toenail.</p>
+              <p tw="mt-3 text-sm">Yes, I&apos;m always open to commissions.</p>
             </div>
           </div>
         </div>
