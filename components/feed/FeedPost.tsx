@@ -27,24 +27,26 @@ function FeedPost(props: Props) {
   const completedDesc = () => {
     return (
       <>
-        <div tw="border border-grey-D8 hover:border-gray-400 mt-5 mb-2 w-full rounded-[5px] py-5 px-6 hover:cursor-pointer">
-          <div tw="flex items-center justify-between">
-            <div tw="flex flex-col">
-              <h3 tw="text-lg font-semibold font-open-sans">Jammer</h3>
-              <p tw="text-sm font-semibold font-open-sans text-grey-8B">
-                Acrylic on Canvas
-              </p>
-            </div>
-            <div tw="flex items-center space-x-3">
-              <span tw="text-2xl font-semibold to-black-light">$150</span>
-              <img
-                src="/store_assets/img/chevron-right.svg"
-                alt="chevron-right"
-                tw="h-[15px]"
-              />
+        <Link href="/individual_work" passHref>
+          <div tw="border border-grey-D8 hover:border-gray-400 mt-5 mb-2 w-full rounded-[5px] py-5 px-6 hover:cursor-pointer">
+            <div tw="flex items-center justify-between">
+              <div tw="flex flex-col">
+                <h3 tw="text-lg font-semibold font-open-sans">Jammer</h3>
+                <p tw="text-sm font-semibold font-open-sans text-grey-8B">
+                  Acrylic on Canvas
+                </p>
+              </div>
+              <div tw="flex items-center space-x-3">
+                <span tw="text-2xl font-semibold to-black-light">$150</span>
+                <img
+                  src="/store_assets/img/chevron-right.svg"
+                  alt="chevron-right"
+                  tw="h-[15px]"
+                />
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
         <p tw="text-sm font-open-sans text-black mb-5">
           The girl emerges from the vessel of the mind, entwined in her own
           noodle-like hair. A forest of mushrooms casts a blanket of prismatic
@@ -83,17 +85,19 @@ function FeedPost(props: Props) {
         <PostDetails post={props.post} onClose={() => setPopup(false)} />
       )}
       <div tw="flex items-center justify-between my-4 mx-5">
-        <div tw="flex items-center space-x-3.5">
-          <img
-            src="store_assets/img/user.png"
-            alt="profile"
-            tw="w-[64px] h-[64px]"
-          />
-          <div tw="flex flex-col justify-center -space-y-1">
-            <h5 tw="text-lg font-bold text-black-light">James Jean</h5>
-            <p tw="text-xs font-semibold text-grey-8B">Los Angeles, CA</p>
+        <Link href="/profile/username" passHref>
+          <div tw="flex items-center space-x-3.5 cursor-pointer">
+            <img
+              src="store_assets/img/user.png"
+              alt="profile"
+              tw="w-[64px] h-[64px]"
+            />
+            <div tw="flex flex-col justify-center -space-y-1">
+              <h5 tw="text-lg font-bold text-black-light">James Jean</h5>
+              <p tw="text-xs font-semibold text-grey-8B">Los Angeles, CA</p>
+            </div>
           </div>
-        </div>
+        </Link>
         <button
           css={buttons.white}
           tw="ml-[10px] w-[40px] h-[40px] px-0 border-0 text-[#575757]"

@@ -72,45 +72,47 @@ function PostDetails(props: PostDetailsProps) {
   };
   const completedDesc = () => {
     return (
-      <div tw="border border-grey-D8 hover:border-gray-400 mt-5 mb-5 w-full rounded-[5px] py-5 px-6">
-        <div tw="flex flex-col">
-          <div tw="flex items-center justify-between">
-            <div tw="flex flex-col">
-              <h3 tw="text-lg font-semibold font-open-sans">Jammer</h3>
-              <p tw="text-sm font-semibold font-open-sans text-grey-8B">
-                Acrylic on Canvas
-              </p>
-            </div>
-            <div tw="flex items-center space-x-3">
-              <span tw="text-2xl font-semibold to-black-light">$150</span>
-              <img
-                src="/store_assets/img/chevron-right.svg"
-                alt="chevron-right"
-                tw="h-[15px]"
-              />
+      <Link href="/individual_work" passHref>
+        <div tw="border border-grey-D8 hover:border-gray-400 mt-5 mb-5 w-full rounded-[5px] py-5 px-6 cursor-pointer">
+          <div tw="flex flex-col">
+            <div tw="flex items-center justify-between">
+              <div tw="flex flex-col">
+                <h3 tw="text-lg font-semibold font-open-sans">Jammer</h3>
+                <p tw="text-sm font-semibold font-open-sans text-grey-8B">
+                  Acrylic on Canvas
+                </p>
+              </div>
+              <div tw="flex items-center space-x-3">
+                <span tw="text-2xl font-semibold to-black-light">$150</span>
+                <img
+                  src="/store_assets/img/chevron-right.svg"
+                  alt="chevron-right"
+                  tw="h-[15px]"
+                />
+              </div>
             </div>
           </div>
+          <p tw="text-sm font-open-sans text-black mt-[25px]">
+            The girl emerges from the vessel of the mind, entwined in her own
+            noodle-like hair. A forest of mushrooms casts a blanket of prismatic
+            gradients.
+          </p>
+          <div tw="flex justify-evenly mt-[30px]">
+            <button
+              css={buttons.white}
+              tw="w-[40%] text-[#707070] border-[#707070] px-0"
+            >
+              Buy Now
+            </button>
+            <button
+              css={buttons.red}
+              tw="w-[40%] bg-[#707070] hover:bg-[#656565] px-0"
+            >
+              Add to cart
+            </button>
+          </div>
         </div>
-        <p tw="text-sm font-open-sans text-black mt-[25px]">
-          The girl emerges from the vessel of the mind, entwined in her own
-          noodle-like hair. A forest of mushrooms casts a blanket of prismatic
-          gradients.
-        </p>
-        <div tw="flex justify-evenly mt-[30px]">
-          <button
-            css={buttons.white}
-            tw="w-[40%] text-[#707070] border-[#707070] px-0"
-          >
-            Buy Now
-          </button>
-          <button
-            css={buttons.red}
-            tw="w-[40%] bg-[#707070] hover:bg-[#656565] px-0"
-          >
-            Add to cart
-          </button>
-        </div>
-      </div>
+      </Link>
     );
   };
   const wipDesc = () => {
