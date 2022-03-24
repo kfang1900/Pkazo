@@ -33,6 +33,10 @@ const Home: NextPage = () => {
         <Link href="/feed">
           <a>feed</a>
         </Link>
+        <br />
+        <Link href="/individual_work">
+          <a>Individual work</a>
+        </Link>
       </div>
     </div>
   );
