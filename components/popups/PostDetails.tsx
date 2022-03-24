@@ -7,6 +7,7 @@ import Link from 'next/link';
 import buttons from '../../styles/Button';
 import ConfirmUnfollowModal from '../profile/ConfirmUnfollow';
 import PostImage from './PostImage';
+import Comment from './Comment';
 
 interface Props {
   post: {
@@ -201,30 +202,7 @@ function PostDetails(props: Props) {
             {props.post.type === 'social' && socialDesc()}
             <div tw="h-full overflow-y-auto">
               {comments.map((comment, index) => (
-                <div key={index} tw="flex mb-[24px]">
-                  <div tw="w-[36px] h-full overflow-hidden rounded-full flex items-center">
-                    <Image
-                      src={comment.imgSrc}
-                      alt="profile_image"
-                      width="36px"
-                      height="36px"
-                      objectFit="cover"
-                    />
-                  </div>
-                  <div tw="ml-[12px]">
-                    <div tw="flex">
-                      <div tw="text-[12px] leading-[18px] font-bold text-black">
-                        {comment.user}
-                      </div>
-                      <div tw="text-[12px] leading-[18px] text-[#7F838B] ml-[12px]">
-                        {comment.time}
-                      </div>
-                    </div>
-                    <div tw="text-[12px] leading-[18px] text-black">
-                      {comment.comment}
-                    </div>
-                  </div>
-                </div>
+                <Comment comment={comment} key={index} />
               ))}
             </div>
             <hr tw="border-grey-D8" />
