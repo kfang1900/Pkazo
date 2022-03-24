@@ -2,29 +2,32 @@ import { useState } from 'react';
 import tw from 'twin.macro';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import avatar from '/public/assets/images/user.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
-import Img1 from 'public/assets/images/portfolios/pf1/1.jpeg';
-import Img2 from 'public/assets/images/portfolios/pf1/2.jpeg';
-import Img3 from 'public/assets/images/portfolios/pf1/3.jpeg';
+import { FileUploader } from 'react-drag-drop-files';
 
 function ImageSelector(props: {
-  src: StaticImageData;
+  src: string | StaticImageData;
   id: number;
   selectedImage: number;
   setSelectedImage: React.Dispatch<React.SetStateAction<number>>;
 }) {
   return (
     <div
-      tw="w-full transform rounded-md overflow-hidden bg-gray-100 cursor-pointer mb-2"
-      css={[
-        { 'aspect-ratio': '1/1' },
-        props.id !== props.selectedImage && tw`opacity-30`,
-      ]}
+      tw="w-full transform rounded-md overflow-hidden bg-gray-200 cursor-pointer mb-4"
+      css={[{ 'aspect-ratio': '1/1' }]}
       onClick={() => props.setSelectedImage(props.id)}
     >
-      <Image src={props.src} alt="Uploaded Image" />
+      <div css={[props.id !== props.selectedImage && tw`opacity-30`]}>
+        <Image
+          src={props.src}
+          layout="fill"
+          objectFit="cover"
+          alt="Uploaded Image"
+        />
+      </div>
     </div>
   );
 }
@@ -45,14 +48,17 @@ function SimpleFormBox(props: { prompt: string; name: string }) {
 }
 
 function SocialPostUploadForm() {
-  const UploadedImages = [Img1, Img2, Img3];
+  // const UploadedImages = [Img1, Img2, Img3, Img4];
+  const [uploadedImages, setUploadedImages] = useState<
+    (StaticImageData | string)[]
+  >([]);
   const [selectedImage, setSelectedImage] = useState(-1);
   const [inProgressWork, setInProgressWork] = useState(false);
 
   return (
     <div tw="flex flex-row w-full">
-      <div tw="flex-none w-36 overflow-auto pr-3">
-        {UploadedImages.map((value, index) => (
+      <div tw="flex-none w-28 overflow-auto pr-3">
+        {uploadedImages.map((value, index) => (
           <ImageSelector
             src={value}
             key={index}
@@ -61,24 +67,38 @@ function SocialPostUploadForm() {
             setSelectedImage={setSelectedImage}
           />
         ))}
-        <div
-          tw="w-full transform rounded-md overflow-hidden bg-gray-100 cursor-pointer"
-          css={{ 'aspect-ratio': '1/1' }}
+        <FileUploader
+          multiple={true}
+          handleChange={(files: File[]) => {
+            setUploadedImages((state: (StaticImageData | string)[]) => {
+              setSelectedImage(state.length + files.length - 1);
+              return state.concat(Array(...files).map(URL.createObjectURL));
+            });
+          }}
+          types={['JPG', 'PNG']}
+          name="upload_new_image"
+          hoverTitle=" "
         >
-          <FontAwesomeIcon
-            icon={solid('plus')}
-            tw="p-4 text-gray-300 absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
-          />
-        </div>
+          <div
+            tw="w-full transform overflow-hidden bg-gray-200 cursor-pointer"
+            css={{ 'aspect-ratio': '1/1' }}
+          >
+            <FontAwesomeIcon
+              icon={solid('plus')}
+              tw="text-4xl text-gray-400 absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
+            />
+          </div>
+        </FileUploader>
       </div>
       <div
-        tw="h-full flex-none overflow-hidden rounded-xl"
-        css={{ 'aspect-ratio': '1/1' }}
+        tw="h-full transform flex-initial overflow-hidden rounded-xl"
+        css={{ aspectRatio: '1/1' }}
       >
-        {(0 <= selectedImage && selectedImage < UploadedImages.length && (
+        {(0 <= selectedImage && selectedImage < uploadedImages.length && (
           <Image
-            css={[tw`lg:w-full lg:h-auto`, { 'aspect-ratio': '1 / 1' }]}
-            src={UploadedImages[selectedImage]}
+            src={uploadedImages[selectedImage]}
+            objectFit="contain"
+            layout="fill"
             alt="post-image-1"
           />
         )) || (
@@ -89,7 +109,7 @@ function SocialPostUploadForm() {
           </div>
         )}
       </div>
-      <div tw="pl-5 flex-1 flex flex-col pr-3 overflow-auto">
+      <div tw="pl-5 flex-auto flex flex-col pr-3 overflow-auto">
         <div tw="flex items-center space-x-3.5">
           <div tw="h-12 w-12">
             <Image
@@ -113,19 +133,19 @@ function SocialPostUploadForm() {
         <div tw="my-1.5">
           <textarea
             placeholder="Description"
-            tw="block w-full h-36 rounded-[10px] border border-light-300 py-1 px-4 text-sm text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:py-2 md:text-lg"
+            tw="block w-full h-32 rounded-[10px] border border-light-300 py-1 px-4 text-sm text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:py-2 md:text-lg"
           />
         </div>
-        <div tw="rounded-[10px] border border-light-300 px-4 py-2 my-1.5">
+        <div tw="rounded-[10px] border border-light-300 px-4 py-3 my-1.5">
           <div tw="flex justify-between">
             <p tw="text-sm text-gray-700 md:text-lg">In Progress Work?</p>
             <div
-              tw="relative flex items-center gap-10"
+              tw="relative flex items-center gap-5"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 setInProgressWork(event.target.value === 'yes')
               }
             >
-              <div tw="flex items-center gap-5">
+              <div tw="flex items-center gap-3">
                 <input
                   type="radio"
                   id="yes"
@@ -135,10 +155,10 @@ function SocialPostUploadForm() {
                   css={{ 'accent-color': '#E24E4D' }}
                 />
                 <label tw="text-sm text-light-400 md:text-lg" htmlFor="yes">
-                  Yes{' '}
+                  Yes
                 </label>
               </div>
-              <div tw="flex items-center gap-5">
+              <div tw="flex items-center gap-3">
                 <input
                   type="radio"
                   id="no"
@@ -161,13 +181,15 @@ function SocialPostUploadForm() {
             </div>
           )}
         </div>
-        <div tw="flex-1 flex items-end text-white text-lg mt-4">
-          <input
-            type="button"
-            tw="py-2 w-3/4 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"
-            value="Share"
-          />
-        </div>
+        <Link href="/profile/username" passHref>
+          <div tw="flex-1 flex items-end text-white text-lg mt-4">
+            <input
+              type="button"
+              tw="py-2 w-3/4 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"
+              value="Share"
+            />
+          </div>
+        </Link>
       </div>
     </div>
   );

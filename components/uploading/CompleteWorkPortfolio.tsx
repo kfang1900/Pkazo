@@ -28,29 +28,15 @@ function ImageSelector(props: {
     >
       <div
         css={[
-          tw`w-[130px] h-[130px] transform cursor-pointer rounded-full overflow-hidden`,
-          {
-            border:
-              props.id === props.selectedImage
-                ? '6px solid rgba(128, 128, 128, 0.61)'
-                : '',
-            transform: `scale(${
-              props.id === props.selectedImage ? '1.12' : '1'
-            })`,
-          },
+          tw`w-[130px] h-[130px] transform cursor-pointer rounded-full border-[5px] border-transparent overflow-hidden`,
+          props.id === props.selectedImage && tw`scale-110 border-[#C6C5C3]`,
         ]}
       >
         <Image
           src={props.src}
           alt="Portfolio Image"
-          css={[
-            tw`w-full h-full object-cover`,
-            {
-              transform: `scale(${
-                props.id === props.selectedImage ? '1.12' : '1'
-              })`,
-            },
-          ]}
+          layout="fill"
+          tw="scale-105"
         />
       </div>
       <div
@@ -81,7 +67,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
           setSelectedImage={setSelectedImage}
           src={ImageSrc1}
         >
-          Series 1
+          Moon Child
         </ImageSelector>
 
         <ImageSelector
@@ -90,7 +76,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
           setSelectedImage={setSelectedImage}
           src={ImageSrc6}
         >
-          Series 2
+          Seven Phases
         </ImageSelector>
 
         <ImageSelector
@@ -99,7 +85,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
           setSelectedImage={setSelectedImage}
           src={ImageSrc3}
         >
-          Series 3
+          Meowtide
         </ImageSelector>
 
         <ImageSelector
@@ -108,7 +94,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
           setSelectedImage={setSelectedImage}
           src={ImageSrc4}
         >
-          Series 4
+          Kali
         </ImageSelector>
 
         <ImageSelector
@@ -117,7 +103,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
           setSelectedImage={setSelectedImage}
           src={ImageSrc9}
         >
-          Series 5
+          Sadhu
         </ImageSelector>
       </div>
 

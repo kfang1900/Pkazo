@@ -7,7 +7,6 @@ import styles from '../styles/Home.module.css';
 import CompleteWorkUploadForm from '../components/uploading/CompleteWorkUploadForm.js';
 
 const UploadCompleteWorkPage: NextPage = () => {
-  const auth = useAuth();
   return <CompleteWorkUploadForm></CompleteWorkUploadForm>;
 };
 
