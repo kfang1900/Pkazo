@@ -164,7 +164,7 @@ function PostDetails(props: Props) {
           setIsShowUnfollwConfirmModal(false);
         }}
       />
-      <div tw="flex h-[85%]">
+      <div tw="flex h-[90%]">
         <div tw="flex bg-white rounded-lg z-20 p-[39px]">
           <PostImage imgs={props.post.imgs} layout="h" />
           <div tw="w-[560px] flex flex-col pl-[30px]">
