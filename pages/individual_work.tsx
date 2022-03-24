@@ -125,18 +125,18 @@ const IndividualWork: NextPage = () => {
             <p tw="mt-10 text-2xl font-semibold">Progress Posts</p>
             <div tw="mt-8 flex h-[150px] gap-x-8">
               {progressImages.map((x, i) => (
-                <Image
-                  src={x.src}
-                  width={150}
-                  height={150}
-                  alt="work_progress_post"
-                  key={i}
-                />
+                <button key={i}>
+                  <Image
+                    src={x.src}
+                    width={150}
+                    height={150}
+                    alt="work_progress_post"
+                  />
+                </button>
               ))}
             </div>
-            <p tw="mt-10 text-2xl font-semibold">Comments</p>
-            <br />
-            <br />
+            <p tw="my-10 text-2xl font-semibold">Comments</p>
+            <div tw="flex flex-col gap-y-8"></div>
           </div>
         </div>
         <div tw="min-w-[428px] mr-14">
