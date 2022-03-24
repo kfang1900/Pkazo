@@ -180,7 +180,7 @@ const IndividualWork: NextPage = () => {
           </div>
           <div tw="mt-6 border border-gray-100 mx-5"></div>
           <div tw="mt-9 items-center flex flex-col gap-y-2.5">
-            <button tw="w-[354px] border border-black rounded-full py-4">
+            <button tw="w-[354px] border border-black rounded-full py-4 hover:bg-gray-100">
               Buy now
             </button>
             <button tw="w-[354px] rounded-full py-4 border-soft-red bg-soft-red hover:bg-red-600 hover:border-red-600 text-white">
