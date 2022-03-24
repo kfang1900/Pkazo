@@ -5,7 +5,7 @@ import { FileUploader } from 'react-drag-drop-files';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 
-const fileTypes = ['JPEG', 'PNG', 'GIF'];
+const fileTypes = ['JPG', 'PNG', 'SVG'];
 
 const Bold = styled.span`
   ${tw`font-bold`}
@@ -52,10 +52,21 @@ function ImageSelector(props: { src: string | StaticImport }) {
 const CompleteWorkPosts = (props: {
   goNext: MouseEventHandler<HTMLInputElement>;
 }) => {
-  const [file, setFile] = useState<File | null>(null);
-  const handleChange = (file: File) => {
-    setFile(file);
-  };
+  const [uploadedImages, setUploadedImages] = useState<string[]>([
+    '/assets/images/image1.svg',
+    '/assets/images/image2.svg',
+    '/assets/images/image3.svg',
+    '/assets/images/image4.svg',
+    '/assets/images/image5.svg',
+    '/assets/images/image6.svg',
+    '/assets/images/image7.svg',
+    '/assets/images/image8.svg',
+    '/assets/images/image9.svg',
+  ]);
+  const handleChange = (files: File[]) =>
+    setUploadedImages((state: string[]) =>
+      state.concat(Array(...files).map(URL.createObjectURL))
+    );
 
   return (
     <>
@@ -68,6 +79,7 @@ const CompleteWorkPosts = (props: {
         <div tw="text-xl text-[#8B8B8B] mb-5">Select from Existing Posts</div>
 
         <div tw="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {/* Default images (do we even want them?)
           <ImageSelector src="/assets/images/image1.svg" />
           <ImageSelector src="/assets/images/image2.svg" />
           <ImageSelector src="/assets/images/image3.svg" />
@@ -76,7 +88,10 @@ const CompleteWorkPosts = (props: {
           <ImageSelector src="/assets/images/image6.svg" />
           <ImageSelector src="/assets/images/image7.svg" />
           <ImageSelector src="/assets/images/image8.svg" />
-          <ImageSelector src="/assets/images/image9.svg" />
+          <ImageSelector src="/assets/images/image9.svg" /> */}
+          {uploadedImages.map((value, key) => (
+            <ImageSelector src={value} key={key} />
+          ))}
         </div>
       </div>
 

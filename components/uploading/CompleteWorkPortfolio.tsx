@@ -28,7 +28,7 @@ function ImageSelector(props: {
     >
       <div
         css={[
-          tw`w-[130px] h-[130px] transform cursor-pointer rounded-full border-4 border-transparent overflow-hidden`,
+          tw`w-[130px] h-[130px] transform cursor-pointer rounded-full border-[5px] border-transparent overflow-hidden`,
           props.id === props.selectedImage && tw`scale-110 border-[#C6C5C3]`,
         ]}
       >

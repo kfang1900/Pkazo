@@ -1,6 +1,5 @@
 import tw from 'twin.macro';
 import Image from 'next/image';
-import SampleWorkImage from 'public/assets/images/img-01.png';
 import React, {
   MouseEventHandler,
   Dispatch,
@@ -9,6 +8,7 @@ import React, {
 } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
+import { FileUploader } from 'react-drag-drop-files';
 
 function UploadedImage(props: {
   id: number;
@@ -19,12 +19,20 @@ function UploadedImage(props: {
   return (
     <div
       css={[
-        tw`h-full w-full rounded-md overflow-hidden cursor-pointer`,
+        tw`w-full rounded-md overflow-hidden cursor-pointer`,
         props.id !== props.selected && tw`opacity-30`,
+        { aspectRatio: '1/1' },
       ]}
       onClick={() => props.setSelected(props.id)}
     >
-      <Image src={props.src} alt="Uploaded Image" layout="responsive" />
+      <div tw="transform w-full h-full">
+        <Image
+          src={props.src}
+          alt="Uploaded Image"
+          layout="fill"
+          objectFit="cover"
+        />
+      </div>
     </div>
   );
 }
@@ -34,6 +42,7 @@ function CompleteWorkInfo(props: {
 }) {
   const [workForSale, setWorkForSale] = useState(false);
   const [selected, setSelected] = useState(-1);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
   return (
     <div>
@@ -473,39 +482,60 @@ function CompleteWorkInfo(props: {
           </div>
         </div>
         <div tw="lg:block flex-auto flex flex-col w-32 mr-10 ml-10">
-          <div tw="mb-6">
-            <Image
-              src="/assets/images/img-01.png"
-              alt="image"
-              width={153}
-              height={153}
-              layout="responsive"
-              tw="h-auto w-full object-contain"
-            />
+          <div
+            tw="h-full transform flex-initial overflow-hidden rounded-xl mb-6"
+            css={{ aspectRatio: '1/1' }}
+          >
+            {(0 <= selected && selected < uploadedImages.length && (
+              <Image
+                src={uploadedImages[selected]}
+                objectFit="contain"
+                layout="fill"
+                alt="post-image-1"
+              />
+            )) || (
+              <div tw="h-full w-full border-2 rounded-2xl border-gray-300 border-dashed mx-auto flex flex-col justify-center">
+                <h1 tw="w-full flex justify-center text-gray-300 text-2xl font-semibold">
+                  No Image Selected
+                </h1>
+              </div>
+            )}
           </div>
           <div tw="flex-auto grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
-            {[0, 0, 0, 0, 0].map((value, index) => (
+            {uploadedImages.map((value, index) => (
               <UploadedImage
                 key={index}
                 id={index}
-                src={SampleWorkImage}
+                src={value}
                 selected={selected}
                 setSelected={setSelected}
               />
             ))}
-            <div
-              tw="h-full transform rounded-md overflow-hidden bg-gray-100 cursor-pointer"
-              css={{ 'aspect-ratio': '1/1' }}
+            <FileUploader
+              multiple={true}
+              name="upload-work-image"
+              types={['PNG', 'JPG']}
+              handleChange={(files: File[]) => {
+                setUploadedImages((state: string[]) => {
+                  setSelected(state.length + files.length - 1);
+                  return state.concat(Array(...files).map(URL.createObjectURL));
+                });
+              }}
             >
-              <FontAwesomeIcon
-                icon={solid('plus')}
-                tw="p-1 text-gray-300 absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
-              />
-            </div>
+              <div
+                tw="h-full transform overflow-hidden bg-gray-100 cursor-pointer"
+                css={{ 'aspect-ratio': '1/1' }}
+              >
+                <FontAwesomeIcon
+                  icon={solid('plus')}
+                  tw="text-2xl text-gray-300 absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
+                />
+              </div>
+            </FileUploader>
           </div>
         </div>
       </div>
-      <div tw="px-[40px] flex items-center text-white text-lg justify-start mb-20 mt-10">
+      <div tw="px-10 flex items-center text-white text-lg justify-start mb-20 mt-10">
         <input
           type="button"
           tw="py-2.5 px-8 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"

@@ -67,10 +67,11 @@ function SocialPostUploadForm() {
           />
         ))}
         <FileUploader
-          handleChange={(file: File) => {
+          multiple={true}
+          handleChange={(files: File[]) => {
             setUploadedImages((state: (StaticImageData | string)[]) => {
-              setSelectedImage(state.length);
-              return state.concat([URL.createObjectURL(file)]);
+              setSelectedImage(state.length + files.length - 1);
+              return state.concat(Array(...files).map(URL.createObjectURL));
             });
           }}
           types={['JPG', 'PNG']}
