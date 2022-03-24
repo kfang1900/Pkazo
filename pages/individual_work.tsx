@@ -168,7 +168,7 @@ const IndividualWork: NextPage = () => {
               <p tw="font-semibold text-3xl">$1,820</p>
             </div>
           </div>
-          <div tw="mt-3 ml-2 bg-red-100 rounded-3xl w-[100px] py-2 px-3 text-xs font-semibold">
+          <div tw="mt-3 ml-2 bg-red-100 rounded-3xl w-[100px] py-2 px-3 text-xs text-red-900 font-semibold">
             Unique Work
           </div>
           <div tw="mt-4 ml-3 text-xl">
