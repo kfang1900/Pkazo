@@ -67,7 +67,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
           setSelectedImage={setSelectedImage}
           src={ImageSrc1}
         >
-          Series 1
+          Moon Child
         </ImageSelector>
 
         <ImageSelector
@@ -76,7 +76,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
           setSelectedImage={setSelectedImage}
           src={ImageSrc6}
         >
-          Series 2
+          Seven Phases
         </ImageSelector>
 
         <ImageSelector
@@ -85,7 +85,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
           setSelectedImage={setSelectedImage}
           src={ImageSrc3}
         >
-          Series 3
+          Meowtide
         </ImageSelector>
 
         <ImageSelector
@@ -94,7 +94,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
           setSelectedImage={setSelectedImage}
           src={ImageSrc4}
         >
-          Series 4
+          Kali
         </ImageSelector>
 
         <ImageSelector
@@ -103,7 +103,7 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
           setSelectedImage={setSelectedImage}
           src={ImageSrc9}
         >
-          Series 5
+          Sadhu
         </ImageSelector>
       </div>
 
