@@ -1,5 +1,6 @@
 import React, { useState, ReactNode, Dispatch, SetStateAction } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import tw from 'twin.macro';
 import ImageSrc1 from '/public/assets/images/image1.svg';
 import ImageSrc6 from '/public/assets/images/image6.svg';
@@ -108,12 +109,14 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
       </div>
 
       <div tw="px-[40px] flex items-center text-white text-lg justify-start mb-20 mt-20">
-        <div
-          tw="py-2.5 px-14 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"
-          onClick={props.goNext}
-        >
-          Post Completed Work
-        </div>
+        <Link href="/profile/username" passHref>
+          <div
+            tw="py-2.5 px-14 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"
+            onClick={props.goNext}
+          >
+            Post Completed Work
+          </div>
+        </Link>
       </div>
 
       <input value="true" tw="" type="radio" id="series1" />

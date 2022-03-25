@@ -68,9 +68,11 @@ function CompleteWorkInfo(props: {
             <div tw="relative w-full max-w-[170px]">
               <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
                 <option value=""></option>
-                <option value="">Option-1</option>
-                <option value="">Option-2</option>
-                <option value="">Option-3</option>
+                {Array(...Array(100)).map((value, key) => (
+                  <option key={key} value={key}>
+                    {2022 - key}
+                  </option>
+                ))}
               </select>
               <button tw="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transform">
                 <svg
@@ -95,9 +97,18 @@ function CompleteWorkInfo(props: {
             <div tw="relative w-full max-w-[170px]">
               <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
                 <option value=""></option>
-                <option value="">Option-1</option>
-                <option value="">Option-2</option>
-                <option value="">Option-3</option>
+                {[
+                  'Tempura',
+                  'Oil Paint',
+                  'Acrylic Paint',
+                  'Watercolors',
+                  'Charcoal',
+                  'Pastels',
+                  'Chalk',
+                  'Graphite Pencils',
+                ].map((value, key) => (
+                  <option key={key}>{value}</option>
+                ))}
               </select>
               <button tw="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transform">
                 <svg
@@ -140,7 +151,7 @@ function CompleteWorkInfo(props: {
                   tw="block w-full max-w-[90px] rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
                 />
               </div>
-              <div tw="relative w-full max-w-[130px]">
+              {/* <div tw="relative w-full max-w-[130px]">
                 <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
                   <option value=""></option>
                   <option value="">Option-1</option>
@@ -162,10 +173,11 @@ function CompleteWorkInfo(props: {
                     />
                   </svg>
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
 
+          {/*
           <div tw="mb-2.5 flex w-full items-center justify-between gap-4 md:mb-4">
             <p tw="text-sm text-dark-300 md:text-lg">Group Tags</p>
             <div tw="relative w-full max-w-[170px]">
@@ -191,7 +203,7 @@ function CompleteWorkInfo(props: {
                 </svg>
               </button>
             </div>
-          </div>
+            </div> */}
 
           <div tw="mb-4 flex w-full items-center justify-between gap-4">
             <p tw="text-sm text-dark-300 md:text-lg">Work Type</p>
@@ -267,12 +279,14 @@ function CompleteWorkInfo(props: {
               <div tw="md:pl-8 md:pr-3">
                 <div tw="mb-4 flex w-full items-center justify-between gap-4 pt-4">
                   <p tw="text-sm text-dark-300 md:text-lg">Price</p>
-                  <div tw="grid w-full max-w-[256px] grid-cols-2 items-center gap-3.5">
+                  <div tw="grid w-full max-w-[170px]">
+                    {' '}
+                    {/* tw:  grid-cols-2 items-center gap-3.5 */}
                     <input
                       type="text"
                       tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
                     />
-                    <div tw="relative w-full">
+                    {/* <div tw="relative w-full">
                       <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
                         <option value=""></option>
                         <option value="">Option-1</option>
@@ -294,10 +308,10 @@ function CompleteWorkInfo(props: {
                           />
                         </svg>
                       </button>
-                    </div>
+                    </div>*/}
                   </div>
                 </div>
-
+                {/*
                 <div tw="mb-4 flex w-full items-center justify-between gap-4">
                   <p tw="text-sm text-dark-300 md:text-lg">Price</p>
                   <div tw="relative w-full max-w-[170px]">
@@ -404,7 +418,7 @@ function CompleteWorkInfo(props: {
                       </svg>
                     </button>
                   </div>
-                </div>
+                </div> */}
 
                 <div tw="mb-4 flex w-full flex-col justify-between gap-2.5 sm:flex-row sm:items-center sm:gap-4">
                   <p tw="text-sm text-dark-300 md:text-lg">Work Type</p>
