@@ -151,12 +151,12 @@ function CompleteWorkInfo(props: {
                   tw="block w-full max-w-[90px] rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
                 />
               </div>
-              {/* <div tw="relative w-full max-w-[130px]">
+              <div tw="relative w-full max-w-[130px]">
                 <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
                   <option value=""></option>
-                  <option value="">Option-1</option>
-                  <option value="">Option-2</option>
-                  <option value="">Option-3</option>
+                  <option value="">in</option>
+                  <option value="">cm</option>
+                  <option value="">ft</option>
                 </select>
                 <button tw="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transform">
                   <svg
@@ -173,19 +173,18 @@ function CompleteWorkInfo(props: {
                     />
                   </svg>
                 </button>
-              </div> */}
+              </div>
             </div>
           </div>
 
-          {/*
-          <div tw="mb-2.5 flex w-full items-center justify-between gap-4 md:mb-4">
+          {/* <div tw="mb-2.5 flex w-full items-center justify-between gap-4 md:mb-4">
             <p tw="text-sm text-dark-300 md:text-lg">Group Tags</p>
             <div tw="relative w-full max-w-[170px]">
               <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
                 <option value=""></option>
-                <option value="">Option-1</option>
-                <option value="">Option-2</option>
-                <option value="">Option-3</option>
+                <option value="">in</option>
+                <option value="">cm</option>
+                <option value="">ft</option>
               </select>
               <button tw="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transform">
                 <svg
@@ -203,7 +202,7 @@ function CompleteWorkInfo(props: {
                 </svg>
               </button>
             </div>
-            </div> */}
+          </div> */}
 
           <div tw="mb-4 flex w-full items-center justify-between gap-4">
             <p tw="text-sm text-dark-300 md:text-lg">Work Type</p>
@@ -337,7 +336,7 @@ function CompleteWorkInfo(props: {
                       </svg>
                     </button>
                   </div>
-                </div>
+                </div> */}
 
                 <div tw="mb-4 flex w-full items-center justify-between gap-4">
                   <p tw="text-sm text-dark-300 md:text-lg">Subject</p>
@@ -418,7 +417,7 @@ function CompleteWorkInfo(props: {
                       </svg>
                     </button>
                   </div>
-                </div> */}
+                </div>
 
                 <div tw="mb-4 flex w-full flex-col justify-between gap-2.5 sm:flex-row sm:items-center sm:gap-4">
                   <p tw="text-sm text-dark-300 md:text-lg">Work Type</p>
