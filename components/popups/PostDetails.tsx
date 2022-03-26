@@ -26,6 +26,7 @@ function PostDetails(props: PostDetailsProps) {
   const [comments, setComments] = useState<
     { user: string; time: string; comment: string; imgSrc: string }[]
   >(props.post.comments);
+  const [commentHover, setCommentHover] = useState(false);
   const [curComment, setCurComment] = useState('');
   const [following, setFollowing] = useState(false);
   const [isShowUnfollowConfirmModal, setIsShowUnfollwConfirmModal] =
@@ -46,10 +47,10 @@ function PostDetails(props: PostDetailsProps) {
       return [
         ...prev,
         {
-          user: 'lowly servant alice yu',
+          user: 'Kevin Fang',
           time: 'now',
           comment: comment,
-          imgSrc: '/store_assets/img/user.png',
+          imgSrc: '/assets/images/kevin_fang.jpg',
         },
       ];
     });
@@ -120,9 +121,10 @@ function PostDetails(props: PostDetailsProps) {
       <div tw="mt-5 mb-5">
         <div tw="text-2xl font-bold to-black-light">Acrylic is Hard!</div>
         <div tw="text-[14px] to-black-light mt-3">
-          This painting is finally coming together after I’ve been putting it
+          This painting is finally coming together after I've been putting it
           off for quite a while. Acrylic is a tough medium that requires a lot
-          of over-painting, something I’m not accustomed to as an oil painter.
+          of over-painting, something I'apos m not accustomed to as an oil
+          painter.
         </div>
         <div tw="border border-grey-D8 mt-5 w-full rounded-[5px] py-4 px-6">
           <div tw="flex flex-col">
@@ -148,11 +150,7 @@ function PostDetails(props: PostDetailsProps) {
     return (
       <div tw="mt-5 mb-5">
         <div tw="text-2xl font-bold to-black-light">My dog Miso chilling</div>
-        <div tw="text-[14px] to-black-light mt-3">
-          This painting is finally coming together after I’ve been putting it
-          off for quite a while. Acrylic is a tough medium that requires a lot
-          of over-painting, something I’m not accustomed to as an oil painter.
-        </div>
+        <div tw="text-[14px] to-black-light mt-3">He's cute.</div>
         {postTags(['surrealism', 'pastel', 'doggo'])}
       </div>
     );
@@ -254,16 +252,24 @@ function PostDetails(props: PostDetailsProps) {
                 autoFocus
               />
               <button
-                tw="w-[48px] h-[40px] absolute top-[0px] right-[0px] z-10"
+                css={[
+                  tw`w-[48px] h-[40px] absolute top-[0px] right-[0px] z-10`,
+                  (curComment.trim() === '' || !commentHover) &&
+                    tw`hover:cursor-auto`,
+                ]}
                 onClick={() => {
-                  onPost(curComment);
-                  setCurComment('');
+                  if (curComment.trim() !== '') {
+                    onPost(curComment);
+                    setCurComment('');
+                  }
                 }}
+                onMouseOver={() => setCommentHover(true)}
+                onMouseOut={() => setCommentHover(false)}
               >
                 <img
                   src={
                     '../../post_assets/img/' +
-                    (curComment.trim() === ''
+                    (curComment.trim() === '' || !commentHover
                       ? 'grey_send.svg'
                       : 'blue_send.svg')
                   }

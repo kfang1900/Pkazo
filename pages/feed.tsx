@@ -106,6 +106,9 @@ const Feed: NextPage = () => {
       ],
     },
   ];
+
+  const [page, setPage] = useState(0);
+  const pages = ['Home', 'Trending', 'Spotlight'];
   return (
     <>
       <Head>
@@ -114,6 +117,21 @@ const Feed: NextPage = () => {
       <Header tw="border-b border-[#D8D8D8]" isBuyer />
       <Container>
         <div tw="w-[50%] mx-auto">
+          <div tw="flex items-center justify-around my-3">
+            {pages.map((p, index) => (
+              <button
+                key={index}
+                onClick={() => setPage(index)}
+                css={[
+                  tw`w-[15%] text-lg relative z-10 font-semibold text-[#8B8B8B] hover:bg-black/5 duration-150 py-1 border-b-4 border-transparent cursor-pointer text-center`,
+                  page === index &&
+                    tw`border-soft-red pointer-events-none hover:bg-transparent text-[#333333]`,
+                ]}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
           {posts.map((p, i) => (
             <div key={i} tw="my-4">
               <FeedPost post={p} />

@@ -60,9 +60,9 @@ function FeedPost(props: Props) {
       <div tw="mt-5 mb-5">
         <div tw="text-2xl font-bold to-black-light">Acrylic is Hard!</div>
         <div tw="text-[14px] to-black-light mt-3">
-          This painting is finally coming together after I’ve been putting it
+          This painting is finally coming together after I've been putting it
           off for quite a while. Acrylic is a tough medium that requires a lot
-          of over-painting, something I’m not accustomed to as an oil painter.
+          of over-painting, something I'm not accustomed to as an oil painter.
         </div>
       </div>
     );
@@ -71,11 +71,7 @@ function FeedPost(props: Props) {
     return (
       <div tw="mt-5 mb-5">
         <div tw="text-2xl font-bold to-black-light">My dog Miso chilling</div>
-        <div tw="text-[14px] to-black-light mt-3">
-          This painting is finally coming together after I’ve been putting it
-          off for quite a while. Acrylic is a tough medium that requires a lot
-          of over-painting, something I’m not accustomed to as an oil painter.
-        </div>
+        <div tw="text-[14px] to-black-light mt-3">He's cute.</div>
       </div>
     );
   };

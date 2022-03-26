@@ -59,7 +59,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
         </div>
 
         <div tw="flex flex-auto flex-row justify-center h-8 gap-7">
-          <NavbarIcon href="/" src={HouseLogo} alt="House Logo" />
+          <NavbarIcon href="/feed" src={HouseLogo} alt="House Logo" />
           <NavbarIcon href="/" src={ShopLogo} alt="Shop Logo" />
           <NavbarIcon href="/" src={CompassLogo} alt="Compass Logo" />
           <NavbarIcon href="/" src={GroupsLogo} alt="Groups Logo" />
