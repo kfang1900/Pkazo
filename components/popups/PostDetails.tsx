@@ -7,25 +7,19 @@ import Link from 'next/link';
 import buttons from '../../styles/Button';
 import ConfirmUnfollowModal from '../profile/ConfirmUnfollow';
 import PostImage from './PostImage';
-import Comment from './Comment';
+import ShowComment from './ShowComment';
+import { Post, CompleteInfo, WipInfo, SocialInfo } from '../../obj/Post';
+import { Comment } from '../../obj/Comment';
 
 export interface PostDetailsProps {
-  post: {
-    imgs: Array<string>;
-    type: string;
-    comments: Array<{
-      user: string;
-      time: string;
-      comment: string;
-      imgSrc: string;
-    }>;
-  };
+  post: Post;
   onClose: () => void;
 }
+export const formatPrice = (price: number) => {
+  return '$' + price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+};
 function PostDetails(props: PostDetailsProps) {
-  const [comments, setComments] = useState<
-    { user: string; time: string; comment: string; imgSrc: string }[]
-  >(props.post.comments);
+  const [comments, setComments] = useState(props.post.comments);
   const [commentHover, setCommentHover] = useState(false);
   const [curComment, setCurComment] = useState('');
   const [following, setFollowing] = useState(false);
@@ -47,10 +41,9 @@ function PostDetails(props: PostDetailsProps) {
       return [
         ...prev,
         {
-          user: 'Kevin Fang',
-          time: 'now',
+          user: { name: 'Kevin Fang', pfp: '/assets/images/kevin_fang.jpg' },
+          time: Date.now(),
           comment: comment,
-          imgSrc: '/assets/images/kevin_fang.jpg',
         },
       ];
     });
@@ -62,7 +55,7 @@ function PostDetails(props: PostDetailsProps) {
           <Link href="#" key={index} passHref={true}>
             <button
               css={buttons.red}
-              tw="h-7 bg-[#C4C4C4] hover:bg-[#B9B9B9] text-white mt-5 px-5 font-normal text-[12px] mr-5"
+              tw="h-7 bg-[#A3A3A3] hover:bg-[#AAAAAA] text-white mt-5 px-5 font-normal text-[12px] mr-5"
             >
               {tag}
             </button>
@@ -72,19 +65,24 @@ function PostDetails(props: PostDetailsProps) {
     );
   };
   const completedDesc = () => {
+    const postInfo = props.post.info as CompleteInfo;
     return (
       <Link href="/individual_work" passHref>
-        <div tw="border border-grey-D8 hover:border-gray-400 mt-5 mb-5 w-full rounded-[5px] py-5 px-6 cursor-pointer">
+        <div tw="border border-grey-D8 hover:border-[#C0C0C0] mt-5 mb-5 w-full rounded-[5px] py-5 px-6 cursor-pointer">
           <div tw="flex flex-col">
             <div tw="flex items-center justify-between">
               <div tw="flex flex-col">
-                <h3 tw="text-lg font-semibold font-open-sans">Jammer</h3>
+                <h3 tw="text-lg font-semibold font-open-sans">
+                  {props.post.title}
+                </h3>
                 <p tw="text-sm font-semibold font-open-sans text-grey-8B">
-                  Acrylic on Canvas
+                  {postInfo.media}
                 </p>
               </div>
               <div tw="flex items-center space-x-3">
-                <span tw="text-2xl font-semibold to-black-light">$150</span>
+                <span tw="text-2xl font-semibold to-black-light">
+                  {formatPrice(postInfo.price)}
+                </span>
                 <img
                   src="/store_assets/img/chevron-right.svg"
                   alt="chevron-right"
@@ -94,9 +92,7 @@ function PostDetails(props: PostDetailsProps) {
             </div>
           </div>
           <p tw="text-sm font-open-sans text-black mt-[25px]">
-            The girl emerges from the vessel of the mind, entwined in her own
-            noodle-like hair. A forest of mushrooms casts a blanket of prismatic
-            gradients.
+            {props.post.desc}
           </p>
           <div tw="flex justify-evenly mt-[30px]">
             <button
@@ -117,41 +113,40 @@ function PostDetails(props: PostDetailsProps) {
     );
   };
   const wipDesc = () => {
+    const postInfo = props.post.info as WipInfo;
     return (
       <div tw="mt-5 mb-5">
-        <div tw="text-2xl font-bold to-black-light">Acrylic is Hard!</div>
-        <div tw="text-[14px] to-black-light mt-3">
-          This painting is finally coming together after I&#39;ve been putting
-          it off for quite a while. Acrylic is a tough medium that requires a
-          lot of over-painting, something I&#39;m not accustomed to as an oil
-          painter.
-        </div>
+        <div tw="text-2xl font-bold to-black-light">{props.post.title}</div>
+        <div tw="text-[14px] to-black-light mt-3">{props.post.desc}</div>
         <div tw="border border-grey-D8 mt-5 w-full rounded-[5px] py-4 px-6">
           <div tw="flex flex-col">
             <div tw="flex items-center justify-between">
               <div tw="flex flex-col">
-                <h3 tw="text-lg font-semibold font-open-sans">Jammer</h3>
+                <h3 tw="text-lg font-semibold font-open-sans">
+                  {postInfo.workTitle}
+                </h3>
                 <p tw="text-sm font-semibold font-open-sans text-grey-8B my-[2px]">
-                  Acrylic on Canvas
+                  {postInfo.media}
                 </p>
                 <p tw="text-sm font-semibold font-open-sans text-grey-8B">
-                  Releases in May
+                  Releases in {postInfo.releaseDate}
                 </p>
               </div>
               <div tw="text-sm font-semibold text-grey-8B">In Progress</div>
             </div>
           </div>
         </div>
-        {postTags(['surrealism', 'pastel', 'rollerblades'])}
+        {postTags(postInfo.tags)}
       </div>
     );
   };
   const socialDesc = () => {
+    const postInfo = props.post.info as SocialInfo;
     return (
       <div tw="mt-5 mb-5">
-        <div tw="text-2xl font-bold to-black-light">My dog Miso chilling</div>
-        <div tw="text-[14px] to-black-light mt-3">He&#39;s cute.</div>
-        {postTags(['surrealism', 'pastel', 'doggo'])}
+        <div tw="text-2xl font-bold to-black-light">{props.post.title}</div>
+        <div tw="text-[14px] to-black-light mt-3">{props.post.desc}</div>
+        {postTags(postInfo.tags)}
       </div>
     );
   };
@@ -177,8 +172,12 @@ function PostDetails(props: PostDetailsProps) {
                   tw="w-[64px] h-[64px]"
                 />
                 <div tw="flex flex-col justify-center -space-y-1">
-                  <h5 tw="text-lg font-bold text-black-light">James Jean</h5>
-                  <p tw="text-xs font-semibold text-grey-8B">Los Angeles, CA</p>
+                  <h5 tw="text-lg font-bold text-black-light">
+                    {props.post.user.name}
+                  </h5>
+                  <p tw="text-xs font-semibold text-grey-8B">
+                    {props.post.user.location}
+                  </p>
                 </div>
               </div>
               <div tw="flex items-center">
@@ -191,18 +190,18 @@ function PostDetails(props: PostDetailsProps) {
                 </button>
                 <button
                   css={buttons.white}
-                  tw="ml-[10px] w-[40px] h-[40px] px-0 border-0"
+                  tw="border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB] ml-[10px] w-[40px] h-[40px] px-0 text-[#8E8E93] font-bold text-[13px] text-center"
                 >
-                  •••
+                  •&#8201;•&#8201;•
                 </button>
               </div>
             </div>
-            {props.post.type === 'complete' && completedDesc()}
-            {props.post.type === 'wip' && wipDesc()}
-            {props.post.type === 'social' && socialDesc()}
+            {props.post.info.type === 'complete' && completedDesc()}
+            {props.post.info.type === 'wip' && wipDesc()}
+            {props.post.info.type === 'social' && socialDesc()}
             <div tw="h-full overflow-y-auto">
               {comments.map((comment, index) => (
-                <Comment comment={comment} key={index} />
+                <ShowComment comment={comment} key={index} />
               ))}
             </div>
             <hr tw="border-grey-D8" />
@@ -255,7 +254,7 @@ function PostDetails(props: PostDetailsProps) {
                 css={[
                   tw`w-[48px] h-[40px] absolute top-[0px] right-[0px] z-10`,
                   (curComment.trim() === '' || !commentHover) &&
-                    tw`hover:cursor-auto`,
+                    tw`cursor-auto`,
                 ]}
                 onClick={() => {
                   if (curComment.trim() !== '') {

@@ -14,6 +14,7 @@ import progress2 from 'public/assets/indiv_work/progress2.png';
 import progress3 from 'public/assets/indiv_work/progress3.png';
 import progress4 from 'public/assets/indiv_work/progress4.png';
 import PostDetails from 'components/popups/PostDetails';
+import { sample_posts } from 'utils/Sample_Posts_Imports';
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },
@@ -54,24 +55,7 @@ const IndividualWork: NextPage = () => {
       </Head>
       <Header />
       {popup && (
-        <PostDetails
-          post={{
-            imgs: [
-              '/post_assets/wip/img1.png',
-              '/post_assets/wip/img2.png',
-              '/post_assets/wip/img3.png',
-              '/post_assets/wip/img4.png',
-              '/post_assets/wip/img5.png',
-              '/post_assets/wip/img6.png',
-              '/post_assets/wip/img7.png',
-              '/post_assets/wip/img8.png',
-              '/post_assets/wip/img9.png',
-            ],
-            type: 'wip',
-            comments: [],
-          }}
-          onClose={() => setPopup(false)}
-        />
+        <PostDetails post={sample_posts[1]} onClose={() => setPopup(false)} />
       )}
       <div tw="flex mt-8">
         {/* flex-grow should just be grow, wait for twin.macro to update */}

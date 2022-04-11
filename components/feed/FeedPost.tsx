@@ -7,37 +7,35 @@ import Link from 'next/link';
 import buttons from '../../styles/Button';
 import ConfirmUnfollowModal from '../profile/ConfirmUnfollow';
 import PostImage from '../popups/PostImage';
-import PostDetails from '../popups/PostDetails';
+import PostDetails, { formatPrice } from '../popups/PostDetails';
+
+import { Post, CompleteInfo, WipInfo, SocialInfo } from '../../obj/Post';
 
 interface Props {
-  post: {
-    imgs: Array<string>;
-    type: string;
-    comments: Array<{
-      user: string;
-      time: string;
-      comment: string;
-      imgSrc: string;
-    }>;
-  };
+  post: Post;
 }
 function FeedPost(props: Props) {
   const [liked, setLiked] = useState(false);
   const [popup, setPopup] = useState(false);
-  const completedDesc = () => {
+  const workDesc = () => {
+    const postInfo = props.post.info as CompleteInfo;
     return (
       <>
         <Link href="/individual_work" passHref>
-          <div tw="border border-grey-D8 hover:border-gray-400 mt-5 mb-2 w-full rounded-[5px] py-5 px-6 hover:cursor-pointer">
+          <div tw="border border-grey-D8 hover:border-[#C0C0C0] mt-5 mb-2 w-full rounded-[5px] py-5 px-6 cursor-pointer">
             <div tw="flex items-center justify-between">
               <div tw="flex flex-col">
-                <h3 tw="text-lg font-semibold font-open-sans">Jammer</h3>
+                <h3 tw="text-lg font-semibold font-open-sans">
+                  {props.post.title}
+                </h3>
                 <p tw="text-sm font-semibold font-open-sans text-grey-8B">
-                  Acrylic on Canvas
+                  {postInfo.media}
                 </p>
               </div>
               <div tw="flex items-center space-x-3">
-                <span tw="text-2xl font-semibold to-black-light">$150</span>
+                <span tw="text-2xl font-semibold to-black-light">
+                  {formatPrice(postInfo.price)}
+                </span>
                 <img
                   src="/store_assets/img/chevron-right.svg"
                   alt="chevron-right"
@@ -47,32 +45,15 @@ function FeedPost(props: Props) {
             </div>
           </div>
         </Link>
-        <p tw="text-sm font-open-sans text-black mb-5">
-          The girl emerges from the vessel of the mind, entwined in her own
-          noodle-like hair. A forest of mushrooms casts a blanket of prismatic
-          gradients.
-        </p>
+        <p tw="text-sm font-open-sans text-black mb-5">{props.post.desc}</p>
       </>
     );
   };
-  const wipDesc = () => {
+  const postDesc = () => {
     return (
       <div tw="mt-5 mb-5">
-        <div tw="text-2xl font-bold to-black-light">Acrylic is Hard!</div>
-        <div tw="text-[14px] to-black-light mt-3">
-          This painting is finally coming together after I&#39;ve been putting
-          it off for quite a while. Acrylic is a tough medium that requires a
-          lot of over-painting, something I&#39;m not accustomed to as an oil
-          painter.
-        </div>
-      </div>
-    );
-  };
-  const socialDesc = () => {
-    return (
-      <div tw="mt-5 mb-5">
-        <div tw="text-2xl font-bold to-black-light">My dog Miso chilling</div>
-        <div tw="text-[14px] to-black-light mt-3">He&#39;s cute.</div>
+        <div tw="text-2xl font-bold to-black-light">{props.post.title}</div>
+        <div tw="text-[14px] to-black-light mt-3">{props.post.desc}</div>
       </div>
     );
   };
@@ -85,13 +66,17 @@ function FeedPost(props: Props) {
         <Link href="/profile/username" passHref>
           <div tw="flex items-center space-x-3.5 cursor-pointer">
             <img
-              src="store_assets/img/user.png"
+              src={props.post.user.pfp}
               alt="profile"
               tw="w-[64px] h-[64px]"
             />
             <div tw="flex flex-col justify-center -space-y-1">
-              <h5 tw="text-lg font-bold text-black-light">James Jean</h5>
-              <p tw="text-xs font-semibold text-grey-8B">Los Angeles, CA</p>
+              <h5 tw="text-lg font-bold text-black-light">
+                {props.post.user.name}
+              </h5>
+              <p tw="text-xs font-semibold text-grey-8B">
+                {props.post.user.location}
+              </p>
             </div>
           </div>
         </Link>
@@ -104,9 +89,7 @@ function FeedPost(props: Props) {
       </div>
       <PostImage imgs={props.post.imgs} layout="w" />
       <div tw="mx-5 mb-5">
-        {props.post.type === 'complete' && completedDesc()}
-        {props.post.type === 'wip' && wipDesc()}
-        {props.post.type === 'social' && socialDesc()}
+        {props.post.info.type === 'complete' ? workDesc() : postDesc()}
         <div tw="flex justify-start items-center w-full">
           <button onClick={() => setLiked(!liked)} tw="flex">
             <Image

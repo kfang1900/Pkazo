@@ -8,7 +8,6 @@ import Link from 'next/link';
 import buttons from '../../styles/Button';
 import ConfirmUnfollowModal from '../profile/ConfirmUnfollow';
 import PostImage from './PostImage';
-import Comment from './Comment';
 import { MdRadioButtonUnchecked } from 'react-icons/md';
 
 interface LoginErrors {
@@ -106,7 +105,7 @@ function LoginForm(props: LoginFormProps) {
                   css={styles.input}
                 />
                 <button
-                  tw="bg-transparent border-none outline-none text-[#333333] underline text-[13px] leading-[18px] hover:cursor-pointer absolute top-[18px] right-[10px]"
+                  tw="bg-transparent border-none outline-none text-[#333333] underline text-[13px] leading-[18px] cursor-pointer absolute top-[18px] right-[10px]"
                   onClick={() => setShowPassword(!showPassword)}
                   type="button"
                 >
@@ -197,7 +196,7 @@ function LoginForm(props: LoginFormProps) {
                   css={styles.input}
                 />
                 <button
-                  tw="bg-transparent border-none outline-none text-[#333333] underline text-[13px] leading-[18px] hover:cursor-pointer absolute top-[18px] right-[10px]"
+                  tw="bg-transparent border-none outline-none text-[#333333] underline text-[13px] leading-[18px] cursor-pointer absolute top-[18px] right-[10px]"
                   onClick={() => setShowPassword(!showPassword)}
                   type="button"
                 >
@@ -213,7 +212,7 @@ function LoginForm(props: LoginFormProps) {
                   Stay signed in
                 </div>
                 <Link href="#" passHref>
-                  <div tw="text-[#333333] underline text-[13px] leading-[18px] hover:cursor-pointer ml-auto">
+                  <div tw="text-[#333333] underline text-[13px] leading-[18px] cursor-pointer ml-auto">
                     Forgot your password?
                   </div>
                 </Link>
@@ -252,7 +251,7 @@ function LoginForm(props: LoginFormProps) {
           >
             <div tw="flex items-center justify-center">
               <img
-                src="assets/svgs/google.svg"
+                src="/assets/svgs/google.svg"
                 tw="h-[50px] mr-[-3px]"
                 alt="google icon"
               />
@@ -267,9 +266,9 @@ function LoginForm(props: LoginFormProps) {
           >
             <div tw="flex items-center justify-center">
               <img
-                src="assets/svgs/facebook.svg"
+                src="/assets/svgs/facebook.svg"
                 tw="h-[25px] mr-[10px]"
-                alt="google icon"
+                alt="facebook icon"
               />
               Continue with Facebook
             </div>
@@ -278,11 +277,11 @@ function LoginForm(props: LoginFormProps) {
             By clicking Create Account or Continue with Google or Facebook, you
             agree to Pkazo&#39;s{' '}
             <Link href="#" passHref>
-              <span tw="underline hover:cursor-pointer">Terms of Use</span>
+              <span tw="underline cursor-pointer">Terms of Use</span>
             </Link>{' '}
             and{' '}
             <Link href="#" passHref>
-              <span tw="underline hover:cursor-pointer">Privacy Policy</span>
+              <span tw="underline cursor-pointer">Privacy Policy</span>
             </Link>
             . Pkazo may send you communications; you may change your preferences
             in your account settings.
@@ -292,7 +291,7 @@ function LoginForm(props: LoginFormProps) {
               New to Pkazo?{' '}
               <button
                 onClick={() => setRegister(!register)}
-                tw="bg-transparent border-none outline-none text-soft-red font-semibold underline hover:cursor-pointer"
+                tw="bg-transparent border-none outline-none text-soft-red font-semibold underline cursor-pointer"
               >
                 Register here
               </button>

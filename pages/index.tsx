@@ -38,8 +38,12 @@ const Home: NextPage = () => {
           <a>Individual work</a>
         </Link>
         <br />
-        <Link href="/test_login">
+        <Link href="/test/login">
           <a>test login</a>
+        </Link>
+        <br />
+        <Link href="/onboarding">
+          <a>onboarding</a>
         </Link>
       </div>
     </div>
