@@ -49,7 +49,7 @@ const ArtistProfile = (props: Props) => {
       <section tw="mt-[48px] mb-[40px]">
         <div className="container">
           <div tw="grid grid-cols-[200px auto] gap-[85px] mx-[10%]">
-            <div tw="w-[200px] h-full overflow-hidden rounded-full flex items-center">
+            <div tw="w-[200px] h-[200px] my-auto overflow-hidden rounded-full flex items-center">
               <Image
                 src={props.user.pfp}
                 alt="profile_image"

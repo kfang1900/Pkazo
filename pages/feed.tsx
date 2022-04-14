@@ -22,7 +22,7 @@ const Feed: NextPage = () => {
       <Head>
         <title>Feed</title>
       </Head>
-      <Header tw="border-b border-[#D8D8D8]" isBuyer />
+      <Header isBuyer />
       <Container>
         <div tw="w-[50%] mx-auto">
           <div tw="flex items-center justify-around my-3">

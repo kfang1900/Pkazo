@@ -11,7 +11,6 @@ import Gallery from 'components/profile/ProfilePortfolio';
 import ProfilePosts from 'components/profile/ProfilePosts';
 import StorePortfolio from 'components/profile/StorePortfolio';
 
-import { Artist } from 'obj/Artist';
 import { sample_artist } from 'utils/Sample_Posts_Imports';
 
 export const Container = styled.div`

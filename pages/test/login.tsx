@@ -12,7 +12,7 @@ import LoginForm from '../../components/popups/LoginForm';
 const Feed: NextPage = () => {
   return (
     <>
-      <Header tw="border-b border-[#D8D8D8]" isBuyer />
+      <Header isBuyer />
       <Container>
         <LoginForm onClose={() => 0} />
       </Container>

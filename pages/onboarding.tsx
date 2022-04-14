@@ -11,11 +11,13 @@ interface LoginErrors {
 function Onboarding() {
   const styles = {
     label: tw`font-semibold text-[16px] text-[#333333]`,
-    input: tw`border border-[#D8D8D8] rounded-[6px] p-[10px] mt-[5px] text-[16px] leading-7 w-full`,
+    input: tw`border border-[#D8D8D8] rounded-[6px] p-[10px] text-[16px] leading-7 w-full`,
     error: tw`text-[12px] mt-[2px] text-[#A61A2E]`,
     req: tw`after:content-[' *'] after:text-soft-red`,
   };
   const [stage, setStage] = useState(0);
+  // let artistName = '';
+  // let discipline = '';
 
   const sections = [
     'Profile details',
@@ -62,7 +64,20 @@ function Onboarding() {
             onSubmit={async (values) => {
               return 0;
             }}
-          ></Formik>
+          >
+            <Form tw="mr-auto mt-12 w-full grid grid-cols-[300px 30px 160px 450px] gap-x-4 gap-y-6 items-center">
+              <div tw="bg-[#C4C4C4] rounded-[5px] invisible">hi</div>
+              <div tw="text-[#D1D1D1] border-[2px] border-[#D1D1D1] rounded-full text-center">
+                ?
+              </div>
+              <div>
+                <div css={[styles.label, styles.req]}>Artist Name</div>
+              </div>
+              <div>
+                <Field type="date" name="discipline" css={styles.input} />
+              </div>
+            </Form>
+          </Formik>
         </Container>
       </div>
     </>
