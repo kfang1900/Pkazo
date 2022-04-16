@@ -3,7 +3,7 @@ import Head from 'next/head';
 import tw, { styled } from 'twin.macro';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 
-import { Container } from './profile/[username]/index';
+import { Container } from './[username]/index';
 
 interface LoginErrors {
   discipline?: string;

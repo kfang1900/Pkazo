@@ -6,8 +6,8 @@ import Header from 'components/Header';
 import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 
-import { Container } from '../profile/[username]/index';
-import LoginForm from '../../components/popups/LoginForm';
+import { Container } from '../[username]/index';
+import LoginForm from 'components/popups/LoginForm';
 
 const Feed: NextPage = () => {
   return (

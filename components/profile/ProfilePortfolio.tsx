@@ -5,7 +5,7 @@ import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 
 import { portfolio_images } from 'utils/Cancer_Imports';
-import { Artist } from 'obj/Artist';
+import { Artist, showEdu, showExp, showExh } from 'obj/Artist';
 
 import styles from '../../styles/ProfilePortfolio.module.css';
 
@@ -201,18 +201,8 @@ function GallerySection(props: Props) {
           {props.user.education
             .sort((a, b) => b.end - a.end)
             .map((x, i) => (
-              <div key={i}>
-                <div tw="text-[16px] text-[#3C3C3C] leading-[24px] mt-4">
-                  Studied{' '}
-                  {x.field !== undefined && (
-                    <span tw="font-semibold">{x.field}</span>
-                  )}{' '}
-                  at <span tw="font-semibold">{x.school}</span>
-                </div>
-                <div tw="text-[16px] text-[#8B8B8B] leading-[24px] mt-1">
-                  {x.start}
-                  {x.start !== x.end && '-' + x.end}
-                </div>
+              <div key={i} tw="mt-4">
+                {showEdu(x)}
               </div>
             ))}
         </div>
@@ -223,19 +213,8 @@ function GallerySection(props: Props) {
           {props.user.experience
             .sort((a, b) => b.end - a.end)
             .map((x, i) => (
-              <div key={i}>
-                <div tw="text-[16px] text-[#3C3C3C] leading-[24px] mt-4 font-semibold">
-                  {x.role !== undefined && (
-                    <>
-                      {x.role} <span tw="font-normal"> at </span>
-                    </>
-                  )}
-                  {x.company}
-                </div>
-                <div tw="text-[16px] text-[#8B8B8B] leading-[24px] mt-1">
-                  {x.start}
-                  {x.start !== x.end && '-' + x.end}
-                </div>
+              <div key={i} tw="mt-4">
+                {showExp(x)}
               </div>
             ))}
         </div>
@@ -246,14 +225,8 @@ function GallerySection(props: Props) {
           {props.user.exhibitions
             .sort((a, b) => b.end - a.end)
             .map((x, i) => (
-              <div key={i}>
-                <div tw="text-[16px] text-[#3C3C3C] leading-[24px] mt-4 font-semibold">
-                  {x.place}
-                </div>
-                <div tw="text-[16px] text-[#8B8B8B] leading-[24px]">
-                  {x.start}
-                  {x.start !== x.end && '-' + x.end}
-                </div>
+              <div key={i} tw="mt-4">
+                {showExh(x)}
               </div>
             ))}
         </div>
@@ -265,7 +238,7 @@ function GallerySection(props: Props) {
             Works for Sale
           </div>
           <Link href="#" passHref>
-            <div tw="text-[#8B8B8B] text-[20px] leading-[25px] ml-9 cursor-pointer">
+            <div tw="text-[#8B8B8B] text-[20px] leading-[25px] ml-9 cursor-pointer hover:text-[#656565]">
               see all
             </div>
           </Link>
@@ -278,7 +251,7 @@ function GallerySection(props: Props) {
             Social Posts
           </div>
           <Link href="#" passHref>
-            <div tw="text-[#8B8B8B] text-[20px] leading-[25px] ml-9 cursor-pointer">
+            <div tw="text-[#8B8B8B] text-[20px] leading-[25px] ml-9 cursor-pointer hover:text-[#656565]">
               see all
             </div>
           </Link>

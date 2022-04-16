@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import tw from 'twin.macro';
 
-import buttons from '../../styles/Button';
+import buttons from 'styles/Button';
 import ConfirmUnfollowModal from './ConfirmUnfollow';
 
 import { Artist } from '../../obj/Artist';

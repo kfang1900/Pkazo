@@ -63,15 +63,19 @@ function FeedPost(props: Props) {
         <PostDetails post={props.post} onClose={() => setPopup(false)} />
       )}
       <div tw="flex items-center justify-between my-4 mx-5">
-        <Link href="/profile/username" passHref>
+        <Link href={'/' + props.post.user.username} passHref>
           <div tw="flex items-center space-x-3.5 cursor-pointer">
-            <img
-              src={props.post.user.pfp}
-              alt="profile"
-              tw="w-[64px] h-[64px]"
-            />
+            <div tw="w-[64px] h-[64px] overflow-hidden rounded-full flex items-center">
+              <Image
+                src={props.post.user.pfp}
+                alt="profile_image"
+                width="64px"
+                height="64px"
+                objectFit="cover"
+              />
+            </div>
             <div tw="flex flex-col justify-center -space-y-1">
-              <h5 tw="text-lg font-bold text-black-light">
+              <h5 tw="text-lg font-bold text-black-light mb-1">
                 {props.post.user.name}
               </h5>
               <p tw="text-xs font-semibold text-grey-8B">
@@ -82,9 +86,9 @@ function FeedPost(props: Props) {
         </Link>
         <button
           css={buttons.white}
-          tw="ml-[10px] w-[40px] h-[40px] px-0 border-0 text-[#575757]"
+          tw="border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB] ml-[10px] w-[40px] h-[40px] px-0 text-[#8E8E93] font-bold text-[13px] text-center"
         >
-          •••
+          •&#8201;•&#8201;•
         </button>
       </div>
       <PostImage imgs={props.post.imgs} layout="w" />

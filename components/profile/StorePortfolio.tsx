@@ -10,7 +10,7 @@ import { FiX } from 'react-icons/fi';
 import Image from 'next/image';
 import tw, { styled } from 'twin.macro';
 
-import { Container } from 'pages/profile/[username]/index';
+import { Container } from 'pages/[username]/index';
 import Img01 from 'public/assets/images/portfolios/pf1/1.jpeg';
 import Img02 from 'public/assets/images/portfolios/pf1/2.jpeg';
 import Img03 from 'public/assets/images/portfolios/pf2/3.jpeg';

@@ -22,7 +22,7 @@ const Home: NextPage = () => {
       </Link>
 
       <div>
-        <Link href="/profile/username">
+        <Link href="/username">
           <a>profile</a>
         </Link>
         <br />

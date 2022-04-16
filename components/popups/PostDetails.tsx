@@ -165,21 +165,23 @@ function PostDetails(props: PostDetailsProps) {
           <PostImage imgs={props.post.imgs} layout="h" />
           <div tw="w-[560px] flex flex-col pl-[30px]">
             <div tw="flex items-center justify-between">
-              <div tw="flex items-center space-x-3.5">
-                <img
-                  src="/assets/images/user.png"
-                  alt="profile"
-                  tw="w-[64px] h-[64px]"
-                />
-                <div tw="flex flex-col justify-center -space-y-1">
-                  <h5 tw="text-lg font-bold text-black-light">
-                    {props.post.user.name}
-                  </h5>
-                  <p tw="text-xs font-semibold text-grey-8B">
-                    {props.post.user.location}
-                  </p>
+              <Link href={'/' + props.post.user.username} passHref>
+                <div tw="flex items-center space-x-3.5 cursor-pointer">
+                  <img
+                    src="/assets/images/user.png"
+                    alt="profile"
+                    tw="w-[64px] h-[64px]"
+                  />
+                  <div tw="flex flex-col justify-center -space-y-1">
+                    <h5 tw="text-lg font-bold text-black-light mb-1">
+                      {props.post.user.name}
+                    </h5>
+                    <p tw="text-xs font-semibold text-grey-8B">
+                      {props.post.user.location}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </Link>
               <div tw="flex items-center">
                 <button
                   onClick={onFollow}

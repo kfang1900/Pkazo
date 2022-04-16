@@ -1,6 +1,7 @@
 import { Artist, User } from '../obj/Artist';
 import { Post } from '../obj/Post';
 export const sample_artist: Artist = {
+  username: 'jamesjean',
   name: 'James Jean',
   pfp: '/store_assets/img/pfp.jpg',
   cover: '/store_assets/img/profile-cover-banner.jpg',

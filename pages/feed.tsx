@@ -6,7 +6,7 @@ import Header from 'components/Header';
 import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 
-import { Container } from './profile/[username]/index';
+import { Container } from './[username]/index';
 import FeedPost from '../components/feed/FeedPost';
 import { Artist, User } from '../obj/Artist';
 import { Post } from '../obj/Post';
