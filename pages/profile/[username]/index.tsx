@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -6,26 +6,94 @@ import Header from 'components/Header';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import tw, { styled } from 'twin.macro';
-
 import ArtistProfile from 'components/profile/ArtistProfile';
 import Gallery from 'components/profile/ProfilePortfolio';
 import ProfilePosts from 'components/profile/ProfilePosts';
 import StorePortfolio from 'components/profile/StorePortfolio';
+import { getApp } from 'firebase/app';
+import { doc, getDoc, getDocs, getFirestore,collection,query, where, QueryDocumentSnapshot, DocumentData} from "firebase/firestore";
+import { BsChevronDoubleLeft } from 'react-icons/bs';
+import ArtistObject from 'types/firebaseTypes' 
+
 
 export const Container = styled.div`
   ${tw`px-5 2xl:max-w-[1400px] mx-auto`}
 `;
 
+const fetchArtist = async(username: String, setData: any)=>{ 
+  console.log("Fetching "+username)
+  
+  let app = getApp();
+  //Get that document from the database
+  let db = getFirestore(app);
+  const artistsRef = collection(db, "Artists");
+  const q = query(artistsRef, where("username", "==",username));
+  const ref = await getDocs(q)
+  const result: QueryDocumentSnapshot<DocumentData>[] = [];
+   ref.forEach((snapshot) => {
+   result.push(snapshot);
+   });
+  setData(result)
+  
+  /*
+  const imref = await loadStorageImage(ref.data()["ProfilePicture"])
+  setPicture(imref)
+  const portfolioCollection = await getDocs(portQuery)
+  let portfolioTemp = []
+  portfolioCollection.forEach(async (doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    let data = doc.data()
+    console.log("grabbing data ", data)
+    let portion = {"Name":data["Name"],"Works":data["Works"]}
+    const preview =  await getPortfolioPreview(portion)
+    const portfolioDisplay = {Name:data["Name"],Works:preview["Works"]}
+    console.log("Got Portfolio",portfolioDisplay)
+    portfolioTemp.push(portfolioDisplay)
+    console.log(portfolioTemp)
+    setPortfolios(portfolioTemp)
+  });
+  
+  console.log(portfolios)
+  */
+}
+
 const Portfolio: NextPage = () => {
   const router = useRouter();
-  const { username } = router.query;
-
-  const [page, setPage] = useState(0);
+  const {username } = router.query;
+  const [page, setPage]=useState(0)
+  const [artistData,setData] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
+  const [loading,setLoading] = useState<boolean>(true);
+  useEffect(()=>{
+    if(router.isReady && artistData.length===0){
+      console.log(username)
+      console.log(typeof username)
+      if(typeof username == "string"){
+        console.log("String ", username)
+        fetchArtist(username,setData)
+        setLoading(false)
+      }
+    }
+  })
+  
   const pages = ['Posts', 'Portfolio', 'Store'];
-  return (
-    <>
+  //const data={artistData} = this.state;
+  console.log(artistData)
+  return(
+  <>
+    {
+      loading ? (
+      <div>
+       <h2>Loading</h2>
+      </div>
+     ): 
+     artistData.length===0? (
+      <div>
+       <h2>No one found</h2>
+      </div>
+     ) : (
+      <>
       <Head>
-        <title>James Jean</title>
+        <title>{artistData[0].data()["Names"]}</title>
       </Head>
       <Header />
       <div>
@@ -42,7 +110,7 @@ const Portfolio: NextPage = () => {
 
         {/* Profile Section Start */}
         <Container>
-          <ArtistProfile />
+          <ArtistProfile {...artistData} />
         </Container>
         {/* Profile Section End */}
 
@@ -74,6 +142,9 @@ const Portfolio: NextPage = () => {
         </Container>
       </div>
     </>
+    )
+  }
+  </>
   );
 };
 

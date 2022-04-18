@@ -11,10 +11,10 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
-
 if (getApps().length === 0) {
   setFirebaseEmulatorEnv();
   initializeApp(firebaseConfig);
+  console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY)
   if (process.env.FIREBASE_AUTH_EMULATOR_HOST)
     connectAuthEmulator(
       getAuth(),
