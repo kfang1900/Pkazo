@@ -18,37 +18,26 @@ import PostDetails from 'components/popups/PostDetails';
 import { getApp } from 'firebase/app';
 import { doc,getDoc, getFirestore, DocumentData,DocumentSnapshot} from "firebase/firestore";
 
-const fetchWork = async(makebot: string, setData: any)=>{ 
+const fetchArtist = async(artistref: string, setData:any)=>{
+  let app = getApp();
+  let db = getFirestore(app);
+  const docRef = doc(db, "Artists", artistref);
+  const docSnap = await getDoc(docRef);
+  setData(docSnap)
+}
+
+const fetchWork = async(makebot: string, setData: any, setArtistData: any)=>{ 
     console.log("Fetching "+makebot)
     
     let app = getApp();
     //Get that document from the database
     let db = getFirestore(app);
-    const docRef = doc(db, "Work", makebot);
+    const docRef = doc(db, "Works", makebot);
     const docSnap = await getDoc(docRef);
     setData(docSnap)
-    
-    /*
-    const imref = await loadStorageImage(ref.data()["ProfilePicture"])
-    setPicture(imref)
-    const portfolioCollection = await getDocs(portQuery)
-    let portfolioTemp = []
-    portfolioCollection.forEach(async (doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      let data = doc.data()
-      console.log("grabbing data ", data)
-      let portion = {"Name":data["Name"],"Works":data["Works"]}
-      const preview =  await getPortfolioPreview(portion)
-      const portfolioDisplay = {Name:data["Name"],Works:preview["Works"]}
-      console.log("Got Portfolio",portfolioDisplay)
-      portfolioTemp.push(portfolioDisplay)
-      console.log(portfolioTemp)
-      setPortfolios(portfolioTemp)
-    });
-    
-    console.log(portfolios)
-    */
+    fetchArtist(docSnap.data()!["Artist"],setArtistData)
   }
+
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },
@@ -79,13 +68,18 @@ const comments = [
 const IndividualWork: NextPage = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [workData, setWorkData] = useState<DocumentSnapshot<DocumentData>>();
+  const [artistData, setArtistData] = useState<DocumentSnapshot<DocumentData>>();
+
+  console.log(workData)
   const [popup, setPopup] = useState(false);
   const router=useRouter();
   const {workid } = router.query;
   useEffect(()=>{
-    if(router.isReady && workData!=undefined){
+    if(router.isReady && workData==undefined){
+      console.log(workid, typeof workid)
       if(typeof workid == "string"){
-        fetchWork(workid,setWorkData)
+        fetchWork(workid,setWorkData,setArtistData)
+        
       }
     }
   })
@@ -204,13 +198,14 @@ const IndividualWork: NextPage = () => {
             </div>
           </div>
           <div tw="mt-12 ml-[139px] mr-[53px]">
-            <p tw="text-lg">{workData.data()["Description"]}
+            <p tw="text-lg">{workData.data()!["Description"]
+            /*
               The girl emerges from the vessel of the mind, entwined in her own
               noodle-like hair. A forest of mushrooms casts a blanket of
               prismatic gradients. Bath is a new addition to the growing
               pantheon of characters that includes Slingshot, Maze, Descendent,
               and Woodcutter. Her appearance here marks the beginning of her
-              transformation into different sculptural mediums in the future.
+              transformation into different sculptural mediums in the future.*/}
             </p>
             <p tw="mt-10 text-2xl font-semibold">Progress Posts</p>
             <div tw="mt-8 flex h-[150px] gap-x-8">
@@ -280,7 +275,7 @@ const IndividualWork: NextPage = () => {
             </div>
           </div>
           <div tw="mt-3.5 flex">
-            <p tw="flex-auto text-4xl italic ml-3.5">Jammer</p>
+            <p tw="flex-auto text-4xl italic ml-3.5">{workData.data()!["Name"]}</p>
             <div tw="flex-auto flex flex-row-reverse">
               <p tw="font-semibold text-3xl">$1,820</p>
             </div>
@@ -289,9 +284,9 @@ const IndividualWork: NextPage = () => {
             Unique Work
           </div>
           <div tw="mt-4 ml-3 text-xl">
-            2021
+            {workData.data()!["Date"]}
             <br />
-            Acrylic on Canvas
+            {workData.data()!["Medium"]}
             <br />
             18 x 24 inches
           </div>
