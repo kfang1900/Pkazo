@@ -34,7 +34,7 @@ const Home: NextPage = () => {
           <a>feed</a>
         </Link>
         <br />
-        <Link href="/individual_work">
+        <Link href="/work/BkyUU0kRjmn6NBCLwz2U">
           <a>Individual work</a>
         </Link>
       </div>

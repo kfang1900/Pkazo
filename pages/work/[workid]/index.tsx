@@ -1,9 +1,9 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import 'twin.macro';
-
+import {useRouter} from 'next/router';
 import Header from 'components/Header';
 import smallpic1 from 'public/assets/indiv_work/smallpic1.png';
 import bigpic1 from 'public/assets/indiv_work/bigpic1.png';
@@ -14,6 +14,41 @@ import progress2 from 'public/assets/indiv_work/progress2.png';
 import progress3 from 'public/assets/indiv_work/progress3.png';
 import progress4 from 'public/assets/indiv_work/progress4.png';
 import PostDetails from 'components/popups/PostDetails';
+
+import { getApp } from 'firebase/app';
+import { doc,getDoc, getFirestore, DocumentData,DocumentSnapshot} from "firebase/firestore";
+
+const fetchWork = async(makebot: string, setData: any)=>{ 
+    console.log("Fetching "+makebot)
+    
+    let app = getApp();
+    //Get that document from the database
+    let db = getFirestore(app);
+    const docRef = doc(db, "Work", makebot);
+    const docSnap = await getDoc(docRef);
+    setData(docSnap)
+    
+    /*
+    const imref = await loadStorageImage(ref.data()["ProfilePicture"])
+    setPicture(imref)
+    const portfolioCollection = await getDocs(portQuery)
+    let portfolioTemp = []
+    portfolioCollection.forEach(async (doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      let data = doc.data()
+      console.log("grabbing data ", data)
+      let portion = {"Name":data["Name"],"Works":data["Works"]}
+      const preview =  await getPortfolioPreview(portion)
+      const portfolioDisplay = {Name:data["Name"],Works:preview["Works"]}
+      console.log("Got Portfolio",portfolioDisplay)
+      portfolioTemp.push(portfolioDisplay)
+      console.log(portfolioTemp)
+      setPortfolios(portfolioTemp)
+    });
+    
+    console.log(portfolios)
+    */
+  }
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },
@@ -43,11 +78,24 @@ const comments = [
 
 const IndividualWork: NextPage = () => {
   const [selectedImage, setSelectedImage] = useState(0);
+  const [workData, setWorkData] = useState<DocumentSnapshot<DocumentData>>();
   const [popup, setPopup] = useState(false);
+  const router=useRouter();
+  const {workid } = router.query;
+  useEffect(()=>{
+    if(router.isReady && workData!=undefined){
+      if(typeof workid == "string"){
+        fetchWork(workid,setWorkData)
+      }
+    }
+  })
+
 
   const selectedBigImage = workImages[selectedImage].big;
 
   return (
+    <>
+    {workData===undefined?(<div>404</div>):(
     <>
       <Head>
         <title>Portfolio</title>
@@ -156,7 +204,7 @@ const IndividualWork: NextPage = () => {
             </div>
           </div>
           <div tw="mt-12 ml-[139px] mr-[53px]">
-            <p tw="text-lg">
+            <p tw="text-lg">{workData.data()["Description"]}
               The girl emerges from the vessel of the mind, entwined in her own
               noodle-like hair. A forest of mushrooms casts a blanket of
               prismatic gradients. Bath is a new addition to the growing
@@ -392,6 +440,8 @@ const IndividualWork: NextPage = () => {
       <br />
       <br />
       <br />
+    </>
+    )}
     </>
   );
 };

@@ -3,7 +3,6 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Header from 'components/Header';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import tw, { styled } from 'twin.macro';
 import ArtistProfile from 'components/profile/ArtistProfile';
@@ -11,10 +10,7 @@ import Gallery from 'components/profile/ProfilePortfolio';
 import ProfilePosts from 'components/profile/ProfilePosts';
 import StorePortfolio from 'components/profile/StorePortfolio';
 import { getApp } from 'firebase/app';
-import { doc, getDoc, getDocs, getFirestore,collection,query, where, QueryDocumentSnapshot, DocumentData} from "firebase/firestore";
-import { BsChevronDoubleLeft } from 'react-icons/bs';
-import ArtistObject from 'types/firebaseTypes' 
-
+import { getDocs, getFirestore,collection,query, where, QueryDocumentSnapshot, DocumentData} from "firebase/firestore";
 
 export const Container = styled.div`
   ${tw`px-5 2xl:max-w-[1400px] mx-auto`}
@@ -93,7 +89,7 @@ const Portfolio: NextPage = () => {
      ) : (
       <>
       <Head>
-        <title>{artistData[0].data()["Names"]}</title>
+        <title>{artistData[0].data()["Name"]}</title>
       </Head>
       <Header />
       <div>
