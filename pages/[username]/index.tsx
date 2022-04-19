@@ -3,7 +3,6 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Header from 'components/Header';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import tw, { styled } from 'twin.macro';
 
@@ -12,27 +11,33 @@ import Gallery from 'components/profile/ProfilePortfolio';
 import ProfilePosts from 'components/profile/ProfilePosts';
 import StorePortfolio from 'components/profile/StorePortfolio';
 
+import { sample_artist } from 'utils/Sample_Posts_Imports';
+
 export const Container = styled.div`
-  ${tw`px-5 2xl:max-w-[1400px] mx-auto`}
+  ${tw`px-5 max-w-[1320px] mx-auto`}
 `;
+
+export const getUser = (username: string) => {
+  return sample_artist;
+};
 
 const Portfolio: NextPage = () => {
   const router = useRouter();
-  const { username } = router.query;
+  const user = getUser(router.query.username as string);
 
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const pages = ['Posts', 'Portfolio', 'Store'];
   return (
     <>
       <Head>
-        <title>James Jean</title>
+        <title>{user.name}</title>
       </Head>
       <Header />
       <div>
         {/* Cover Photo */}
         <div tw="relative w-full h-[180px] lg:h-[300px]">
           <Image
-            src="/store_assets/img/profile-cover-banner.jpg"
+            src={user.cover}
             alt="Cover Photo"
             layout="fill"
             objectFit="cover"
@@ -42,7 +47,7 @@ const Portfolio: NextPage = () => {
 
         {/* Profile Section Start */}
         <Container>
-          <ArtistProfile />
+          <ArtistProfile user={user} />
         </Container>
         {/* Profile Section End */}
 
@@ -69,7 +74,7 @@ const Portfolio: NextPage = () => {
 
         <Container>
           {page === 0 && <ProfilePosts />}
-          {page === 1 && <Gallery />}
+          {page === 1 && <Gallery user={user} />}
           {page === 2 && <StorePortfolio />}
         </Container>
       </div>

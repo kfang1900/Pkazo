@@ -5,12 +5,12 @@ import PostDetails, { PostDetailsProps } from 'components/popups/PostDetails';
 import 'utils/Sample_Posts_Imports';
 import { sample_posts } from 'utils/Sample_Posts_Imports';
 
-function PostObject(props: PostDetailsProps['post']) {
+function PostObject(props: PostDetailsProps) {
   const [showPopup, setShowPopup] = useState(false);
   return (
     <>
       {showPopup && (
-        <PostDetails post={props} onClose={() => setShowPopup(false)} />
+        <PostDetails post={props.post} onClose={() => setShowPopup(false)} />
       )}
       <button
         tw="transform w-full"
@@ -18,7 +18,7 @@ function PostObject(props: PostDetailsProps['post']) {
         onClick={() => setShowPopup(true)}
       >
         <Image
-          src={props.imgs[0]}
+          src={props.post.imgs[0]}
           layout="fill"
           alt="Image Alt"
           objectFit="cover"
@@ -34,7 +34,7 @@ function ProfilePosts() {
       <div tw="grid gap-6 lg:gap-10 sm:grid-cols-2 sm:w-[595px] lg:w-[915px] 2xl:w-[1235px] lg:grid-cols-3 2xl:grid-cols-4 mx-auto items-center">
         {/* Single Portfolio */}
         {sample_posts.map((post, idx) => (
-          <PostObject key={idx} {...post} />
+          <PostObject key={idx} post={post} onClose={() => 0} />
         ))}
       </div>
     </div>

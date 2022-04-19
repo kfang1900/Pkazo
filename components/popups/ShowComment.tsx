@@ -2,21 +2,37 @@ import { useState } from 'react';
 import Image from 'next/image';
 import tw from 'twin.macro';
 
+import { Comment } from '../../obj/Comment';
+
 interface Props {
-  comment: {
-    user: string;
-    time: string;
-    comment: string;
-    imgSrc: string;
-  };
+  comment: Comment;
 }
-const Comment = (props: Props) => {
+
+export const timeElapsed = (timestamp: number) => {
+  let diff = (Date.now() - timestamp) / 1000;
+  if (diff < 60) return 'now';
+  // x minutes ago
+  diff = Math.floor(diff / 60);
+  if (diff < 60) return diff + 'm';
+  // x hours ago
+  diff = Math.floor(diff / 60);
+  if (diff < 24) return diff + 'h';
+  // x days ago
+  diff = Math.floor(diff / 24);
+  if (diff < 7) return diff + 'd';
+  // x weeks ago
+  diff = Math.floor(diff / 7);
+  if (diff < 12) return diff + 'w';
+  // years
+  return Math.floor(diff / 52) + 'y';
+};
+const ShowComment = (props: Props) => {
   const [liked, setLiked] = useState(false);
   return (
     <div tw="flex mb-[24px] mr-2">
       <div tw="w-[36px] h-full overflow-hidden rounded-full flex items-center">
         <Image
-          src={props.comment.imgSrc}
+          src={props.comment.user.pfp}
           alt="profile_image"
           width="36px"
           height="36px"
@@ -26,10 +42,10 @@ const Comment = (props: Props) => {
       <div tw="ml-[12px]">
         <div tw="flex">
           <div tw="text-[12px] leading-[18px] font-bold text-black">
-            {props.comment.user}
+            {props.comment.user.name}
           </div>
           <div tw="text-[12px] leading-[18px] text-[#7F838B] ml-[12px]">
-            {props.comment.time}
+            {timeElapsed(props.comment.time)}
           </div>
         </div>
         <div tw="text-[12px] leading-[18px] text-black">
@@ -55,4 +71,4 @@ const Comment = (props: Props) => {
     </div>
   );
 };
-export default Comment;
+export default ShowComment;

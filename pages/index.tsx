@@ -22,7 +22,7 @@ const Home: NextPage = () => {
       </Link>
 
       <div>
-        <Link href="/profile/username">
+        <Link href="/username">
           <a>profile</a>
         </Link>
         <br />
@@ -36,6 +36,14 @@ const Home: NextPage = () => {
         <br />
         <Link href="/individual_work">
           <a>Individual work</a>
+        </Link>
+        <br />
+        <Link href="/test/login">
+          <a>test login</a>
+        </Link>
+        <br />
+        <Link href="/onboarding">
+          <a>onboarding</a>
         </Link>
       </div>
     </div>
