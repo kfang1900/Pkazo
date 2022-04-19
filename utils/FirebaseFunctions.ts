@@ -47,3 +47,4 @@ export const fetchArtistByID = async(artistref: string)=>{
       const docSnap = await getDoc(docRef);
       return docSnap
     }
+
