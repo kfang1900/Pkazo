@@ -1,5 +1,7 @@
 import { getApp } from "firebase/app";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
+import { doc,getDoc, getFirestore, DocumentData,DocumentSnapshot} from "firebase/firestore";
+
 
 
 //Returns the Image URL as a string
@@ -19,3 +21,28 @@ export const loadStorageImage = async (photoURL:string) => {
         return "";
     }
 }
+
+export const loadStorageImages = async(photoURLs:string[])=>{
+    const retURLS:string[] = []
+    photoURLs.forEach(async (url)=>{
+        retURLS.push(await loadStorageImage(url))
+    })
+    return retURLS
+}
+
+export const fetchArtistByID = async(artistref: string)=>{
+    let app = getApp();
+    let db = getFirestore(app);
+    const docRef = doc(db, "Artists", artistref);
+    const docSnap = await getDoc(docRef);
+    return docSnap
+  }
+  
+  export const fetchWorkByID = async(workref: string)=>{       
+      let app = getApp();
+      //Get that document from the database
+      let db = getFirestore(app);
+      const docRef = doc(db, "Works", workref);
+      const docSnap = await getDoc(docRef);
+      return docSnap
+    }

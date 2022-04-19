@@ -14,30 +14,8 @@ import progress2 from 'public/assets/indiv_work/progress2.png';
 import progress3 from 'public/assets/indiv_work/progress3.png';
 import progress4 from 'public/assets/indiv_work/progress4.png';
 import PostDetails from 'components/popups/PostDetails';
-
-import { getApp } from 'firebase/app';
-import { doc,getDoc, getFirestore, DocumentData,DocumentSnapshot} from "firebase/firestore";
-
-const fetchArtist = async(artistref: string, setData:any)=>{
-  let app = getApp();
-  let db = getFirestore(app);
-  const docRef = doc(db, "Artists", artistref);
-  const docSnap = await getDoc(docRef);
-  setData(docSnap)
-}
-
-const fetchWork = async(makebot: string, setData: any, setArtistData: any)=>{ 
-    console.log("Fetching "+makebot)
-    
-    let app = getApp();
-    //Get that document from the database
-    let db = getFirestore(app);
-    const docRef = doc(db, "Works", makebot);
-    const docSnap = await getDoc(docRef);
-    setData(docSnap)
-    fetchArtist(docSnap.data()!["Artist"],setArtistData)
-  }
-
+import {fetchArtistByID, fetchWorkByID, loadStorageImage, loadStorageImages} from 'utils/FirebaseFunctions'
+import {DocumentData,DocumentSnapshot} from "firebase/firestore";
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },
@@ -64,11 +42,23 @@ const comments = [
     imgSrc: '/assets/indiv_work/commenter3.png',
   },
 ];
+const getPageData = async(workid:string,setWorkData:any,setArtistData:any,setArtistPicture:any,setWorkPictures:any)=>{
+  const workD = await fetchWorkByID(workid)
+  setWorkData(workD)
+  const artistD = await fetchArtistByID(workD?.data()?.Name)
+  setArtistData(artistD)
+  const artistImgURL = await loadStorageImage(artistD?.data()?.ProfilePicture)
+  setArtistPicture(artistImgURL)
+  const workPictures = await loadStorageImages(workD?.data()?.Images)
+  setWorkPictures(workPictures)
+}
 
 const IndividualWork: NextPage = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [workData, setWorkData] = useState<DocumentSnapshot<DocumentData>>();
   const [artistData, setArtistData] = useState<DocumentSnapshot<DocumentData>>();
+  const [artistPicture, setArtistPicture] = useState("/store_assets/img/user.png")
+  const [workImages2, setWorkImages]= useState([])
 
   console.log(workData)
   const [popup, setPopup] = useState(false);
@@ -78,12 +68,10 @@ const IndividualWork: NextPage = () => {
     if(router.isReady && workData==undefined){
       console.log(workid, typeof workid)
       if(typeof workid == "string"){
-        fetchWork(workid,setWorkData,setArtistData)
-        
+        getPageData(workid,setWorkData,setArtistData,setArtistPicture,setWorkImages)
       }
     }
   })
-
 
   const selectedBigImage = workImages[selectedImage].big;
 
@@ -256,7 +244,7 @@ const IndividualWork: NextPage = () => {
             <div tw="flex-auto flex">
               <div tw="w-14 h-14 overflow-hidden rounded-full flex items-center">
                 <Image
-                  src="/store_assets/img/user.png"
+                  src={artistPicture}
                   alt="profile_image"
                   width="56px"
                   height="56px"
@@ -264,8 +252,8 @@ const IndividualWork: NextPage = () => {
                 />
               </div>
               <div tw="ml-3.5 mt-1.5">
-                <p tw="text-xl font-bold">James Jean</p>
-                <p tw="mt-1.5 text-xs text-gray-500">Los Angeles, CA</p>
+                <p tw="text-xl font-bold">{artistData?.data()?.Name}</p>
+                <p tw="mt-1.5 text-xs text-gray-500">{artistData?.data()?.Location}</p>
               </div>
             </div>
             <div tw="flex-auto flex flex-row-reverse">
@@ -281,7 +269,7 @@ const IndividualWork: NextPage = () => {
             </div>
           </div>
           <div tw="mt-3 ml-2 bg-red-100 rounded-3xl w-[100px] py-2 px-3 text-xs text-red-900 font-semibold">
-            Unique Work
+            {workData.data()!["Type"]}
           </div>
           <div tw="mt-4 ml-3 text-xl">
             {workData.data()!["Date"]}
