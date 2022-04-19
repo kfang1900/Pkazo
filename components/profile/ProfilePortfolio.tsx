@@ -1,9 +1,11 @@
 import Image from 'next/image';
 import { ReactNode, useState } from 'react';
 import Masonry from 'react-masonry-css';
+import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 
 import { portfolio_images } from 'utils/Cancer_Imports';
+import { Artist, showEdu, showExp, showExh } from 'obj/Artist';
 
 import styles from '../../styles/ProfilePortfolio.module.css';
 
@@ -101,32 +103,43 @@ function shuffle(array: any[]) {
       array[currentIndex],
     ];
   }
-
   return array;
 }
 
-function GallerySection() {
+interface Props {
+  user: Artist;
+}
+function GallerySection(props: Props) {
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
+  const [curGallery, setCurGallery] = useState(getGalleryData(null));
+  const [seeNum, setSeeNum] = useState(9);
+  function updSeeNum() {
+    if (seeNum >= curGallery.length) setSeeNum(9);
+    else setSeeNum(seeNum + 9);
+  }
   return (
-    <>
+    <div tw="pb-[100px]">
       {/* Circle Images Section --Start-- */}
-      <section tw="mt-[56px]">
+      <section tw="mt-10">
         <div className="container">
-          <div tw="md:w-[1100px] mx-auto grid grid-cols-2 gap-y-10 md:gap-y-0 md:grid-cols-5 place-items-center mb-[50px]">
+          <div tw="flex justify-center mb-12">
             {galleryData.map((gallery, index) => (
               <div
                 key={index}
                 tw="cursor-pointer"
-                onClick={() =>
-                  setActiveIndex((state: number | null) =>
-                    state === index ? null : index
-                  )
-                }
+                onClick={() => {
+                  setActiveIndex(activeIndex === index ? null : index);
+                  setCurGallery(
+                    shuffle(
+                      getGalleryData(activeIndex === index ? null : index)
+                    )
+                  );
+                }}
               >
                 <div
                   css={[
-                    tw`w-[102px] h-[102px] relative rounded-full overflow-hidden duration-200 origin-bottom border-4 border-transparent`,
-                    activeIndex === index && tw`border-[#C6C5C3] scale-[1.15]`,
+                    tw`w-[128px] h-[128px] relative rounded-full overflow-hidden duration-200 origin-bottom border-4 border-transparent mx-[60px]`,
+                    activeIndex === index && tw`border-[#C6C5C3]`,
                   ]}
                 >
                   <Image
@@ -144,7 +157,6 @@ function GallerySection() {
         </div>
       </section>
       {/* Circle Images Section --End-- */}
-
       {/* Gallery Section --Start-- */}
       <section tw="mt-[55px]">
         <div className="container">
@@ -153,18 +165,99 @@ function GallerySection() {
             className={styles['my-masonry-grid']}
             columnClassName={styles['my-masonry-grid_column']}
           >
-            {shuffle(getGalleryData(activeIndex))
-              .slice(0, 9)
-              .map((gallery, index) => (
-                <button key={index} tw="my-[10px]">
-                  <Image src={gallery.imgSrc} tw="w-full h-auto" alt="" />
-                </button>
-              ))}
+            {curGallery.slice(0, seeNum).map((gallery, index) => (
+              <button key={index} tw="my-[18px]">
+                <Image src={gallery.imgSrc} tw="w-full h-auto" alt="" />
+              </button>
+            ))}
           </Masonry>
+        </div>
+
+        <div tw="flex w-full justify-center items-center mt-[30px]">
+          <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
+          {curGallery.length > 9 && (
+            <button
+              tw="rounded-full border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB] mr-[-10%] w-[60px] h-[60px] mx-[30px] px-0 text-[#8E8E93] font-bold text-[13px] text-center"
+              onClick={() => updSeeNum()}
+            >
+              <img
+                src="/assets/svgs/arrow_down.svg"
+                css={[
+                  tw`m-auto`,
+                  seeNum >= curGallery.length && tw`scale-y-[-1]`,
+                ]}
+              />
+            </button>
+          )}
+          <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
         </div>
       </section>
       {/* Gallery Section --End-- */}
-    </>
+      <div tw="grid grid-cols-3 gap-16 mt-7 w-full">
+        <div tw="flex-grow">
+          <div tw="text-black text-[20px] leading-[27px] mb-2 font-semibold">
+            Education
+          </div>
+          {props.user.education
+            .sort((a, b) => b.end - a.end)
+            .map((x, i) => (
+              <div key={i} tw="mt-4">
+                {showEdu(x)}
+              </div>
+            ))}
+        </div>
+        <div tw="flex-grow">
+          <div tw="text-black text-[20px] leading-[27px] font-semibold">
+            Experience
+          </div>
+          {props.user.experience
+            .sort((a, b) => b.end - a.end)
+            .map((x, i) => (
+              <div key={i} tw="mt-4">
+                {showExp(x)}
+              </div>
+            ))}
+        </div>
+        <div tw="flex-grow">
+          <div tw="text-black text-[20px] leading-[27px] font-semibold">
+            Exhibitions
+          </div>
+          {props.user.exhibitions
+            .sort((a, b) => b.end - a.end)
+            .map((x, i) => (
+              <div key={i} tw="mt-4">
+                {showExh(x)}
+              </div>
+            ))}
+        </div>
+      </div>
+
+      <div tw="mt-7">
+        <div tw="flex items-end">
+          <div tw="text-black text-[30px] font-semibold leading-[30px]">
+            Works for Sale
+          </div>
+          <Link href="#" passHref>
+            <div tw="text-[#8B8B8B] text-[20px] leading-[25px] ml-9 cursor-pointer hover:text-[#656565]">
+              see all
+            </div>
+          </Link>
+        </div>
+      </div>
+
+      <div tw="mt-[100px]">
+        <div tw="flex items-end">
+          <div tw="text-black text-[30px] font-semibold leading-[30px]">
+            Social Posts
+          </div>
+          <Link href="#" passHref>
+            <div tw="text-[#8B8B8B] text-[20px] leading-[25px] ml-9 cursor-pointer hover:text-[#656565]">
+              see all
+            </div>
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -183,18 +276,20 @@ const CircleDescriptionBox = ({
   activeIndex: null | number;
 }) => {
   if (activeIndex === null) return null;
-  const data = galleryData[activeIndex].descriptionBox;
+  const data = galleryData[activeIndex];
 
   return (
-    <div tw="grid grid-cols-[200px minmax(0,1fr) 40px] gap-6 md:gap-14 md:w-[1000px] mx-auto px-[35px] md:px-[60px] py-[30px] md:py-[50px] rounded-3xl border-4 border-[#D8D8D8]">
-      <h6 tw="text-[28px] font-semibold text-[#595959] text-center">
-        {data.title}
-      </h6>
-      <p tw="text-black">{data.description}</p>
-      <div tw="flex items-center justify-self-end md:justify-start w-10">
-        <a href="#">
-          <img src="/store_assets/img/chevron-right.svg" alt="chevron-right" />
-        </a>
+    <div tw="flex rounded-3xl border-2 border-[#D8D8D8] max-w-[1000px] mx-auto pr-[60px] py-9">
+      <div tw="w-[120px] h-[120px] relative rounded-full overflow-hidden duration-200 origin-bottom ml-[52px] mr-[44px] my-auto flex-shrink-0">
+        <Image src={data.circleImgSrc} alt="Portfolio Image" layout="fill" />
+      </div>
+      <div>
+        <h6 tw="text-[28px] font-semibold text-[#595959]">
+          {data.descriptionBox.title}
+        </h6>
+        <div tw="text-black text-[16px] mt-4 max-w-[700px]">
+          {data.descriptionBox.description}
+        </div>
       </div>
     </div>
   );

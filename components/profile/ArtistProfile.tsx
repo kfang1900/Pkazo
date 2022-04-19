@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import tw from 'twin.macro';
-import buttons from '../../styles/Button';
+
+import buttons from 'styles/Button';
 import ConfirmUnfollowModal from './ConfirmUnfollow';
 import {QueryDocumentSnapshot, DocumentData} from "firebase/firestore";
 import {loadStorageImage} from 'utils/FirebaseFunctions'
+
+import { Artist } from '../../obj/Artist';
 
 const numFormatter = (x: number) => {
   if (x > 999 && x < 1000000) {
@@ -53,8 +56,8 @@ const ArtistProfile = (artistData:QueryDocumentSnapshot<DocumentData>[]) => {
       />
       <section tw="mt-[48px] mb-[40px]">
         <div className="container">
-          <div tw="grid grid-cols-[200px auto] gap-[85px] mx-[15%]">
-            <div tw="w-[200px] h-full overflow-hidden rounded-full flex items-center">
+          <div tw="grid grid-cols-[200px auto] gap-[85px] mx-[10%]">
+            <div tw="w-[200px] h-[200px] my-auto overflow-hidden rounded-full flex items-center">
               <Image
                 src={picture}
                 alt="profile_image"
@@ -76,9 +79,9 @@ const ArtistProfile = (artistData:QueryDocumentSnapshot<DocumentData>[]) => {
                 </button>
                 <button
                   css={buttons.white}
-                  tw="ml-[20px] w-[40px] h-[40px] px-0"
+                  tw="border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB] mr-[-10%] w-[40px] h-[40px] px-0 text-[#8E8E93] font-bold text-[13px] text-center"
                 >
-                  •••
+                  •&#8201;•&#8201;•
                 </button>
               </div>
               <p tw="text-gray-600 text-lg mt-1">{artist["Location"]}</p>

@@ -12,8 +12,10 @@ import StorePortfolio from 'components/profile/StorePortfolio';
 import { getApp } from 'firebase/app';
 import { getDocs, getFirestore,collection,query, where, QueryDocumentSnapshot, DocumentData} from "firebase/firestore";
 
+import { sample_artist } from 'utils/Sample_Posts_Imports';
+
 export const Container = styled.div`
-  ${tw`px-5 2xl:max-w-[1400px] mx-auto`}
+  ${tw`px-5 max-w-[1320px] mx-auto`}
 `;
 
 const fetchArtist = async(username: String, setData: any)=>{ 
@@ -56,9 +58,11 @@ const fetchArtist = async(username: String, setData: any)=>{
 const Portfolio: NextPage = () => {
   const router = useRouter();
   const {username } = router.query;
-  const [page, setPage]=useState(0)
+  const [page, setPage]=useState(1)
   const [artistData,setData] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
   const [loading,setLoading] = useState<boolean>(true);
+  const user = username
+  const pages = ['Posts', 'Portfolio', 'Store'];
   useEffect(()=>{
     if(router.isReady && artistData.length===0){
       console.log(username)
@@ -71,7 +75,6 @@ const Portfolio: NextPage = () => {
     }
   })
   
-  const pages = ['Posts', 'Portfolio', 'Store'];
   //const data={artistData} = this.state;
   console.log(artistData)
   return(
@@ -96,7 +99,7 @@ const Portfolio: NextPage = () => {
         {/* Cover Photo */}
         <div tw="relative w-full h-[180px] lg:h-[300px]">
           <Image
-            src="/store_assets/img/profile-cover-banner.jpg"
+            src={artistData[0].data()["Cover"]}
             alt="Cover Photo"
             layout="fill"
             objectFit="cover"
@@ -133,7 +136,7 @@ const Portfolio: NextPage = () => {
 
         <Container>
           {page === 0 && <ProfilePosts />}
-          {page === 1 && <Gallery />}
+          {page === 1 && <Gallery user={user} />}
           {page === 2 && <StorePortfolio />}
         </Container>
       </div>

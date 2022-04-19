@@ -40,7 +40,7 @@ function NavbarIcon(props: {
 
 const Header = (props: { isBuyer?: boolean | undefined }) => {
   return (
-    <div tw="w-full border-b border-[#D8D8D8]">
+    <div tw="sticky top-0 z-50 w-full border-b border-[#D8D8D8] bg-white">
       <div tw="px-5 flex flex-row items-center justify-between py-3">
         <div tw="flex flex-auto items-center gap-10 w-36">
           <div tw="flex-none cursor-pointer -mr-5">
