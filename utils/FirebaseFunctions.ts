@@ -31,6 +31,7 @@ export const loadStorageImages = async(photoURLs:string[])=>{
 }
 
 export const fetchArtistByID = async(artistref: string)=>{
+    console.log("Fetchin artist ", artistref)
     let app = getApp();
     let db = getFirestore(app);
     const docRef = doc(db, "Artists", artistref);
