@@ -17,6 +17,7 @@ import PostDetails from 'components/popups/PostDetails';
 import {fetchArtistByID, fetchWorkByID, loadStorageImage, loadStorageImages} from 'utils/FirebaseFunctions'
 import {DocumentData,DocumentSnapshot} from "firebase/firestore";
 import { sample_posts } from 'utils/Sample_Posts_Imports';
+import {defaultWorkPicture} from 'utils/FrontEndDefaults'
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },
@@ -52,8 +53,11 @@ const getPageData = async(workid:string,setWorkData:any,setArtistData:any,setArt
   const artistImgURL = await loadStorageImage(artistD?.data()?.ProfilePicture)
   setArtistPicture(artistImgURL)
   //console.log(artistImgURL)
-  //const workPictures = await loadStorageImages(workD?.data()?.Images)
-  //setWorkPictures(workPictures)
+  const workPictures = await loadStorageImages(workD?.data()?.Images)
+  console.log(workPictures)
+  setWorkPictures(workPictures)
+  setSelectedImage()
+
 }
 
 const IndividualWork: NextPage = () => {
@@ -61,8 +65,7 @@ const IndividualWork: NextPage = () => {
   const [workData, setWorkData] = useState<DocumentSnapshot<DocumentData>>();
   const [artistData, setArtistData] = useState<DocumentSnapshot<DocumentData>>();
   const [artistPicture, setArtistPicture] = useState("/store_assets/img/user.png")
-  const [workImages2, setWorkImages]= useState([])
-
+  const [workImages, setWorkImages]= useState([defaultWorkPicture])
   console.log(workData)
   const [popup, setPopup] = useState(false);
   const router=useRouter();
@@ -76,7 +79,7 @@ const IndividualWork: NextPage = () => {
     }
   })
 
-  const selectedBigImage = workImages[selectedImage].big;
+  
 
   return (
     <>
@@ -97,7 +100,7 @@ const IndividualWork: NextPage = () => {
               {workImages.map((x, i) => (
                 <button key={i} onClick={() => setSelectedImage(i)}>
                   <Image
-                    src={x.small.src}
+                    src={x}
                     width={86}
                     height={86}
                     alt="work_image_preview"
@@ -130,7 +133,7 @@ const IndividualWork: NextPage = () => {
               </button>
               <div tw="relative">
                 <Image
-                  src={selectedBigImage.src}
+                  src={workImages[selectedImage]}
                   width={486}
                   height={607.5}
                   alt="work_image"

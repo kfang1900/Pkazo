@@ -14,7 +14,7 @@ export const loadStorageImage = async (photoURL:string) => {
         const reference = ref(storage, photoURL)
 
         let url = String(await getDownloadURL(reference));
-        console.log("Photo url is ", url)
+        //console.log("Photo url is ", url)
         return url
     } catch (error) {
         console.log("ProfPic Error: " + error);
@@ -27,11 +27,12 @@ export const loadStorageImages = async(photoURLs:string[])=>{
     photoURLs.forEach(async (url)=>{
         retURLS.push(await loadStorageImage(url))
     })
+    console.log(retURLS)
     return retURLS
 }
 
 export const fetchArtistByID = async(artistref: string)=>{
-    console.log("Fetchin artist ", artistref)
+    console.log("Fetching artist ", artistref)
     let app = getApp();
     let db = getFirestore(app);
     const docRef = doc(db, "Artists", artistref);
