@@ -56,7 +56,6 @@ const getPageData = async(workid:string,setWorkData:any,setArtistData:any,setArt
   const workPictures = await loadStorageImages(workD?.data()?.Images)
   console.log(workPictures)
   setWorkPictures(workPictures)
-  setSelectedImage()
 
 }
 
