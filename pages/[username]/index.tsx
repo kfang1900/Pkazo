@@ -11,14 +11,15 @@ import ProfilePosts from 'components/profile/ProfilePosts';
 import StorePortfolio from 'components/profile/StorePortfolio';
 import { getApp } from 'firebase/app';
 import { getDocs, getFirestore,collection,query, where, QueryDocumentSnapshot, DocumentData} from "firebase/firestore";
-
-import { sample_artist } from 'utils/Sample_Posts_Imports';
+import { defaultCoverImage } from 'utils/FrontEndDefaults';
+import {loadStorageImage} from 'utils/FirebaseFunctions'
+//import { sample_artist } from 'utils/Sample_Posts_Imports';
 
 export const Container = styled.div`
   ${tw`px-5 max-w-[1320px] mx-auto`}
 `;
 
-const fetchArtist = async(username: String, setData: any)=>{ 
+const fetchArtist = async(username: String, setData: any, setCover:any)=>{ 
   console.log("Fetching "+username)
   
   let app = getApp();
@@ -32,6 +33,9 @@ const fetchArtist = async(username: String, setData: any)=>{
    result.push(snapshot);
    });
   setData(result)
+
+  const coverImageURL = await loadStorageImage(result[0]?.data()?.Cover)
+  setCover(coverImageURL)
   
   /*
   const imref = await loadStorageImage(ref.data()["ProfilePicture"])
@@ -61,6 +65,7 @@ const Portfolio: NextPage = () => {
   const [page, setPage]=useState(1)
   const [artistData,setData] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
   const [loading,setLoading] = useState<boolean>(true);
+  const [coverImage,setCoverImage] = useState(defaultCoverImage)
   const user = username
   const pages = ['Posts', 'Portfolio', 'Store'];
   useEffect(()=>{
@@ -69,7 +74,7 @@ const Portfolio: NextPage = () => {
       console.log(typeof username)
       if(typeof username == "string"){
         console.log("String ", username)
-        fetchArtist(username,setData)
+        fetchArtist(username,setData,setCoverImage)
         setLoading(false)
       }
     }
@@ -99,7 +104,7 @@ const Portfolio: NextPage = () => {
         {/* Cover Photo */}
         <div tw="relative w-full h-[180px] lg:h-[300px]">
           <Image
-            src={artistData[0].data()["Cover"]}
+            src={coverImage}
             alt="Cover Photo"
             layout="fill"
             objectFit="cover"

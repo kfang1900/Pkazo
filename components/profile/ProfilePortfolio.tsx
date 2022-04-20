@@ -193,6 +193,7 @@ function GallerySection(props: Props) {
         </div>
       </section>
       {/* Gallery Section --End-- */}
+    {/*
       <div tw="grid grid-cols-3 gap-16 mt-7 w-full">
         <div tw="flex-grow">
           <div tw="text-black text-[20px] leading-[27px] mb-2 font-semibold">
@@ -231,7 +232,7 @@ function GallerySection(props: Props) {
             ))}
         </div>
       </div>
-
+            */}
       <div tw="mt-7">
         <div tw="flex items-end">
           <div tw="text-black text-[30px] font-semibold leading-[30px]">

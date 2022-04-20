@@ -18,6 +18,7 @@ import {fetchArtistByID, fetchWorkByID, loadStorageImage, loadStorageImages} fro
 import {DocumentData,DocumentSnapshot} from "firebase/firestore";
 import { sample_posts } from 'utils/Sample_Posts_Imports';
 import {defaultWorkPicture} from 'utils/FrontEndDefaults'
+import Link from 'next/link';
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },
@@ -54,8 +55,8 @@ const getPageData = async(workid:string,setWorkData:any,setArtistData:any,setArt
   setArtistPicture(artistImgURL)
   //console.log(artistImgURL)
   const workPictures = await loadStorageImages(workD?.data()?.Images)
-  console.log(workPictures)
   setWorkPictures(workPictures)
+  console.log(workPictures)
 
 }
 
@@ -131,12 +132,13 @@ const IndividualWork: NextPage = () => {
                 </svg>
               </button>
               <div tw="relative">
+                {workImages[selectedImage]?(
                 <Image
                   src={workImages[selectedImage]}
                   width={486}
                   height={607.5}
                   alt="work_image"
-                />
+                />):(<p>Could not load image</p>)}
                 <button tw="absolute bg-white rounded-full w-9 h-9 top-4 right-4 flex justify-center items-center">
                   <svg
                     width="18"
@@ -228,6 +230,8 @@ const IndividualWork: NextPage = () => {
           </div>
         </div>
         <div tw="min-w-[428px] mr-14">
+          <Link href={"/"+artistData?.data()?.username}>
+            <>
           <div tw="flex w-full">
             <div tw="flex-auto flex">
               <div tw="w-14 h-14 overflow-hidden rounded-full flex items-center">
@@ -240,7 +244,7 @@ const IndividualWork: NextPage = () => {
                 />
               </div>
               <div tw="ml-3.5 mt-1.5">
-                <p tw="text-xl font-bold">{artistData?.data()?.Name}</p>
+                <a  href={"/"+artistData?.data()?.username} tw="text-xl font-bold">{artistData?.data()?.Name}</a>
                 <p tw="mt-1.5 text-xs text-gray-500">{artistData?.data()?.Location}</p>
               </div>
             </div>
@@ -250,6 +254,8 @@ const IndividualWork: NextPage = () => {
               </button>
             </div>
           </div>
+          </>
+          </Link>
           <div tw="mt-3.5 flex">
             <p tw="flex-auto text-4xl italic ml-3.5">{workData.data()!["Name"]}</p>
             <div tw="flex-auto flex flex-row-reverse">
