@@ -1,6 +1,6 @@
 import { getApp } from "firebase/app";
-import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import { doc,getDoc, getFirestore, DocumentData,DocumentSnapshot} from "firebase/firestore";
+import { getDownloadURL, getStorage, ref} from "firebase/storage";
+import { doc,getDoc,getDocs, getFirestore, DocumentData,DocumentSnapshot,collection, query} from "firebase/firestore";
 
 
 
@@ -49,3 +49,35 @@ export const fetchArtistByID = async(artistref: string)=>{
       return docSnap
     }
 
+
+//Returns a Portfolio Preview Object of a specific portfolio 
+//{PortfolioName: Paintings, Works:[WorkPreviewObject1, WorkPreviewObject2...WorkPreviewObject8]}
+export const getPortfolioByRef = async (artistref:string) => {
+    let app = getApp();
+    let db = getFirestore(app);
+    const q = await query(collection(db, "Artists", artistref,"Portfolios"))
+    const docRef = await getDocs(q)
+    docRef.forEach(element =>{
+        console.log(element.data())
+    })
+}
+
+
+//Returns a Work Preview Object of a specific piece of work 
+//{WorkName: The Maiden with the hair, Image: url.url.com}
+export const getWorkPreview = async (workRef:string) => {
+    
+    const app = getApp();
+    let db = getFirestore(app);
+
+    const docRef = doc(db, "Works", workRef);
+    const ref = await (await getDoc(docRef)).data()
+    let ret:{WorkName:string,DisplayImage:string} = {WorkName:"",DisplayImage:""}
+    if(ref!=null){
+        const pic = await loadStorageImage(ref["MainImage"])
+        let ret = {WorkName:ref["Name"],DisplayImage:pic}
+        return ret
+    }
+    return ret
+
+}

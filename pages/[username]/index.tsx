@@ -12,7 +12,7 @@ import StorePortfolio from 'components/profile/StorePortfolio';
 import { getApp } from 'firebase/app';
 import { getDocs, getFirestore,collection,query, where, QueryDocumentSnapshot, DocumentData} from "firebase/firestore";
 import { defaultCoverImage } from 'utils/FrontEndDefaults';
-import {loadStorageImage} from 'utils/FirebaseFunctions'
+import {getPortfolioByRef, loadStorageImage} from 'utils/FirebaseFunctions'
 //import { sample_artist } from 'utils/Sample_Posts_Imports';
 
 export const Container = styled.div`
@@ -36,11 +36,8 @@ const fetchArtist = async(username: String, setData: any, setCover:any)=>{
 
   const coverImageURL = await loadStorageImage(result[0]?.data()?.Cover)
   setCover(coverImageURL)
-  
+  const portfolioCollection = await getPortfolioByRef(result[0]?.id)
   /*
-  const imref = await loadStorageImage(ref.data()["ProfilePicture"])
-  setPicture(imref)
-  const portfolioCollection = await getDocs(portQuery)
   let portfolioTemp = []
   portfolioCollection.forEach(async (doc) => {
     // doc.data() is never undefined for query doc snapshots
@@ -57,6 +54,7 @@ const fetchArtist = async(username: String, setData: any, setCover:any)=>{
   
   console.log(portfolios)
   */
+  
 }
 
 const Portfolio: NextPage = () => {
@@ -66,6 +64,7 @@ const Portfolio: NextPage = () => {
   const [artistData,setData] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
   const [loading,setLoading] = useState<boolean>(true);
   const [coverImage,setCoverImage] = useState(defaultCoverImage)
+  const [portfolioData, setPortfolioData] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
   const user = username
   const pages = ['Posts', 'Portfolio', 'Store'];
   useEffect(()=>{
