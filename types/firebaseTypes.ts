@@ -1,6 +1,7 @@
 import { GeoPoint } from "firebase/firestore";
+import { DocumentData } from "firebase/firestore";
 
-export default interface ArtistObject {
+export interface ArtistObject {
     Name: string,
     Bio: string,
     AssociatedUser: string,
@@ -15,3 +16,10 @@ export default interface ArtistObject {
     username:String,
   }
   
+
+export interface PortfolioObject {
+    Portfolios: DocumentData[];
+    Works:DocumentData[][];
+    PortfolioImages:string[];
+
+  }

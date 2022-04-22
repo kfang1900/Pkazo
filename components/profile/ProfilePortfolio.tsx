@@ -6,7 +6,7 @@ import tw, { styled } from 'twin.macro';
 
 import { portfolio_images } from 'utils/Cancer_Imports';
 import { Artist, showEdu, showExp, showExh } from 'obj/Artist';
-
+import { PortfolioObject } from 'types/firebaseTypes'
 import styles from '../../styles/ProfilePortfolio.module.css';
 
 type GalleryDataType = {
@@ -87,8 +87,8 @@ const galleryData: GalleryDataType[] = [
 ];
 
 // Credit: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-function shuffle(array: any[]) {
-  let currentIndex = array.length,
+function shuffle(obj:{Data: any[],Images:any[]}) {
+  let currentIndex = obj.Images.length,
     randomIndex;
 
   // While there remain elements to shuffle...
@@ -98,23 +98,29 @@ function shuffle(array: any[]) {
     currentIndex--;
 
     // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex],
+    [obj.Images[currentIndex], obj.Images[randomIndex]] = [
+      obj.Images[randomIndex],
+      obj.Images[currentIndex],
+    ];
+    [obj.Data[currentIndex], obj.Data[randomIndex]] = [
+      obj.Data[randomIndex],
+      obj.Data[currentIndex],
     ];
   }
-  return array;
+  return obj;
 }
 
-interface Props {
-  user: Artist;
-}
-function GallerySection(props: Props) {
+
+
+
+function GallerySection(props: PortfolioObject) {
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
-  const [curGallery, setCurGallery] = useState(getGalleryData(null));
+  const [curGallery, setCurGallery] = useState(getGalleryData(props,null));
+  console.log("rendering Gallery",props) //I don't know why this print statment changes whether they show up
+  console.log(curGallery.Images)
   const [seeNum, setSeeNum] = useState(9);
   function updSeeNum() {
-    if (seeNum >= curGallery.length) setSeeNum(9);
+    if (seeNum >= curGallery.Images.length) setSeeNum(9);
     else setSeeNum(seeNum + 9);
   }
   return (
@@ -123,16 +129,14 @@ function GallerySection(props: Props) {
       <section tw="mt-10">
         <div className="container">
           <div tw="flex justify-center mb-12">
-            {galleryData.map((gallery, index) => (
+            {props.Portfolios.map((portfolio, index) => (
               <div
                 key={index}
                 tw="cursor-pointer"
                 onClick={() => {
                   setActiveIndex(activeIndex === index ? null : index);
                   setCurGallery(
-                    shuffle(
-                      getGalleryData(activeIndex === index ? null : index)
-                    )
+                      getGalleryData(props,activeIndex === index ? null : index)
                   );
                 }}
               >
@@ -143,17 +147,18 @@ function GallerySection(props: Props) {
                   ]}
                 >
                   <Image
-                    src={gallery.circleImgSrc}
+                    src={props.PortfolioImages[index]?props.PortfolioImages[index]:portfolio_images[0][0]
+                  }
                     alt="Portfolio Image"
                     layout="fill"
                   />
                 </div>
-                <p tw="text-black mt-2 text-center">{gallery.circleTitle}</p>
+                <p tw="text-black mt-2 text-center">{portfolio.Name}</p>
               </div>
             ))}
           </div>
 
-          <CircleDescriptionBox activeIndex={activeIndex} />
+          <CircleDescriptionBox activeIndex={activeIndex} props={props} />
         </div>
       </section>
       {/* Circle Images Section --End-- */}
@@ -165,17 +170,22 @@ function GallerySection(props: Props) {
             className={styles['my-masonry-grid']}
             columnClassName={styles['my-masonry-grid_column']}
           >
-            {curGallery.slice(0, seeNum).map((gallery, index) => (
+            {//.Images.slice(0, seeNum)
+            curGallery.Images?.map((gallery, index) => (
+              <>
+              {console.log("Rendering Masonry",gallery,curGallery.Images)}
               <button key={index} tw="my-[18px]">
-                <Image src={gallery.imgSrc} tw="w-full h-auto" alt="" />
+              <Image src={gallery
+                }  tw=" w-full h-auto" alt="" width="100" height="100"></Image>
               </button>
+              </>
             ))}
           </Masonry>
         </div>
 
         <div tw="flex w-full justify-center items-center mt-[30px]">
           <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
-          {curGallery.length > 9 && (
+          {curGallery.Images.length > 9 && (
             <button
               tw="rounded-full border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB] mr-[-10%] w-[60px] h-[60px] mx-[30px] px-0 text-[#8E8E93] font-bold text-[13px] text-center"
               onClick={() => updSeeNum()}
@@ -184,7 +194,7 @@ function GallerySection(props: Props) {
                 src="/assets/svgs/arrow_down.svg"
                 css={[
                   tw`m-auto`,
-                  seeNum >= curGallery.length && tw`scale-y-[-1]`,
+                  seeNum >= curGallery.Images.length && tw`scale-y-[-1]`,
                 ]}
               />
             </button>
@@ -264,32 +274,44 @@ function GallerySection(props: Props) {
 
 export default GallerySection;
 
-const getGalleryData = (activeIndex: null | number) => {
+const getGalleryData = (props:PortfolioObject,activeIndex: null | number) => {
   if (activeIndex === null) {
-    return galleryData.map((i) => i.galleries).flat();
+    const a= props.Works.map((i) => i).flat();
+    const b = props.WorkImages.map((i)=>i).flat();
+    console.log("rendering images",a,b)
+    return {Data:a,Images:b}
   }
-  return galleryData[activeIndex].galleries;
+  else{
+    const a = props.Works[activeIndex];
+    const b = props.WorkImages[activeIndex];
+    console.log("rendering images",a,b)
+    return {Data:a,Images:b}
+  }
 };
 
 const CircleDescriptionBox = ({
-  activeIndex,
+  activeIndex, props,
 }: {
   activeIndex: null | number;
+  props:PortfolioObject;
 }) => {
+  console.log("rendering description box",props)
+
   if (activeIndex === null) return null;
-  const data = galleryData[activeIndex];
+  const data = props.Portfolios[activeIndex];
 
   return (
     <div tw="flex rounded-3xl border-2 border-[#D8D8D8] max-w-[1000px] mx-auto pr-[60px] py-9">
       <div tw="w-[120px] h-[120px] relative rounded-full overflow-hidden duration-200 origin-bottom ml-[52px] mr-[44px] my-auto flex-shrink-0">
-        <Image src={data.circleImgSrc} alt="Portfolio Image" layout="fill" />
+        <Image src={props.PortfolioImages[activeIndex]?props.PortfolioImages[activeIndex]:portfolio_images[0][0]
+        } alt="Portfolio Image" layout="fill" />
       </div>
       <div>
         <h6 tw="text-[28px] font-semibold text-[#595959]">
-          {data.descriptionBox.title}
+          {data.Name}
         </h6>
         <div tw="text-black text-[16px] mt-4 max-w-[700px]">
-          {data.descriptionBox.description}
+          {data.Description}
         </div>
       </div>
     </div>

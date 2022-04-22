@@ -13,13 +13,15 @@ import { getApp } from 'firebase/app';
 import { getDocs, getFirestore,collection,query, where, QueryDocumentSnapshot, DocumentData} from "firebase/firestore";
 import { defaultCoverImage } from 'utils/FrontEndDefaults';
 import {getPortfolioByRef, loadStorageImage} from 'utils/FirebaseFunctions'
+import { PortfolioObject } from 'types/firebaseTypes';
+
 //import { sample_artist } from 'utils/Sample_Posts_Imports';
 
 export const Container = styled.div`
   ${tw`px-5 max-w-[1320px] mx-auto`}
 `;
 
-const fetchArtist = async(username: String, setData: any, setCover:any)=>{ 
+const fetchArtist = async(username: String, setData: any, setCover:any, setPortfolioData:any,setLoadingPortfolio:any)=>{ 
   console.log("Fetching "+username)
   
   let app = getApp();
@@ -37,6 +39,12 @@ const fetchArtist = async(username: String, setData: any, setCover:any)=>{
   const coverImageURL = await loadStorageImage(result[0]?.data()?.Cover)
   setCover(coverImageURL)
   const portfolioCollection = await getPortfolioByRef(result[0]?.id)
+  setPortfolioData(portfolioCollection!)
+  if(portfolioCollection.PortfolioImages!=[] && portfolioCollection.WorkImages!=[]){
+    setLoadingPortfolio(false)
+
+  }
+  console.log(portfolioCollection)
   /*
   let portfolioTemp = []
   portfolioCollection.forEach(async (doc) => {
@@ -64,7 +72,8 @@ const Portfolio: NextPage = () => {
   const [artistData,setData] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
   const [loading,setLoading] = useState<boolean>(true);
   const [coverImage,setCoverImage] = useState(defaultCoverImage)
-  const [portfolioData, setPortfolioData] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
+  const [portfolioData, setPortfolioData] = useState({Portfolios:[],Works:[],PortfolioImages:[],WorkImages:[]});
+  const [loadingPortfolio, setLoadingPortfolio] = useState(true);
   const user = username
   const pages = ['Posts', 'Portfolio', 'Store'];
   useEffect(()=>{
@@ -73,7 +82,7 @@ const Portfolio: NextPage = () => {
       console.log(typeof username)
       if(typeof username == "string"){
         console.log("String ", username)
-        fetchArtist(username,setData,setCoverImage)
+        fetchArtist(username,setData,setCoverImage,setPortfolioData,setLoadingPortfolio)
         setLoading(false)
       }
     }
@@ -137,12 +146,13 @@ const Portfolio: NextPage = () => {
             </div>
           </Container>
         </section>
-
+        {loadingPortfolio?(<></>):(
         <Container>
           {page === 0 && <ProfilePosts />}
-          {page === 1 && <Gallery user={user} />}
-          {page === 2 && <StorePortfolio />}
-        </Container>
+          {page === 1 && <Gallery {...portfolioData} />}
+          {page != 0 && <StorePortfolio />}
+        </Container>)
+        } 
       </div>
     </>
     )
