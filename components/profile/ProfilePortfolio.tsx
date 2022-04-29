@@ -175,8 +175,7 @@ function GallerySection(props: PortfolioObject) {
               <>
               {console.log("Rendering Masonry",gallery,curGallery.Images)}
               <button key={index} tw="my-[18px]">
-              <Image src={gallery
-                }  tw=" w-full h-auto" alt="" width="100" height="100"></Image>
+                <img src={gallery} tw=" w-full h-auto" alt=""></img>
               </button>
               </>
             ))}
