@@ -42,7 +42,6 @@ const fetchArtist = async(username: String, setData: any, setCover:any, setPortf
   setPortfolioData(portfolioCollection!)
   if(portfolioCollection.PortfolioImages!=[] && portfolioCollection.WorkImages!=[]){
     setLoadingPortfolio(false)
-
   }
   console.log(portfolioCollection)
   /*

@@ -171,7 +171,7 @@ function GallerySection(props: PortfolioObject) {
             columnClassName={styles['my-masonry-grid_column']}
           >
             {//.Images.slice(0, seeNum)
-            curGallery.Images?.map((gallery, index) => (
+            curGallery.Images?.map((gallery:string, index) => (
               <>
               {console.log("Rendering Masonry",gallery,curGallery.Images)}
               <button key={index} tw="my-[18px]">

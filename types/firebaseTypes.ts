@@ -21,5 +21,6 @@ export interface PortfolioObject {
     Portfolios: DocumentData[];
     Works:DocumentData[][];
     PortfolioImages:string[];
+    WorkImages:string[][];
 
   }
