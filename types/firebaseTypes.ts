@@ -17,6 +17,18 @@ export interface ArtistObject {
   }
   
 
+  export interface ArtistData {
+    Name: string;
+    CoverImageURL: string;
+    ProfilePictureURL: string;
+    Location: string;
+    Bio: string;
+    PostNumber: number;
+    WorkNumber: number;
+    Followers: number;
+    Following: number;
+  };
+  
 export interface PortfolioObject {
     Portfolios: DocumentData[];
     Works:DocumentData[][];

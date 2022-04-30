@@ -17,7 +17,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const idToken = req.body.idToken;
-  if (typeof idToken !== 'string') {import { doc, getDoc, getDocs, getFirestore,collection,query } from "firebase/firestore";
+  if (typeof idToken !== 'string') {
 
     res.status(400).end();
     return;

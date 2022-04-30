@@ -12,8 +12,8 @@ import StorePortfolio from 'components/profile/StorePortfolio';
 import { getApp } from 'firebase/app';
 import { getDocs, getFirestore,collection,query, where, QueryDocumentSnapshot, DocumentData} from "firebase/firestore";
 import { defaultCoverImage } from 'utils/FrontEndDefaults';
-import {getPortfolioByRef, loadStorageImage} from 'utils/FirebaseFunctions'
-import { PortfolioObject } from 'types/firebaseTypes';
+
+import {getPortfolioByRef, loadStorageImage} from 'helpers/FirebaseFunctions'
 
 //import { sample_artist } from 'utils/Sample_Posts_Imports';
 
@@ -21,12 +21,12 @@ export const Container = styled.div`
   ${tw`px-5 max-w-[1320px] mx-auto`}
 `;
 
-const fetchArtist = async(username: String, setData: any, setCover:any, setPortfolioData:any,setLoadingPortfolio:any)=>{ 
+const fetchArtist = async(username: string, setData: any, setCover:any, setPortfolioData:any,setLoadingPortfolio:any)=>{ 
   console.log("Fetching "+username)
   
-  let app = getApp();
+  const app = getApp();
   //Get that document from the database
-  let db = getFirestore(app);
+  const db = getFirestore(app);
   const artistsRef = collection(db, "Artists");
   const q = query(artistsRef, where("username", "==",username));
   const ref = await getDocs(q)
@@ -40,7 +40,7 @@ const fetchArtist = async(username: String, setData: any, setCover:any, setPortf
   setCover(coverImageURL)
   const portfolioCollection = await getPortfolioByRef(result[0]?.id)
   setPortfolioData(portfolioCollection!)
-  if(portfolioCollection.PortfolioImages!=[] && portfolioCollection.WorkImages!=[]){
+  if(portfolioCollection.PortfolioImages!==[] && portfolioCollection.WorkImages!==[]){
     setLoadingPortfolio(false)
   }
   console.log(portfolioCollection)
@@ -79,7 +79,7 @@ const Portfolio: NextPage = () => {
     if(router.isReady && artistData.length===0){
       console.log(username)
       console.log(typeof username)
-      if(typeof username == "string"){
+      if(typeof username === "string"){
         console.log("String ", username)
         fetchArtist(username,setData,setCoverImage,setPortfolioData,setLoadingPortfolio)
         setLoading(false)
@@ -149,7 +149,7 @@ const Portfolio: NextPage = () => {
         <Container>
           {page === 0 && <ProfilePosts />}
           {page === 1 && <Gallery {...portfolioData} />}
-          {page != 0 && <StorePortfolio />}
+          {page !== 0 && <StorePortfolio />}
         </Container>)
         } 
       </div>

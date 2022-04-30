@@ -14,7 +14,7 @@ import progress2 from 'public/assets/indiv_work/progress2.png';
 import progress3 from 'public/assets/indiv_work/progress3.png';
 import progress4 from 'public/assets/indiv_work/progress4.png';
 import PostDetails from 'components/popups/PostDetails';
-import {fetchArtistByID, fetchWorkByID, loadStorageImage, loadStorageImages} from 'utils/FirebaseFunctions'
+import {fetchArtistByID, fetchWorkByID, loadStorageImage, loadStorageImages} from 'helpers/FirebaseFunctions'
 import {DocumentData,DocumentSnapshot} from "firebase/firestore";
 import { sample_posts } from 'utils/Sample_Posts_Imports';
 import {defaultWorkPicture} from 'utils/FrontEndDefaults'
@@ -71,9 +71,9 @@ const IndividualWork: NextPage = () => {
   const router=useRouter();
   const {workid } = router.query;
   useEffect(()=>{
-    if(router.isReady && workData==undefined){
+    if(router.isReady && workData===undefined){
       console.log(workid, typeof workid)
-      if(typeof workid == "string"){
+      if(typeof workid === "string"){
         getPageData(workid,setWorkData,setArtistData,setArtistPicture,setWorkImages)
       }
     }

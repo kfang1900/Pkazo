@@ -1,12 +1,13 @@
 import { getApp } from "firebase/app";
 import { getDownloadURL, getStorage, ref} from "firebase/storage";
-import { doc,getDoc,getDocs, getFirestore, QuerySnapshot, DocumentData,DocumentSnapshot,collection, query} from "firebase/firestore";
-import { PortfolioObject } from "types/firebaseTypes";
-import Portfolio from "pages/[username]";
+import { doc,getDoc,getDocs, getFirestore, QuerySnapshot, DocumentData,collection, query} from "firebase/firestore";
 
+function defaultString<T>(arg: (param: string) => string ){
+    return arg
+}
 
 //Returns the Image URL as a string
-export const loadStorageImage = async (photoURL:string) => {
+const loadStorageImage = async (photoURL:string) => {
     const app = getApp();
     const storage = getStorage(app);
     try {
@@ -23,7 +24,7 @@ export const loadStorageImage = async (photoURL:string) => {
     }
 }
 
-export const loadStorageImages = async(photoURLs:string[])=>{
+const loadStorageImages = async(photoURLs:string[])=>{
     const retURLS:string[] = []
     photoURLs.forEach(async (url)=>{
         retURLS.push(await loadStorageImage(url))
@@ -32,7 +33,7 @@ export const loadStorageImages = async(photoURLs:string[])=>{
     return retURLS
 }
 
-export const fetchArtistByID = async(artistref: string)=>{
+const fetchArtistByID = async(artistref: string)=>{
     console.log("Fetching artist ", artistref)
     let app = getApp();
     let db = getFirestore(app);
@@ -41,7 +42,7 @@ export const fetchArtistByID = async(artistref: string)=>{
     return docSnap
   }
   
-  export const fetchWorkByID = async(workref: string)=>{       
+  const fetchWorkByID = async(workref: string)=>{       
       let app = getApp();
       //Get that document from the database
       let db = getFirestore(app);
@@ -80,7 +81,7 @@ const getPortfolioHelper = async(docRef:QuerySnapshot<DocumentData>)=>{
 }
 //Returns a Portfolio Preview Object of a specific portfolio 
 //{PortfolioName: Paintings, Works:[WorkPreviewObject1, WorkPreviewObject2...WorkPreviewObject8]}
-export const getPortfolioByRef = async (artistref:string) => {
+const getPortfolioByRef = async (artistref:string) => {
     let app = getApp();
     let db = getFirestore(app);
     const q = await query(collection(db, "Artists", artistref,"Portfolios"))
@@ -94,7 +95,7 @@ export const getPortfolioByRef = async (artistref:string) => {
 
 //Returns a Work Preview Object of a specific piece of work 
 //{WorkName: The Maiden with the hair, Image: url.url.com}
-export const getWorkPreview = async (workRef:string) => {
+const getWorkPreview = async (workRef:string) => {
     
     const app = getApp();
     let db = getFirestore(app);
@@ -110,3 +111,6 @@ export const getWorkPreview = async (workRef:string) => {
     return ret
 
 }
+
+export { getWorkPreview, getPortfolioByRef,fetchWorkByID,loadStorageImage,loadStorageImages,fetchArtistByID}
+export default{defaultString}

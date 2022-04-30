@@ -5,7 +5,7 @@ import tw from 'twin.macro';
 import buttons from 'styles/Button';
 import ConfirmUnfollowModal from './ConfirmUnfollow';
 import {QueryDocumentSnapshot, DocumentData} from "firebase/firestore";
-import {loadStorageImage} from 'utils/FirebaseFunctions'
+import {loadStorageImage} from 'helpers/FirebaseFunctions'
 
 import { Artist } from '../../obj/Artist';
 
