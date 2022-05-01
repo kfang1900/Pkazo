@@ -12,6 +12,7 @@ import ProfileImg from '/public/assets/images/profile.png';
 import ProfileImgBuyer from '/public/assets/images/kevin.png';
 import 'twin.macro';
 import { UrlObject } from 'url';
+import useAuth from '../utils/useAuth';
 
 /* Copied from image.tsx source */
 interface StaticRequire {
@@ -39,6 +40,7 @@ function NavbarIcon(props: {
 }
 
 const Header = (props: { isBuyer?: boolean | undefined }) => {
+  const auth = useAuth();
   return (
     <div tw="sticky top-0 z-50 w-full border-b border-[#D8D8D8] bg-white">
       <div tw="px-5 flex flex-row items-center justify-between py-3">

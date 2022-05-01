@@ -9,6 +9,7 @@ import buttons from '../../styles/Button';
 import ConfirmUnfollowModal from '../profile/ConfirmUnfollow';
 import PostImage from './PostImage';
 import { MdRadioButtonUnchecked } from 'react-icons/md';
+import useAuth from '../../utils/useAuth';
 
 interface LoginErrors {
   email?: string;
@@ -27,6 +28,8 @@ function LoginForm(props: LoginFormProps) {
   };
   const [register, setRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const auth = useAuth();
+
   const registerModal = () => {
     return (
       <>
@@ -58,7 +61,20 @@ function LoginForm(props: LoginFormProps) {
           }}
           onSubmit={async (values, { setFieldError }) => {
             try {
-              //   await signIn(values.email, values.password);
+              if (!auth.createUserWithEmailAndPassword) {
+                return;
+              }
+
+              await auth
+                .createUserWithEmailAndPassword(
+                  values.displayName,
+                  values.email,
+                  values.password
+                )
+                .then((userCred) => {
+                  if (!auth.apiLogin) return;
+                  return auth.apiLogin(userCred.user);
+                });
               props.onClose();
             } catch (error: any) {
               switch (error.code) {
@@ -139,7 +155,7 @@ function LoginForm(props: LoginFormProps) {
         </div>
         <div tw="font-bold text-[20px] leading-7 text-[#333333]">Sign in</div>
         <Formik
-          initialValues={{ email: '', password: '' }}
+          initialValues={{ email: '', password: '', staySignedIn: true }}
           validateOnChange={false}
           validate={(values) => {
             const errors: LoginErrors = {};
@@ -157,7 +173,22 @@ function LoginForm(props: LoginFormProps) {
           }}
           onSubmit={async (values, { setFieldError }) => {
             try {
-              //   await signIn(values.email, values.password);
+              if (!auth.setRememberSession) return;
+              await auth
+                .setRememberSession(true)
+                .then(() => {
+                  if (!auth.signInWithEmailAndPassword) {
+                    throw new Error('Auth not initialized');
+                  }
+                  return auth.signInWithEmailAndPassword(
+                    values.email,
+                    values.password
+                  );
+                })
+                .then((userCred) => {
+                  if (!auth.apiLogin) return;
+                  auth.apiLogin(userCred.user);
+                });
               props.onClose();
             } catch (error: any) {
               switch (error.code) {
@@ -248,6 +279,7 @@ function LoginForm(props: LoginFormProps) {
               buttons.white,
               tw`text-[16px] font-semibold mt-3 w-full duration-150 h-[52px]`,
             ]}
+            onClick={() => auth.signInWithGoogle()}
           >
             <div tw="flex items-center justify-center">
               <img
@@ -263,6 +295,7 @@ function LoginForm(props: LoginFormProps) {
               buttons.white,
               tw`text-[16px] font-semibold mt-3 w-full duration-150 h-[52px]`,
             ]}
+            onClick={() => auth.signInWithFacebook()}
           >
             <div tw="flex items-center justify-center">
               <img
@@ -273,19 +306,21 @@ function LoginForm(props: LoginFormProps) {
               Continue with Facebook
             </div>
           </button>
-          <div tw="text-[13px] leading-5 mt-3 text-[#595959]">
-            By clicking Create Account or Continue with Google or Facebook, you
-            agree to Pkazo&#39;s{' '}
-            <Link href="#" passHref>
-              <span tw="underline cursor-pointer">Terms of Use</span>
-            </Link>{' '}
-            and{' '}
-            <Link href="#" passHref>
-              <span tw="underline cursor-pointer">Privacy Policy</span>
-            </Link>
-            . Pkazo may send you communications; you may change your preferences
-            in your account settings.
-          </div>
+          {register && (
+            <div tw="text-[13px] leading-5 mt-3 text-[#595959]">
+              By clicking Create Account or Continue with Google or Facebook,
+              you agree to Pkazo&#39;s{' '}
+              <Link href="#" passHref>
+                <span tw="underline cursor-pointer">Terms of Use</span>
+              </Link>{' '}
+              and{' '}
+              <Link href="#" passHref>
+                <span tw="underline cursor-pointer">Privacy Policy</span>
+              </Link>
+              . Pkazo may send you communications; you may change your
+              preferences in your account settings.
+            </div>
+          )}
           {!register && (
             <div tw="text-[13px] leading-5 mt-3 text-center">
               New to Pkazo?{' '}
@@ -294,6 +329,17 @@ function LoginForm(props: LoginFormProps) {
                 tw="bg-transparent border-none outline-none text-soft-red font-semibold underline cursor-pointer"
               >
                 Register here
+              </button>
+            </div>
+          )}
+          {register && (
+            <div tw="text-[13px] leading-5 mt-3 text-center">
+              Already have an account?{' '}
+              <button
+                onClick={() => setRegister(!register)}
+                tw="bg-transparent border-none outline-none text-soft-red font-semibold underline cursor-pointer"
+              >
+                Sign in
               </button>
             </div>
           )}
