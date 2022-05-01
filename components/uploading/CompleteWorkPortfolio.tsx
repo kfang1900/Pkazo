@@ -1,4 +1,4 @@
-import React, { useState, ReactNode, Dispatch, SetStateAction } from 'react';
+import React, { useState, ReactNode, Dispatch, SetStateAction, MouseEventHandler } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import tw from 'twin.macro';
@@ -7,6 +7,8 @@ import ImageSrc6 from '/public/assets/images/image6.svg';
 import ImageSrc3 from '/public/assets/images/image3.svg';
 import ImageSrc4 from '/public/assets/images/image4.svg';
 import ImageSrc9 from '/public/assets/images/image9.svg';
+import { portfolio_images } from 'utils/Cancer_Imports';
+
 
 /* copied from image.tsx */
 interface StaticRequire {
@@ -52,9 +54,13 @@ function ImageSelector(props: {
   );
 }
 
-const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
+const CompleteWorkPortfolio = (props: { Portfolios: string[], setActivePortfolio: (n: number | null) => void }) => {
   const [selectedImage, setSelectedImage] = useState(-1);
-
+  const [activeIndex, setActiveIndex] = useState<null | number>(null);
+  const handleData: React.MouseEventHandler = ((e: React.MouseEvent) => {
+    props.setActivePortfolio(activeIndex)
+  })
+  console.log("Rendering Portfolio Data", props.Portfolios)
   return (
     <>
       <div tw="text-2xl max-w-[1000px] px-[40px]  leading-[1.5] mx-auto text-center opacity-80 mt-20 font-bold">
@@ -62,66 +68,42 @@ const CompleteWorkPortfolio = (props: { goNext: () => void }) => {
       </div>
 
       <div tw="max-w-[1100px] gap-5 px-[40px] mx-auto flex items-center justify-between flex-wrap mt-20 mb-10">
-        <ImageSelector
-          id={1}
-          selectedImage={selectedImage}
-          setSelectedImage={setSelectedImage}
-          src={ImageSrc1}
-        >
-          Moon Child
-        </ImageSelector>
-
-        <ImageSelector
-          id={2}
-          selectedImage={selectedImage}
-          setSelectedImage={setSelectedImage}
-          src={ImageSrc6}
-        >
-          Seven Phases
-        </ImageSelector>
-
-        <ImageSelector
-          id={3}
-          selectedImage={selectedImage}
-          setSelectedImage={setSelectedImage}
-          src={ImageSrc3}
-        >
-          Meowtide
-        </ImageSelector>
-
-        <ImageSelector
-          id={4}
-          selectedImage={selectedImage}
-          setSelectedImage={setSelectedImage}
-          src={ImageSrc4}
-        >
-          Kali
-        </ImageSelector>
-
-        <ImageSelector
-          id={5}
-          selectedImage={selectedImage}
-          setSelectedImage={setSelectedImage}
-          src={ImageSrc9}
-        >
-          Sadhu
-        </ImageSelector>
+        {props.Portfolios.map((portfolio, index) => (
+          <div
+            key={index}
+            tw="cursor-pointer"
+            onClick={() => {
+              setActiveIndex(activeIndex === index ? null : index);
+            }}
+          >
+            <div
+              css={[
+                tw`w-[128px] h-[128px] relative rounded-full overflow-hidden duration-200 origin-bottom border-4 border-transparent mx-[60px]`,
+                activeIndex === index && tw`border-[#C6C5C3]`,
+              ]}
+            >
+              <Image
+                src={portfolio_images[0][0]
+                }
+                alt="Portfolio Image"
+                layout="fill"
+              />
+            </div>
+            <p tw="text-black mt-2 text-center">{portfolio}</p>
+          </div>
+        ))}
       </div>
 
       <div tw="px-[40px] flex items-center text-white text-lg justify-start mb-20 mt-20">
-        <Link href="/profile/username" passHref>
+        <Link href="#" passHref>
           <div
             tw="py-2.5 px-14 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"
-            onClick={props.goNext}
+            onClick={handleData}
           >
             Post Completed Work
           </div>
         </Link>
       </div>
-
-      <input value="true" tw="" type="radio" id="series1" />
-
-      <input value="true" tw="" type="radio" id="series2" />
     </>
   );
 };

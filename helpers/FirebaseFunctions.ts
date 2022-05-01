@@ -1,6 +1,7 @@
 import { getApp } from "firebase/app";
 import { getDownloadURL, getStorage, ref} from "firebase/storage";
 import { doc,getDoc,getDocs, getFirestore, QuerySnapshot, DocumentData,collection, query} from "firebase/firestore";
+import { urlObjectKeys } from "next/dist/shared/lib/utils";
 
 function defaultString<T>(arg: (param: string) => string ){
     return arg
@@ -92,6 +93,23 @@ const getPortfolioByRef = async (artistref:string) => {
     return res
 }
 
+//Get only the Portfolio Titles and Title Images
+const getPortfolioImagesOnlyByRef = async (artistref:string) => {
+    let app = getApp();
+    let db = getFirestore(app);
+    const q = await query(collection(db, "Artists", artistref,"Portfolios"))
+    const docRef = await getDocs(q)
+    let arr:string[] = []
+    let arr2:string[]=[]
+    docRef.forEach(element =>{
+        arr.push(element.data().Name)
+        arr2.push(element.id)
+    })
+    return [arr,arr2]
+    
+}
+
+
 
 //Returns a Work Preview Object of a specific piece of work 
 //{WorkName: The Maiden with the hair, Image: url.url.com}
@@ -112,5 +130,5 @@ const getWorkPreview = async (workRef:string) => {
 
 }
 
-export { getWorkPreview, getPortfolioByRef,fetchWorkByID,loadStorageImage,loadStorageImages,fetchArtistByID}
+export { getWorkPreview, getPortfolioByRef,fetchWorkByID,loadStorageImage,loadStorageImages,fetchArtistByID,getPortfolioImagesOnlyByRef}
 export default{defaultString}

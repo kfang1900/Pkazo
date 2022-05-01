@@ -7,7 +7,7 @@ import CompleteWorkPortfolio from './CompleteWorkPortfolio';
 import { doc, getFirestore, setDoc, addDoc, collection, } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
 import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-
+import { getPortfolioImagesOnlyByRef } from 'helpers/FirebaseFunctions';
 
 const getBlobFromUri = async (uri) => {
   const blob = await new Promise((resolve, reject) => {
@@ -48,10 +48,22 @@ const uploadImages = async (images) => {
   return imagerefs
 }
 
+const getPortfolioInfo = async (setPortfolioData, setPortfolioRefs) => {
+  const artistref = "VWOgAFjhL0BlFlbDTJZF"
+  const portInfo = await getPortfolioImagesOnlyByRef(artistref)
+
+  console.log("Writing portfolio Info", portInfo)
+  setPortfolioData(portInfo[0])
+  setPortfolioRefs(portInfo[1])
+
+}
+
 function CompleteWorkUploadForm() {
-  const [stage, setStage] = useState(0);
+  const [stage, setStage] = useState(2);
   const [data, setData] = useState({})
   const [uploading, setUploading] = useState(false)
+  const [portfolioNames, setPortfolioNames] = useState([])
+  const [portfolioRefs, setPortfolioRefs] = useState([])
 
   const uploadData = async (s) => {
     setUploading(true)
@@ -64,7 +76,7 @@ function CompleteWorkUploadForm() {
     //Update the newly created work document with the image references in storage.
     console.log("MainImageRef,", imagerefs[0])
     const updateRef = doc(db, 'Works', "YDx1IlGcogMongCBzEo0");
-    setDoc(updateRef, { "MainImage": imagerefs[0], "Images": imagerefs }, { merge: true });
+    setDoc(updateRef, { "MainImage": imagerefs[0], "Images": imagerefs, "Artist": "VWOgAFjhL0BlFlbDTJZF" }, { merge: true });
     console.log("finished uploading")
     setUploading(false);
   }
@@ -72,15 +84,27 @@ function CompleteWorkUploadForm() {
   const getData = () => {
     return data
   }
-  const functions = { setStage, setData, uploadData, getData }
+  const handlePortfolio = async (n) => {
+    if (n !== null) {
+      console.log("uploading to hidden Portfolio")
+    }
+    console.log("uploading to portfolio", portfolioNames[n], portfolioRefs[n])
 
+  }
+
+  console.log("initial portfolio Data", (portfolioNames.length))
+  if (portfolioNames.length === 0) {
+    getPortfolioInfo(setPortfolioNames, setPortfolioRefs)
+  }
+  const functions = { setStage, setData, uploadData, getData }
+  const portfolioProps = { Portfolios: portfolioNames, setActivePortfolio: handlePortfolio }
   return (
     <>
       <Header />
       <CompleteWorkTabSelector stage={stage} setStage={setStage} />
       {stage === 0 && <CompleteWorkInfo {...functions} />}
       {stage === 1 && <CompleteWorkPosts {...functions} />}
-      {stage === 2 && <CompleteWorkPortfolio />}
+      {stage === 2 && <CompleteWorkPortfolio {...portfolioProps} />}
     </>
   );
 }
