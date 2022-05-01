@@ -61,10 +61,6 @@ function LoginForm(props: LoginFormProps) {
           }}
           onSubmit={async (values, { setFieldError }) => {
             try {
-              if (!auth.createUserWithEmailAndPassword) {
-                return;
-              }
-
               await auth
                 .createUserWithEmailAndPassword(
                   values.displayName,
@@ -72,8 +68,8 @@ function LoginForm(props: LoginFormProps) {
                   values.password
                 )
                 .then((userCred) => {
-                  if (!auth.apiLogin) return;
-                  return auth.apiLogin(userCred.user);
+                  if (!userCred?.user) return;
+                  auth.apiLogin(userCred.user);
                 });
               props.onClose();
             } catch (error: any) {
@@ -173,20 +169,13 @@ function LoginForm(props: LoginFormProps) {
           }}
           onSubmit={async (values, { setFieldError }) => {
             try {
-              if (!auth.setRememberSession) return;
               await auth
                 .setRememberSession(true)
-                .then(() => {
-                  if (!auth.signInWithEmailAndPassword) {
-                    throw new Error('Auth not initialized');
-                  }
-                  return auth.signInWithEmailAndPassword(
-                    values.email,
-                    values.password
-                  );
-                })
+                .then(() =>
+                  auth.signInWithEmailAndPassword(values.email, values.password)
+                )
                 .then((userCred) => {
-                  if (!auth.apiLogin) return;
+                  if (!userCred?.user) return;
                   auth.apiLogin(userCred.user);
                 });
               props.onClose();

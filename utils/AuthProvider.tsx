@@ -24,7 +24,7 @@ export default function FirebaseProvider({
   children?: ReactNode;
 }) {
   const router = useRouter();
-  const [email, setEmail] = useState<string | undefined>(undefined);
+  const [email, setEmail] = useState<string>("");
   const apiLogin = useCallback(async (user) => {
     const res = await fetch('/api/auth/sessionLogin', {
       method: 'POST',
@@ -62,7 +62,7 @@ export default function FirebaseProvider({
       if (user === null) {
         // setLoading(false)
         // setUserInfo(null)
-        setEmail(undefined);
+        setEmail("");
         return;
       }
       setEmail(user.email!);

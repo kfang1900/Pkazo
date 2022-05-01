@@ -7,7 +7,7 @@ const Other: NextPage = () => {
 
   return (
     <div>
-      {auth.email || <button onClick={auth.signIn}>login</button>}
+      {auth.email || <button onClick={auth.signInWithGoogle}>login</button>}
       <br />
       <Link href="/">
         <a>to home page</a>
