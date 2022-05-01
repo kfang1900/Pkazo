@@ -32,7 +32,7 @@ function Resume(artistData: QueryDocumentSnapshot<DocumentData>[]) {
                 <div tw="text-black text-[20px] leading-[27px] font-semibold">
                     Exhibitions
                 </div>
-                {artist?.Exhibition
+                {artist?.Exhibitions
                     .map((x: Exhibition, i: number) => (
                         <div key={i} tw="mt-4">
                             {showExh(x)}

@@ -57,10 +57,27 @@ function CompleteWorkInfo(props: {
     return obj
   }
   const placeData = (field: string, value: any) => {
-    const nobj = getData()
+    let nobj = getData()
     nobj[field] = value
     props.setData(nobj)
     console.log("changed data", nobj)
+  }
+  const appendImageData = (value: string[]) => {
+    console.log("attempting to add imageData", value)
+    let nobs = getData()
+    if (nobs.Images === undefined || nobs.Images === []) {
+      console.log("Adding first image")
+      nobs.Images = value
+      nobs["MainImage"] = value[0]
+    }
+    else {
+      value.forEach((element) => {
+        if (!(element in nobs.Images)) {
+          nobs.Images.push(value)
+        }
+      })
+    }
+    props.setData(nobs)
   }
 
   const media: string[] = [
@@ -77,7 +94,6 @@ function CompleteWorkInfo(props: {
   const units: string[] = [
     'cm', 'in', 'ft'
   ]
-
   return (
     <div>
       <div tw="mx-auto flex flex-row w-full max-w-7xl items-start justify-between px-4 mt-20">
@@ -567,6 +583,7 @@ function CompleteWorkInfo(props: {
               handleChange={(files: File[]) => {
                 setUploadedImages((state: string[]) => {
                   setSelected(state.length + files.length - 1);
+                  appendImageData(Array(...files).map(URL.createObjectURL));
                   return state.concat(Array(...files).map(URL.createObjectURL));
                 });
               }}
