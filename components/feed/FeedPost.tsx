@@ -67,7 +67,7 @@ function FeedPost(props: Props) {
           <div tw="flex items-center space-x-3.5 cursor-pointer">
             <div tw="w-[64px] h-[64px] overflow-hidden rounded-full flex items-center">
               <Image
-                src={props.post.user.pfp}
+                src={props.post.user.Profile_Picture}
                 alt="profile_image"
                 width="64px"
                 height="64px"
@@ -76,10 +76,10 @@ function FeedPost(props: Props) {
             </div>
             <div tw="flex flex-col justify-center -space-y-1">
               <h5 tw="text-lg font-bold text-black-light mb-1">
-                {props.post.user.name}
+                {props.post.user.Name}
               </h5>
               <p tw="text-xs font-semibold text-grey-8B">
-                {props.post.user.location}
+                {props.post.user.Location}
               </p>
             </div>
           </div>

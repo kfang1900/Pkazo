@@ -2,51 +2,51 @@ import { Artist, User } from '../obj/Artist';
 import { Post } from '../obj/Post';
 export const sample_artist: Artist = {
   username: 'jamesjean',
-  name: 'James Jean',
-  pfp: '/store_assets/img/pfp.jpg',
-  cover: '/store_assets/img/profile-cover-banner.jpg',
-  location: 'Los Angeles, CA',
-  discipline: 'Painter',
-  bio: 'In his large-scale paintings, James Jean depicts detailed cosmological worlds filled with allegorical and contemporary imagery. He incorporates elements of traditional Chinese and Japanese scroll paintings, Japanese woodblock prints, Renaissance portraiture, comic books, and anime into these complex compositions. As he experiments with such different styles and art historical genres, Jean diminishes the boundary between new and old, and between Eastern and Western artmaking.',
-  posts: [],
-  followers: [],
-  following: [],
-  education: [
+  Name: 'James Jean',
+  Profile_Picture: '/store_assets/img/pfp.jpg',
+  Cover: '/store_assets/img/profile-cover-banner.jpg',
+  Location: 'Los Angeles, CA',
+  Discipline: 'Painter',
+  Bio: 'In his large-scale paintings, James Jean depicts detailed cosmological worlds filled with allegorical and contemporary imagery. He incorporates elements of traditional Chinese and Japanese scroll paintings, Japanese woodblock prints, Renaissance portraiture, comic books, and anime into these complex compositions. As he experiments with such different styles and art historical genres, Jean diminishes the boundary between new and old, and between Eastern and Western artmaking.',
+  Posts: [],
+  Followers: [],
+  Following: [],
+  Education: [
     {
-      school: 'Rhode Island School of Design',
-      field: 'Graphic Design',
-      start: 2007,
-      end: 2011,
+      School: 'Rhode Island School of Design',
+      Field: 'Graphic Design',
+      Start: 2007,
+      End: 2011,
     },
   ],
-  experience: [
+  Experience: [
     {
-      company: 'Google',
-      role: 'Software Engineer',
-      start: 2007,
-      end: 2011,
+      Company: 'Google',
+      Role: 'Software Engineer',
+      Start: 2007,
+      End: 2011,
     },
   ],
-  exhibitions: [
-    { place: 'The Metropolitan Museum of Art', start: 2021, end: 2021 },
-    { place: "My Mommy's House", start: 2020, end: 2020 },
-    { place: 'The Museum of Modern Art', start: 2020, end: 2020 },
+  Exhibitions: [
+    { Gallery: 'The Metropolitan Museum of Art', Start: 2021, End: 2021 },
+    { Gallery: "My Mommy's House", Start: 2020, End: 2020 },
+    { Gallery: 'The Museum of Modern Art', Start: 2020, End: 2020 },
   ],
 };
 export const sample_users: { [key: string]: User | Artist } = {
   will: {
-    name: 'William Sanger',
-    pfp: '/assets/images/users/william_sanger.png',
+    Name: 'William Sanger',
+    Profile_Picture: '/assets/images/users/william_sanger.png',
   },
-  tyler: { name: 'Tyler Wu', pfp: '/assets/images/users/tyler_wu.png' },
-  jake: { name: 'Jake Hill', pfp: '/assets/images/users/jake_hill.png' },
+  tyler: { Name: 'Tyler Wu', Profile_Picture: '/assets/images/users/tyler_wu.png' },
+  jake: { Name: 'Jake Hill', Profile_Picture: '/assets/images/users/jake_hill.png' },
   amanda: {
-    name: 'Amanda Evans',
-    pfp: '/assets/images/users/amanda_evans.png',
+    Name: 'Amanda Evans',
+    Profile_Picture: '/assets/images/users/amanda_evans.png',
   },
   prashant: {
-    name: 'Prashant Singh',
-    pfp: '/assets/images/users/prashant_singh.png',
+    Name: 'Prashant Singh',
+    Profile_Picture: '/assets/images/users/prashant_singh.png',
   },
 };
 export const sample_posts: Post[] = [

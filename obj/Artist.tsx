@@ -8,25 +8,25 @@ export type Education = {
 };
 export type Experience = {
   Company: string;
-  Position: string;
+  Role: string;
   Start: number;
   End: number;
 };
-export type Exhibition = { Gallery: string; Year: number };
+export type Exhibition = { Gallery: string; Start: number; End: number; };
 export type Artist = {
   username: string;
-  name: string;
-  pfp: string;
-  cover: string;
-  location: string;
-  discipline: string;
-  bio: string;
-  posts: Post[];
-  followers: Artist[];
-  following: Artist[];
-  education: Education[];
-  experience: Experience[];
-  exhibitions: Exhibition[];
+  Name: string;
+  Profile_Picture: string;
+  Cover: string;
+  Location: string;
+  Discipline: string;
+  Bio: string;
+  Posts: Post[];
+  Followers: Artist[];
+  Following: Artist[];
+  Education: Education[];
+  Experience: Experience[];
+  Exhibitions: Exhibition[];
 };
 export const showEdu = (x: Education) => {
   return (
@@ -47,9 +47,9 @@ export const showExp = (x: Experience) => {
   return (
     <>
       <div tw="text-[16px] text-[#3C3C3C] leading-[24px] font-semibold">
-        {x.Position !== undefined && (
+        {x.Role !== undefined && (
           <>
-            {x.Position} <span tw="font-normal"> at </span>
+            {x.Role} <span tw="font-normal"> at </span>
           </>
         )}
         {x.Company}
@@ -68,12 +68,12 @@ export const showExh = (x: Exhibition) => {
         {x.Gallery}
       </div>
       <div tw="text-[16px] text-[#8B8B8B] leading-[24px]">
-        {x.Year}
+        {x.Start !== x.End ? <>{x.Start} - {x.End}</> : x.Start}
       </div>
     </>
   );
 };
 export type User = {
-  name: string;
-  pfp: string;
+  Name: string;
+  Profile_Picture: string;
 };
