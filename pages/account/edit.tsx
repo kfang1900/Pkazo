@@ -123,6 +123,7 @@ const EditAccount: NextPage = () => {
                 />
               </button>
             </div>
+            {/*
             <div tw="font-semibold mt-9 text-[20px]">Education</div>
             <div tw="w-full mt-6 grid grid-cols-[115px 450px] gap-x-7">
               <div css={styles.label}>College</div>
@@ -186,6 +187,7 @@ const EditAccount: NextPage = () => {
                   ))}
               </div>
             </div>
+            */}
           </div>
         )}
       </div>
