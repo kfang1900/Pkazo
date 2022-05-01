@@ -16,13 +16,28 @@ import {
   fetchArtistByID,
   loadStorageImage,
 } from '../../helpers/FirebaseFunctions';
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from 'firebase/storage';
 
 const EditAccount: NextPage = () => {
   const [page, setPage] = useState(0);
   const [data, setData] = useState<
-    | { name: string; location: string; discipline: string; bio: string }
+    | {
+        name: string;
+        location: string;
+        discipline: string;
+        bio: string;
+        pfp: string;
+        cover: string;
+      }
     | undefined
   >();
+  const [coverUploading, setCoverUploading] = useState(false);
+
   const uid = 'VWOgAFjhL0BlFlbDTJZF';
 
   const isDataModified = useCallback(
@@ -32,13 +47,6 @@ const EditAccount: NextPage = () => {
       discipline: string;
       bio: string;
     }) => {
-      console.log(
-        data,
-        values.name === data.name,
-        values.location === data.location,
-        values.discipline === data.discipline,
-        values.bio === data.bio
-      );
       return (
         !data ||
         values.name !== data.name ||
@@ -53,8 +61,15 @@ const EditAccount: NextPage = () => {
   useEffect(() => {
     (async () => {
       const artistRef = await fetchArtistByID(uid);
-      const artist = await artistRef.data();
-      console.log(artist);
+      const artist = (await artistRef.data()) as {
+        Name: string;
+        Location: string;
+        Discipline: string;
+        Bio: string;
+        ProfilePicture: string;
+        Cover: string;
+      };
+
       setData({
         name: artist.Name,
         location: artist.Location,
