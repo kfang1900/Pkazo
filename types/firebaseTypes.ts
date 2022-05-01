@@ -28,7 +28,7 @@ export interface ArtistObject {
     Followers: number;
     Following: number;
   };
-  
+
 export interface PortfolioObject {
     Portfolios: DocumentData[];
     Works:DocumentData[][];
@@ -36,3 +36,23 @@ export interface PortfolioObject {
     WorkImages:string[][];
 
   }
+
+  
+interface WorkCreatorProps {
+  Date:string,
+  Description:string,
+  Dimensions:string,
+  ForSale:Boolean,
+  Images:string[],
+  MainImage:string,
+  Medium:string,
+  Name:string,
+  Price:Number|undefined
+  ShippingCost: Number|string|undefined
+  Style:string|undefined,
+  Subject:string|undefined,
+  Type:string|undefined,
+  portfolioUrl: string,
+  artist:string
+  AssociatedUser:string,
+}

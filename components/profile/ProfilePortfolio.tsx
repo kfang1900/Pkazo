@@ -87,7 +87,7 @@ const galleryData: GalleryDataType[] = [
 ];
 
 // Credit: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-function shuffle(obj:{Data: any[],Images:any[]}) {
+function shuffle(obj: { Data: any[], Images: any[] }) {
   let currentIndex = obj.Images.length,
     randomIndex;
 
@@ -115,8 +115,8 @@ function shuffle(obj:{Data: any[],Images:any[]}) {
 
 function GallerySection(props: PortfolioObject) {
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
-  const [curGallery, setCurGallery] = useState(getGalleryData(props,null));
-  console.log("rendering Gallery",props) //I don't know why this print statment changes whether they show up
+  const [curGallery, setCurGallery] = useState(getGalleryData(props, null));
+  console.log("rendering Gallery", props) //I don't know why this print statment changes whether they show up
   console.log(curGallery.Images)
   const [seeNum, setSeeNum] = useState(9);
   function updSeeNum() {
@@ -136,7 +136,7 @@ function GallerySection(props: PortfolioObject) {
                 onClick={() => {
                   setActiveIndex(activeIndex === index ? null : index);
                   setCurGallery(
-                      getGalleryData(props,activeIndex === index ? null : index)
+                    getGalleryData(props, activeIndex === index ? null : index)
                   );
                 }}
               >
@@ -147,8 +147,8 @@ function GallerySection(props: PortfolioObject) {
                   ]}
                 >
                   <Image
-                    src={props.PortfolioImages[index]?props.PortfolioImages[index]:portfolio_images[0][0]
-                  }
+                    src={props.PortfolioImages[index] ? props.PortfolioImages[index] : portfolio_images[0][0]
+                    }
                     alt="Portfolio Image"
                     layout="fill"
                   />
@@ -171,14 +171,14 @@ function GallerySection(props: PortfolioObject) {
             columnClassName={styles['my-masonry-grid_column']}
           >
             {//.Images.slice(0, seeNum)
-            curGallery.Images?.map((gallery:string, index) => (
-              <>
-              {console.log("Rendering Masonry",gallery,curGallery.Images)}
-              <button key={index} tw="my-[18px]">
-                <img src={gallery} tw=" w-full h-auto" alt=""></img>
-              </button>
-              </>
-            ))}
+              curGallery.Images?.map((gallery: string, index) => (
+                <>
+                  {console.log("Rendering Masonry", gallery, curGallery.Images)}
+                  <button key={index} tw="my-[18px]">
+                    <img src={gallery} tw=" w-full h-auto" alt=""></img>
+                  </button>
+                </>
+              ))}
           </Masonry>
         </div>
 
@@ -202,46 +202,7 @@ function GallerySection(props: PortfolioObject) {
         </div>
       </section>
       {/* Gallery Section --End-- */}
-    {/*
-      <div tw="grid grid-cols-3 gap-16 mt-7 w-full">
-        <div tw="flex-grow">
-          <div tw="text-black text-[20px] leading-[27px] mb-2 font-semibold">
-            Education
-          </div>
-          {props.user.education
-            .sort((a, b) => b.end - a.end)
-            .map((x, i) => (
-              <div key={i} tw="mt-4">
-                {showEdu(x)}
-              </div>
-            ))}
-        </div>
-        <div tw="flex-grow">
-          <div tw="text-black text-[20px] leading-[27px] font-semibold">
-            Experience
-          </div>
-          {props.user.experience
-            .sort((a, b) => b.end - a.end)
-            .map((x, i) => (
-              <div key={i} tw="mt-4">
-                {showExp(x)}
-              </div>
-            ))}
-        </div>
-        <div tw="flex-grow">
-          <div tw="text-black text-[20px] leading-[27px] font-semibold">
-            Exhibitions
-          </div>
-          {props.user.exhibitions
-            .sort((a, b) => b.end - a.end)
-            .map((x, i) => (
-              <div key={i} tw="mt-4">
-                {showExh(x)}
-              </div>
-            ))}
-        </div>
-      </div>
-            */}
+      {/*
       <div tw="mt-7">
         <div tw="flex items-end">
           <div tw="text-black text-[30px] font-semibold leading-[30px]">
@@ -253,8 +214,8 @@ function GallerySection(props: PortfolioObject) {
             </div>
           </Link>
         </div>
-      </div>
-
+      </div>*/}
+      {/* 
       <div tw="mt-[100px]">
         <div tw="flex items-end">
           <div tw="text-black text-[30px] font-semibold leading-[30px]">
@@ -267,24 +228,26 @@ function GallerySection(props: PortfolioObject) {
           </Link>
         </div>
       </div>
+      */}
     </div>
+
   );
 }
 
 export default GallerySection;
 
-const getGalleryData = (props:PortfolioObject,activeIndex: null | number) => {
+const getGalleryData = (props: PortfolioObject, activeIndex: null | number) => {
   if (activeIndex === null) {
-    const a= props.Works.map((i) => i).flat();
-    const b = props.WorkImages.map((i)=>i).flat();
-    console.log("rendering images",a,b)
-    return {Data:a,Images:b}
+    const a = props.Works.map((i) => i).flat();
+    const b = props.WorkImages.map((i) => i).flat();
+    //console.log("rendering images", a, b)
+    return { Data: a, Images: b }
   }
-  else{
+  else {
     const a = props.Works[activeIndex];
     const b = props.WorkImages[activeIndex];
-    console.log("rendering images",a,b)
-    return {Data:a,Images:b}
+    //console.log("rendering images", a, b)
+    return { Data: a, Images: b }
   }
 };
 
@@ -292,9 +255,9 @@ const CircleDescriptionBox = ({
   activeIndex, props,
 }: {
   activeIndex: null | number;
-  props:PortfolioObject;
+  props: PortfolioObject;
 }) => {
-  console.log("rendering description box",props)
+  //console.log("rendering description box", props)
 
   if (activeIndex === null) return null;
   const data = props.Portfolios[activeIndex];
@@ -302,7 +265,7 @@ const CircleDescriptionBox = ({
   return (
     <div tw="flex rounded-3xl border-2 border-[#D8D8D8] max-w-[1000px] mx-auto pr-[60px] py-9">
       <div tw="w-[120px] h-[120px] relative rounded-full overflow-hidden duration-200 origin-bottom ml-[52px] mr-[44px] my-auto flex-shrink-0">
-        <Image src={props.PortfolioImages[activeIndex]?props.PortfolioImages[activeIndex]:portfolio_images[0][0]
+        <Image src={props.PortfolioImages[activeIndex] ? props.PortfolioImages[activeIndex] : portfolio_images[0][0]
         } alt="Portfolio Image" layout="fill" />
       </div>
       <div>

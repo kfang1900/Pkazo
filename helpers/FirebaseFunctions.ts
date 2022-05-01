@@ -66,7 +66,7 @@ const getPortfolioHelper = async(docRef:QuerySnapshot<DocumentData>)=>{
         let subworks:DocumentData[] = []
         let subworkImages:string[]=[]
         element.data().Works?.forEach(async (workref:string) => {
-            console.log("Fetching Work Data",workref)            
+            //console.log("Fetching Work Data",workref)            
             const workdata = await fetchWorkByID(workref)
             const workImage = await(loadStorageImage(workdata.data()!.MainImage))
             //console.log(Works,subworks)
@@ -88,7 +88,7 @@ const getPortfolioByRef = async (artistref:string) => {
     const docRef = await getDocs(q)
     let dex = 0
     const res = await getPortfolioHelper(docRef)
-    console.log("returning res",res)
+    //console.log("returning res",res)
     return res
 }
 

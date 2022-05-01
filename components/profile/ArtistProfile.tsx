@@ -4,8 +4,8 @@ import tw from 'twin.macro';
 
 import buttons from 'styles/Button';
 import ConfirmUnfollowModal from './ConfirmUnfollow';
-import {QueryDocumentSnapshot, DocumentData} from "firebase/firestore";
-import {loadStorageImage} from 'helpers/FirebaseFunctions'
+import { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
+import { loadStorageImage } from 'helpers/FirebaseFunctions'
 
 import { Artist } from '../../obj/Artist';
 
@@ -19,7 +19,7 @@ const numFormatter = (x: number) => {
 
 
 
-const ArtistProfile = (artistData:QueryDocumentSnapshot<DocumentData>[]) => {
+const ArtistProfile = (artistData: QueryDocumentSnapshot<DocumentData>[]) => {
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
   const [picture, setPicture] = useState("/store_assets/img/user.png")
   const [isShowUnfollowConfirmModal, setIsShowUnfollwConfirmModal] =
@@ -42,10 +42,10 @@ const ArtistProfile = (artistData:QueryDocumentSnapshot<DocumentData>[]) => {
   };
 
   const artist = artistData[0].data()
-  const prepData =async () => {
+  const prepData = async () => {
     const profile_image = await loadStorageImage(artist["ProfilePicture"])
     setPicture(profile_image)
-  } 
+  }
   prepData()
   return (
     <>
@@ -98,7 +98,7 @@ const ArtistProfile = (artistData:QueryDocumentSnapshot<DocumentData>[]) => {
                   styles and art historical genres, Jean diminishes the boundary
                   between new and old, and between Eastern and Western
                   artmaking.*/
-                  }   
+                  }
                 </p>
               </div>
               <div tw="grid grid-cols-[repeat(4,100px)] gap-[30px] ml-[-20px] mt-[35px]">

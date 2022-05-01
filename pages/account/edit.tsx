@@ -19,7 +19,7 @@ const EditAccount: NextPage = () => {
     'Change Password',
     'Apps and Websites',
     'Email and SMS',
-    'Gay furry porn',
+    'Nothing to see here',
   ];
   const styles = {
     label: tw`text-[16px] text-[#8B8B8B] text-right mt-[10px]`,

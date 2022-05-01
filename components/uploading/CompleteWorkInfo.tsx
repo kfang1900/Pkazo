@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 import { FileUploader } from 'react-drag-drop-files';
 
+
 function UploadedImage(props: {
   id: number;
   src: string | StaticImageData | { default: StaticImageData };
@@ -38,11 +39,28 @@ function UploadedImage(props: {
 }
 
 function CompleteWorkInfo(props: {
-  goNext: MouseEventHandler<HTMLInputElement>;
+  setStage: (arg: number) => void,
+  getData: () => { [k: string]: any },
+  setData: (arg: { [k: string]: any }) => void,
 }) {
   const [workForSale, setWorkForSale] = useState(false);
   const [selected, setSelected] = useState(-1);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const handleData: React.MouseEventHandler = ((e: React.MouseEvent) => {
+    props.setStage(2)
+
+  })
+  const getData = () => {
+    const obj: { [k: string]: any } = props.getData();
+    return obj
+  }
+  const placeData = (field: string, value: any) => {
+    let nobj = getData()
+    nobj[field] = value
+    props.setData(nobj)
+    console.log("changed data", nobj)
+  }
+
 
   return (
     <div>
@@ -52,6 +70,7 @@ function CompleteWorkInfo(props: {
             <input
               type="text"
               placeholder="Title"
+              onChange={(e) => placeData("Title", "value")}
               tw="block w-full h-[46px] rounded-[10px] border border-light-300 py-1 px-4 text-sm text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:py-2 md:text-lg"
             />
           </div>
@@ -69,7 +88,7 @@ function CompleteWorkInfo(props: {
               <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
                 <option value=""></option>
                 {Array(...Array(100)).map((value, key) => (
-                  <option key={key} value={key}>
+                  <option key={key} value={key} onChange={(e) => placeData("Date", value)}>
                     {2022 - key}
                   </option>
                 ))}
@@ -507,12 +526,12 @@ function CompleteWorkInfo(props: {
                 alt="post-image-1"
               />
             )) || (
-              <div tw="h-full w-full border-2 rounded-2xl border-gray-300 border-dashed mx-auto flex flex-col justify-center">
-                <h1 tw="w-full flex justify-center text-gray-300 text-2xl font-semibold">
-                  No Image Selected
-                </h1>
-              </div>
-            )}
+                <div tw="h-full w-full border-2 rounded-2xl border-gray-300 border-dashed mx-auto flex flex-col justify-center">
+                  <h1 tw="w-full flex justify-center text-gray-300 text-2xl font-semibold">
+                    No Image Selected
+                  </h1>
+                </div>
+              )}
           </div>
           <div tw="flex-auto grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
             {uploadedImages.map((value, index) => (
@@ -552,7 +571,7 @@ function CompleteWorkInfo(props: {
         <input
           type="button"
           tw="py-2.5 px-8 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"
-          onClick={props.goNext}
+          onClick={handleData}
           value="Next"
         />
       </div>
