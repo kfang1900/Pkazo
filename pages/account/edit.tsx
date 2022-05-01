@@ -10,7 +10,15 @@ import { getApp } from 'firebase/app';
 import { doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
 
 import { sample_artist } from 'utils/Sample_Posts_Imports';
-import { showEdu, showExp, showExh } from 'obj/Artist';
+import {
+  showEdu,
+  showExp,
+  showExh,
+  Artist,
+  Experience,
+  Exhibition,
+  Education,
+} from 'obj/Artist';
 import buttons from 'styles/Button';
 import {
   fetchArtistByID,
@@ -23,20 +31,20 @@ import {
   uploadBytesResumable,
 } from 'firebase/storage';
 import ImageUploadButton from '../../components/account/ImageUploadButton';
-
+type ArtistData = {
+  name: string;
+  location: string;
+  discipline: string;
+  bio: string;
+  pfp: string;
+  cover: string;
+  education: Education[];
+  exhibitions: Exhibition[];
+  experience: Experience[];
+};
 const EditAccount: NextPage = () => {
   const [page, setPage] = useState(0);
-  const [data, setData] = useState<
-    | {
-        name: string;
-        location: string;
-        discipline: string;
-        bio: string;
-        pfp: string;
-        cover: string;
-      }
-    | undefined
-  >();
+  const [data, setData] = useState<ArtistData | undefined>();
   const [coverUploading, setCoverUploading] = useState(false);
 
   const artistId = 'VWOgAFjhL0BlFlbDTJZF';
@@ -62,14 +70,7 @@ const EditAccount: NextPage = () => {
   useEffect(() => {
     (async () => {
       const artistRef = await fetchArtistByID(artistId);
-      const artist = (await artistRef.data()) as {
-        Name: string;
-        Location: string;
-        Discipline: string;
-        Bio: string;
-        ProfilePicture: string;
-        Cover: string;
-      };
+      const artist = (await artistRef.data()) as Artist;
 
       setData({
         name: artist.Name,
@@ -78,6 +79,9 @@ const EditAccount: NextPage = () => {
         bio: artist.Bio,
         pfp: await loadStorageImage(artist.ProfilePicture),
         cover: await loadStorageImage(artist.Cover),
+        education: artist.Education,
+        experience: artist.Experience,
+        exhibitions: artist.Exhibitions,
       });
     })();
   }, []);
@@ -276,71 +280,70 @@ const EditAccount: NextPage = () => {
                     />
                   </div>
                 </div>
-                {/*
-            <div tw="font-semibold mt-9 text-[20px]">Education</div>
-            <div tw="w-full mt-6 grid grid-cols-[115px 450px] gap-x-7">
-              <div css={styles.label}>College</div>
-              <div>
-                <button tw="h-[40px] border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] flex items-center hover:bg-[#F5F5F5]">
-                  <Image
-                    src="/assets/svgs/plus.svg"
-                    alt="add education"
-                    width="15px"
-                    height="15px"
-                  />
-                  <div tw="ml-2">Add a college</div>
-                </button>
-                {user.education
-                  .sort((a, b) => b.end - a.end)
-                  .map((x, i) => (
-                    <div key={i} tw="mt-5">
-                      {showEdu(x)}
-                    </div>
-                  ))}
-              </div>
-            </div>
-            <div tw="font-semibold mt-9 text-[20px]">Career Details</div>
-            <div tw="w-full mt-6 grid grid-cols-[115px 450px] gap-x-7 gap-y-9">
-              <div css={styles.label}>Work</div>
-              <div>
-                <button tw="h-[40px] border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] flex items-center hover:bg-[#F5F5F5]">
-                  <Image
-                    src="/assets/svgs/plus.svg"
-                    alt="add education"
-                    width="15px"
-                    height="15px"
-                  />
-                  <div tw="ml-2">Add a workplace</div>
-                </button>
-                {user.experience
-                  .sort((a, b) => b.end - a.end)
-                  .map((x, i) => (
-                    <div key={i} tw="mt-5">
-                      {showExp(x)}
-                    </div>
-                  ))}
-              </div>
-              <div css={styles.label}>Exhibition</div>
-              <div>
-                <button tw="h-[40px] border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] flex items-center hover:bg-[#F5F5F5]">
-                  <Image
-                    src="/assets/svgs/plus.svg"
-                    alt="add education"
-                    width="15px"
-                    height="15px"
-                  />
-                  <div tw="ml-2">Add an exhibition</div>
-                </button>
-                {user.exhibitions
-                  .sort((a, b) => b.end - a.end)
-                  .map((x, i) => (
-                    <div key={i} tw="mt-5">
-                      {showExh(x)}
-                    </div>
-                  ))}
-              </div>
-            </div>
-            */}
+
+                <div tw="font-semibold mt-9 text-[20px]">Education</div>
+                <div tw="w-full mt-6 grid grid-cols-[115px 450px] gap-x-7">
+                  <div css={styles.label}>College</div>
+                  <div>
+                    <button tw="h-[40px] border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] flex items-center hover:bg-[#F5F5F5]">
+                      <Image
+                        src="/assets/svgs/plus.svg"
+                        alt="add education"
+                        width="15px"
+                        height="15px"
+                      />
+                      <div tw="ml-2">Add a college</div>
+                    </button>
+                    {data.education
+                      .sort((a, b) => b.End - a.End)
+                      .map((x, i) => (
+                        <div key={i} tw="mt-5">
+                          {showEdu(x)}
+                        </div>
+                      ))}
+                  </div>
+                </div>
+                <div tw="font-semibold mt-9 text-[20px]">Career Details</div>
+                <div tw="w-full mt-6 grid grid-cols-[115px 450px] gap-x-7 gap-y-9">
+                  <div css={styles.label}>Work</div>
+                  <div>
+                    <button tw="h-[40px] border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] flex items-center hover:bg-[#F5F5F5]">
+                      <Image
+                        src="/assets/svgs/plus.svg"
+                        alt="add education"
+                        width="15px"
+                        height="15px"
+                      />
+                      <div tw="ml-2">Add a workplace</div>
+                    </button>
+                    {data.experience
+                      .sort((a, b) => b.End - a.End)
+                      .map((x, i) => (
+                        <div key={i} tw="mt-5">
+                          {showExp(x)}
+                        </div>
+                      ))}
+                  </div>
+                  <div css={styles.label}>Exhibition</div>
+                  <div>
+                    <button tw="h-[40px] border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] flex items-center hover:bg-[#F5F5F5]">
+                      <Image
+                        src="/assets/svgs/plus.svg"
+                        alt="add education"
+                        width="15px"
+                        height="15px"
+                      />
+                      <div tw="ml-2">Add an exhibition</div>
+                    </button>
+                    {data.exhibitions
+                      .sort((a, b) => b.Year - a.Year)
+                      .map((x, i) => (
+                        <div key={i} tw="mt-5">
+                          {showExh(x)}
+                        </div>
+                      ))}
+                  </div>
+                </div>
               </>
             )}
           </div>

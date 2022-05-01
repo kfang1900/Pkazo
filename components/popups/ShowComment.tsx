@@ -32,7 +32,7 @@ const ShowComment = (props: Props) => {
     <div tw="flex mb-[24px] mr-2">
       <div tw="w-[36px] h-full overflow-hidden rounded-full flex items-center">
         <Image
-          src={props.comment.user.Profile_Picture}
+          src={props.comment.user.ProfilePicture}
           alt="profile_image"
           width="36px"
           height="36px"

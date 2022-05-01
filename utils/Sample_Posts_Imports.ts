@@ -3,7 +3,7 @@ import { Post } from '../obj/Post';
 export const sample_artist: Artist = {
   username: 'jamesjean',
   Name: 'James Jean',
-  Profile_Picture: '/store_assets/img/pfp.jpg',
+  ProfilePicture: '/store_assets/img/pfp.jpg',
   Cover: '/store_assets/img/profile-cover-banner.jpg',
   Location: 'Los Angeles, CA',
   Discipline: 'Painter',
@@ -22,31 +22,31 @@ export const sample_artist: Artist = {
   Experience: [
     {
       Company: 'Google',
-      Role: 'Software Engineer',
+      Position: 'Software Engineer',
       Start: 2007,
       End: 2011,
     },
   ],
   Exhibitions: [
-    { Gallery: 'The Metropolitan Museum of Art', Start: 2021, End: 2021 },
-    { Gallery: "My Mommy's House", Start: 2020, End: 2020 },
-    { Gallery: 'The Museum of Modern Art', Start: 2020, End: 2020 },
+    { Gallery: 'The Metropolitan Museum of Art', Year: 2021 },
+    { Gallery: "My Mommy's House", Year: 2020 },
+    { Gallery: 'The Museum of Modern Art', Year: 2020 },
   ],
 };
 export const sample_users: { [key: string]: User | Artist } = {
   will: {
     Name: 'William Sanger',
-    Profile_Picture: '/assets/images/users/william_sanger.png',
+    ProfilePicture: '/assets/images/users/william_sanger.png',
   },
-  tyler: { Name: 'Tyler Wu', Profile_Picture: '/assets/images/users/tyler_wu.png' },
-  jake: { Name: 'Jake Hill', Profile_Picture: '/assets/images/users/jake_hill.png' },
+  tyler: { Name: 'Tyler Wu', ProfilePicture: '/assets/images/users/tyler_wu.png' },
+  jake: { Name: 'Jake Hill', ProfilePicture: '/assets/images/users/jake_hill.png' },
   amanda: {
     Name: 'Amanda Evans',
-    Profile_Picture: '/assets/images/users/amanda_evans.png',
+    ProfilePicture: '/assets/images/users/amanda_evans.png',
   },
   prashant: {
     Name: 'Prashant Singh',
-    Profile_Picture: '/assets/images/users/prashant_singh.png',
+    ProfilePicture: '/assets/images/users/prashant_singh.png',
   },
 };
 export const sample_posts: Post[] = [

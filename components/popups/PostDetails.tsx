@@ -41,7 +41,7 @@ function PostDetails(props: PostDetailsProps) {
       return [
         ...prev,
         {
-          user: { Name: 'Kevin Fang', Profile_Picture: '/assets/images/kevin_fang.jpg' },
+          user: { Name: 'Kevin Fang', ProfilePicture: '/assets/images/kevin_fang.jpg' },
           time: Date.now(),
           comment: comment,
         },

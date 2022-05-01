@@ -67,7 +67,7 @@ function FeedPost(props: Props) {
           <div tw="flex items-center space-x-3.5 cursor-pointer">
             <div tw="w-[64px] h-[64px] overflow-hidden rounded-full flex items-center">
               <Image
-                src={props.post.user.Profile_Picture}
+                src={props.post.user.ProfilePicture}
                 alt="profile_image"
                 width="64px"
                 height="64px"
