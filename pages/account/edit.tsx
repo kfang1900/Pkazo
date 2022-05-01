@@ -22,6 +22,7 @@ import {
   ref,
   uploadBytesResumable,
 } from 'firebase/storage';
+import ImageUploadButton from '../../components/account/ImageUploadButton';
 
 const EditAccount: NextPage = () => {
   const [page, setPage] = useState(0);
@@ -38,7 +39,7 @@ const EditAccount: NextPage = () => {
   >();
   const [coverUploading, setCoverUploading] = useState(false);
 
-  const uid = 'VWOgAFjhL0BlFlbDTJZF';
+  const artistId = 'VWOgAFjhL0BlFlbDTJZF';
 
   const isDataModified = useCallback(
     (values: {
@@ -60,7 +61,7 @@ const EditAccount: NextPage = () => {
 
   useEffect(() => {
     (async () => {
-      const artistRef = await fetchArtistByID(uid);
+      const artistRef = await fetchArtistByID(artistId);
       const artist = (await artistRef.data()) as {
         Name: string;
         Location: string;
@@ -129,14 +130,32 @@ const EditAccount: NextPage = () => {
                         objectFit="cover"
                       />
                     </div>
-                    <button tw="absolute right-0 bottom-0 w-[34px] h-[34px] rounded-full bg-black opacity-70 hover:opacity-60 pt-1">
-                      <Image
-                        src="/assets/svgs/camera.svg"
-                        alt="edit pfp"
-                        width="18px"
-                        height="18px"
-                      />
-                    </button>
+                    <ImageUploadButton
+                      offset={0}
+                      uploadLocation={
+                        'Artists/VWOgAFjhL0BlFlbDTJZF/Profile_Photo'
+                      }
+                      onError={(error) => {
+                        console.log(error);
+                      }}
+                      onUploadComplete={async (uploadRef) => {
+                        const app = getApp();
+                        const db = getFirestore(app);
+                        const gsURL = uploadRef.toString();
+
+                        await updateDoc(doc(db, 'Artists', artistId), {
+                          pfp: gsURL,
+                        });
+
+                        const pfpURL = await loadStorageImage(gsURL);
+
+                        setData((oldData) => {
+                          return Object.assign({}, oldData, {
+                            pfp: pfpURL,
+                          });
+                        });
+                      }}
+                    />
                   </div>
                   <div tw="ml-9 flex flex-col justify-center">
                     <div tw="text-black text-[28px] font-semibold">
@@ -160,8 +179,8 @@ const EditAccount: NextPage = () => {
                   }}
                   onSubmit={async (values) => {
                     const app = getApp();
-                    const db = getFirestore();
-                    await updateDoc(doc(db, 'Artists', uid), {
+                    const db = getFirestore(app);
+                    await updateDoc(doc(db, 'Artists', artistId), {
                       Name: values.name,
                       Discipline: values.discipline,
                       Location: values.location,
@@ -228,14 +247,34 @@ const EditAccount: NextPage = () => {
                       objectFit="cover"
                     />
                   </div>
-                  <button tw="absolute right-3 bottom-3 w-[34px] h-[34px] rounded-full bg-black opacity-70 hover:opacity-60 pt-1">
-                    <Image
-                      src="/assets/svgs/camera.svg"
-                      alt="edit pfp"
-                      width="18px"
-                      height="18px"
+
+                  <div className="right-3 bottom-3">
+                    <ImageUploadButton
+                      uploadLocation={
+                        'Artists/VWOgAFjhL0BlFlbDTJZF/Cover_Photo'
+                      }
+                      onError={(error) => {
+                        console.log(error);
+                      }}
+                      onUploadComplete={async (uploadRef) => {
+                        const app = getApp();
+                        const db = getFirestore(app);
+                        const gsURL = uploadRef.toString();
+
+                        await updateDoc(doc(db, 'Artists', artistId), {
+                          Cover: gsURL,
+                        });
+
+                        const coverImageURL = await loadStorageImage(gsURL);
+
+                        setData((oldData) => {
+                          return Object.assign({}, oldData, {
+                            cover: coverImageURL,
+                          });
+                        });
+                      }}
                     />
-                  </button>
+                  </div>
                 </div>
                 {/*
             <div tw="font-semibold mt-9 text-[20px]">Education</div>
