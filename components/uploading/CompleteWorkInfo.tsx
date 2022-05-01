@@ -57,7 +57,7 @@ function CompleteWorkInfo(props: {
     return obj
   }
   const placeData = (field: string, value: any) => {
-    let nobj = getData()
+    const nobj = getData()
     nobj[field] = value
     props.setData(nobj)
     console.log("changed data", nobj)
