@@ -295,21 +295,20 @@ function LoginForm(props: LoginFormProps) {
               Continue with Facebook
             </div>
           </button>
-          {register && (
-            <div tw="text-[13px] leading-5 mt-3 text-[#595959]">
-              By clicking Create Account or Continue with Google or Facebook,
-              you agree to Pkazo&#39;s{' '}
-              <Link href="#" passHref>
-                <span tw="underline cursor-pointer">Terms of Use</span>
-              </Link>{' '}
-              and{' '}
-              <Link href="#" passHref>
-                <span tw="underline cursor-pointer">Privacy Policy</span>
-              </Link>
-              . Pkazo may send you communications; you may change your
-              preferences in your account settings.
-            </div>
-          )}
+          <div tw="text-[13px] leading-5 mt-3 text-[#595959]">
+            By clicking Create Account or Continue with Google or Facebook, you
+            agree to Pkazo&#39;s{' '}
+            <Link href="#" passHref>
+              <span tw="underline cursor-pointer">Terms of Use</span>
+            </Link>{' '}
+            and{' '}
+            <Link href="#" passHref>
+              <span tw="underline cursor-pointer">Privacy Policy</span>
+            </Link>
+            . Pkazo may send you communications; you may change your preferences
+            in your account settings.
+          </div>
+
           {!register && (
             <div tw="text-[13px] leading-5 mt-3 text-center">
               New to Pkazo?{' '}
