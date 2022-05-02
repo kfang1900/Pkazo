@@ -65,7 +65,7 @@ function CompleteWorkUploadForm() {
   const [uploading, setUploading] = useState(false)
   const [portfolioNames, setPortfolioNames] = useState([])
   const [portfolioRefs, setPortfolioRefs] = useState([])
-  const workref = null
+  const [workref, setWorkRef] = useState(null)
 
   const uploadData = async (s) => {
     setUploading(true)
@@ -79,15 +79,16 @@ function CompleteWorkUploadForm() {
     console.log("MainImageRef,", imagerefs[0])
     const updateRef = doc(db, 'Works', docRef.id);
     setDoc(updateRef, { "MainImage": imagerefs[0], "Images": imagerefs, "Artist": "VWOgAFjhL0BlFlbDTJZF" }, { merge: true });
-    console.log("finished uploading")
+    console.log("finished uploading", docRef.id)
     setUploading(false);
-    workref = docRef.id
+    setWorkRef(docRef.id)
   }
 
   const getData = () => {
     return data
   }
   const handlePortfolio = async (n) => {
+    console.log(workref)
     if (workref === null) {
       console.log("Please Upload an item first")
       return
@@ -96,7 +97,7 @@ function CompleteWorkUploadForm() {
       console.log("uploading to hidden Portfolio")
       return
     }
-    console.log("uploading to portfolio", portfolioNames[n], portfolioRefs[n])
+    console.log("uploading to portfolio", portfolioNames[n], portfolioRefs[n], "workref ", workref)
     const artistref = "VWOgAFjhL0BlFlbDTJZF"
     const app = getApp();
     const db = getFirestore(app);

@@ -95,7 +95,7 @@ const CompleteWorkPortfolio = (props: { Portfolios: string[], setActivePortfolio
       </div>
 
       <div tw="px-[40px] flex items-center text-white text-lg justify-start mb-20 mt-20">
-        <Link href="#" passHref>
+        <Link href="pablo-picasso" passHref>
           <div
             tw="py-2.5 px-14 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"
             onClick={handleData}
