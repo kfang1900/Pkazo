@@ -4,7 +4,7 @@ import Header from '../Header.tsx';
 import CompleteWorkTabSelector from './CompleteWorkTabSelector';
 import CompleteWorkPosts from './CompleteWorkPosts';
 import CompleteWorkPortfolio from './CompleteWorkPortfolio';
-import { doc, getFirestore, setDoc, addDoc, collection, } from 'firebase/firestore';
+import { doc, getFirestore, setDoc, addDoc, collection, updateDoc, arrayUnion } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
 import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { getPortfolioImagesOnlyByRef } from 'helpers/FirebaseFunctions';
@@ -27,6 +27,7 @@ const getBlobFromUri = async (uri) => {
 
 const uploadImages = async (images) => {
   const storage = getStorage()
+  //TODO replace with dynamic work location
   const uploadLocation = "Works/" + "YDx1IlGcogMongCBzEo0" + "/"
   //Then add images to storage
   let firstRet = null;
@@ -49,7 +50,7 @@ const uploadImages = async (images) => {
 }
 
 const getPortfolioInfo = async (setPortfolioData, setPortfolioRefs) => {
-  const artistref = "VWOgAFjhL0BlFlbDTJZF"
+  const artistref = "VWOgAFjhL0BlFlbDTJZF"  //TODO replace with dynamic artist reference
   const portInfo = await getPortfolioImagesOnlyByRef(artistref)
 
   console.log("Writing portfolio Info", portInfo)
@@ -59,11 +60,12 @@ const getPortfolioInfo = async (setPortfolioData, setPortfolioRefs) => {
 }
 
 function CompleteWorkUploadForm() {
-  const [stage, setStage] = useState(2);
+  const [stage, setStage] = useState(0);
   const [data, setData] = useState({})
   const [uploading, setUploading] = useState(false)
   const [portfolioNames, setPortfolioNames] = useState([])
   const [portfolioRefs, setPortfolioRefs] = useState([])
+  const workref = "YDx1IlGcogMongCBzEo0"
 
   const uploadData = async (s) => {
     setUploading(true)
@@ -85,10 +87,23 @@ function CompleteWorkUploadForm() {
     return data
   }
   const handlePortfolio = async (n) => {
-    if (n !== null) {
+    if (workref === null) {
+      console.log("Please Upload an item first")
+      return
+    }
+    if (n === null) {
       console.log("uploading to hidden Portfolio")
+      return
     }
     console.log("uploading to portfolio", portfolioNames[n], portfolioRefs[n])
+    const artistref = "VWOgAFjhL0BlFlbDTJZF"
+    const app = getApp();
+    const db = getFirestore(app);
+    const docRef = doc(db, "Artists", artistref, "Portfolios", portfolioRefs[n])
+    await updateDoc(docRef, {
+      Works: arrayUnion(workref)
+    });
+
 
   }
 
