@@ -25,10 +25,10 @@ const getBlobFromUri = async (uri) => {
   return blob;
 };
 
-const uploadImages = async (images) => {
+const uploadImages = async (images, workref) => {
   const storage = getStorage()
   //TODO replace with dynamic work location
-  const uploadLocation = "Works/" + "YDx1IlGcogMongCBzEo0" + "/"
+  const uploadLocation = "Works/" + workref + "/"
   //Then add images to storage
   let firstRet = null;
   const promises = await images.map(async (pic) => {
@@ -65,7 +65,7 @@ function CompleteWorkUploadForm() {
   const [uploading, setUploading] = useState(false)
   const [portfolioNames, setPortfolioNames] = useState([])
   const [portfolioRefs, setPortfolioRefs] = useState([])
-  const workref = "YDx1IlGcogMongCBzEo0"
+  const workref = null
 
   const uploadData = async (s) => {
     setUploading(true)
@@ -73,14 +73,15 @@ function CompleteWorkUploadForm() {
     console.log("uploading", s)
     const app = getApp();
     const db = getFirestore(app);
-    const docRef = await setDoc(doc(db, "Works", "YDx1IlGcogMongCBzEo0"), s)
-    const imagerefs = await uploadImages(s.Images)
+    const docRef = await addDoc(collection(db, "Works"), s)
+    const imagerefs = await uploadImages(s.Images, docRef.id)
     //Update the newly created work document with the image references in storage.
     console.log("MainImageRef,", imagerefs[0])
-    const updateRef = doc(db, 'Works', "YDx1IlGcogMongCBzEo0");
+    const updateRef = doc(db, 'Works', docRef.id);
     setDoc(updateRef, { "MainImage": imagerefs[0], "Images": imagerefs, "Artist": "VWOgAFjhL0BlFlbDTJZF" }, { merge: true });
     console.log("finished uploading")
     setUploading(false);
+    workref = docRef.id
   }
 
   const getData = () => {
