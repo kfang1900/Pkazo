@@ -73,7 +73,7 @@ function CompleteWorkInfo(props: {
     else {
       value.forEach((element) => {
         if (!(element in nobs.Images)) {
-          nobs.Images.push(value)
+          nobs.Images.push(element)
         }
       })
     }
