@@ -31,9 +31,11 @@ interface OnboardingFormValues {
 export default function ProfileDetailsSection({
   user,
   onComplete,
+  setArtistId,
 }: {
   user: User | null;
   onComplete: () => void;
+  setArtistId: (artistId: string) => void;
 }) {
   return (
     <Container>
@@ -97,7 +99,7 @@ export default function ProfileDetailsSection({
           console.log(values, 123);
           const app = getApp();
           const db = getFirestore(app);
-          await addDoc(collection(db, 'Artists'), {
+          const artistRef = await addDoc(collection(db, 'Artists'), {
             AssociatedUser: user.uid,
             ArtistName: values.artistName,
             ArtistType: values.artistType,
@@ -122,7 +124,9 @@ export default function ProfileDetailsSection({
               .map((n) => n.toLowerCase())
               .join('-'),
           });
-          return 0;
+          setArtistId(artistRef.id);
+          onComplete();
+          return;
         }}
       >
         <Form tw="mr-auto mt-12 w-full grid grid-cols-[250px 30px 160px 500px] gap-x-4 gap-y-6 items-center">

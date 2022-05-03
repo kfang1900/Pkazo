@@ -21,6 +21,7 @@ import ProfileDetailsSection from '../components/onboarding/ProfileDetailsSectio
 import CreatePortfoliosSection from '../components/onboarding/CreatePortfoliosSection';
 import SocialPostUploadForm from '../components/uploading/SocialPostUploadForm';
 import Modal from '../components/popups/Modal';
+import { Router, useRouter } from 'next/router';
 
 function Onboarding() {
   const [stage, setStage] = useState(0);
@@ -36,6 +37,8 @@ function Onboarding() {
   const [signupFormActive, setSignupFormActive] = useState(false);
   const [artistId, setArtistId] = useState('');
   const { user, loading } = useAuth();
+  const router = useRouter();
+
   useEffect(() => {
     console.log(loading, user);
     if (loading) {
@@ -58,13 +61,22 @@ function Onboarding() {
         const ref = await getDocs(q);
 
         const result: QueryDocumentSnapshot<DocumentData>[] = [];
+        let _artistId = '';
         ref.forEach((snapshot) => {
+          _artistId = snapshot.id;
           setArtistId(snapshot.id); // assumes that there will only be one result
           result.push(snapshot);
         });
         if (result.length > 0) {
           setStage(1);
         }
+        const querySnapshot = await getDocs(
+          collection(db, 'Artists', _artistId, 'Portfolios')
+        );
+
+        querySnapshot.forEach(() => {
+          router.push('/account/edit', '/account/edit', { shallow: true });
+        });
       })();
     }
   }, [loading, user]);
@@ -87,10 +99,18 @@ function Onboarding() {
           <img src="assets/images/Pkazo.svg" alt="Pkazo" />
         </div>
         {stage === 0 && (
-          <ProfileDetailsSection user={user} onComplete={() => setStage(1)} />
+          <ProfileDetailsSection
+            user={user}
+            onComplete={() => setStage(1)}
+            setArtistId={setArtistId}
+          />
         )}
         {stage === 1 && (
-          <CreatePortfoliosSection user={user} onComplete={() => setStage(2)} artistId={artistId}  />
+          <CreatePortfoliosSection
+            user={user}
+            onComplete={() => setStage(2)}
+            artistId={artistId}
+          />
         )}
       </div>
     </>
