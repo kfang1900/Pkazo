@@ -1,30 +1,26 @@
-import { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import Head from 'next/head';
 import tw, { styled } from 'twin.macro';
-import {
-  Formik,
-  Form,
-  Field,
-  ErrorMessage,
-  FormikErrors,
-  FormikTouched,
-  FieldProps,
-} from 'formik';
 
-import { Container } from './[username]/index';
 import LoginForm from '../components/popups/LoginForm';
 import useAuth from '../utils/useAuth';
 import { getApp } from 'firebase/app';
 import {
   addDoc,
   collection,
-  doc, DocumentData, getDocs,
-  getFirestore, query, QueryDocumentSnapshot,
-  updateDoc, where
+  doc,
+  DocumentData,
+  getDocs,
+  getFirestore,
+  query,
+  QueryDocumentSnapshot,
+  updateDoc,
+  where,
 } from 'firebase/firestore';
 import ProfileDetailsSection from '../components/onboarding/ProfileDetailsSection';
-
-
+import CreatePortfoliosSection from '../components/onboarding/CreatePortfoliosSection';
+import SocialPostUploadForm from '../components/uploading/SocialPostUploadForm';
+import Modal from '../components/popups/Modal';
 
 function Onboarding() {
   const [stage, setStage] = useState(0);
@@ -38,6 +34,7 @@ function Onboarding() {
     "How you'll get paid",
   ];
   const [signupFormActive, setSignupFormActive] = useState(false);
+  const [artistId, setArtistId] = useState('');
   const { user, loading } = useAuth();
   useEffect(() => {
     console.log(loading, user);
@@ -55,19 +52,20 @@ function Onboarding() {
         const app = getApp();
         const db = getFirestore(app);
 
-        const artistsRef = collection(db, "Artists");
-        const q = query(artistsRef, where("AssociatedUser", "==", user.uid));
+        const artistsRef = collection(db, 'Artists');
+        const q = query(artistsRef, where('AssociatedUser', '==', user.uid));
 
-        const ref = await getDocs(q)
+        const ref = await getDocs(q);
 
         const result: QueryDocumentSnapshot<DocumentData>[] = [];
         ref.forEach((snapshot) => {
+          setArtistId(snapshot.id); // assumes that there will only be one result
           result.push(snapshot);
         });
         if (result.length > 0) {
           setStage(1);
         }
-      })()
+      })();
     }
   }, [loading, user]);
   return (
@@ -75,6 +73,7 @@ function Onboarding() {
       <Head>
         <title>Onboarding</title>
       </Head>
+
       {signupFormActive && (
         <LoginForm
           defaultSignUp
@@ -87,7 +86,12 @@ function Onboarding() {
         <div tw="mx-10 my-5">
           <img src="assets/images/Pkazo.svg" alt="Pkazo" />
         </div>
-        {stage === 0 &&  <ProfileDetailsSection user={user} onComplete={() => setStage(1)}/>}
+        {stage === 0 && (
+          <ProfileDetailsSection user={user} onComplete={() => setStage(1)} />
+        )}
+        {stage === 1 && (
+          <CreatePortfoliosSection user={user} onComplete={() => setStage(2)} artistId={artistId}  />
+        )}
       </div>
     </>
   );

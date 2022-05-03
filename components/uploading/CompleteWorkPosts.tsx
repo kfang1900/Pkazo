@@ -5,7 +5,7 @@ import { FileUploader } from 'react-drag-drop-files';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 
-const fileTypes = ['JPG', 'PNG', 'SVG'];
+const fileTypes = ['JPG', 'JPEG', 'PNG', 'SVG'];
 
 const Bold = styled.span`
   ${tw`font-bold`}

@@ -30,7 +30,7 @@ const Home: NextPage = () => {
       </Link>
 
       <div>
-        <Link href="/username">
+        <Link href="/pablo-picasso">
           <a>profile</a>
         </Link>
         <br />
