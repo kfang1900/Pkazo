@@ -17,6 +17,8 @@ export type Auth = {
   setRememberSession: (staySignedIn: boolean) => Promise<void>;
   signOut: () => Promise<void>;
   email: string;
+  loading: boolean;
+  user: User | null;
 };
 
 const AuthContext = createContext<Auth>({
@@ -32,6 +34,8 @@ const AuthContext = createContext<Auth>({
   setRememberSession: async (staySignedIn: boolean) => {},
   signOut: async () => {},
   email: '',
+  loading: true,
+  user: null,
 });
 
 export default AuthContext;

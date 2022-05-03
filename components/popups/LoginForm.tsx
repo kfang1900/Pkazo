@@ -18,6 +18,8 @@ interface LoginErrors {
 }
 export interface LoginFormProps {
   onClose: () => void;
+  defaultSignUp?: boolean;
+  notCloseable?: boolean;
 }
 function LoginForm(props: LoginFormProps) {
   const styles = {
@@ -26,7 +28,7 @@ function LoginForm(props: LoginFormProps) {
     error: tw`text-[12px] mt-[2px] text-[#A61A2E]`,
     req: tw`after:content-[' *'] after:text-soft-red`,
   };
-  const [register, setRegister] = useState(false);
+  const [register, setRegister] = useState(!!props.defaultSignUp);
   const [showPassword, setShowPassword] = useState(false);
   const auth = useAuth();
 
@@ -332,16 +334,18 @@ function LoginForm(props: LoginFormProps) {
             </div>
           )}
         </div>
-        <button
-          onClick={props.onClose}
-          tw="ml-5 w-11 h-11 border-0 outline-none bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.15)] rounded-full"
-        >
-          <img
-            src="/assets/svgs/close.svg"
-            tw="w-4 h-4 m-auto"
-            alt="close button"
-          />
-        </button>
+        {!props.notCloseable && (
+          <button
+            onClick={props.onClose}
+            tw="ml-5 w-11 h-11 border-0 outline-none bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.15)] rounded-full"
+          >
+            <img
+              src="/assets/svgs/close.svg"
+              tw="w-4 h-4 m-auto"
+              alt="close button"
+            />
+          </button>
+        )}
       </div>
     </div>
   );

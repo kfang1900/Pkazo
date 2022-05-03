@@ -16,7 +16,7 @@ import {
 } from 'firebase/auth';
 
 import './FirebaseClient';
-import { browserLocalPersistence } from '@firebase/auth';
+import { browserLocalPersistence, User } from '@firebase/auth';
 
 export default function FirebaseProvider({
   children,
@@ -24,7 +24,9 @@ export default function FirebaseProvider({
   children?: ReactNode;
 }) {
   const router = useRouter();
-  const [email, setEmail] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [email, setEmail] = useState<string>('');
   const apiLogin = useCallback(async (user) => {
     const res = await fetch('/api/auth/sessionLogin', {
       method: 'POST',
@@ -39,7 +41,10 @@ export default function FirebaseProvider({
     if (res.ok) {
       setEmail(user.email!);
       router.push(router.query.to ? router.query.to.toString() : '/');
-    } else alert(`Error logging in ${res.status} ${res.statusText}`);
+    } else {
+      // TODO fix error here, display to user
+      console.warn(`Error logging in ${res.status} ${res.statusText}`);
+    }
   }, []);
 
   useEffect(() => {
@@ -58,14 +63,21 @@ export default function FirebaseProvider({
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      setLoading(false);
+      if (!user) {
+        setUser(null);
+        setEmail('');
+      } else {
+        setUser(user);
+        setEmail(user.email || '');
+      }
       // If user is not signed in, set user to null
       if (user === null) {
         // setLoading(false)
         // setUserInfo(null)
-        setEmail("");
+        setEmail('');
         return;
       }
-      setEmail(user.email!);
       /*
       // Otherwise fetch account details
       const res = await fetch('/api/account/me?_vercel_no_cache=1')
@@ -127,6 +139,8 @@ export default function FirebaseProvider({
         },
         apiLogin,
         email,
+        user,
+        loading,
         signOut: () => {
           return signOut(getAuth());
         },
