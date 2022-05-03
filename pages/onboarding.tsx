@@ -16,7 +16,6 @@ function OnboardingInput({
   helpText,
   optional,
   children,
-  inline,
   ...props
 }: {
   label: string;
@@ -25,9 +24,9 @@ function OnboardingInput({
   optional?: boolean;
   children?: ReactNode;
 } & (
-  | { type: 'select' | 'radio'; options?: string[]; inline?: boolean }
-  | { type: 'text' | 'date' }
-)) {
+    | { type: 'select' | 'radio'; options?: string[]; inline?: boolean }
+    | { type: 'text' | 'date' }
+  )) {
   const styles = {
     label: tw`font-semibold text-[16px] text-[#333333]`,
     input: tw`border border-[#D8D8D8] rounded-[6px] p-[10px] text-[16px] leading-7 w-full`,
@@ -89,7 +88,7 @@ function OnboardingInput({
                 key={option}
                 tw={'text-[#8B8B8B] text-[16px] pl-1 pr-3'}
                 style={{
-                  display: inline ? 'inline-block' : 'block',
+                  display: true ? 'inline-block' : 'block', //Replaced inline with true bc build error
                 }}
               >
                 <input
@@ -99,7 +98,7 @@ function OnboardingInput({
                   tw="h-4 w-4 mx-1 align-middle"
                   css={{ 'accent-color': '#D11826' }}
                 />
-               <span> {option}</span>
+                <span> {option}</span>
               </label>
             ))}
           </>

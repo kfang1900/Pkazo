@@ -57,14 +57,14 @@ function CompleteWorkInfo(props: {
     return obj
   }
   const placeData = (field: string, value: any) => {
-    let nobj = getData()
+    const nobj = getData()
     nobj[field] = value
     props.setData(nobj)
     console.log("changed data", nobj)
   }
   const appendImageData = (value: string[]) => {
     console.log("attempting to add imageData", value)
-    let nobs = getData()
+    const nobs = getData()
     if (nobs.Images === undefined || nobs.Images === []) {
       console.log("Adding first image")
       nobs.Images = value
