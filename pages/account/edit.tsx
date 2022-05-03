@@ -7,7 +7,18 @@ import Header from 'components/Header';
 import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 import { getApp } from 'firebase/app';
-import { doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  DocumentData,
+  getDocs,
+  getFirestore,
+  query,
+  QueryDocumentSnapshot,
+  setDoc,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 
 import { sample_artist } from 'utils/Sample_Posts_Imports';
 import {
@@ -31,6 +42,7 @@ import {
   uploadBytesResumable,
 } from 'firebase/storage';
 import ImageUploadButton from '../../components/account/ImageUploadButton';
+import useAuth from '../../utils/useAuth';
 type ArtistData = {
   name: string;
   location: string;
@@ -45,9 +57,44 @@ type ArtistData = {
 const EditAccount: NextPage = () => {
   const [page, setPage] = useState(0);
   const [data, setData] = useState<ArtistData | undefined>();
-  const [coverUploading, setCoverUploading] = useState(false);
+  const [artistId, setArtistId] = useState('');
+  const { user, loading } = useAuth();
+  useEffect(() => {
+    console.log(loading, user);
+    if (loading || !user) {
+      return;
+    } else {
+      // determine the stage of the user
+      (async () => {
+        // check if a profile already exists
+        const app = getApp();
+        const db = getFirestore(app);
 
-  const artistId = 'VWOgAFjhL0BlFlbDTJZF';
+        const artistsRef = collection(db, 'Artists');
+        const q = query(artistsRef, where('AssociatedUser', '==', user.uid));
+
+        const ref = await getDocs(q);
+
+        ref.forEach((snapshot) => {
+          setArtistId(snapshot.id); // assumes that there will only be one result
+          const artist = snapshot.data();
+          (async () => {
+            setData({
+              name: artist.Name,
+              location: artist.Location,
+              discipline: artist.Discipline,
+              bio: artist.Bio,
+              pfp: await loadStorageImage(artist.ProfilePicture),
+              cover: await loadStorageImage(artist.Cover),
+              education: artist.Education,
+              experience: artist.Experience,
+              exhibitions: artist.Exhibitions,
+            });
+          })();
+        });
+      })();
+    }
+  }, [loading, user]);
 
   const isDataModified = useCallback(
     (values: {
@@ -67,31 +114,11 @@ const EditAccount: NextPage = () => {
     [data]
   );
 
-  useEffect(() => {
-    (async () => {
-      const artistRef = await fetchArtistByID(artistId);
-      const artist = (await artistRef.data()) as Artist;
-
-      setData({
-        name: artist.Name,
-        location: artist.Location,
-        discipline: artist.Discipline,
-        bio: artist.Bio,
-        pfp: await loadStorageImage(artist.ProfilePicture),
-        cover: await loadStorageImage(artist.Cover),
-        education: artist.Education,
-        experience: artist.Experience,
-        exhibitions: artist.Exhibitions,
-      });
-    })();
-  }, []);
-
   const pages = [
     'Edit Profile',
-    'Change Password',
-    'Apps and Websites',
-    'Email and SMS',
-    'Nothing to see here',
+    // 'Change Password',
+    // 'Apps and Websites',
+    // 'Email and SMS',
   ];
   const styles = {
     label: tw`text-[16px] text-[#8B8B8B] text-right mt-[10px]`,
@@ -125,14 +152,18 @@ const EditAccount: NextPage = () => {
               <>
                 <div tw="flex">
                   <div tw="w-[132px] h-[132px] relative">
-                    <div tw="overflow-hidden rounded-full flex items-center">
-                      <Image
-                        src={data.pfp}
-                        alt="profile_image"
-                        width="132px"
-                        height="132px"
-                        objectFit="cover"
-                      />
+                    <div tw="overflow-hidden rounded-full flex items-center ">
+                      {data.pfp ? (
+                        <Image
+                          src={data.pfp}
+                          alt="profile_image"
+                          width="132px"
+                          height="132px"
+                          objectFit="cover"
+                        />
+                      ) : (
+                        <div tw={'bg-gray-200 w-[132px] h-[132px]'} />
+                      )}
                     </div>
                     <ImageUploadButton
                       offset={0}
@@ -148,7 +179,7 @@ const EditAccount: NextPage = () => {
                         const gsURL = uploadRef.toString();
 
                         await updateDoc(doc(db, 'Artists', artistId), {
-                          pfp: gsURL,
+                          ProfilePicture: gsURL,
                         });
 
                         const pfpURL = await loadStorageImage(gsURL);
@@ -243,13 +274,15 @@ const EditAccount: NextPage = () => {
                 </Formik>
                 <div tw="font-semibold mt-9 text-[20px]">Cover Image</div>
                 <div tw="relative mt-6">
-                  <div tw="w-[852px] h-[201px]">
-                    <Image
-                      src={data.cover}
-                      alt="Cover Photo"
-                      layout="fill"
-                      objectFit="cover"
-                    />
+                  <div tw="w-[852px] h-[201px] bg-gray-200">
+                    {data.cover && (
+                      <Image
+                        src={data.cover}
+                        alt="Cover Photo"
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    )}
                   </div>
 
                   <div className="right-3 bottom-3">
@@ -292,7 +325,7 @@ const EditAccount: NextPage = () => {
                         width="15px"
                         height="15px"
                       />
-                      <div tw="ml-2">Add a college</div>
+                      <div tw="ml-2">Add a college (coming soon)</div>
                     </button>
                     {data.education
                       .sort((a, b) => b.End - a.End)
@@ -314,7 +347,7 @@ const EditAccount: NextPage = () => {
                         width="15px"
                         height="15px"
                       />
-                      <div tw="ml-2">Add a workplace</div>
+                      <div tw="ml-2">Add a workplace (coming soon)</div>
                     </button>
                     {data.experience
                       .sort((a, b) => b.End - a.End)
@@ -333,7 +366,7 @@ const EditAccount: NextPage = () => {
                         width="15px"
                         height="15px"
                       />
-                      <div tw="ml-2">Add an exhibition</div>
+                      <div tw="ml-2">Add an exhibition (coming soon)</div>
                     </button>
                     {data.exhibitions
                       .sort((a, b) => b.Year - a.Year)
