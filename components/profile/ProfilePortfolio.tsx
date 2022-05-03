@@ -1,12 +1,12 @@
 import Image from 'next/image';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import Masonry from 'react-masonry-css';
 import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 
 import { portfolio_images } from 'utils/Cancer_Imports';
 import { Artist, showEdu, showExp, showExh } from 'obj/Artist';
-import { PortfolioObject } from 'types/firebaseTypes'
+import { PortfolioObject } from 'types/firebaseTypes';
 import styles from '../../styles/ProfilePortfolio.module.css';
 
 type GalleryDataType = {
@@ -87,7 +87,7 @@ const galleryData: GalleryDataType[] = [
 ];
 
 // Credit: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-function shuffle(obj: { Data: any[], Images: any[] }) {
+function shuffle(obj: { Data: any[]; Images: any[] }) {
   let currentIndex = obj.Images.length,
     randomIndex;
 
@@ -110,14 +110,16 @@ function shuffle(obj: { Data: any[], Images: any[] }) {
   return obj;
 }
 
-
-
-
 function GallerySection(props: PortfolioObject) {
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
   const [curGallery, setCurGallery] = useState(getGalleryData(props, null));
-  console.log("rendering Gallery", props) //I don't know why this print statment changes whether they show up
-  console.log(curGallery.Images)
+
+  useEffect(() => {
+    setCurGallery(getGalleryData(props, null));
+  }, [props]);
+
+  console.log('rendering Gallery', props); //I don't know why this print statment changes whether they show up
+  console.log(curGallery.Images);
   const [seeNum, setSeeNum] = useState(9);
   function updSeeNum() {
     if (seeNum >= curGallery.Images.length) setSeeNum(9);
@@ -147,7 +149,10 @@ function GallerySection(props: PortfolioObject) {
                   ]}
                 >
                   <Image
-                    src={props.PortfolioImages[index] ? props.PortfolioImages[index] : portfolio_images[0][0]
+                    src={
+                      props.PortfolioImages[index]
+                        ? props.PortfolioImages[index]
+                        : portfolio_images[0][0]
                     }
                     alt="Portfolio Image"
                     layout="fill"
@@ -170,15 +175,17 @@ function GallerySection(props: PortfolioObject) {
             className={styles['my-masonry-grid']}
             columnClassName={styles['my-masonry-grid_column']}
           >
-            {//.Images.slice(0, seeNum)
+            {
+              //.Images.slice(0, seeNum)
               curGallery.Images?.map((gallery: string, index) => (
                 <>
-                  {console.log("Rendering Masonry", gallery, curGallery.Images)}
+                  {console.log('Rendering Masonry', gallery, curGallery.Images)}
                   <button key={index} tw="my-[18px]">
                     <img src={gallery} tw=" w-full h-auto" alt=""></img>
                   </button>
                 </>
-              ))}
+              ))
+            }
           </Masonry>
         </div>
 
@@ -230,7 +237,6 @@ function GallerySection(props: PortfolioObject) {
       </div>
       */}
     </div>
-
   );
 }
 
@@ -241,18 +247,18 @@ const getGalleryData = (props: PortfolioObject, activeIndex: null | number) => {
     const a = props.Works.map((i) => i).flat();
     const b = props.WorkImages.map((i) => i).flat();
     //console.log("rendering images", a, b)
-    return { Data: a, Images: b }
-  }
-  else {
+    return { Data: a, Images: b };
+  } else {
     const a = props.Works[activeIndex];
     const b = props.WorkImages[activeIndex];
     //console.log("rendering images", a, b)
-    return { Data: a, Images: b }
+    return { Data: a, Images: b };
   }
 };
 
 const CircleDescriptionBox = ({
-  activeIndex, props,
+  activeIndex,
+  props,
 }: {
   activeIndex: null | number;
   props: PortfolioObject;
@@ -265,13 +271,18 @@ const CircleDescriptionBox = ({
   return (
     <div tw="flex rounded-3xl border-2 border-[#D8D8D8] max-w-[1000px] mx-auto pr-[60px] py-9">
       <div tw="w-[120px] h-[120px] relative rounded-full overflow-hidden duration-200 origin-bottom ml-[52px] mr-[44px] my-auto flex-shrink-0">
-        <Image src={props.PortfolioImages[activeIndex] ? props.PortfolioImages[activeIndex] : portfolio_images[0][0]
-        } alt="Portfolio Image" layout="fill" />
+        <Image
+          src={
+            props.PortfolioImages[activeIndex]
+              ? props.PortfolioImages[activeIndex]
+              : portfolio_images[0][0]
+          }
+          alt="Portfolio Image"
+          layout="fill"
+        />
       </div>
       <div>
-        <h6 tw="text-[28px] font-semibold text-[#595959]">
-          {data.Name}
-        </h6>
+        <h6 tw="text-[28px] font-semibold text-[#595959]">{data.Name}</h6>
         <div tw="text-black text-[16px] mt-4 max-w-[700px]">
           {data.Description}
         </div>
