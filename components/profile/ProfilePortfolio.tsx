@@ -123,7 +123,7 @@ function GallerySection(props: PortfolioObject) {
 
   // console.log('rendering Gallery', props); //I don't know why this print statment changes whether they show up
   // console.log(curGallery.Images);
-  console.log(JSON.stringify(props), getGalleryData(props, null));
+  console.log(JSON.parse(JSON.stringify(props)), getGalleryData(props, null));
   const [seeNum, setSeeNum] = useState(9);
   function updSeeNum() {
     if (seeNum >= curGallery.Images.length) setSeeNum(9);
@@ -135,34 +135,46 @@ function GallerySection(props: PortfolioObject) {
       <section tw="mt-10">
         <div className="container">
           <div tw="flex justify-center mb-12">
-            {props.Portfolios.map((portfolio, index) => (
-              <div
-                key={index}
-                tw="cursor-pointer"
-                onClick={() => {
-                  setActiveIndex(activeIndex === index ? null : index);
-                  setCurGallery(
-                    getGalleryData(props, activeIndex === index ? null : index)
-                  );
-                }}
-              >
+            {props.Portfolios.map((portfolio, index) => {
+              console.log(
+                JSON.parse(JSON.stringify(props)),
+                props.PortfolioImages.length,
+                'index: ',
+                index,
+                'adfas'
+              );
+              return (
                 <div
-                  css={[
-                    tw`w-[128px] h-[128px] relative rounded-full overflow-hidden duration-200 origin-bottom border-4 border-transparent mx-[60px]`,
-                    activeIndex === index && tw`border-[#C6C5C3]`,
-                  ]}
+                  key={index}
+                  tw="cursor-pointer"
+                  onClick={() => {
+                    setActiveIndex(activeIndex === index ? null : index);
+                    setCurGallery(
+                      getGalleryData(
+                        props,
+                        activeIndex === index ? null : index
+                      )
+                    );
+                  }}
                 >
-                  {props.PortfolioImages[index] && (
-                    <Image
-                      src={props.PortfolioImages[index]}
-                      alt="Portfolio Image"
-                      layout="fill"
-                    />
-                  )}
+                  <div
+                    css={[
+                      tw`w-[128px] h-[128px] relative rounded-full overflow-hidden duration-200 origin-bottom border-4 border-transparent mx-[60px]`,
+                      activeIndex === index && tw`border-[#C6C5C3]`,
+                    ]}
+                  >
+                    {props.PortfolioImages[index] && (
+                      <Image
+                        src={props.PortfolioImages[index]}
+                        alt="Portfolio Image"
+                        layout="fill"
+                      />
+                    )}
+                  </div>
+                  <p tw="text-black mt-2 text-center">{portfolio.Name}</p>
                 </div>
-                <p tw="text-black mt-2 text-center">{portfolio.Name}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <CircleDescriptionBox activeIndex={activeIndex} props={props} />
