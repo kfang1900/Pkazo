@@ -73,13 +73,13 @@ function Onboarding() {
           setStage(1);
         }
         if (!_artistId) return;
-        const querySnapshot = await getDocs(
-          collection(db, 'Artists', _artistId, 'Portfolios')
-        );
+        // const querySnapshot = await getDocs(
+        //   collection(db, 'Artists', _artistId, 'Portfolios')
+        // );
 
-        querySnapshot.forEach(() => {
-          router.push('/' + username);
-        });
+        // querySnapshot.forEach(() => {
+        //   router.push('/' + username);
+        // });
       })();
     }
   }, [loading, user]);
