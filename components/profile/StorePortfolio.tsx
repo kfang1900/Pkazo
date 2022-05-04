@@ -9,6 +9,8 @@ import { MdWidgets } from 'react-icons/md';
 import { FiX } from 'react-icons/fi';
 import Image from 'next/image';
 import tw, { styled } from 'twin.macro';
+import Masonry from 'react-masonry-css';
+import styles from '../../styles/ProfilePortfolio.module.css';
 
 import { Container } from 'pages/[username]/index';
 import Img01 from 'public/assets/images/portfolios/pf1/1.jpeg';
@@ -493,10 +495,14 @@ const StorePortFolio = () => {
 
         {/* Portfolio Gallery */}
         <div tw="mb-10">
-          <div tw="grid gap-6 lg:gap-10 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+          <Masonry
+            breakpointCols={{ default: 4, 1024: 3, 640: 2 }}
+            className={styles['my-masonry-grid']}
+            columnClassName={styles['my-masonry-grid_column']}
+          >
             {/* Single Portfolio */}
             {portfolioList.map((portfolio, idx) => (
-              <div key={idx}>
+              <div key={idx} tw="my-[18px]">
                 <div tw="w-full mb-6">
                   <Image
                     src={portfolio.src}
@@ -513,7 +519,7 @@ const StorePortFolio = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </Masonry>
         </div>
       </Container>
 
