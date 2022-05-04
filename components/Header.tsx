@@ -8,7 +8,7 @@ import PlusLogo from '/public/assets/images/plus.svg';
 import MessageLogo from '/public/assets/images/message.svg';
 import CompassLogo from '/public/assets/images/compass.svg';
 import CartLogo from '/public/assets/images/cart.svg';
-import ProfilePlaceholderImg from '/public/assets/temp/profile-silhouette.jpeg';
+import ProfilePlaceholderImg from '/public/assets/svgs/profile.svg';
 
 import 'twin.macro';
 import { UrlObject } from 'url';
@@ -123,11 +123,11 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
   return (
     <div tw="sticky top-0 z-50 w-full border-b border-[#D8D8D8] bg-white">
       {showLoginModal && <LoginForm onClose={() => setShowLoginModal(false)} />}
-      <div tw="px-5 flex flex-row items-center justify-between py-3">
+      <div tw="px-16 flex flex-row items-center justify-between py-2">
         <div tw="flex flex-auto items-center gap-10 w-36">
           <div tw="flex-none cursor-pointer -mr-5">
             <Link href="/" passHref>
-              <Image src={Logo} tw="w-28" alt="Pkazo" />
+              <Image src={Logo} tw="w-24" alt="Pkazo" />
             </Link>
           </div>
 
@@ -135,7 +135,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
             <input
               type="text"
               placeholder="Search"
-              tw="px-4 py-2 bg-gray-100 outline-none rounded-full w-48"
+              tw="px-4 py-1 bg-gray-100 outline-none rounded-full w-48"
             />
           </div>
         </div>
@@ -175,7 +175,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
                   >
                     Post
                   </a>
-                  <Link href={'/upload-complete-work'} passHref>
+                  <Link href={'/upload-complete-work'}>
                     <a tw="block px-4 py-2 text-sm text-gray-700 cursor-pointer">
                       Work
                     </a>
@@ -184,6 +184,15 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
               )}
             </div>
           </>
+          {!user && (
+            <Link href={'/onboarding'}>
+              <input
+                type="button"
+                value="Create on Pkazo"
+                tw="h-9 relative -top-0.5 text-white bg-theme-red rounded-full px-4 py-1 cursor-pointer hover:bg-[#be4040]"
+              />
+            </Link>
+          )}
           {/*)) || (*/}
           {/*  <input*/}
           {/*    type="button"*/}
@@ -193,7 +202,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
           {/*)}*/}
           {!user ? (
             <button
-              tw="h-9 relative -top-0.5 text-black font-bold px-4 py-1 cursor-pointer"
+              tw="h-9 relative -top-0.5 text-[#C3C3C3] text-[14px] font-semibold px-4 py-1 cursor-pointer"
               onClick={() => setShowLoginModal(true)}
             >
               Sign in
