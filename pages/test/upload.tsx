@@ -7,17 +7,17 @@ import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 
 import { Container } from '../[username]/index';
-import LoginForm from 'components/popups/LoginForm';
+import UploadWork from 'components/uploading/UploadWork';
 
-const Login: NextPage = () => {
+const Upload: NextPage = () => {
   return (
     <>
       <Header isBuyer />
       <Container>
-        <LoginForm onClose={() => 0} />
+        <UploadWork onClose={() => 0} />
       </Container>
     </>
   );
 };
 
-export default Login;
+export default Upload;

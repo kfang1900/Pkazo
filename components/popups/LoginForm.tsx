@@ -21,7 +21,7 @@ export interface LoginFormProps {
 function LoginForm(props: LoginFormProps) {
   const styles = {
     label: tw`font-semibold text-[16px] leading-5 text-[#333333] mt-3`,
-    input: tw`border border-[#D8D8D8] rounded-[6px] p-[10px] mt-[5px] text-[16px] leading-7 w-full`,
+    input: tw`border border-[#D8D8D8] rounded-[6px] p-[10px] mt-[5px] text-[16px] leading-7 w-full focus:outline-none focus:border-[#888888]`,
     error: tw`text-[12px] mt-[2px] text-[#A61A2E]`,
     req: tw`after:content-[' *'] after:text-soft-red`,
   };
@@ -300,11 +300,11 @@ function LoginForm(props: LoginFormProps) {
         </div>
         <button
           onClick={props.onClose}
-          tw="ml-5 w-11 h-11 border-0 outline-none bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.15)] rounded-full"
+          tw="ml-5 w-12 h-12 border-0 outline-none bg-none hover:bg-[rgba(255,255,255,0.08)] rounded-full"
         >
           <img
             src="/assets/svgs/close.svg"
-            tw="w-4 h-4 m-auto"
+            tw="w-5 h-5 m-auto"
             alt="close button"
           />
         </button>

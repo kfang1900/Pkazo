@@ -28,7 +28,7 @@ const EditAccount: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Feed</title>
+        <title>Edit profile</title>
       </Head>
       <Header isBuyer />
       <div tw="flex h-full">

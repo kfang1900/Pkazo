@@ -282,11 +282,11 @@ function PostDetails(props: PostDetailsProps) {
         </div>
         <button
           onClick={props.onClose}
-          tw="ml-5 w-11 h-11 border-0 outline-none bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.15)] rounded-full"
+          tw="ml-5 w-12 h-12 border-0 outline-none bg-none hover:bg-[rgba(255,255,255,0.08)] rounded-full"
         >
           <img
             src="/assets/svgs/close.svg"
-            tw="w-4 h-4 m-auto"
+            tw="w-5 h-5 m-auto"
             alt="close button"
           />
         </button>
