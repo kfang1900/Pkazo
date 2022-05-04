@@ -42,6 +42,7 @@ function NavbarIcon(
     src: string | StaticImport;
     alt: string;
     disabled?: boolean;
+    round?: boolean;
   } & (
     | {
         onClick: () => void;
@@ -51,39 +52,35 @@ function NavbarIcon(
 ) {
   return (
     <div tw={'flex flex-none transform w-8'}>
-      <div tw="w-8 h-8 relative">
-        {!!(props as Record<string, any>).href ? (
-          <Link href={(props as { href: string }).href} passHref>
-            <Image
-              src={props.src}
-              alt={props.alt}
-              layout="fill"
-              tw=""
-              css={[
-                tw`cursor-pointer`,
-                props.disabled
-                  ? ''
-                  : tw`hover:scale-90 ease-in-out duration-200`,
-              ]}
-            />
-          </Link>
-        ) : (
-          <button onClick={(props as { onClick: () => void }).onClick}>
-            <Image
-              src={props.src}
-              alt={props.alt}
-              layout="fill"
-              tw=""
-              css={[
-                tw`cursor-pointer rounded-full`,
-                props.disabled
-                  ? ''
-                  : tw`hover:scale-90 ease-in-out duration-200`,
-              ]}
-            />
-          </button>
-        )}
-      </div>
+      {!!(props as Record<string, any>).href ? (
+        <Link href={(props as { href: string }).href} passHref>
+          <Image
+            src={props.src}
+            alt={props.alt}
+            layout="fill"
+            tw=""
+            css={[
+              tw`scale-75 cursor-pointer `,
+              props.disabled ? '' : tw`hover:scale-90 ease-in-out duration-200`,
+              props.round ? tw`rounded-full` : '',
+            ]}
+          />
+        </Link>
+      ) : (
+        <button onClick={(props as { onClick: () => void }).onClick}>
+          <Image
+            src={props.src}
+            alt={props.alt}
+            layout="fill"
+            tw=""
+            css={[
+              tw`scale-75 cursor-pointer `,
+              props.disabled ? '' : tw`hover:scale-90 ease-in-out duration-200`,
+              props.round ? tw`rounded-full` : '',
+            ]}
+          />
+        </button>
+      )}
     </div>
   );
 }
@@ -149,7 +146,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
           </div>
         </div>
 
-        <div tw="flex flex-auto flex-row justify-center h-8 gap-7">
+        <div tw="flex flex-auto flex-row justify-center h-8 gap-10">
           <NavbarIcon href="/feed" src={HouseLogo} alt="House Logo" />
           <NavbarIcon href="#" src={ShopLogo} alt="Shop Logo" disabled />
           <NavbarIcon href="#" src={CompassLogo} alt="Compass Logo" disabled />
@@ -213,7 +210,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
           {/*)}*/}
           {!user ? (
             <button
-              tw="h-9 relative -top-0.5 text-[#3C3C3C] text-[14px] font-semibold px-4 py-1 cursor-pointer"
+              tw="h-9 relative -top-0.5 text-[#3C3C3C] text-[14px] font-semibold px-4 px-4 py-1 cursor-pointer"
               onClick={() => setShowLoginModal(true)}
             >
               Sign in
@@ -224,6 +221,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
                 onClick={() => setShowProfileDropdown((s) => !s)}
                 src={pfp || ProfilePlaceholderImg}
                 alt="Profile Picture"
+                round
               />
               <div>
                 {showProfileDropdown && (
