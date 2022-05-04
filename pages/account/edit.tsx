@@ -220,6 +220,8 @@ const EditAccount: NextPage = () => {
                       Discipline: values.discipline,
                       Location: values.location,
                       Bio: values.bio,
+                      PostNumber: 0,
+                      WorkNumber: 0,
                     });
                     setData((oldData) => {
                       return Object.assign({}, oldData, values);
