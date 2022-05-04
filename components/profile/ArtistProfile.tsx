@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import tw from 'twin.macro';
 
@@ -8,6 +8,7 @@ import { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
 import { loadStorageImage } from 'helpers/FirebaseFunctions';
 
 import { Artist } from '../../obj/Artist';
+import { useRouter } from 'next/router';
 
 const numFormatter = (x: number) => {
   if (x > 999 && x < 1000000) {
@@ -17,7 +18,13 @@ const numFormatter = (x: number) => {
   } else return x; // if value < 1000, nothing to do
 };
 
-const ArtistProfile = (artistData: QueryDocumentSnapshot<DocumentData>[]) => {
+const ArtistProfile = ({
+  artistData,
+  isCurrentUserPage,
+}: {
+  artistData: QueryDocumentSnapshot<DocumentData>[];
+  isCurrentUserPage?: boolean;
+}) => {
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
   const [picture, setPicture] = useState('');
   const [isShowUnfollowConfirmModal, setIsShowUnfollwConfirmModal] =
@@ -39,12 +46,15 @@ const ArtistProfile = (artistData: QueryDocumentSnapshot<DocumentData>[]) => {
     setIsShowUnfollwConfirmModal(false);
   };
 
+  const router = useRouter();
+
   const artist = artistData[0].data();
-  const prepData = async () => {
-    const profile_image = await loadStorageImage(artist['ProfilePicture']);
-    setPicture(profile_image);
-  };
-  prepData();
+
+  useEffect(() => {
+    loadStorageImage(artist.ProfilePicture).then((profilePictureURL) =>
+      setPicture(profilePictureURL)
+    );
+  }, [artist]);
   return (
     <>
       <ConfirmUnfollowModal
@@ -71,15 +81,24 @@ const ArtistProfile = (artistData: QueryDocumentSnapshot<DocumentData>[]) => {
                 <h1 tw="text-3xl font-semibold text-black mr-[40px]">
                   {artist['Name']}
                 </h1>
-                <button
-                  onClick={follwButtonHandler}
-                  css={isFollowing ? buttons.white : buttons.red}
-                >
-                  {isFollowing ? 'Following' : 'Follow'}
-                </button>
+                {isCurrentUserPage ? (
+                  <button
+                    onClick={() => router.push('/account/edit')}
+                    css={buttons.white}
+                  >
+                    Edit Profile
+                  </button>
+                ) : (
+                  <button
+                    onClick={follwButtonHandler}
+                    css={isFollowing ? buttons.white : buttons.red}
+                  >
+                    {isFollowing ? 'Following' : 'Follow'}
+                  </button>
+                )}
                 <button
                   css={buttons.white}
-                  tw="border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB] mr-[-10%] w-[40px] h-[40px] px-0 text-[#8E8E93] font-bold text-[13px] text-center"
+                  tw="ml-4 border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB] mr-[-10%] w-[40px] h-[40px] px-0 text-[#8E8E93] font-bold text-[13px] text-center"
                 >
                   •&#8201;•&#8201;•
                 </button>

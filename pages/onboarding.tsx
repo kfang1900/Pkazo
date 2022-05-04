@@ -62,20 +62,23 @@ function Onboarding() {
 
         const result: QueryDocumentSnapshot<DocumentData>[] = [];
         let _artistId = '';
+        let username = '';
         ref.forEach((snapshot) => {
           _artistId = snapshot.id;
           setArtistId(snapshot.id); // assumes that there will only be one result
           result.push(snapshot);
+          username = snapshot.data().username;
         });
         if (result.length > 0) {
           setStage(1);
         }
+        if (!_artistId) return;
         const querySnapshot = await getDocs(
           collection(db, 'Artists', _artistId, 'Portfolios')
         );
 
         querySnapshot.forEach(() => {
-          router.push('/account/edit', '/account/edit', { shallow: true });
+          router.push('/' + username);
         });
       })();
     }

@@ -22,6 +22,7 @@ import {
 import { defaultCoverImage } from 'utils/FrontEndDefaults';
 import Resume from 'components/profile/Resume';
 import { getPortfolioByRef, loadStorageImage } from 'helpers/FirebaseFunctions';
+import useAuth from '../../utils/useAuth';
 
 //import { sample_artist } from 'utils/Sample_Posts_Imports';
 
@@ -88,6 +89,7 @@ const Portfolio: NextPage = () => {
   const [artistData, setData] = useState<QueryDocumentSnapshot<DocumentData>[]>(
     []
   );
+
   const [loading, setLoading] = useState<boolean>(true);
   const [coverImage, setCoverImage] = useState(defaultCoverImage);
   const [portfolioData, setPortfolioData] = useState({
@@ -97,7 +99,9 @@ const Portfolio: NextPage = () => {
     WorkImages: [],
   });
   const [loadingPortfolio, setLoadingPortfolio] = useState(true);
-  const user = username;
+  const { artistData: currentUserArtistData } = useAuth();
+  const isCurrentUserPage =
+    currentUserArtistData && username === currentUserArtistData.username;
   const pages = ['Posts', 'Portfolio', 'Store'];
   useEffect(() => {
     if (router.isReady && artistData.length === 0) {
@@ -143,18 +147,23 @@ const Portfolio: NextPage = () => {
           <div>
             {/* Cover Photo */}
             <div tw="relative w-full h-[180px] lg:h-[300px]">
-              <Image
-                src={coverImage}
-                alt="Cover Photo"
-                layout="fill"
-                objectFit="cover"
-              />
+              {coverImage && (
+                <Image
+                  src={coverImage}
+                  alt="Cover Photo"
+                  layout="fill"
+                  objectFit="cover"
+                />
+              )}
             </div>
             {/* Cover Photo --End-- */}
 
             {/* Profile Section Start */}
             <Container>
-              <ArtistProfile {...artistData} />
+              <ArtistProfile
+                isCurrentUserPage={isCurrentUserPage || false}
+                artistData={artistData}
+              />
             </Container>
             {/* Profile Section End */}
 
@@ -186,7 +195,8 @@ const Portfolio: NextPage = () => {
                 {page === 1 && (
                   <>
                     <Gallery {...portfolioData} />
-                    <Resume {...artistData} />
+                    {/*<Resume {...artistData} />*/}
+                    {/*  TODO fix resume section */}
                   </>
                 )}
                 {page === 2 && <StorePortfolio />}

@@ -17,6 +17,17 @@ import {
 
 import './FirebaseClient';
 import { browserLocalPersistence, User } from '@firebase/auth';
+import { getApp } from 'firebase/app';
+import {
+  collection,
+  DocumentData,
+  getDocs,
+  getFirestore,
+  query,
+  QueryDocumentSnapshot,
+  where,
+} from 'firebase/firestore';
+import { ArtistObject } from '../types/firebaseTypes';
 
 export default function FirebaseProvider({
   children,
@@ -27,6 +38,8 @@ export default function FirebaseProvider({
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [email, setEmail] = useState<string>('');
+  const [artistData, setArtistData] = useState<ArtistObject | null>(null);
+  const [artistId, setArtistId] = useState<string | null>(null);
   const apiLogin = useCallback(async (user) => {
     const res = await fetch('/api/auth/sessionLogin', {
       method: 'POST',
@@ -40,7 +53,7 @@ export default function FirebaseProvider({
 
     if (res.ok) {
       setEmail(user.email!);
-      router.push(router.query.to ? router.query.to.toString() : '/');
+      await router.push(router.query.to ? router.query.to.toString() : '/');
     } else {
       // TODO fix error here, display to user
       console.warn(`Error logging in ${res.status} ${res.statusText}`);
@@ -78,6 +91,21 @@ export default function FirebaseProvider({
         setEmail('');
         return;
       }
+      await (async () => {
+        const app = getApp();
+        const db = getFirestore(app);
+
+        const artistsRef = collection(db, 'Artists');
+        const q = query(artistsRef, where('AssociatedUser', '==', user.uid));
+
+        const ref = await getDocs(q);
+
+        ref.forEach((snapshot) => {
+          // this assumes that there will only be one result
+          setArtistId(snapshot.id);
+          setArtistData(snapshot.data() as ArtistObject);
+        });
+      })();
       /*
       // Otherwise fetch account details
       const res = await fetch('/api/account/me?_vercel_no_cache=1')
@@ -141,6 +169,8 @@ export default function FirebaseProvider({
         email,
         user,
         loading,
+        artistData,
+        artistId,
         signOut: () => {
           return signOut(getAuth());
         },

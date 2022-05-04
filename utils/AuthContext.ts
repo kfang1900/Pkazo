@@ -1,5 +1,6 @@
 import { createContext } from 'react';
 import { User, UserCredential } from '@firebase/auth';
+import { ArtistData, ArtistObject } from '../types/firebaseTypes';
 
 export type Auth = {
   signInWithEmailAndPassword: (
@@ -19,6 +20,8 @@ export type Auth = {
   email: string;
   loading: boolean;
   user: User | null;
+  artistData: ArtistObject | null;
+  artistId: string | null;
 };
 
 const AuthContext = createContext<Auth>({
@@ -36,6 +39,8 @@ const AuthContext = createContext<Auth>({
   email: '',
   loading: true,
   user: null,
+  artistData: null,
+  artistId: null,
 });
 
 export default AuthContext;

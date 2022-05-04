@@ -118,7 +118,8 @@ export default function ProfileDetailsSection({
             Location: values.location,
             Name: values.name,
             ProfilePicture: '',
-            WorkNumber: '',
+            PostNumber: 0,
+            WorkNumber: 0,
             username: values.name
               .split(' ')
               .map((n) => n.toLowerCase())

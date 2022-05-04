@@ -24,6 +24,7 @@ export default function CreatePortfoliosSection({
 }) {
   const [showPortfolioUploadModal, setShowPortfolioUploadModal] =
     useState(false);
+  const [username, setUsername] = useState('');
   const [portfolios, setPortfolios] = useState<
     {
       name: string;
@@ -43,6 +44,7 @@ export default function CreatePortfoliosSection({
         image: string;
       }>[] = [];
       querySnapshot.forEach((doc) => {
+        setUsername(doc.data().username);
         docs.push(
           loadStorageImage(doc.data().Picture).then((image) => ({
             name: doc.data().Name,
@@ -104,7 +106,7 @@ export default function CreatePortfoliosSection({
             <p tw="text-black mt-2 text-center">New Portfolio</p>
           </div>
         </div>
-        <Link href={'/account/edit'}>
+        <Link href={'/' + username}>
           <input
             type="button"
             value="Finish Setup"

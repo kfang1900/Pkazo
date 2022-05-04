@@ -112,14 +112,18 @@ function shuffle(obj: { Data: any[]; Images: any[] }) {
 
 function GallerySection(props: PortfolioObject) {
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
-  const [curGallery, setCurGallery] = useState(getGalleryData(props, null));
+  const [curGallery, setCurGallery] = useState<{
+    Data: any[];
+    Images: string[];
+  }>({ Data: [], Images: [] });
 
   useEffect(() => {
     setCurGallery(getGalleryData(props, null));
-  }, [props]);
+  }, [props.Works, props.WorkImages]);
 
-  console.log('rendering Gallery', props); //I don't know why this print statment changes whether they show up
-  console.log(curGallery.Images);
+  // console.log('rendering Gallery', props); //I don't know why this print statment changes whether they show up
+  // console.log(curGallery.Images);
+  console.log(JSON.stringify(props), getGalleryData(props, null));
   const [seeNum, setSeeNum] = useState(9);
   function updSeeNum() {
     if (seeNum >= curGallery.Images.length) setSeeNum(9);
@@ -148,15 +152,13 @@ function GallerySection(props: PortfolioObject) {
                     activeIndex === index && tw`border-[#C6C5C3]`,
                   ]}
                 >
-                  <Image
-                    src={
-                      props.PortfolioImages[index]
-                        ? props.PortfolioImages[index]
-                        : portfolio_images[0][0]
-                    }
-                    alt="Portfolio Image"
-                    layout="fill"
-                  />
+                  {props.PortfolioImages[index] && (
+                    <Image
+                      src={props.PortfolioImages[index]}
+                      alt="Portfolio Image"
+                      layout="fill"
+                    />
+                  )}
                 </div>
                 <p tw="text-black mt-2 text-center">{portfolio.Name}</p>
               </div>
@@ -271,15 +273,13 @@ const CircleDescriptionBox = ({
   return (
     <div tw="flex rounded-3xl border-2 border-[#D8D8D8] max-w-[1000px] mx-auto pr-[60px] py-9">
       <div tw="w-[120px] h-[120px] relative rounded-full overflow-hidden duration-200 origin-bottom ml-[52px] mr-[44px] my-auto flex-shrink-0">
-        <Image
-          src={
-            props.PortfolioImages[activeIndex]
-              ? props.PortfolioImages[activeIndex]
-              : portfolio_images[0][0]
-          }
-          alt="Portfolio Image"
-          layout="fill"
-        />
+        {props.PortfolioImages[activeIndex] && (
+          <Image
+            src={props.PortfolioImages[activeIndex]}
+            alt="Portfolio Image"
+            layout="fill"
+          />
+        )}
       </div>
       <div>
         <h6 tw="text-[28px] font-semibold text-[#595959]">{data.Name}</h6>
