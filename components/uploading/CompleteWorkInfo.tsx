@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 import { FileUploader } from 'react-drag-drop-files';
 
+
 function UploadedImage(props: {
   id: number;
   src: string | StaticImageData | { default: StaticImageData };
@@ -38,12 +39,61 @@ function UploadedImage(props: {
 }
 
 function CompleteWorkInfo(props: {
-  goNext: MouseEventHandler<HTMLInputElement>;
+  setStage: (arg: number) => void,
+  getData: () => { [k: string]: any },
+  setData: (arg: { [k: string]: any }) => void,
+  uploadData: (args: any) => void,
 }) {
   const [workForSale, setWorkForSale] = useState(false);
   const [selected, setSelected] = useState(-1);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const handleData: React.MouseEventHandler = ((e: React.MouseEvent) => {
+    props.setStage(2)
+    props.uploadData(props.getData())
 
+  })
+  const getData = () => {
+    const obj: { [k: string]: any } = props.getData();
+    return obj
+  }
+  const placeData = (field: string, value: any) => {
+    const nobj = getData()
+    nobj[field] = value
+    props.setData(nobj)
+    console.log("changed data", nobj)
+  }
+  const appendImageData = (value: string[]) => {
+    console.log("attempting to add imageData", value)
+    const nobs = getData()
+    if (nobs.Images === undefined || nobs.Images === []) {
+      console.log("Adding first image")
+      nobs.Images = value
+      nobs["MainImage"] = value[0]
+    }
+    else {
+      value.forEach((element) => {
+        if (!(element in nobs.Images)) {
+          nobs.Images.push(element)
+        }
+      })
+    }
+    props.setData(nobs)
+  }
+
+  const media: string[] = [
+    'Tempura',
+    'Oil Paint',
+    'Acrylic Paint',
+    'Watercolors',
+    'Charcoal',
+    'Pastels',
+    'Chalk',
+    'Graphite Pencils',
+  ]
+
+  const units: string[] = [
+    'cm', 'in', 'ft'
+  ]
   return (
     <div>
       <div tw="mx-auto flex flex-row w-full max-w-7xl items-start justify-between px-4 mt-20">
@@ -52,6 +102,7 @@ function CompleteWorkInfo(props: {
             <input
               type="text"
               placeholder="Title"
+              onChange={(e) => placeData("Title", e.target.value)}
               tw="block w-full h-[46px] rounded-[10px] border border-light-300 py-1 px-4 text-sm text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:py-2 md:text-lg"
             />
           </div>
@@ -59,6 +110,7 @@ function CompleteWorkInfo(props: {
           <div tw="mb-4">
             <textarea
               placeholder="Write a description..."
+              onChange={(e) => placeData("Description", e.target.value)}
               tw="block h-[144px] w-full resize-none rounded-[10px] border border-light-300 py-1 px-4 text-sm text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:py-2 md:text-lg"
             ></textarea>
           </div>
@@ -66,7 +118,8 @@ function CompleteWorkInfo(props: {
           <div tw="mb-2.5 flex w-full items-center justify-between gap-4 md:mb-4">
             <p tw="text-sm text-dark-300 md:text-lg">Year</p>
             <div tw="relative w-full max-w-[170px]">
-              <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
+              <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
+                onChange={(e) => placeData("Date", 2022 - Number(e.target.value))}>
                 <option value=""></option>
                 {Array(...Array(100)).map((value, key) => (
                   <option key={key} value={key}>
@@ -95,18 +148,10 @@ function CompleteWorkInfo(props: {
           <div tw="mb-2.5 flex w-full items-center justify-between gap-4 md:mb-4">
             <p tw="text-sm text-dark-300 md:text-lg">Medium</p>
             <div tw="relative w-full max-w-[170px]">
-              <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
+              <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
+                onChange={(e) => placeData("Medium", e.target.value)}>
                 <option value=""></option>
-                {[
-                  'Tempura',
-                  'Oil Paint',
-                  'Acrylic Paint',
-                  'Watercolors',
-                  'Charcoal',
-                  'Pastels',
-                  'Chalk',
-                  'Graphite Pencils',
-                ].map((value, key) => (
+                {media.map((value, key) => (
                   <option key={key}>{value}</option>
                 ))}
               </select>
@@ -136,6 +181,7 @@ function CompleteWorkInfo(props: {
                   H:
                 </label>
                 <input
+                  onChange={(e) => placeData("Height", e.target.value)}
                   type="text"
                   id="height"
                   tw="block w-full max-w-[90px] rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
@@ -146,17 +192,17 @@ function CompleteWorkInfo(props: {
                   W:
                 </label>
                 <input
+                  onChange={(e) => placeData("Width", e.target.value)}
                   type="text"
                   id="width"
                   tw="block w-full max-w-[90px] rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
                 />
               </div>
               <div tw="relative w-full max-w-[130px]">
-                <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg">
-                  <option value=""></option>
-                  <option value="">in</option>
-                  <option value="">cm</option>
-                  <option value="">ft</option>
+                <select tw="block w-full appearance-none rounded-full border border-light-300 py-1 px-4 text-sm leading-none text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:text-lg"
+                  onChange={(e) => placeData("Units", e.target.value)}>
+                  {units.map((value, key) => (
+                    <option key={key}>{value}</option>))}
                 </select>
                 <button tw="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transform">
                   <svg
@@ -214,10 +260,12 @@ function CompleteWorkInfo(props: {
                   name="work-type"
                   tw="h-4 w-4"
                   css={{ 'accent-color': '#E24E4D' }}
+                  onClick={(e) => placeData("Type", "Original")}
                 />
                 <label
                   tw="text-sm text-light-400 md:text-lg"
                   htmlFor="original"
+
                 >
                   Original{' '}
                 </label>
@@ -229,8 +277,9 @@ function CompleteWorkInfo(props: {
                   name="work-type"
                   tw="h-4 w-4"
                   css={{ 'accent-color': '#E24E4D' }}
+                  onClick={(e) => placeData("Type", "Print")}
                 />
-                <label tw="text-sm text-light-400 md:text-lg" htmlFor="print">
+                <label tw="text-sm text-light-400 md:text-lg" htmlFor="print" onClick={(e) => placeData("Type", "Original")}>
                   Print{' '}
                 </label>
               </div>
@@ -245,6 +294,7 @@ function CompleteWorkInfo(props: {
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                   setWorkForSale(event.target.value === 'yes')
                 }
+
               >
                 <div tw="flex items-center gap-5">
                   <input
@@ -254,6 +304,7 @@ function CompleteWorkInfo(props: {
                     value="yes"
                     tw="h-4 w-4"
                     css={{ 'accent-color': '#E24E4D' }}
+                    onClick={(e) => placeData("ForSale", true)}
                   />
                   <label tw="text-sm text-light-400 md:text-lg" htmlFor="yes">
                     Yes{' '}
@@ -267,6 +318,7 @@ function CompleteWorkInfo(props: {
                     value="no"
                     tw="h-4 w-4"
                     css={{ 'accent-color': '#E24E4D' }}
+                    onClick={(e) => placeData("ForSale", false)}
                   />
                   <label tw="text-sm text-light-400 md:text-lg" htmlFor="no">
                     No{' '}
@@ -507,12 +559,12 @@ function CompleteWorkInfo(props: {
                 alt="post-image-1"
               />
             )) || (
-              <div tw="h-full w-full border-2 rounded-2xl border-gray-300 border-dashed mx-auto flex flex-col justify-center">
-                <h1 tw="w-full flex justify-center text-gray-300 text-2xl font-semibold">
-                  No Image Selected
-                </h1>
-              </div>
-            )}
+                <div tw="h-full w-full border-2 rounded-2xl border-gray-300 border-dashed mx-auto flex flex-col justify-center">
+                  <h1 tw="w-full flex justify-center text-gray-300 text-2xl font-semibold">
+                    No Image Selected
+                  </h1>
+                </div>
+              )}
           </div>
           <div tw="flex-auto grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
             {uploadedImages.map((value, index) => (
@@ -531,6 +583,7 @@ function CompleteWorkInfo(props: {
               handleChange={(files: File[]) => {
                 setUploadedImages((state: string[]) => {
                   setSelected(state.length + files.length - 1);
+                  appendImageData(Array(...files).map(URL.createObjectURL));
                   return state.concat(Array(...files).map(URL.createObjectURL));
                 });
               }}
@@ -552,7 +605,7 @@ function CompleteWorkInfo(props: {
         <input
           type="button"
           tw="py-2.5 px-8 mx-auto my-0 rounded-full bg-[#E24E4D] hover:bg-[#be4040] font-bold cursor-pointer"
-          onClick={props.goNext}
+          onClick={handleData}
           value="Next"
         />
       </div>

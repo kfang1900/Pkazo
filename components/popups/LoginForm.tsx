@@ -9,6 +9,7 @@ import buttons from '../../styles/Button';
 import ConfirmUnfollowModal from '../profile/ConfirmUnfollow';
 import PostImage from './PostImage';
 import { MdRadioButtonUnchecked } from 'react-icons/md';
+import useAuth from '../../utils/useAuth';
 
 interface LoginErrors {
   email?: string;
@@ -17,6 +18,8 @@ interface LoginErrors {
 }
 export interface LoginFormProps {
   onClose: () => void;
+  defaultSignUp?: boolean;
+  notCloseable?: boolean;
 }
 function LoginForm(props: LoginFormProps) {
   const styles = {
@@ -25,8 +28,10 @@ function LoginForm(props: LoginFormProps) {
     error: tw`text-[12px] mt-[2px] text-[#A61A2E]`,
     req: tw`after:content-[' *'] after:text-soft-red`,
   };
-  const [register, setRegister] = useState(false);
+  const [register, setRegister] = useState(!!props.defaultSignUp);
   const [showPassword, setShowPassword] = useState(false);
+  const auth = useAuth();
+
   const registerModal = () => {
     return (
       <>
@@ -58,7 +63,16 @@ function LoginForm(props: LoginFormProps) {
           }}
           onSubmit={async (values, { setFieldError }) => {
             try {
-              //   await signIn(values.email, values.password);
+              await auth
+                .createUserWithEmailAndPassword(
+                  values.displayName,
+                  values.email,
+                  values.password
+                )
+                .then((userCred) => {
+                  if (!userCred?.user) return;
+                  auth.apiLogin(userCred.user);
+                });
               props.onClose();
             } catch (error: any) {
               switch (error.code) {
@@ -139,7 +153,7 @@ function LoginForm(props: LoginFormProps) {
         </div>
         <div tw="font-bold text-[20px] leading-7 text-[#333333]">Sign in</div>
         <Formik
-          initialValues={{ email: '', password: '' }}
+          initialValues={{ email: '', password: '', staySignedIn: true }}
           validateOnChange={false}
           validate={(values) => {
             const errors: LoginErrors = {};
@@ -157,7 +171,15 @@ function LoginForm(props: LoginFormProps) {
           }}
           onSubmit={async (values, { setFieldError }) => {
             try {
-              //   await signIn(values.email, values.password);
+              await auth
+                .setRememberSession(true)
+                .then(() =>
+                  auth.signInWithEmailAndPassword(values.email, values.password)
+                )
+                .then((userCred) => {
+                  if (!userCred?.user) return;
+                  auth.apiLogin(userCred.user);
+                });
               props.onClose();
             } catch (error: any) {
               switch (error.code) {
@@ -248,6 +270,7 @@ function LoginForm(props: LoginFormProps) {
               buttons.white,
               tw`text-[16px] font-semibold mt-3 w-full duration-150 h-[52px]`,
             ]}
+            onClick={() => auth.signInWithGoogle()}
           >
             <div tw="flex items-center justify-center">
               <img
@@ -263,6 +286,7 @@ function LoginForm(props: LoginFormProps) {
               buttons.white,
               tw`text-[16px] font-semibold mt-3 w-full duration-150 h-[52px]`,
             ]}
+            onClick={() => auth.signInWithFacebook()}
           >
             <div tw="flex items-center justify-center">
               <img
@@ -286,6 +310,7 @@ function LoginForm(props: LoginFormProps) {
             . Pkazo may send you communications; you may change your preferences
             in your account settings.
           </div>
+
           {!register && (
             <div tw="text-[13px] leading-5 mt-3 text-center">
               New to Pkazo?{' '}
@@ -297,17 +322,30 @@ function LoginForm(props: LoginFormProps) {
               </button>
             </div>
           )}
+          {register && (
+            <div tw="text-[13px] leading-5 mt-3 text-center">
+              Already have an account?{' '}
+              <button
+                onClick={() => setRegister(!register)}
+                tw="bg-transparent border-none outline-none text-soft-red font-semibold underline cursor-pointer"
+              >
+                Sign in
+              </button>
+            </div>
+          )}
         </div>
-        <button
-          onClick={props.onClose}
-          tw="ml-5 w-12 h-12 border-0 outline-none bg-none hover:bg-[rgba(255,255,255,0.08)] rounded-full"
-        >
-          <img
-            src="/assets/svgs/close.svg"
-            tw="w-5 h-5 m-auto"
-            alt="close button"
-          />
-        </button>
+        {!props.notCloseable && (
+          <button
+            onClick={props.onClose}
+            tw="ml-5 w-11 h-11 border-0 outline-none bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.15)] rounded-full"
+          >
+            <img
+              src="/assets/svgs/close.svg"
+              tw="w-4 h-4 m-auto"
+              alt="close button"
+            />
+          </button>
+        )}
       </div>
     </div>
   );

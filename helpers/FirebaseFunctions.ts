@@ -1,6 +1,7 @@
 import { getApp } from "firebase/app";
 import { getDownloadURL, getStorage, ref} from "firebase/storage";
 import { doc,getDoc,getDocs, getFirestore, QuerySnapshot, DocumentData,collection, query} from "firebase/firestore";
+import { urlObjectKeys } from "next/dist/shared/lib/utils";
 
 function defaultString<T>(arg: (param: string) => string ){
     return arg
@@ -66,7 +67,7 @@ const getPortfolioHelper = async(docRef:QuerySnapshot<DocumentData>)=>{
         let subworks:DocumentData[] = []
         let subworkImages:string[]=[]
         element.data().Works?.forEach(async (workref:string) => {
-            console.log("Fetching Work Data",workref)            
+            //console.log("Fetching Work Data",workref)            
             const workdata = await fetchWorkByID(workref)
             const workImage = await(loadStorageImage(workdata.data()!.MainImage))
             //console.log(Works,subworks)
@@ -88,9 +89,26 @@ const getPortfolioByRef = async (artistref:string) => {
     const docRef = await getDocs(q)
     let dex = 0
     const res = await getPortfolioHelper(docRef)
-    console.log("returning res",res)
+    //console.log("returning res",res)
     return res
 }
+
+//Get only the Portfolio Titles and Title Images
+const getPortfolioImagesOnlyByRef = async (artistref:string) => {
+    let app = getApp();
+    let db = getFirestore(app);
+    const q = await query(collection(db, "Artists", artistref,"Portfolios"))
+    const docRef = await getDocs(q)
+    let arr:string[] = []
+    let arr2:string[]=[]
+    docRef.forEach(element =>{
+        arr.push(element.data().Name)
+        arr2.push(element.id)
+    })
+    return [arr,arr2]
+    
+}
+
 
 
 //Returns a Work Preview Object of a specific piece of work 
@@ -112,5 +130,5 @@ const getWorkPreview = async (workRef:string) => {
 
 }
 
-export { getWorkPreview, getPortfolioByRef,fetchWorkByID,loadStorageImage,loadStorageImages,fetchArtistByID}
+export { getWorkPreview, getPortfolioByRef,fetchWorkByID,loadStorageImage,loadStorageImages,fetchArtistByID,getPortfolioImagesOnlyByRef}
 export default{defaultString}

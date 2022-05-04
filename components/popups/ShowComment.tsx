@@ -32,7 +32,7 @@ const ShowComment = (props: Props) => {
     <div tw="flex mb-[24px] mr-2">
       <div tw="w-[36px] h-full overflow-hidden rounded-full flex items-center">
         <Image
-          src={props.comment.user.pfp}
+          src={props.comment.user.ProfilePicture}
           alt="profile_image"
           width="36px"
           height="36px"
@@ -42,7 +42,7 @@ const ShowComment = (props: Props) => {
       <div tw="ml-[12px]">
         <div tw="flex">
           <div tw="text-[12px] leading-[18px] font-bold text-black">
-            {props.comment.user.name}
+            {props.comment.user.Name}
           </div>
           <div tw="text-[12px] leading-[18px] text-[#7F838B] ml-[12px]">
             {timeElapsed(props.comment.time)}

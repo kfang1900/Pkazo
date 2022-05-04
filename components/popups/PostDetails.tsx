@@ -41,7 +41,7 @@ function PostDetails(props: PostDetailsProps) {
       return [
         ...prev,
         {
-          user: { name: 'Kevin Fang', pfp: '/assets/images/kevin_fang.jpg' },
+          user: { Name: 'Kevin Fang', ProfilePicture: '/assets/images/kevin_fang.jpg' },
           time: Date.now(),
           comment: comment,
         },
@@ -174,10 +174,10 @@ function PostDetails(props: PostDetailsProps) {
                   />
                   <div tw="flex flex-col justify-center -space-y-1">
                     <h5 tw="text-lg font-bold text-black-light mb-1">
-                      {props.post.user.name}
+                      {props.post.user.Name}
                     </h5>
                     <p tw="text-xs font-semibold text-grey-8B">
-                      {props.post.user.location}
+                      {props.post.user.Location}
                     </p>
                   </div>
                 </div>
