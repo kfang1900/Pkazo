@@ -30,6 +30,7 @@ import {
   loadStorageImage,
   loadStorageImages,
 } from '../helpers/FirebaseFunctions';
+import UploadWork from './uploading/UploadWork';
 
 /* Copied from image.tsx source */
 interface StaticRequire {
@@ -89,7 +90,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
   const [username, setUsername] = useState('');
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showChooseWorkDropdown, setShowChooseWorkDropdown] = useState(false);
-
+  const [showUploadWorkPopup, setShowUploadWorkPopup] = useState(true);
   const router = useRouter();
   useEffect(() => {
     console.log('user', user);
@@ -123,6 +124,9 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
   return (
     <div tw="sticky top-0 z-50 w-full border-b border-[#D8D8D8] bg-white">
       {showLoginModal && <LoginForm onClose={() => setShowLoginModal(false)} />}
+      {showUploadWorkPopup && (
+        <UploadWork onClose={() => setShowUploadWorkPopup(false)} />
+      )}
       <div tw="px-16 flex flex-row items-center justify-between py-2">
         <div tw="flex flex-auto items-center gap-10 w-36">
           <div tw="flex-none cursor-pointer -mr-5">
@@ -175,11 +179,13 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
                   >
                     Post
                   </a>
-                  <Link href={'/upload-complete-work'}>
-                    <a tw="block px-4 py-2 text-sm text-gray-700 cursor-pointer">
-                      Work
-                    </a>
-                  </Link>
+
+                  <a
+                    tw="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
+                    onClick={() => setShowUploadWorkPopup((s) => !s)}
+                  >
+                    Work
+                  </a>
                 </div>
               )}
             </div>
