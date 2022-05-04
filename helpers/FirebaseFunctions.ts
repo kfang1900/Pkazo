@@ -58,25 +58,29 @@ const getPortfolioHelper = async(docRef:QuerySnapshot<DocumentData>)=>{
     let PortfolioImages:string[] = []
     let WorkImages:string[][]=[]
     let curPos= 0
-    await docRef.forEach(async (element) =>  {
-        Portfolios.push(element.data())
-        curPos = Portfolios.length-1
-        //console.log(curPos,Portfolios)
-        const portImageURL = await loadStorageImage(element.data().Picture)
-        PortfolioImages.push(portImageURL)
-        let subworks:DocumentData[] = []
-        let subworkImages:string[]=[]
-        element.data().Works?.forEach(async (workref:string) => {
-            //console.log("Fetching Work Data",workref)            
-            const workdata = await fetchWorkByID(workref)
-            const workImage = await(loadStorageImage(workdata.data()!.MainImage))
-            //console.log(Works,subworks)
-            subworks.push(workdata.data()!)
-            subworkImages.push(workImage!)
-        })
-        Works.push(subworks)
-        WorkImages.push(subworkImages)
+    const promises: Promise<void>[] = [];
+    docRef.forEach( (element) =>  {
+        promises.push((async () => {
+            Portfolios.push(element.data())
+            curPos = Portfolios.length-1
+            //console.log(curPos,Portfolios)
+            const portImageURL = await loadStorageImage(element.data().Picture)
+            PortfolioImages.push(portImageURL)
+            let subworks:DocumentData[] = []
+            let subworkImages:string[]=[]
+            await Promise.all(element.data().Works?.map(async (workref:string) => {
+                //console.log("Fetching Work Data",workref)
+                const workdata = await fetchWorkByID(workref)
+                const workImage = await(loadStorageImage(workdata.data()!.MainImage))
+                //console.log(Works,subworks)
+                subworks.push(workdata.data()!)
+                subworkImages.push(workImage!)
+            }))
+            Works.push(subworks)
+            WorkImages.push(subworkImages)
+        })())
     })
+    await Promise.all(promises);
     const res = {Portfolios:Portfolios,Works:Works,PortfolioImages,WorkImages}
     return res
 }
