@@ -90,7 +90,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
   const [username, setUsername] = useState('');
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showChooseWorkDropdown, setShowChooseWorkDropdown] = useState(false);
-  const [showUploadWorkPopup, setShowUploadWorkPopup] = useState(true);
+  const [showUploadWorkPopup, setShowUploadWorkPopup] = useState(false);
   const router = useRouter();
   useEffect(() => {
     console.log('user', user);
