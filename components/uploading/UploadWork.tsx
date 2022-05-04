@@ -170,7 +170,7 @@ function UploadWork(props: UploadWorkProps) {
             }}
             onSubmit={async (values, { setFieldError }) => {
               try {
-                props.onClose();
+                // props.onClose();
               } catch (error: any) {}
             }}
           >
