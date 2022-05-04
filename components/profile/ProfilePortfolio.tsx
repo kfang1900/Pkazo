@@ -191,14 +191,20 @@ function GallerySection(props: PortfolioObject) {
           >
             {
               //.Images.slice(0, seeNum)
-              curGallery.Images?.map((gallery: string, index) => (
-                <>
-                  {console.log('Rendering Masonry', gallery, curGallery.Images)}
-                  <button key={index} tw="my-[18px]">
-                    <img src={gallery} tw=" w-full h-auto" alt=""></img>
-                  </button>
-                </>
-              ))
+              curGallery.Images?.slice(0, seeNum).map(
+                (gallery: string, index) => (
+                  <>
+                    {console.log(
+                      'Rendering Masonry',
+                      gallery,
+                      curGallery.Images
+                    )}
+                    <button key={index} tw="my-[18px]">
+                      <img src={gallery} tw=" w-full h-auto" alt=""></img>
+                    </button>
+                  </>
+                )
+              )
             }
           </Masonry>
         </div>
