@@ -4,7 +4,7 @@ import Header from '../Header.tsx';
 import CompleteWorkTabSelector from './CompleteWorkTabSelector';
 import CompleteWorkPosts from './CompleteWorkPosts';
 import CompleteWorkPortfolio from './CompleteWorkPortfolio';
-import { doc, getFirestore, setDoc, addDoc, collection, updateDoc, arrayUnion, where, query, getDocs } from 'firebase/firestore';
+import { doc, getFirestore, setDoc, addDoc, collection, updateDoc, arrayUnion, where, query, getDocs, FieldValue, increment } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
 import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { getPortfolioImagesOnlyByRef } from 'helpers/FirebaseFunctions';
@@ -140,11 +140,14 @@ function CompleteWorkUploadForm() {
     const app = getApp();
     const db = getFirestore(app);
     const docRef = doc(db, "Artists", artistref, "Portfolios", portfolioRefs[n])
+    const docRef2 = doc(db, "Artists", artistref);
     await updateDoc(docRef, {
       Works: arrayUnion(workref)
     });
-
-
+    console.log("incrementing work number")
+    await (updateDoc, docRef2, {
+      WorkNumber: increment(1)
+    })
 
   }
 

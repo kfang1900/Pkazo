@@ -221,7 +221,7 @@ const EditAccount: NextPage = () => {
                       Location: values.location,
                       Bio: values.bio,
                       PostNumber: 0,
-                      WorkNumber: 0,
+                      WorkNumber: 3, //TODO make this do something better
                     });
                     setData((oldData) => {
                       return Object.assign({}, oldData, values);
