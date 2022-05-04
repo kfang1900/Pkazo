@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CompleteWorkInfo from './CompleteWorkInfo';
 import Header from '../Header.tsx';
 import CompleteWorkTabSelector from './CompleteWorkTabSelector';
 import CompleteWorkPosts from './CompleteWorkPosts';
 import CompleteWorkPortfolio from './CompleteWorkPortfolio';
-import { doc, getFirestore, setDoc, addDoc, collection, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, getFirestore, setDoc, addDoc, collection, updateDoc, arrayUnion, where, query, getDocs } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
 import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { getPortfolioImagesOnlyByRef } from 'helpers/FirebaseFunctions';
+import useAuth from '../../utils/useAuth';
+import LoginForm from '../popups/LoginForm';
+
 
 const getBlobFromUri = async (uri) => {
   const blob = await new Promise((resolve, reject) => {
@@ -49,23 +52,59 @@ const uploadImages = async (images, workref) => {
   return imagerefs
 }
 
-const getPortfolioInfo = async (setPortfolioData, setPortfolioRefs) => {
-  const artistref = "VWOgAFjhL0BlFlbDTJZF"  //TODO replace with dynamic artist reference
-  const portInfo = await getPortfolioImagesOnlyByRef(artistref)
+const getPortfolioInfo = async (user, setPortfolioData, setPortfolioRefs, setArtistRef) => {
+  const app = getApp();
+  const db = getFirestore(app);
 
-  console.log("Writing portfolio Info", portInfo)
-  setPortfolioData(portInfo[0])
-  setPortfolioRefs(portInfo[1])
+  const artistsRef = collection(db, 'Artists');
 
+  const q = query(artistsRef, where('AssociatedUser', '==', user.uid));
+  console.log("Getting user ID")
+  const ref = await getDocs(q);
+  if (ref.length === 0) {
+    console.log("error no documents found with associated user id")
+
+  } else {
+    console.log(ref)
+    ref.forEach(async (element) => {
+      const artistref = element.id
+      const portInfo = await getPortfolioImagesOnlyByRef(artistref)
+      setArtistRef(artistref)
+      console.log("Writing portfolio Info", portInfo)
+      setPortfolioData(portInfo[0])
+      setPortfolioRefs(portInfo[1])
+    })
+
+
+  }
 }
 
+
 function CompleteWorkUploadForm() {
+  const [signupFormActive, setSignupFormActive] = useState(false);
   const [stage, setStage] = useState(0);
   const [data, setData] = useState({})
   const [uploading, setUploading] = useState(false)
   const [portfolioNames, setPortfolioNames] = useState([])
   const [portfolioRefs, setPortfolioRefs] = useState([])
   const [workref, setWorkRef] = useState(null)
+  const { user, loading } = useAuth();
+  const [artistref, setArtistRef] = useState("")
+
+  useEffect(() => {
+    console.log(loading, user);
+    if (loading) {
+      return;
+    }
+    if (!user) {
+      setSignupFormActive(true);
+    } else {
+      setSignupFormActive(false);
+      if (portfolioNames.length === 0) {
+        getPortfolioInfo(user, setPortfolioNames, setPortfolioRefs, setArtistRef)
+      }
+    }
+  })
 
   const uploadData = async (s) => {
     setUploading(true)
@@ -98,7 +137,6 @@ function CompleteWorkUploadForm() {
       return
     }
     console.log("uploading to portfolio", portfolioNames[n], portfolioRefs[n], "workref ", workref)
-    const artistref = "VWOgAFjhL0BlFlbDTJZF"
     const app = getApp();
     const db = getFirestore(app);
     const docRef = doc(db, "Artists", artistref, "Portfolios", portfolioRefs[n])
@@ -107,17 +145,22 @@ function CompleteWorkUploadForm() {
     });
 
 
+
   }
 
-  console.log("initial portfolio Data", (portfolioNames.length))
-  if (portfolioNames.length === 0) {
-    getPortfolioInfo(setPortfolioNames, setPortfolioRefs)
-  }
+
   const functions = { setStage, setData, uploadData, getData }
   const portfolioProps = { Portfolios: portfolioNames, setActivePortfolio: handlePortfolio }
   return (
     <>
       <Header />
+      {signupFormActive && (
+        <LoginForm
+          defaultSignUp
+          notCloseable
+          onClose={() => setSignupFormActive(false)}
+        />
+      )}
       <CompleteWorkTabSelector stage={stage} setStage={setStage} />
       {stage === 0 && <CompleteWorkInfo {...functions} />}
       {stage === 1 && <CompleteWorkPosts {...functions} />}
