@@ -10,7 +10,6 @@ import CompassLogo from '/public/assets/images/compass.svg';
 import CartLogo from '/public/assets/images/cart.svg';
 import ProfilePlaceholderImg from '/public/assets/svgs/profile.svg';
 
-import 'twin.macro';
 import { UrlObject } from 'url';
 import useAuth from '../utils/useAuth';
 import tw from 'twin.macro';
@@ -52,33 +51,39 @@ function NavbarIcon(
 ) {
   return (
     <div tw={'flex flex-none transform w-8'}>
-      {!!(props as Record<string, any>).href ? (
-        <Link href={(props as { href: string }).href} passHref>
-          <Image
-            src={props.src}
-            alt={props.alt}
-            layout="fill"
-            tw=""
-            css={[
-              tw`scale-75 cursor-pointer `,
-              props.disabled ? '' : tw`hover:scale-90 ease-in-out duration-200`,
-            ]}
-          />
-        </Link>
-      ) : (
-        <button onClick={(props as { onClick: () => void }).onClick}>
-          <Image
-            src={props.src}
-            alt={props.alt}
-            layout="fill"
-            tw=""
-            css={[
-              tw`scale-75 cursor-pointer `,
-              props.disabled ? '' : tw`hover:scale-90 ease-in-out duration-200`,
-            ]}
-          />
-        </button>
-      )}
+      <div tw="w-8 h-8 relative">
+        {!!(props as Record<string, any>).href ? (
+          <Link href={(props as { href: string }).href} passHref>
+            <Image
+              src={props.src}
+              alt={props.alt}
+              layout="fill"
+              tw=""
+              css={[
+                tw`cursor-pointer`,
+                props.disabled
+                  ? ''
+                  : tw`hover:scale-90 ease-in-out duration-200`,
+              ]}
+            />
+          </Link>
+        ) : (
+          <button onClick={(props as { onClick: () => void }).onClick}>
+            <Image
+              src={props.src}
+              alt={props.alt}
+              layout="fill"
+              tw=""
+              css={[
+                tw`cursor-pointer rounded-full`,
+                props.disabled
+                  ? ''
+                  : tw`hover:scale-90 ease-in-out duration-200`,
+              ]}
+            />
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -131,7 +136,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
         <div tw="flex flex-auto items-center gap-10 w-36">
           <div tw="flex-none cursor-pointer -mr-5">
             <Link href="/" passHref>
-              <Image src={Logo} tw="w-24" alt="Pkazo" />
+              <Image src={Logo} tw="w-20" alt="Pkazo" />
             </Link>
           </div>
 
@@ -195,7 +200,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
               <input
                 type="button"
                 value="Create on Pkazo"
-                tw="h-9 relative -top-0.5 text-white bg-theme-red rounded-full px-4 py-1 cursor-pointer hover:bg-[#be4040]"
+                tw="h-9 relative -top-0.5 text-white bg-theme-red rounded-full px-4 py-1 cursor-pointer hover:bg-[#E24E4D]"
               />
             </Link>
           )}
@@ -208,7 +213,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
           {/*)}*/}
           {!user ? (
             <button
-              tw="h-9 relative -top-0.5 text-[#C3C3C3] text-[14px] font-semibold px-4 py-1 cursor-pointer"
+              tw="h-9 relative -top-0.5 text-[#3C3C3C] text-[14px] font-semibold px-4 py-1 cursor-pointer"
               onClick={() => setShowLoginModal(true)}
             >
               Sign in

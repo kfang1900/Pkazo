@@ -10,17 +10,22 @@ const Home: NextPage = () => {
   const auth = useAuth();
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Pkazo</title>
-        <meta name="description" content="" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <>
       <Header />
-      <div tw={'w-full'}>
-        <h1 tw={'text-3xl mx-auto mt-8 mx-20 font-bold text-center'}>Pkazo</h1>
+      <div className={styles.container}>
+        <Head>
+          <title>Pkazo</title>
+          <meta name="description" content="" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+
+        <div tw={'w-full'}>
+          <h1 tw={'text-3xl mx-auto mt-8 mx-20 font-bold text-center'}>
+            Pkazo
+          </h1>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -252,6 +252,7 @@ function UploadWork(props: UploadWorkProps) {
                             }}
                           >
                             <button
+                              type={"button"}
                               css={[buttons.red, tw`text-[16px] h-11 px-8`]}
                             >
                               Select from computer
