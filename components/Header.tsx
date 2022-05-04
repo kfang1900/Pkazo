@@ -196,7 +196,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
               tw="h-9 relative -top-0.5 text-black font-bold px-4 py-1 cursor-pointer"
               onClick={() => setShowLoginModal(true)}
             >
-              Login
+              Sign in
             </button>
           ) : (
             <>
