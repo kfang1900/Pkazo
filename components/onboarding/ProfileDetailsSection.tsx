@@ -7,7 +7,7 @@ import {
   FormikErrors,
 } from 'formik';
 import { getApp } from 'firebase/app';
-import { addDoc, collection, getFirestore } from 'firebase/firestore';
+import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/firestore';
 import { Container } from '../../pages/[username]';
 import { ReactNode, useState } from 'react';
 import tw from 'twin.macro';
@@ -124,6 +124,7 @@ export default function ProfileDetailsSection({
               .split(' ')
               .map((n) => n.toLowerCase())
               .join('-'),
+            created: serverTimestamp()
           });
           setArtistId(artistRef.id);
           onComplete();

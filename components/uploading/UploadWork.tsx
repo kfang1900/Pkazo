@@ -10,6 +10,25 @@ import { FileUploader } from 'react-drag-drop-files';
 
 import buttons from 'styles/Button';
 import extraStyle from 'styles/UploadWork.module.css';
+import useAuth from '../../utils/useAuth';
+import { getApp } from 'firebase/app';
+import {
+  addDoc,
+  collection,
+  doc,
+  getFirestore,
+  serverTimestamp,
+  updateDoc,
+} from 'firebase/firestore';
+import { FirebaseStorage } from '@firebase/storage';
+import {
+  getStorage,
+  ref,
+  StorageError,
+  uploadBytesResumable,
+} from 'firebase/storage';
+import { useRouter } from 'next/router';
+import { Work } from '../../types/firebaseTypes';
 
 export interface UploadWorkProps {
   onClose: () => void;
@@ -53,6 +72,30 @@ function DisplayWip(props: { src: string | StaticImport }) {
       </div>
     </div>
   );
+}
+
+/**
+ * Uploads an image to firebase.
+ * @param storage - FirebaseStorage object, from getFirebase(app)
+ * @param file - The `File` to upload.
+ * @param pathPrefix - The location to upload the file in. Include a trailing slash. The file will be uploaded to `${pathPrefix}${file.name}`
+ * @returns fileRef - A string representing the firebase storage reference to the file (gs://...)
+ */
+async function uploadImage(
+  storage: FirebaseStorage,
+  file: File,
+  pathPrefix: string
+): Promise<string> {
+  try {
+    const uploadRef = await uploadBytesResumable(
+      ref(storage, pathPrefix + file.name),
+      file
+    );
+    return uploadRef.ref.toString();
+  } catch (error) {
+    alert('An error occurred: ' + (error as StorageError).message);
+    throw new Error();
+  }
 }
 
 function UploadWork(props: UploadWorkProps) {
@@ -106,6 +149,17 @@ function UploadWork(props: UploadWorkProps) {
   //   'rgb(0, 0, 0)',
   // ];
   const saleColors = ['🟥', '🟧', '🟨', '🟩', '🟦', '🟪', '🟫', '⬛', '⬜'];
+  const saleColorStrings = [
+    'red',
+    'orange',
+    'yellow',
+    'green',
+    'blue',
+    'purple',
+    'brown',
+    'black',
+    'white',
+  ];
   const saleOrientations = ['Horizontal', 'Vertical', 'Square'];
   const printSurfaces = ['Fine Art Paper', 'Canvas'];
   const styles = {
@@ -113,7 +167,7 @@ function UploadWork(props: UploadWorkProps) {
     input: tw`border border-[#D8D8D8] rounded-[6px] px-3 text-[14px] w-full focus:outline-none focus:border-[#888888]`,
     dropdown: tw`w-[132px] h-[30px] rounded-[20px] border border-[#D8D8D8] pl-4 appearance-none focus:outline-none focus:border-[#888888] text-[14px] text-[#838383]`,
   };
-  const dropdownButton = () => {
+  function DropdownButton() {
     return (
       <button tw="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 transform">
         <svg
@@ -130,14 +184,23 @@ function UploadWork(props: UploadWorkProps) {
         </svg>
       </button>
     );
-  };
+  }
   const [selected, setSelected] = useState(0);
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<
+    {
+      file: File;
+      url: string;
+    }[]
+  >([]);
   const [wipImages, setWipImages] = useState<string[]>([
     '/assets/images/wip/img1.png',
   ]);
   const [wipSelected, setWipSelected] = useState([0]);
   const [uploadPage, setUploadPage] = useState(0);
+
+  const auth = useAuth();
+  const router = useRouter();
+
   return (
     <div tw="fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center overflow-auto p-[50px]">
       <div tw="flex m-auto">
@@ -145,7 +208,7 @@ function UploadWork(props: UploadWorkProps) {
           <Formik
             initialValues={{
               title: '',
-              desc: '',
+              description: '',
               portfolio: '',
               year: 2022,
               medium: '',
@@ -170,11 +233,84 @@ function UploadWork(props: UploadWorkProps) {
             }}
             onSubmit={async (values, { setFieldError }) => {
               try {
-                // props.onClose();
-              } catch (error: any) {}
+                console.log(values);
+
+                if (!values.title) {
+                  alert('Title is required.');
+                  return;
+                }
+                if (!values.description) {
+                  alert('Description is required.');
+                  return;
+                }
+                if (!values.salePrice) {
+                  alert('Price is required.');
+                  return;
+                }
+                if (uploadedImages.length === 0) {
+                  alert('Please select at least one image for this work.');
+                  return;
+                }
+
+                const app = getApp();
+                const db = getFirestore(app);
+                const storage = getStorage(app);
+
+                const workRef = await addDoc(collection(db, 'Works'), {
+                  title: values.title,
+                  description: values.description,
+                  portfolio: values.portfolio,
+                  year: values.year,
+                  medium: values.medium,
+                  surface: values.surface,
+                  height: values.height,
+                  width: values.width,
+                  units: values.units,
+                  forSale: values.forSale === 'yes',
+                  ...(values.forSale === 'yes'
+                    ? {
+                        sale: {
+                          price: values.salePrice,
+                          subject: values.saleSubject,
+                          orientation: values.saleOrientation,
+                          color: values.saleColor,
+                          style: values.saleStyle,
+                          framing: values.saleFraming === 'yes',
+                        },
+                      }
+                    : {}),
+                  forPrint: values.forPrint === 'yes',
+                  ...(values.forPrint === 'yes'
+                    ? {
+                        print: {
+                          price: values.printPrice,
+                          height: values.height,
+                          width: values.width,
+                          units: values.units,
+                          surface: values.printSurface,
+                          framing: values.printFraming,
+                        },
+                      }
+                    : {}),
+                  artist: auth.artistId,
+                  timestamp: serverTimestamp(),
+                });
+                const workId = workRef.id;
+                const imageReferences = await Promise.all(
+                  uploadedImages.map(({ file, url }) =>
+                    uploadImage(storage, file, `/Works/${workId}/`)
+                  )
+                );
+                await updateDoc(doc(db, 'Works', workId), {
+                  images: imageReferences,
+                });
+                return router.push(`/work/${workId}`);
+              } catch (error: any) {
+                alert('An error occurred ' + error?.message);
+              }
             }}
           >
-            {({ values }) => (
+            {({ values, isSubmitting, setFieldValue, setFieldTouched }) => (
               <Form>
                 {uploadPage === 0 && (
                   <div tw="flex">
@@ -184,14 +320,14 @@ function UploadWork(props: UploadWorkProps) {
                         <div>
                           <div tw="h-[570px] transform overflow-hidden">
                             <Image
-                              src={uploadedImages[selected]}
+                              src={uploadedImages[selected].url}
                               alt="selected image"
                               layout="fill"
                               objectFit="contain"
                             />
                           </div>
                           <div tw="flex overflow-x-auto gap-x-3 mt-3">
-                            {uploadedImages.map((value, index) => (
+                            {uploadedImages.map((image, index) => (
                               <div
                                 key={index}
                                 css={[
@@ -203,7 +339,7 @@ function UploadWork(props: UploadWorkProps) {
                               >
                                 <div tw="transform w-full h-full">
                                   <Image
-                                    src={value}
+                                    src={image.url}
                                     alt="Uploaded Image"
                                     layout="fill"
                                     objectFit="cover"
@@ -214,13 +350,17 @@ function UploadWork(props: UploadWorkProps) {
                             <FileUploader
                               multiple={true}
                               name="upload-work-image"
-                              types={['PNG', 'JPG']}
+                              types={['PNG', 'JPG', 'JPEG']}
                               handleChange={(files: File[]) => {
-                                setUploadedImages((state: string[]) => {
-                                  return state.concat(
-                                    Array(...files).map(URL.createObjectURL)
-                                  );
-                                });
+                                setUploadedImages((state) => [
+                                  ...state,
+                                  ...Array.from(files)
+                                    .flat()
+                                    .map((file: File) => ({
+                                      file,
+                                      url: URL.createObjectURL(file),
+                                    })),
+                                ]);
                               }}
                             >
                               <div
@@ -242,17 +382,21 @@ function UploadWork(props: UploadWorkProps) {
                           <FileUploader
                             multiple={true}
                             name="upload-work-image"
-                            types={['PNG', 'JPG']}
+                            types={['PNG', 'JPG', 'JPEG']}
                             handleChange={(files: File[]) => {
-                              setUploadedImages((state: string[]) => {
-                                return state.concat(
-                                  Array(...files).map(URL.createObjectURL)
-                                );
-                              });
+                              setUploadedImages((state) => [
+                                ...state,
+                                ...Array.from(files)
+                                  .flat()
+                                  .map((file: File) => ({
+                                    file,
+                                    url: URL.createObjectURL(file),
+                                  })),
+                              ]);
                             }}
                           >
                             <button
-                              type={"button"}
+                              type={'button'}
                               css={[buttons.red, tw`text-[16px] h-11 px-8`]}
                             >
                               Select from computer
@@ -276,7 +420,7 @@ function UploadWork(props: UploadWorkProps) {
                         <Field
                           type="text"
                           component="textarea"
-                          name="desc"
+                          name="description"
                           rows="3"
                           placeholder="Write a description..."
                           css={[styles.input, tw`mt-3 py-[10px] leading-5`]}
@@ -288,36 +432,43 @@ function UploadWork(props: UploadWorkProps) {
                                 Portfolio
                               </div>
                               <div tw="relative">
-                                <Field
-                                  as="select"
+                                <select
                                   name="portfolio"
                                   css={styles.dropdown}
+                                  onChange={(e) =>
+                                    setFieldValue('portfolio', e.target.value)
+                                  }
+                                  onBlur={() => setFieldTouched('portfolio')}
+                                  value={values.portfolio}
                                 >
-                                  <option value="default" />
+                                  <option value="" disabled />
                                   <option value="1">1</option>
-                                </Field>
-                                {dropdownButton()}
+                                </select>
+                                <DropdownButton />
                               </div>
                             </div>
                             <div tw="flex items-center">
                               <div css={[styles.label, tw`w-[76px]`]}>Year</div>
                               <div tw="relative">
-                                <Field
-                                  as="select"
+                                <select
                                   name="year"
                                   css={styles.dropdown}
+                                  onChange={(e) =>
+                                    setFieldValue(
+                                      'year',
+                                      parseInt(e.target.value)
+                                    )
+                                  }
+                                  onBlur={() => setFieldTouched('year')}
+                                  value={values.year}
                                 >
                                   {Array(...Array(100)).map((value, key) => (
-                                    <option
-                                      key={key}
-                                      value={2022 - key}
-                                      selected={values.year === value}
-                                    >
+                                    <option key={key} value={2022 - key}>
                                       {2022 - key}
                                     </option>
                                   ))}
-                                </Field>
-                                {dropdownButton()}
+                                </select>
+                                <DropdownButton />
                               </div>
                             </div>
                             <div tw="flex items-center">
@@ -325,23 +476,23 @@ function UploadWork(props: UploadWorkProps) {
                                 Medium
                               </div>
                               <div tw="relative">
-                                <Field
-                                  as="select"
+                                <select
+                                  onChange={(e) =>
+                                    setFieldValue('medium', e.target.value)
+                                  }
+                                  onBlur={() => setFieldTouched('medium')}
+                                  value={values.medium}
                                   name="medium"
                                   css={styles.dropdown}
                                 >
-                                  <option value="default" />
+                                  <option value="" disabled />
                                   {mediums.map((value, i) => (
-                                    <option
-                                      key={i}
-                                      value={value}
-                                      selected={values.medium === value}
-                                    >
+                                    <option key={i} value={value}>
                                       {value}
                                     </option>
                                   ))}
-                                </Field>
-                                {dropdownButton()}
+                                </select>
+                                <DropdownButton />
                               </div>
                             </div>
                             <div tw="flex items-center">
@@ -349,26 +500,26 @@ function UploadWork(props: UploadWorkProps) {
                                 Surface
                               </div>
                               <div tw="relative">
-                                <Field
-                                  as="select"
+                                <select
+                                  onChange={(e) =>
+                                    setFieldValue('surface', e.target.value)
+                                  }
+                                  onBlur={() => setFieldTouched('surface')}
+                                  value={values.surface}
                                   name="surface"
                                   css={[
                                     styles.dropdown,
                                     tw`pr-6 overflow-ellipsis`,
                                   ]}
                                 >
-                                  <option value="default" />
+                                  <option value="" disabled />
                                   {surfaces.map((value, i) => (
-                                    <option
-                                      key={i}
-                                      value={value}
-                                      selected={values.surface === value}
-                                    >
+                                    <option key={i} value={value}>
                                       {value}
                                     </option>
                                   ))}
-                                </Field>
-                                {dropdownButton()}
+                                </select>
+                                <DropdownButton />
                               </div>
                             </div>
                           </div>
@@ -395,22 +546,22 @@ function UploadWork(props: UploadWorkProps) {
                               min="0"
                             />
                             <div tw="relative ml-3">
-                              <Field
-                                as="select"
+                              <select
+                                onChange={(e) =>
+                                  setFieldValue('units', e.target.value)
+                                }
+                                onBlur={() => setFieldTouched('units')}
+                                value={values.units}
                                 name="units"
                                 css={[styles.dropdown, tw`w-[60px] pl-3`]}
                               >
                                 {units.map((value, i) => (
-                                  <option
-                                    key={i}
-                                    value={value}
-                                    selected={values.units === value}
-                                  >
+                                  <option key={i} value={value}>
                                     {value}
                                   </option>
                                 ))}
-                              </Field>
-                              {dropdownButton()}
+                              </select>
+                              <DropdownButton />
                             </div>
                           </div>
                         </div>
@@ -455,85 +606,88 @@ function UploadWork(props: UploadWorkProps) {
                               </div>
                               <div css={styles.label}>Subject</div>
                               <div tw="relative ml-auto">
-                                <Field
-                                  as="select"
+                                <select
+                                  onChange={(e) =>
+                                    setFieldValue('saleSubject', e.target.value)
+                                  }
+                                  onBlur={() => setFieldTouched('saleSubject')}
+                                  value={values.saleSubject}
                                   name="saleSubject"
                                   css={styles.dropdown}
                                 >
-                                  <option value="default" />
+                                  <option value="" disabled />
                                   {saleSubjects.map((value, i) => (
-                                    <option
-                                      key={i}
-                                      value={value}
-                                      selected={values.saleSubject === value}
-                                    >
+                                    <option key={i} value={value}>
                                       {value}
                                     </option>
                                   ))}
-                                </Field>
-                                {dropdownButton()}
+                                </select>
+                                <DropdownButton />
                               </div>
                               <div css={styles.label}>Style</div>
                               <div tw="relative ml-auto">
-                                <Field
-                                  as="select"
+                                <select
+                                  onChange={(e) =>
+                                    setFieldValue('saleStyle', e.target.value)
+                                  }
+                                  onBlur={() => setFieldTouched('saleStyle')}
+                                  value={values.saleStyle}
                                   name="saleStyle"
                                   css={styles.dropdown}
                                 >
-                                  <option value="default" />
+                                  <option value="" disabled />
                                   {saleStyles.map((value, i) => (
-                                    <option
-                                      key={i}
-                                      value={value}
-                                      selected={values.saleStyle === value}
-                                    >
+                                    <option key={i} value={value}>
                                       {value}
                                     </option>
                                   ))}
-                                </Field>
-                                {dropdownButton()}
+                                </select>
+                                <DropdownButton />
                               </div>
                               <div css={styles.label}>Orientation</div>
                               <div tw="relative ml-auto">
-                                <Field
-                                  as="select"
+                                <select
+                                  onChange={(e) =>
+                                    setFieldValue(
+                                      'saleOrientation',
+                                      e.target.value
+                                    )
+                                  }
+                                  onBlur={() =>
+                                    setFieldTouched('saleOrientation')
+                                  }
+                                  value={values.saleOrientation}
                                   name="saleOrientation"
                                   css={styles.dropdown}
                                 >
-                                  <option value="default" />
+                                  <option value="" disabled />
                                   {saleOrientations.map((value, i) => (
-                                    <option
-                                      key={i}
-                                      value={value}
-                                      selected={
-                                        values.saleOrientation === value
-                                      }
-                                    >
+                                    <option key={i} value={value}>
                                       {value}
                                     </option>
                                   ))}
-                                </Field>
-                                {dropdownButton()}
+                                </select>
+                                <DropdownButton />
                               </div>
                               <div css={styles.label}>Main Color</div>
                               <div tw="relative ml-auto">
-                                <Field
-                                  as="select"
+                                <select
+                                  onChange={(e) =>
+                                    setFieldValue('saleColor', e.target.value)
+                                  }
+                                  onBlur={() => setFieldTouched('saleColor')}
+                                  value={values.saleColor}
                                   name="saleColor"
                                   css={[styles.dropdown, tw`w-[73px]`]}
                                 >
-                                  <option value="default" />
+                                  <option value="" disabled />
                                   {saleColors.map((value, i) => (
-                                    <option
-                                      key={i}
-                                      value={value}
-                                      selected={values.saleColor === value}
-                                    >
+                                    <option key={i} value={saleColorStrings[i]}>
                                       {value}
                                     </option>
                                   ))}
-                                </Field>
-                                {dropdownButton()}
+                                </select>
+                                <DropdownButton />
                               </div>
                               <div css={styles.label}>Framing</div>
                               <div tw="flex items-center text-[14px] text-[#838383] ml-auto">
@@ -623,46 +777,53 @@ function UploadWork(props: UploadWorkProps) {
                                   min="0"
                                 />
                                 <div tw="relative ml-3">
-                                  <Field
-                                    as="select"
+                                  <select
+                                    onChange={(e) =>
+                                      setFieldValue(
+                                        'printUnits',
+                                        e.target.value
+                                      )
+                                    }
+                                    onBlur={() => setFieldTouched('printUnits')}
+                                    value={values.printUnits}
                                     name="printUnits"
                                     css={[styles.dropdown, tw`w-[60px] pl-3`]}
                                   >
                                     {units.map((value, i) => (
-                                      <option
-                                        key={i}
-                                        value={value}
-                                        selected={values.printUnits === value}
-                                      >
+                                      <option key={i} value={value}>
                                         {value}
                                       </option>
                                     ))}
-                                  </Field>
-                                  {dropdownButton()}
+                                  </select>
+                                  <DropdownButton />
                                 </div>
                               </div>
+
                               <div css={styles.label}>Surface</div>
                               <div tw="relative ml-auto">
-                                <Field
-                                  as="select"
+                                <select
+                                  onChange={(e) =>
+                                    setFieldValue(
+                                      'printSurface',
+                                      e.target.value
+                                    )
+                                  }
+                                  onBlur={() => setFieldTouched('printSurface')}
+                                  value={values.printSurface}
                                   name="printSurface"
                                   css={[
                                     styles.dropdown,
                                     tw`pr-6 overflow-ellipsis`,
                                   ]}
                                 >
-                                  <option value="default" />
+                                  <option value="" disabled />
                                   {printSurfaces.map((value, i) => (
-                                    <option
-                                      key={i}
-                                      value={value}
-                                      selected={values.printSurface === value}
-                                    >
+                                    <option key={i} value={value}>
                                       {value}
                                     </option>
                                   ))}
-                                </Field>
-                                {dropdownButton()}
+                                </select>
+                                <DropdownButton />
                               </div>
                               <div css={styles.label}>Framing</div>
                               <div tw="flex items-center text-[14px] text-[#838383] ml-auto">
@@ -691,62 +852,65 @@ function UploadWork(props: UploadWorkProps) {
                       </div>
                       <button
                         css={[buttons.red, tw`ml-auto mt-[24px]`]}
-                        onClick={() => setUploadPage(1)}
+                        // onClick={() => setUploadPage(1)}
+                        type={'submit'}
+                        disabled={isSubmitting}
                       >
-                        Next
-                      </button>
-                    </div>
-                  </div>
-                )}
-                {uploadPage === 1 && (
-                  <div tw="w-full">
-                    <div tw="text-[22px] text-[#3C3C3C] font-semibold text-center">
-                      Attach in progress posts of the same work to this
-                      completed work.
-                    </div>
-                    <div tw="text-[22px] text-[#3C3C3C] text-center">
-                      (select a maximum of 8 posts)
-                    </div>
-                    <div tw="text-[22px] text-[#838383] mt-5">
-                      Select from Existing Posts
-                    </div>
-                    <div tw="overflow-y-auto h-[330px] mt-[30px] mb-4">
-                      <div tw="grid grid-cols-6 gap-8">
-                        {wipImages.map((value, index) => (
-                          <DisplayWip src={value} key={index} />
-                        ))}
-                      </div>
-                    </div>
-                    <FileUploader
-                      multiple={true}
-                      name="file"
-                      types={['JPG', 'PNG', 'SVG']}
-                      handleChange={(files: File[]) => {
-                        setWipImages((state: string[]) => {
-                          return state.concat(
-                            Array(...files).map(URL.createObjectURL)
-                          );
-                        });
-                      }}
-                    >
-                      <div tw="text-lg text-[#65676B] border-[#D8D8D8] border-[3px] border-dashed cursor-pointer px-16 py-8 rounded-[7px] w-[680px] mx-auto">
-                        <span tw="font-bold">Upload</span> in progress photos or
-                        videos from your computer
-                      </div>
-                    </FileUploader>
-                    <div tw="flex justify-between mt-5 px-9">
-                      <button
-                        css={buttons.white}
-                        onClick={() => setUploadPage(0)}
-                      >
-                        Back
-                      </button>
-                      <button css={buttons.red} type="submit">
                         Post
                       </button>
                     </div>
                   </div>
                 )}
+                {/*{uploadPage === 1 && (*/}
+                {/*  <div tw="w-full">*/}
+                {/*    <div tw="text-[22px] text-[#3C3C3C] font-semibold text-center">*/}
+                {/*      Attach in progress posts of the same work to this*/}
+                {/*      completed work.*/}
+                {/*    </div>*/}
+                {/*    <div tw="text-[22px] text-[#3C3C3C] text-center">*/}
+                {/*      (select a maximum of 8 posts)*/}
+                {/*    </div>*/}
+                {/*    <div tw="text-[22px] text-[#838383] mt-5">*/}
+                {/*      Select from Existing Posts*/}
+                {/*    </div>*/}
+                {/*    <div tw="overflow-y-auto h-[330px] mt-[30px] mb-4">*/}
+                {/*      <div tw="grid grid-cols-6 gap-8">*/}
+                {/*        {wipImages.map((value, index) => (*/}
+                {/*          <DisplayWip src={value} key={index} />*/}
+                {/*        ))}*/}
+                {/*      </div>*/}
+                {/*    </div>*/}
+                {/*    <FileUploader*/}
+                {/*      multiple={true}*/}
+                {/*      name="file"*/}
+                {/*      types={['JPG', 'PNG', 'SVG']}*/}
+                {/*      handleChange={(files: File[]) => {*/}
+                {/*        setWipImages((state: string[]) => {*/}
+                {/*          return state.concat(*/}
+                {/*            Array(...files).map(URL.createObjectURL)*/}
+                {/*          );*/}
+                {/*        });*/}
+                {/*      }}*/}
+                {/*    >*/}
+                {/*      <div tw="text-lg text-[#65676B] border-[#D8D8D8] border-[3px] border-dashed cursor-pointer px-16 py-8 rounded-[7px] w-[680px] mx-auto">*/}
+                {/*        <span tw="font-bold">Upload</span> in progress photos or*/}
+                {/*        videos from your computer*/}
+                {/*      </div>*/}
+                {/*    </FileUploader>*/}
+                {/*    <div tw="flex justify-between mt-5 px-9">*/}
+                {/*      <button*/}
+                {/*        type={"button"}*/}
+                {/*        css={buttons.white}*/}
+                {/*        onClick={() => setUploadPage(0)}*/}
+                {/*      >*/}
+                {/*        Back*/}
+                {/*      </button>*/}
+                {/*      <button css={buttons.red} type="submit">*/}
+                {/*        Post*/}
+                {/*      </button>*/}
+                {/*    </div>*/}
+                {/*  </div>*/}
+                {/*)}*/}
               </Form>
             )}
           </Formik>

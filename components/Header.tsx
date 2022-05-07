@@ -146,13 +146,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
           </div>
         </div>
 
-        <div tw="flex flex-auto flex-row justify-center h-8 gap-10">
-          <NavbarIcon href="/feed" src={HouseLogo} alt="House Logo" />
-          <NavbarIcon href="#" src={ShopLogo} alt="Shop Logo" disabled />
-          <NavbarIcon href="#" src={CompassLogo} alt="Compass Logo" disabled />
-          <NavbarIcon href="#" src={GroupsLogo} alt="Groups Logo" disabled />
-          <NavbarIcon href="#" src={MessageLogo} alt="Message Logo" disabled />
-        </div>
+
 
         <div tw="flex flex-auto flex-row-reverse w-36 justify-start h-8 gap-3">
           <NavbarIcon href="/" src={CartLogo} alt="Cart Logo" />
