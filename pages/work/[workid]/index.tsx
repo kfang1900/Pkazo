@@ -64,14 +64,12 @@ const IndividualWork: NextPage = () => {
   console.log(workData);
   const [popup, setPopup] = useState(false);
   const router = useRouter();
-  const { workId } = router.query;
-  console.log(workId, router.query, router.isReady, router, "ROUTER");
+  const { workid: workId } = router.query;
   useEffect(() => {
-    console.log(router.isReady, !workData, workId);
     if (router.isReady && !workData && workId) {
       if (typeof workId !== 'string') return;
       (async () => {
-        console.log("Loading Data")
+        console.log('Loading Data');
         const workData: Work | undefined = (
           await fetchWorkByID(workId)
         ).data() as Work | undefined;
