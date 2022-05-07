@@ -25,14 +25,9 @@ const loadStorageImage = async (photoURL:string) => {
     }
 }
 
-const loadStorageImages = async(photoURLs:string[])=>{
-    const retURLS:string[] = []
-    photoURLs.forEach(async (url)=>{
-        retURLS.push(await loadStorageImage(url))
-    })
-    console.log(retURLS)
-    return retURLS
-}
+const loadStorageImages = async(photoURLs:string[]) =>
+  Promise.all(photoURLs.map(url => loadStorageImage(url)));
+
 
 const fetchArtistByID = async(artistref: string)=>{
     console.log("Fetching artist ", artistref)
