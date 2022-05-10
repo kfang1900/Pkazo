@@ -25,6 +25,7 @@ import { sample_posts } from 'utils/Sample_Posts_Imports';
 import { defaultWorkPicture } from 'utils/FrontEndDefaults';
 import Link from 'next/link';
 import { Work } from '../../../types/firebaseTypes';
+import CheckoutModal from '../../../components/popups/CheckoutModal';
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },
@@ -57,6 +58,7 @@ const IndividualWork: NextPage = () => {
   const [workData, setWorkData] = useState<Work | null>(null);
   const [artistData, setArtistData] = useState<Record<string, any>>();
   const [loading, setLoading] = useState(true);
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [artistPicture, setArtistPicture] = useState(
     '/store_assets/img/user.png'
   );
@@ -114,11 +116,17 @@ const IndividualWork: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Portfolio</title>
+        <title>{workData.title || 'Artwork'} | Pkazo</title>
       </Head>
       <Header />
       {popup && (
         <PostDetails post={sample_posts[1]} onClose={() => setPopup(false)} />
+      )}
+      {showCheckoutModal && (
+        <CheckoutModal
+          onClose={() => setShowCheckoutModal(false)}
+          workId={workId + ""}
+        />
       )}
       <div tw="flex mt-8">
         {/* flex-grow should just be grow, wait for twin.macro to update */}
@@ -303,7 +311,10 @@ const IndividualWork: NextPage = () => {
           </div>
           <div tw="mt-6 border border-gray-100 mx-5"></div>
           <div tw="mt-9 items-center flex flex-col gap-y-2.5">
-            <button tw="w-[354px] border border-black rounded-full py-4 hover:bg-gray-100">
+            <button
+              tw="w-[354px] border border-black rounded-full py-4 hover:bg-gray-100"
+              onClick={() => setShowCheckoutModal(true)}
+            >
               Buy now
             </button>
             <button tw="w-[354px] rounded-full py-4 border-soft-red bg-soft-red hover:bg-red-600 hover:border-red-600 text-white">

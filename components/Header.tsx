@@ -227,11 +227,11 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
                     <Link href={'/' + username} passHref>
                       <a tw="block px-4 py-2 text-sm text-gray-700">Profile</a>
                     </Link>
-                    <Link href={'/' + username} passHref>
-                      <a tw="block px-4 py-2 text-sm text-gray-700">
-                        Portfolios
-                      </a>
-                    </Link>
+                    {/*<Link href={'/' + username} passHref>*/}
+                    {/*  <a tw="block px-4 py-2 text-sm text-gray-700">*/}
+                    {/*    Portfolios*/}
+                    {/*  </a>*/}
+                    {/*</Link>*/}
                     <Link href={'/account/edit'} passHref>
                       <a tw="block px-4 py-2 text-sm text-gray-700">Settings</a>
                     </Link>
