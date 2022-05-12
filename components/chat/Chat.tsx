@@ -101,7 +101,7 @@ export default function Chat({
       {messages.map((message) => (
         <p>
           <b>
-            {message.author === user.uid
+            {message.author === user?.uid
               ? 'You'
               : partnerData?.name || message.author}
           </b>
