@@ -15,9 +15,10 @@ export interface PostDetailsProps {
   post: Post;
   onClose: () => void;
 }
-export const formatPrice = (price: number) => {
-  return '$' + price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
-};
+export const formatPrice = (price: number) =>
+  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+    price
+  );
 function PostDetails(props: PostDetailsProps) {
   const [comments, setComments] = useState(props.post.comments);
   const [commentHover, setCommentHover] = useState(false);
@@ -41,7 +42,10 @@ function PostDetails(props: PostDetailsProps) {
       return [
         ...prev,
         {
-          user: { Name: 'Kevin Fang', ProfilePicture: '/assets/images/kevin_fang.jpg' },
+          user: {
+            Name: 'Kevin Fang',
+            ProfilePicture: '/assets/images/kevin_fang.jpg',
+          },
           time: Date.now(),
           comment: comment,
         },
