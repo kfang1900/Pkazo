@@ -99,7 +99,7 @@ export default function Chat({
   return (
     <div tw={'flex-auto'}>
       {messages.map((message) => (
-        <p>
+        <p key={message.id}>
           <b>
             {message.author === user?.uid
               ? 'You'
