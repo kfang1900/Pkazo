@@ -43,6 +43,7 @@ import {
 } from 'firebase/storage';
 import ImageUploadButton from '../../components/account/ImageUploadButton';
 import useAuth from '../../utils/useAuth';
+import useRequireOnboarding from '../../utils/useRequireOnboarding';
 type ArtistData = {
   name: string;
   location: string;
@@ -59,6 +60,7 @@ const EditAccount: NextPage = () => {
   const [data, setData] = useState<ArtistData | undefined>();
   const [artistId, setArtistId] = useState('');
   const { user, loading } = useAuth();
+  useRequireOnboarding();
   useEffect(() => {
     console.log(loading, user);
     if (loading || !user) {

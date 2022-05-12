@@ -26,6 +26,7 @@ import { defaultWorkPicture } from 'utils/FrontEndDefaults';
 import Link from 'next/link';
 import { Work } from '../../../types/firebaseTypes';
 import CheckoutModal from '../../../components/popups/CheckoutModal';
+import useRequireOnboarding from '../../../utils/useRequireOnboarding';
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },

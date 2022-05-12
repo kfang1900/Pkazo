@@ -109,10 +109,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
       const q = query(artistsRef, where('AssociatedUser', '==', user.uid));
 
       const ref = await getDocs(q);
-      if (ref.empty) {
-        router.push('/onboarding');
-        return;
-      }
+
       ref.forEach((snapshot) => {
         (async () => {
           const data = snapshot.data();

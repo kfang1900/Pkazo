@@ -23,6 +23,7 @@ import { defaultCoverImage } from 'utils/FrontEndDefaults';
 import Resume from 'components/profile/Resume';
 import { getPortfolioByRef, loadStorageImage } from 'helpers/FirebaseFunctions';
 import useAuth from '../../utils/useAuth';
+import useRequireOnboarding from '../../utils/useRequireOnboarding';
 
 //import { sample_artist } from 'utils/Sample_Posts_Imports';
 
@@ -100,6 +101,7 @@ const Portfolio: NextPage = () => {
   });
   const [loadingPortfolio, setLoadingPortfolio] = useState(true);
   const { artistData: currentUserArtistData } = useAuth();
+
   const isCurrentUserPage =
     currentUserArtistData && username === currentUserArtistData.username;
   const pages = ['Posts', 'Portfolio', 'Store'];
@@ -121,6 +123,15 @@ const Portfolio: NextPage = () => {
       }
     }
   });
+  useEffect(() => {
+    if (
+      artistData.length > 0 &&
+      artistData[0].data() &&
+      artistData[0].data().username === username
+    ) {
+      router.replace('/onboarding');
+    }
+  }, [artistData, username]);
 
   return (
     <>
