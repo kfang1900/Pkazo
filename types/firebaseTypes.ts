@@ -13,6 +13,7 @@ export interface ArtistObject {
   Location: String;
   PostNumber: number;
   WorkNumber: number;
+  ProfilePicture: string;
   username: String;
 }
 

@@ -101,6 +101,11 @@ const Portfolio: NextPage = () => {
   });
   const [loadingPortfolio, setLoadingPortfolio] = useState(true);
   const { artistData: currentUserArtistData } = useAuth();
+  useRequireOnboarding(
+    artistData.length > 0 &&
+      artistData[0].data() &&
+      artistData[0].data().username === username
+  );
 
   const isCurrentUserPage =
     currentUserArtistData && username === currentUserArtistData.username;
@@ -123,15 +128,6 @@ const Portfolio: NextPage = () => {
       }
     }
   });
-  useEffect(() => {
-    if (
-      artistData.length > 0 &&
-      artistData[0].data() &&
-      artistData[0].data().username === username
-    ) {
-      router.replace('/onboarding');
-    }
-  }, [artistData, username]);
 
   return (
     <>

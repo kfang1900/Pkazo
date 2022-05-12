@@ -94,6 +94,9 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
   const [showChooseWorkDropdown, setShowChooseWorkDropdown] = useState(false);
   const [showUploadWorkPopup, setShowUploadWorkPopup] = useState(false);
   const router = useRouter();
+  const {artistData} = useAuth();
+  const username = artistData?.username;
+  const pfp = artistData?
   useEffect(() => {
     console.log('user', user);
     if (!user) {
@@ -115,7 +118,6 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
           const data = snapshot.data();
           setPfp(await loadStorageImage(data.ProfilePicture)); // assumes that there will only be one result
           setUsername(data.username);
-          console.log(data.username, 'ioasdfij');
         })();
       });
     })();
@@ -142,8 +144,6 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
             />
           </div>
         </div>
-
-
 
         <div tw="flex flex-auto flex-row-reverse w-36 justify-start h-8 gap-3">
           <NavbarIcon href="/" src={CartLogo} alt="Cart Logo" />

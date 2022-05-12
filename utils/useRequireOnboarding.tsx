@@ -9,7 +9,6 @@ export default function useRequireOnboarding(condition = true) {
   const router = useRouter();
   const { loading, artistData } = useAuth();
   if (!loading && !artistData && condition) {
-    router.push('/onboarding');
-    return;
+    return router.replace('/onboarding');
   }
 }
