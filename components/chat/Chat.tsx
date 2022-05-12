@@ -73,7 +73,12 @@ export default function Chat({
     });
     setText('');
   }, [user, text, setText]);
-  const [partnerData, setPartnerData] = useState(null);
+  const [partnerData, setPartnerData] = useState<
+    | {
+        name: string;
+      }
+    | Record<string, any>
+  >({});
   useEffect(() => {
     (async () => {
       const app = getApp();
