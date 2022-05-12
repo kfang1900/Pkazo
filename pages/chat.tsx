@@ -21,10 +21,10 @@ const Home: NextPage = () => {
         </Head>
 
         <div tw={'w-full flex pt-5'}>
-          <div tw={'flex-initial'}>
-            <h1 tw={' w-20 text-3xl mx-auto mt-8 mx-20 font-bold text-center'}>
-              Chat
-            </h1>
+          <div tw={'flex-initial px-20'}>
+            <h1 tw={'w-20 text-3xl mt-8 font-bold'}>Chats</h1>
+            <p><b>Jeffrey Meng</b></p>
+            <a tw={'text-blue-500 hover:underline'}>Start a new chat (WIP)</a>
           </div>
           <Chat
             partnerId={

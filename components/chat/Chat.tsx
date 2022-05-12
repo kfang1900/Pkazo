@@ -120,7 +120,7 @@ export default function Chat({
         type={'button'}
         onClick={onSend}
       >
-        send
+        Send
       </button>
     </div>
   );
