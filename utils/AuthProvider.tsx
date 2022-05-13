@@ -76,7 +76,6 @@ export default function FirebaseProvider({
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      setLoading(false);
       if (!user) {
         setUser(null);
         setEmail('');
@@ -104,34 +103,9 @@ export default function FirebaseProvider({
           // this assumes that there will only be one result
           setArtistId(snapshot.id);
           setArtistData(snapshot.data() as ArtistObject);
+          setLoading(false);
         });
       })();
-      /*
-      // Otherwise fetch account details
-      const res = await fetch('/api/account/me?_vercel_no_cache=1')
-      if (!res.ok) {
-        // setLoading(false)
-        // setUserInfo(null)
-        setEmail(undefined)
-        return
-      }
-
-      try {
-        // Set user info
-        // const userInfo: UserInfo = await res.json()
-        // setUserInfo(userInfo)
-
-        // Set loading to false since we have user info
-        // setLoading(false)
-      } catch (err) {
-        if (err instanceof SyntaxError) {
-          // Could parse JSON
-        //   setLoading(false)
-        } else {
-          // Other error
-          console.error(err)
-        }
-      }*/
     });
 
     return unsubscribe;
