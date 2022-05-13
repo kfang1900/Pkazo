@@ -89,39 +89,21 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
   const { user, signOut } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [pfp, setPfp] = useState('');
-  const [username, setUsername] = useState('');
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showChooseWorkDropdown, setShowChooseWorkDropdown] = useState(false);
   const [showUploadWorkPopup, setShowUploadWorkPopup] = useState(false);
   const router = useRouter();
-  const {artistData} = useAuth();
+  const { artistData } = useAuth();
   const username = artistData?.username;
-  const pfp = artistData?
   useEffect(() => {
     console.log('user', user);
-    if (!user) {
+    if (!artistData || !artistData?.ProfilePicture) {
       return;
     }
     (async () => {
-      if (!user) return;
-
-      const app = getApp();
-      const db = getFirestore(app);
-
-      const artistsRef = collection(db, 'Artists');
-      const q = query(artistsRef, where('AssociatedUser', '==', user.uid));
-
-      const ref = await getDocs(q);
-
-      ref.forEach((snapshot) => {
-        (async () => {
-          const data = snapshot.data();
-          setPfp(await loadStorageImage(data.ProfilePicture)); // assumes that there will only be one result
-          setUsername(data.username);
-        })();
-      });
+      setPfp(await loadStorageImage(artistData?.ProfilePicture));
     })();
-  }, [user]);
+  }, [artistData]);
   return (
     <div tw="sticky top-0 z-50 w-full border-b border-[#D8D8D8] bg-white">
       {showLoginModal && <LoginForm onClose={() => setShowLoginModal(false)} />}
