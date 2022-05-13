@@ -246,47 +246,56 @@ export default function ShopSettingsPage() {
               />
               <div tw="ml-2">Add Question</div>
             </button>
-            <div />
-            <div>
-              <input
-                disabled={saving}
-                onClick={async () => {
-                  setSaving(true);
-                  const app = getApp();
-                  const db = getFirestore(app);
-                  await updateDoc(doc(db, 'Artists', artistId), {
-                    FAQs: inputFAQs
-                      .filter((item) => item.question || item.answer)
-                      .map((item) => ({
-                        question: item.question,
-                        answer: item.answer,
-                        // strip key
-                      })),
-                  });
-                  setInputFAQs((s) =>
-                    s.filter((item) => item.question || item.answer)
-                  );
-                  setFirebaseFAQs(
-                    inputFAQs.filter((item) => item.question || item.answer)
-                  );
-                  setSaving(false);
-                }}
-                type="button"
-                value={saving ? 'Saving...' : 'Save'}
-                tw="inline-block h-[40px] relative text-white bg-theme-red rounded-[6px] px-4 py-1 cursor-pointer hover:bg-[#be4040]"
-              />
-              <button
-                onClick={() => {
-                  {
-                    setInputFAQs(firebaseFAQs);
-                    setKeyCounter((s) => s + 1);
-                  }
-                }}
-                tw="inline-block h-[40px] w-40 border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] ml-4 items-center hover:bg-[#F5F5F5]"
-              >
-                Discard Changes
-              </button>
-            </div>
+            {(inputFAQs.length !== firebaseFAQs.length ||
+              !inputFAQs.every(
+                ({ question, answer }, i) =>
+                  question === firebaseFAQs[i].question &&
+                  answer === firebaseFAQs[i].answer
+              )) && (
+              <>
+                <div />
+                <div>
+                  <input
+                    disabled={saving}
+                    onClick={async () => {
+                      setSaving(true);
+                      const app = getApp();
+                      const db = getFirestore(app);
+                      await updateDoc(doc(db, 'Artists', artistId), {
+                        FAQs: inputFAQs
+                          .filter((item) => item.question || item.answer)
+                          .map((item) => ({
+                            question: item.question,
+                            answer: item.answer,
+                            // strip key
+                          })),
+                      });
+                      setInputFAQs((s) =>
+                        s.filter((item) => item.question || item.answer)
+                      );
+                      setFirebaseFAQs(
+                        inputFAQs.filter((item) => item.question || item.answer)
+                      );
+                      setSaving(false);
+                    }}
+                    type="button"
+                    value={saving ? 'Saving...' : 'Save'}
+                    tw="inline-block h-[40px] relative text-white bg-theme-red rounded-[6px] px-4 py-1 cursor-pointer hover:bg-[#be4040]"
+                  />
+                  <button
+                    onClick={() => {
+                      {
+                        setInputFAQs(firebaseFAQs);
+                        setKeyCounter((s) => s + 1);
+                      }
+                    }}
+                    tw="inline-block h-[40px] w-40 border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] ml-4 items-center hover:bg-[#F5F5F5]"
+                  >
+                    Discard Changes
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </>
       )}
