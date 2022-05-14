@@ -77,10 +77,13 @@ const getPortfolioHelper = async (docRef: QuerySnapshot<DocumentData>) => {
             //console.log("Fetching Work Data",workref)
             const workdata = await fetchWorkByID(workref);
             const workImage = await loadStorageImage(
-              workdata.data()!.MainImage
+              workdata.data()!.images[0]
             );
             //console.log(Works,subworks)
-            subworks.push(workdata.data()!);
+            subworks.push({
+              ...workdata.data()!,
+              __id: workdata.id,
+            });
             subworkImages.push(workImage!);
           })
         );

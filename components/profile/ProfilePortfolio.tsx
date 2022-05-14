@@ -110,7 +110,7 @@ function shuffle(obj: { Data: any[]; Images: any[] }) {
   return obj;
 }
 
-function GallerySection(props: PortfolioObject) {
+function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
   const [curGallery, setCurGallery] = useState<{
     Data: any[];
@@ -118,12 +118,9 @@ function GallerySection(props: PortfolioObject) {
   }>({ Data: [], Images: [] });
 
   useEffect(() => {
-    setCurGallery(getGalleryData(props, null));
-  }, [props.Works, props.WorkImages]);
+    setCurGallery(getGalleryData(portfolioData, null));
+  }, [portfolioData]);
 
-  // console.log('rendering Gallery', props); //I don't know why this print statment changes whether they show up
-  // console.log(curGallery.Images);
-  console.log(JSON.parse(JSON.stringify(props)), getGalleryData(props, null));
   const [seeNum, setSeeNum] = useState(9);
   function updSeeNum() {
     if (seeNum >= curGallery.Images.length) setSeeNum(9);
@@ -135,49 +132,43 @@ function GallerySection(props: PortfolioObject) {
       <section tw="mt-10">
         <div className="container">
           <div tw="flex justify-center mb-12">
-            {props.Portfolios.map((portfolio, index) => {
-              console.log(
-                JSON.parse(JSON.stringify(props)),
-                props.PortfolioImages.length,
-                'index: ',
-                index,
-                'adfas'
-              );
-              return (
+            {portfolioData.Portfolios.map((portfolio, index) => (
+              <div
+                key={index}
+                tw="cursor-pointer"
+                onClick={() => {
+                  setActiveIndex(activeIndex === index ? null : index);
+                  setCurGallery(
+                    getGalleryData(
+                      portfolioData,
+                      activeIndex === index ? null : index
+                    )
+                  );
+                }}
+              >
                 <div
-                  key={index}
-                  tw="cursor-pointer"
-                  onClick={() => {
-                    setActiveIndex(activeIndex === index ? null : index);
-                    setCurGallery(
-                      getGalleryData(
-                        props,
-                        activeIndex === index ? null : index
-                      )
-                    );
-                  }}
+                  css={[
+                    tw`w-[128px] h-[128px] relative rounded-full overflow-hidden duration-200 origin-bottom border-4 border-transparent mx-[60px]`,
+                    activeIndex === index && tw`border-[#C6C5C3]`,
+                  ]}
                 >
-                  <div
-                    css={[
-                      tw`w-[128px] h-[128px] relative rounded-full overflow-hidden duration-200 origin-bottom border-4 border-transparent mx-[60px]`,
-                      activeIndex === index && tw`border-[#C6C5C3]`,
-                    ]}
-                  >
-                    {props.PortfolioImages[index] && (
-                      <Image
-                        src={props.PortfolioImages[index]}
-                        alt="Portfolio Image"
-                        layout="fill"
-                      />
-                    )}
-                  </div>
-                  <p tw="text-black mt-2 text-center">{portfolio.Name}</p>
+                  {portfolioData.PortfolioImages[index] && (
+                    <Image
+                      src={portfolioData.PortfolioImages[index]}
+                      alt="Portfolio Image"
+                      layout="fill"
+                    />
+                  )}
                 </div>
-              );
-            })}
+                <p tw="text-black mt-2 text-center">{portfolio.Name}</p>
+              </div>
+            ))}
           </div>
 
-          <CircleDescriptionBox activeIndex={activeIndex} props={props} />
+          <CircleDescriptionBox
+            activeIndex={activeIndex}
+            portfolioData={portfolioData}
+          />
         </div>
       </section>
       {/* Circle Images Section --End-- */}
@@ -191,20 +182,20 @@ function GallerySection(props: PortfolioObject) {
           >
             {
               //.Images.slice(0, seeNum)
-              curGallery.Images?.slice(0, seeNum).map(
-                (gallery: string, index) => (
-                  <>
-                    {console.log(
-                      'Rendering Masonry',
-                      gallery,
-                      curGallery.Images
-                    )}
-                    <button key={index} tw="my-[18px]">
+              curGallery.Images?.slice(0, seeNum).map((gallery: string, i) => (
+                <>
+                  <Link
+                    key={i}
+                    tw="my-[18px]"
+                    passHref
+                    href={'/work/' + curGallery.Data[i].__id}
+                  >
+                    <a tw={'cursor-pointer'}>
                       <img src={gallery} tw=" w-full h-auto" alt=""></img>
-                    </button>
-                  </>
-                )
-              )
+                    </a>
+                  </Link>
+                </>
+              ))
             }
           </Masonry>
         </div>
@@ -262,15 +253,18 @@ function GallerySection(props: PortfolioObject) {
 
 export default GallerySection;
 
-const getGalleryData = (props: PortfolioObject, activeIndex: null | number) => {
+const getGalleryData = (
+  portfolioData: PortfolioObject,
+  activeIndex: null | number
+) => {
   if (activeIndex === null) {
-    const a = props.Works.map((i) => i).flat();
-    const b = props.WorkImages.map((i) => i).flat();
+    const a = portfolioData.Works.map((i) => i).flat();
+    const b = portfolioData.WorkImages.map((i) => i).flat();
     //console.log("rendering images", a, b)
     return { Data: a, Images: b };
   } else {
-    const a = props.Works[activeIndex];
-    const b = props.WorkImages[activeIndex];
+    const a = portfolioData.Works[activeIndex];
+    const b = portfolioData.WorkImages[activeIndex];
     //console.log("rendering images", a, b)
     return { Data: a, Images: b };
   }
@@ -278,22 +272,22 @@ const getGalleryData = (props: PortfolioObject, activeIndex: null | number) => {
 
 const CircleDescriptionBox = ({
   activeIndex,
-  props,
+  portfolioData,
 }: {
   activeIndex: null | number;
-  props: PortfolioObject;
+  portfolioData: PortfolioObject;
 }) => {
   //console.log("rendering description box", props)
 
   if (activeIndex === null) return null;
-  const data = props.Portfolios[activeIndex];
+  const data = portfolioData.Portfolios[activeIndex];
 
   return (
     <div tw="flex rounded-3xl border-2 border-[#D8D8D8] max-w-[1000px] mx-auto pr-[60px] py-9">
       <div tw="w-[120px] h-[120px] relative rounded-full overflow-hidden duration-200 origin-bottom ml-[52px] mr-[44px] my-auto flex-shrink-0">
-        {props.PortfolioImages[activeIndex] && (
+        {portfolioData.PortfolioImages[activeIndex] && (
           <Image
-            src={props.PortfolioImages[activeIndex]}
+            src={portfolioData.PortfolioImages[activeIndex]}
             alt="Portfolio Image"
             layout="fill"
           />

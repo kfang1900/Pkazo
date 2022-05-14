@@ -172,14 +172,16 @@ const IndividualWork: NextPage = () => {
               </button>
               <div tw="relative">
                 {workImages[selectedImage] ? (
-                  <Image
-                    src={workImages[selectedImage]}
-                    width={486}
-                    height={607.5}
-                    alt="work_image"
-                  />
+                  <div tw={'align-middle'}>
+                    <img
+                      src={workImages[selectedImage]}
+                      width={486}
+                      tw={'align-middle'}
+                      alt="work_image"
+                    />
+                  </div>
                 ) : (
-                  <p>Could not load image</p>
+                  <p>Unable to load image</p>
                 )}
                 <button tw="absolute bg-white rounded-full w-9 h-9 top-4 right-4 flex justify-center items-center">
                   <svg
@@ -383,7 +385,7 @@ const IndividualWork: NextPage = () => {
                       viewBox="0 0 15 9"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      css={expandedFAQ === i ? "" : tw`rotate-[270deg]`}
+                      css={expandedFAQ === i ? '' : tw`rotate-[270deg]`}
                     >
                       <path
                         d="M14.6871 0.273877C14.3219 -0.0912924 13.7298 -0.0912924 13.3646 0.273877L7.48026 6.15828L1.59586 0.273877C1.23071 -0.091293 0.638616 -0.091293 0.273465 0.273876C-0.0916853 0.639055 -0.0916853 1.23111 0.273465 1.59629L6.81906 8.14188C7.18421 8.50703 7.77631 8.50703 8.14146 8.14188L14.6871 1.59629C15.0522 1.23112 15.0522 0.639056 14.6871 0.273877Z"

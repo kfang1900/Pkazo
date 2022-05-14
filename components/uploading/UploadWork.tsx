@@ -1,6 +1,6 @@
 import tw, { css } from 'twin.macro';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,8 +14,10 @@ import useAuth from '../../utils/useAuth';
 import { getApp } from 'firebase/app';
 import {
   addDoc,
+  arrayUnion,
   collection,
   doc,
+  getDocs,
   getFirestore,
   serverTimestamp,
   updateDoc,
@@ -39,40 +41,68 @@ interface StaticRequire {
   default: StaticImageData;
 }
 type StaticImport = StaticRequire | StaticImageData;
-function DisplayWip(props: { src: string | StaticImport }) {
-  const [selected, setSelected] = useState(false);
-  return (
-    <div
-      css={[
-        tw`w-full rounded-[5px] overflow-hidden cursor-pointer flex-shrink-0`,
-        { aspectRatio: '1/1' },
-      ]}
-      onClick={() => setSelected(!selected)}
-    >
-      <div tw="transform w-full h-full">
-        <FontAwesomeIcon
-          icon={solid('check')}
-          css={[
-            tw`text-white z-20 p-5 absolute top-1/2 right-1/2 -translate-y-1/2 translate-x-1/2 text-[60px]`,
-            !selected && tw`hidden`,
-          ]}
-        />
-        <div
-          css={[
-            tw`bg-black opacity-50 z-10 absolute w-full h-full`,
-            !selected && tw`hidden`,
-          ]}
-        ></div>
-        <Image
-          src={props.src}
-          alt="Uploaded Image"
-          layout="fill"
-          objectFit="cover"
-        />
-      </div>
-    </div>
-  );
-}
+
+const mediums = [
+  'Oil',
+  'Watercolor',
+  'Acrylic',
+  'Ink',
+  'Gouache',
+  'Spraypaint',
+];
+const surfaces = [
+  'Stretched canvas',
+  'Canvas board',
+  'Wood',
+  'Fabric',
+  'Linen',
+  'Paper',
+];
+const units = ['in', 'cm', 'ft'];
+const saleSubjects = [
+  'Portrait',
+  'Nature',
+  'Street',
+  'Beach',
+  'Floral',
+  'Vacation',
+  'Tropical',
+];
+const saleStyles = [
+  'Abstract',
+  'Cubist',
+  'Expressoinist',
+  'Folk',
+  'Impressionist',
+  'Minimalist',
+  'Photorealist',
+  'Pointillist',
+  'Pop art',
+  'Psychedelic',
+  'Surrealist',
+];
+// const saleColors = [
+//   'rgb(36, 113, 237)',
+//   'rgb(219, 9, 9)',
+//   'rgb(6, 145, 20)',
+//   'rgb(255, 123, 0)',
+//   'rgb(255, 225, 0)',
+//   'rgb(255, 43, 248)',
+//   'rgb(113, 8, 199)',
+//   'rgb(0, 0, 0)',
+// ];
+const saleColors = ['🟥', '🟧', '🟨', '🟩', '🟦', '🟪', '🟫', '⬛', '⬜'];
+const saleColorStrings = [
+  'red',
+  'orange',
+  'yellow',
+  'green',
+  'blue',
+  'purple',
+  'brown',
+  'black',
+  'white',
+];
 
 /**
  * Uploads an image to firebase.
@@ -97,69 +127,25 @@ async function uploadImage(
     throw new Error();
   }
 }
-
+function DropdownButton() {
+  return (
+    <button tw="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 transform">
+      <svg
+        width="14"
+        height="9"
+        viewBox="0 0 14 9"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M6.73757 6.17509L1.26509 0.705078L0.205078 1.76609L6.73807 8.29609L13.2651 1.76605L12.2046 0.705547L6.73757 6.17509Z"
+          fill="#8E8E93"
+        />
+      </svg>
+    </button>
+  );
+}
 function UploadWork(props: UploadWorkProps) {
-  const mediums = [
-    'Oil',
-    'Watercolor',
-    'Acrylic',
-    'Ink',
-    'Gouache',
-    'Spraypaint',
-  ];
-  const surfaces = [
-    'Stretched canvas',
-    'Canvas board',
-    'Wood',
-    'Fabric',
-    'Linen',
-    'Paper',
-  ];
-  const units = ['in', 'cm', 'ft'];
-  const saleSubjects = [
-    'Portrait',
-    'Nature',
-    'Street',
-    'Beach',
-    'Floral',
-    'Vacation',
-    'Tropical',
-  ];
-  const saleStyles = [
-    'Abstract',
-    'Cubist',
-    'Expressoinist',
-    'Folk',
-    'Impressionist',
-    'Minimalist',
-    'Photorealist',
-    'Pointillist',
-    'Pop art',
-    'Psychedelic',
-    'Surrealist',
-  ];
-  // const saleColors = [
-  //   'rgb(36, 113, 237)',
-  //   'rgb(219, 9, 9)',
-  //   'rgb(6, 145, 20)',
-  //   'rgb(255, 123, 0)',
-  //   'rgb(255, 225, 0)',
-  //   'rgb(255, 43, 248)',
-  //   'rgb(113, 8, 199)',
-  //   'rgb(0, 0, 0)',
-  // ];
-  const saleColors = ['🟥', '🟧', '🟨', '🟩', '🟦', '🟪', '🟫', '⬛', '⬜'];
-  const saleColorStrings = [
-    'red',
-    'orange',
-    'yellow',
-    'green',
-    'blue',
-    'purple',
-    'brown',
-    'black',
-    'white',
-  ];
   const saleOrientations = ['Horizontal', 'Vertical', 'Square'];
   const printSurfaces = ['Fine Art Paper', 'Canvas'];
   const styles = {
@@ -167,24 +153,7 @@ function UploadWork(props: UploadWorkProps) {
     input: tw`border border-[#D8D8D8] rounded-[6px] px-3 text-[14px] w-full focus:outline-none focus:border-[#888888]`,
     dropdown: tw`w-[132px] h-[30px] rounded-[20px] border border-[#D8D8D8] pl-4 appearance-none focus:outline-none focus:border-[#888888] text-[14px] text-[#838383]`,
   };
-  function DropdownButton() {
-    return (
-      <button tw="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 transform">
-        <svg
-          width="14"
-          height="9"
-          viewBox="0 0 14 9"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M6.73757 6.17509L1.26509 0.705078L0.205078 1.76609L6.73807 8.29609L13.2651 1.76605L12.2046 0.705547L6.73757 6.17509Z"
-            fill="#8E8E93"
-          />
-        </svg>
-      </button>
-    );
-  }
+
   const [selected, setSelected] = useState(0);
   const [uploadedImages, setUploadedImages] = useState<
     {
@@ -192,14 +161,28 @@ function UploadWork(props: UploadWorkProps) {
       url: string;
     }[]
   >([]);
-  const [wipImages, setWipImages] = useState<string[]>([
-    '/assets/images/wip/img1.png',
-  ]);
-  const [wipSelected, setWipSelected] = useState([0]);
   const [uploadPage, setUploadPage] = useState(0);
-
+  const [portfolios, setPortfolios] = useState<{ name: string; id: string }[]>(
+    []
+  );
   const auth = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (auth.loading || !auth.artistId || portfolios.length > 0) return;
+    const app = getApp();
+    const db = getFirestore();
+    getDocs(collection(db, 'Artists', auth.artistId, 'Portfolios')).then(
+      (querySnapshot) => {
+        setPortfolios(
+          querySnapshot.docs.map((portfolio) => ({
+            id: portfolio.id,
+            name: portfolio.data().Name,
+          }))
+        );
+      }
+    );
+  }, [auth]);
 
   return (
     <div tw="fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center overflow-auto p-[50px]">
@@ -233,6 +216,8 @@ function UploadWork(props: UploadWorkProps) {
             }}
             onSubmit={async (values, { setFieldError }) => {
               try {
+                if (!auth.artistId) return;
+
                 console.log(values);
 
                 if (!values.title) {
@@ -245,6 +230,10 @@ function UploadWork(props: UploadWorkProps) {
                 }
                 if (!values.salePrice) {
                   alert('Price is required.');
+                  return;
+                }
+                if (!values.portfolio) {
+                  alert('You must select a portfolio to place this image in.');
                   return;
                 }
                 if (uploadedImages.length === 0) {
@@ -296,6 +285,18 @@ function UploadWork(props: UploadWorkProps) {
                   timestamp: serverTimestamp(),
                 });
                 const workId = workRef.id;
+                await updateDoc(
+                  doc(
+                    db,
+                    'Artists',
+                    auth.artistId || '',
+                    'Portfolios',
+                    values.portfolio
+                  ),
+                  {
+                    Works: arrayUnion(workId),
+                  }
+                );
                 const imageReferences = await Promise.all(
                   uploadedImages.map(({ file, url }) =>
                     uploadImage(storage, file, `/Works/${workId}/`)
@@ -442,7 +443,14 @@ function UploadWork(props: UploadWorkProps) {
                                   value={values.portfolio}
                                 >
                                   <option value="" disabled />
-                                  <option value="1">1</option>
+                                  {portfolios.map((portfolio) => (
+                                    <option
+                                      value={portfolio.id}
+                                      key={portfolio.id}
+                                    >
+                                      {portfolio.name}
+                                    </option>
+                                  ))}
                                 </select>
                                 <DropdownButton />
                               </div>

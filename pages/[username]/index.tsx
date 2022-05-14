@@ -201,7 +201,7 @@ const Portfolio: NextPage = () => {
                 {page === 0 && <ProfilePosts />}
                 {page === 1 && (
                   <>
-                    <Gallery {...portfolioData} />
+                    <Gallery portfolioData={portfolioData} />
                     {/*<Resume {...artistData} />*/}
                     {/*  TODO fix resume section */}
                   </>
