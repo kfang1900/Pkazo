@@ -24,7 +24,7 @@ import { DocumentData, DocumentSnapshot } from 'firebase/firestore';
 import { sample_posts } from 'utils/Sample_Posts_Imports';
 import { defaultWorkPicture } from 'utils/FrontEndDefaults';
 import Link from 'next/link';
-import { Work } from '../../../types/firebaseTypes';
+import { ArtistData, Work } from '../../../types/firebaseTypes';
 import CheckoutModal from '../../../components/popups/CheckoutModal';
 import useRequireOnboarding from '../../../utils/useRequireOnboarding';
 import exp from 'constants';
@@ -129,6 +129,9 @@ const IndividualWork: NextPage = () => {
         <CheckoutModal
           onClose={() => setShowCheckoutModal(false)}
           workId={workId + ''}
+          workData={workData}
+          image={workImages[0]}
+          artistData={artistData as ArtistData}
         />
       )}
       <div tw="flex mt-8">
