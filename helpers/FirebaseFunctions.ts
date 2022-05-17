@@ -73,9 +73,17 @@ const getPortfolioHelper = async (docRef: QuerySnapshot<DocumentData>) => {
         let subworks: DocumentData[] = [];
         let subworkImages: string[] = [];
         await Promise.all(
-          element.data().Works?.map(async (workref: string) => {
-            //console.log("Fetching Work Data",workref)
+          (element.data().Works || []).map(async (workref: string) => {
             const workdata = await fetchWorkByID(workref);
+
+            if (
+              !workdata.data() ||
+              !workdata.data()!.images ||
+              workdata.data()!.images.length === 0
+            ) {
+              return;
+            }
+
             const workImage = await loadStorageImage(
               workdata.data()!.images[0]
             );

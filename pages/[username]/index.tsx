@@ -39,7 +39,6 @@ const fetchArtist = async (
   setLoadingPortfolio: any
 ) => {
   console.log('Fetching ' + username);
-
   const app = getApp();
   //Get that document from the database
   const db = getFirestore(app);
@@ -51,7 +50,6 @@ const fetchArtist = async (
     result.push(snapshot);
   });
   setData(result);
-
   const coverImageURL = await loadStorageImage(result[0]?.data()?.Cover);
   setCover(coverImageURL);
   console.log('loaded cover image: ', coverImageURL);
@@ -114,6 +112,7 @@ const Portfolio: NextPage = () => {
     if (router.isReady && artistData.length === 0) {
       console.log(username);
       console.log(typeof username);
+
       if (typeof username === 'string') {
         console.log('String ', username);
         fetchArtist(
