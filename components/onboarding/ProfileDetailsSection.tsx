@@ -7,7 +7,12 @@ import {
   FormikErrors,
 } from 'formik';
 import { getApp } from 'firebase/app';
-import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  getFirestore,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { Container } from '../../pages/[username]';
 import { ReactNode, useState } from 'react';
 import tw from 'twin.macro';
@@ -123,8 +128,8 @@ export default function ProfileDetailsSection({
             username: values.name
               .split(' ')
               .map((n) => n.toLowerCase())
-              .join('-'),
-            created: serverTimestamp()
+              .join(''),
+            created: serverTimestamp(),
           });
           setArtistId(artistRef.id);
           onComplete();
