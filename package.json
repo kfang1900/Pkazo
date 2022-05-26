@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "npm run dev",
+    "serve": "next start",
     "lint": "next lint",
     "fbemu": "firebase emulators:start"
   },

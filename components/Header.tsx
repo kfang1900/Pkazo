@@ -9,10 +9,11 @@ import MessageLogo from '/public/assets/images/message.svg';
 import CompassLogo from '/public/assets/images/compass.svg';
 import CartLogo from '/public/assets/images/cart.svg';
 import ProfilePlaceholderImg from '/public/assets/svgs/profile.svg';
+import SearchIcon from '/public/assets/images/search.svg';
 
 import { UrlObject } from 'url';
 import useAuth from '../utils/useAuth';
-import tw from 'twin.macro';
+import tw, { TwStyle } from 'twin.macro';
 import React, { useEffect, useState } from 'react';
 import { getApp } from 'firebase/app';
 import {
@@ -58,7 +59,6 @@ function NavbarIcon(
             src={props.src}
             alt={props.alt}
             layout="fill"
-            tw=""
             css={[
               tw`scale-75 cursor-pointer `,
               props.disabled ? '' : tw`hover:scale-90 ease-in-out duration-200`,
@@ -72,10 +72,9 @@ function NavbarIcon(
             src={props.src}
             alt={props.alt}
             layout="fill"
-            tw=""
             css={[
               tw`scale-75 cursor-pointer `,
-              props.disabled ? '' : tw`hover:scale-90 ease-in-out duration-200`,
+              props.disabled ? '' : tw` ease-in-out duration-200`,
               props.round ? tw`rounded-full` : '',
             ]}
           />
@@ -92,6 +91,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showChooseWorkDropdown, setShowChooseWorkDropdown] = useState(false);
   const [showUploadWorkPopup, setShowUploadWorkPopup] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
   const router = useRouter();
   const { artistData } = useAuth();
   const username = artistData?.username;
@@ -110,126 +110,155 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
       {showUploadWorkPopup && (
         <UploadWork onClose={() => setShowUploadWorkPopup(false)} />
       )}
-      <div tw="px-16 flex flex-row items-center justify-between py-2">
-        <div tw="flex flex-auto items-center gap-10 w-36">
-          <div tw="flex-none cursor-pointer -mr-5">
-            <Link href="/" passHref>
-              <Image src={Logo} tw="w-20" alt="Pkazo" />
-            </Link>
-          </div>
-
-          <div>
-            <input
-              type="text"
-              placeholder="Search"
-              tw="px-4 py-1 bg-gray-100 outline-none rounded-full w-48"
-            />
-          </div>
+      <div tw="px-4 md:px-16 flex flex-row items-center py-2 justify-between">
+        <div tw="flex-none cursor-pointer">
+          <Link href="/" passHref>
+            <Image src={Logo} tw="w-20" alt="Pkazo" />
+          </Link>
+        </div>
+        <div tw={'flex-1 w-48 mx-2 md:mx-4 lg:mx-8 hidden md:block'}>
+          <input
+            type="text"
+            placeholder="Search"
+            tw="px-4 py-1 bg-gray-100 outline-none rounded-full w-full"
+          />
         </div>
 
-        <div tw="flex flex-auto flex-row-reverse w-36 justify-start h-8 gap-3">
-          <NavbarIcon href="/" src={CartLogo} alt="Cart Logo" />
-          {/*{((props.isBuyer === undefined || !props.isBuyer) && (*/}
-          <>
-            <NavbarIcon
-              onClick={() => setShowChooseWorkDropdown((s) => !s)}
-              src={PlusLogo}
-              alt="Plus Logo"
-            />
-            <div>
-              {showChooseWorkDropdown && (
-                <div
-                  tw="origin-top-right absolute right-16 top-10 mt-2 w-24 rounded-md py-1 bg-white focus:outline-none shadow-lg"
-                  aria-orientation="vertical"
-                  tabIndex={-1}
-                >
-                  <a
-                    onClick={() => {
-                      alert('Coming Soon');
-                    }}
-                    tw="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
-                    role="menuitem"
-                    tabIndex={-1}
-                    id="user-menu-item-2"
-                  >
-                    Post
-                  </a>
-
-                  <a
-                    tw="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
-                    onClick={() => setShowUploadWorkPopup((s) => !s)}
-                  >
-                    Work
-                  </a>
-                </div>
-              )}
-            </div>
-          </>
-          {!user && (
-            <Link href={'/onboarding'}>
-              <input
-                type="button"
-                value="Create on Pkazo"
-                tw="h-9 relative -top-0.5 text-white bg-theme-red rounded-full px-4 py-1 cursor-pointer hover:bg-[#E24E4D]"
-              />
-            </Link>
-          )}
-          {/*)) || (*/}
-          {/*  <input*/}
-          {/*    type="button"*/}
-          {/*    value="Create on Pkazo"*/}
-          {/*    tw="h-9 relative -top-0.5 text-white bg-theme-red rounded-full px-4 py-1 cursor-pointer hover:bg-[#be4040]"*/}
-          {/*  />*/}
-          {/*)}*/}
-          {!user ? (
-            <button
-              tw="h-9 relative -top-0.5 text-[#3C3C3C] text-[14px] font-semibold px-4 px-4 py-1 cursor-pointer"
-              onClick={() => setShowLoginModal(true)}
-            >
-              Sign in
-            </button>
-          ) : (
+        <div tw={'flex-none w-36'}>
+          <div tw="flex flex-auto flex-row-reverse w-36 justify-start h-8 gap-3">
+            <NavbarIcon href="/" src={CartLogo} alt="Cart Logo" />
+            {/*{((props.isBuyer === undefined || !props.isBuyer) && (*/}
             <>
+              <div tw={'md:hidden flex flex-none transform w-8'}>
+                <button onClick={() => setShowSearch((s) => !s)}>
+                  <Image
+                    src={SearchIcon}
+                    alt={'Search Icon'}
+                    layout="fill"
+                    tw={'scale-75 cursor-pointer'}
+                  />
+                </button>
+              </div>
               <NavbarIcon
-                onClick={() => setShowProfileDropdown((s) => !s)}
-                src={pfp || ProfilePlaceholderImg}
-                alt="Profile Picture"
-                round
+                onClick={() => setShowChooseWorkDropdown((s) => !s)}
+                src={PlusLogo}
+                alt="Plus Logo"
               />
               <div>
-                {showProfileDropdown && (
+                {showChooseWorkDropdown && (
                   <div
-                    tw="origin-top-right absolute right-20 top-10 mt-2 w-48 rounded-md py-1 bg-white focus:outline-none shadow-lg"
+                    tw="origin-top-right absolute right-16 top-10 mt-2 w-24 rounded-md py-1 bg-white focus:outline-none shadow-lg"
                     aria-orientation="vertical"
                     tabIndex={-1}
                   >
-                    <Link href={'/' + username} passHref>
-                      <a tw="block px-4 py-2 text-sm text-gray-700">Profile</a>
-                    </Link>
-                    {/*<Link href={'/' + username} passHref>*/}
-                    {/*  <a tw="block px-4 py-2 text-sm text-gray-700">*/}
-                    {/*    Portfolios*/}
-                    {/*  </a>*/}
-                    {/*</Link>*/}
-                    <Link href={'/account/edit'} passHref>
-                      <a tw="block px-4 py-2 text-sm text-gray-700">Settings</a>
-                    </Link>
                     <a
-                      onClick={() => signOut()}
+                      onClick={() => {
+                        alert('Coming Soon');
+                      }}
                       tw="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
                       role="menuitem"
                       tabIndex={-1}
                       id="user-menu-item-2"
                     >
-                      Log out
+                      Post
+                    </a>
+
+                    <a
+                      tw="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
+                      onClick={() => setShowUploadWorkPopup((s) => !s)}
+                    >
+                      Work
                     </a>
                   </div>
                 )}
               </div>
             </>
-          )}
+            {!user && (
+              <Link href={'/onboarding'}>
+                <input
+                  type="button"
+                  value="Create on Pkazo"
+                  tw="h-9 relative -top-0.5 text-white bg-theme-red rounded-full px-4 py-1 cursor-pointer hover:bg-[#E24E4D]"
+                />
+              </Link>
+            )}
+            {/*)) || (*/}
+            {/*  <input*/}
+            {/*    type="button"*/}
+            {/*    value="Create on Pkazo"*/}
+            {/*    tw="h-9 relative -top-0.5 text-white bg-theme-red rounded-full px-4 py-1 cursor-pointer hover:bg-[#be4040]"*/}
+            {/*  />*/}
+            {/*)}*/}
+            {!user ? (
+              <button
+                tw="h-9 relative -top-0.5 text-[#3C3C3C] text-[14px] font-semibold px-4 px-4 py-1 cursor-pointer w-48"
+                onClick={() => setShowLoginModal(true)}
+              >
+                Sign in
+              </button>
+            ) : (
+              <>
+                <NavbarIcon
+                  onClick={() => setShowProfileDropdown((s) => !s)}
+                  src={pfp || ProfilePlaceholderImg}
+                  alt="Profile Picture"
+                  round
+                />
+                <div>
+                  {showProfileDropdown && (
+                    <div
+                      tw="origin-top-right absolute right-20 top-10 mt-2 w-48 rounded-md py-1 bg-white focus:outline-none shadow-lg"
+                      aria-orientation="vertical"
+                      tabIndex={-1}
+                    >
+                      <Link href={'/' + username} passHref>
+                        <a tw="block px-4 py-2 text-sm text-gray-700">
+                          Profile
+                        </a>
+                      </Link>
+                      {/*<Link href={'/' + username} passHref>*/}
+                      {/*  <a tw="block px-4 py-2 text-sm text-gray-700">*/}
+                      {/*    Portfolios*/}
+                      {/*  </a>*/}
+                      {/*</Link>*/}
+                      <Link href={'/account/edit'} passHref>
+                        <a tw="block px-4 py-2 text-sm text-gray-700">
+                          Settings
+                        </a>
+                      </Link>
+                      <a
+                        onClick={() => signOut()}
+                        tw="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
+                        role="menuitem"
+                        tabIndex={-1}
+                        id="user-menu-item-2"
+                      >
+                        Log out
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
+      {showSearch && (
+        <div tw="md:hidden flex flex-row items-center justify-between py-2">
+          <div
+            css={[
+              tw`w-full mx-2 md:mx-4 lg:mx-8`,
+              showSearch ? '' : tw`hidden md:block`,
+            ]}
+          >
+            <input
+              type="text"
+              placeholder="Search"
+              tw="px-4 py-1 bg-gray-100 outline-none rounded-full w-full"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
