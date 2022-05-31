@@ -77,6 +77,12 @@ export default function ShopSettingsPage() {
             });
             setKeyCounter(artist.FAQs?.length || 0);
             setFirebaseFAQs(artist.FAQs || []);
+            setFirebaseShippingData({
+              shippingReturnPolicies: artist.shippingReturnPolicies || '',
+              shippingProcessingTime: artist.shippingProcessingTime || '',
+            });
+            setShippingReturnPolicies(artist.shippingReturnPolicies || '');
+            setProcessingTime(artist.shippingProcessingTime || '');
             setInputFAQs(
               (
                 (artist.FAQs as { question: string; answer: string }[]) || []
@@ -119,12 +125,99 @@ export default function ShopSettingsPage() {
     input: tw`border border-[#D8D8D8] rounded-[6px] px-[16px] text-[16px] w-full h-[40px]`,
   };
   const [keyCounter, setKeyCounter] = useState(0);
-  const [saving, setSaving] = useState(false);
+  const [savingFAQs, setSavingFAQs] = useState(false);
+
+  const [savingShipping, setSavingShipping] = useState(false);
+  const [shippingReturnPolicies, setShippingReturnPolicies] =
+    useState('Loading...');
+  const [processingTime, setProcessingTime] = useState('Loading...');
+  const [firebaseShippingData, setFirebaseShippingData] = useState<{
+    shippingProcessingTime: string;
+    shippingReturnPolicies: string;
+  }>({
+    shippingProcessingTime: 'Loading...',
+    shippingReturnPolicies: 'Loading...',
+  });
+
   return (
     <div tw="ml-[76px] mt-9 mb-[100px]">
       {!data && <p>Loading...</p>}
       {data && (
         <>
+          <div tw="font-semibold mt-12 text-[20px]">Shipping & Returns</div>
+          <div tw={'mt-6'}>
+            <div tw={'font-bold mb-1'}>Processing Time</div>
+            <p tw={'text-gray-500 italic mb-2'}>
+              How many days does it take for you to ship an order once you
+              receive it? (e.g. &quot;3 - 5 Business Days&quot;)
+            </p>
+            <input
+              disabled={savingShipping}
+              type="input"
+              name="location"
+              css={styles.input}
+              value={processingTime}
+              placeholder={'e.g. 3 - 5 Business Days'}
+              onChange={(e) => setProcessingTime(e.target.value)}
+            />
+            <div tw={'mt-4'}>
+              <div tw={'font-bold mb-1'}>Return Policy</div>
+              <p tw={'text-gray-500 italic mb-2'}>
+                e.g. &quot;I do not accept returns&quot; or &quot;I accept
+                returns within 30 days of purchase. Buyer pays return
+                shipping.&quot;
+              </p>
+              <textarea
+                disabled={savingShipping}
+                rows={3}
+                name="bio"
+                css={[styles.input, tw`w-[710px] h-[90px] py-2`]}
+                value={shippingReturnPolicies}
+                onChange={(e) => setShippingReturnPolicies(e.target.value)}
+              />
+            </div>
+            {(firebaseShippingData.shippingReturnPolicies !==
+              shippingReturnPolicies ||
+              firebaseShippingData.shippingProcessingTime !== processingTime) && (
+              <div>
+                <input
+                  disabled={savingShipping}
+                  onClick={async () => {
+                    setSavingShipping(true);
+                    if (!artistId) return;
+                    const app = getApp();
+                    const db = getFirestore(app);
+                    await updateDoc(doc(db, 'Artists', artistId), {
+                      shippingReturnPolicies,
+                      shippingProcessingTime: processingTime,
+                    });
+                    setFirebaseShippingData({
+                      shippingReturnPolicies,
+                      shippingProcessingTime: processingTime,
+                    });
+                    setSavingShipping(false);
+                  }}
+                  type="button"
+                  value={savingShipping ? 'Saving...' : 'Save'}
+                  tw="inline-block h-[40px] relative text-white bg-theme-red rounded-[6px] px-4 py-1 cursor-pointer hover:bg-[#be4040]"
+                />
+                <button
+                  disabled={savingShipping}
+                  onClick={() => {
+                    {
+                      setShippingReturnPolicies(
+                        firebaseShippingData.shippingReturnPolicies
+                      );
+                      setProcessingTime(firebaseShippingData.processingTime);
+                    }
+                  }}
+                  tw="inline-block h-[40px] w-40 border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] ml-4 items-center hover:bg-[#F5F5F5]"
+                >
+                  Discard Changes
+                </button>
+              </div>
+            )}
+          </div>
           <div tw="font-semibold mt-12 text-[20px]">
             Frequently Asked Questions
           </div>
@@ -142,7 +235,7 @@ export default function ShopSettingsPage() {
                 <div css={styles.label}>Question</div>
 
                 <input
-                  disabled={saving}
+                  disabled={savingFAQs}
                   type="input"
                   name="location"
                   css={styles.input}
@@ -159,7 +252,7 @@ export default function ShopSettingsPage() {
                 <div css={styles.label}>Answer</div>
 
                 <textarea
-                  disabled={saving}
+                  disabled={savingFAQs}
                   rows={3}
                   name="bio"
                   css={[styles.input, tw`w-[710px] h-[90px] py-2`]}
@@ -256,9 +349,9 @@ export default function ShopSettingsPage() {
                 <div />
                 <div>
                   <input
-                    disabled={saving}
+                    disabled={savingFAQs}
                     onClick={async () => {
-                      setSaving(true);
+                      setSavingFAQs(true);
                       const app = getApp();
                       const db = getFirestore(app);
                       await updateDoc(doc(db, 'Artists', artistId), {
@@ -276,13 +369,14 @@ export default function ShopSettingsPage() {
                       setFirebaseFAQs(
                         inputFAQs.filter((item) => item.question || item.answer)
                       );
-                      setSaving(false);
+                      setSavingFAQs(false);
                     }}
                     type="button"
-                    value={saving ? 'Saving...' : 'Save'}
+                    value={savingFAQs ? 'Saving...' : 'Save'}
                     tw="inline-block h-[40px] relative text-white bg-theme-red rounded-[6px] px-4 py-1 cursor-pointer hover:bg-[#be4040]"
                   />
                   <button
+                    disabled={savingFAQs}
                     onClick={() => {
                       {
                         setInputFAQs(firebaseFAQs);

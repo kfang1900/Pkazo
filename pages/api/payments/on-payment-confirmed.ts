@@ -1,10 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
+import sendgrid from "@sendgrid/mail";
 import admin from 'firebase-admin';
+import Shippo from "shippo";
+
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY || "")
 
 const stripe = new Stripe(process.env.STRIPE_SECRET + '', {
   apiVersion: '2020-08-27',
 });
+const shippo = Shippo(process.env.SHIPPO_API_KEY || "")
+
 const parsedKey = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY || '');
 if (admin.apps.length === 0) {
   admin.initializeApp({
@@ -14,8 +20,6 @@ if (admin.apps.length === 0) {
     }),
   });
 }
-
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -53,6 +57,14 @@ export default async function handler(
       enabled: true,
     },
   });
+// TODO: make sure item is available
+  await sendgrid.send({
+    to: 'jeffkmeng@gmail.com', // Change to your recipient
+    from: 'orders@pkazo.com',
+    subject: 'Sending with SendGrid is Fun',
+    text: 'and easy to do anywhere, even with Node.js',
+    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+  })
 
   res.status(200).json({
     amount: workData?.price,

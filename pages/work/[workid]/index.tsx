@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import 'twin.macro';
 import { useRouter } from 'next/router';
 import Header from 'components/Header';
@@ -29,6 +29,8 @@ import CheckoutModal from '../../../components/popups/CheckoutModal';
 import useRequireOnboarding from '../../../utils/useRequireOnboarding';
 import exp from 'constants';
 import tw from 'twin.macro';
+import axios from 'axios';
+import Modal from '../../../components/popups/Modal';
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },
@@ -68,8 +70,62 @@ const IndividualWork: NextPage = () => {
   const [workImages, setWorkImages] = useState([defaultWorkPicture]);
   console.log(workData);
   const [popup, setPopup] = useState(false);
+  const [shippingCost, setShippingCost] = useState<number | null>(null);
+  const [shippingZip, setShippingZip] = useState<string | null>(null);
+  const [showShippingEstimateModal, setShowShippingEstimateModal] =
+    useState(false);
+  const [shippingEstimateModalZip, setShippingEstimateModalZip] = useState('');
+  const [shippingEstimateLoading, setShippingEstimateLoading] = useState(false);
+  const [showShippingPolicies, setShowShippingPolicies] = useState(false);
   const router = useRouter();
   const { workid: workId } = router.query;
+
+  const calculateZip = useCallback(
+    (zip?: string) => {
+      console.log('CALLED', zip);
+      setShippingEstimateLoading(true);
+      if (zip) {
+        setShippingZip(zip);
+      }
+      axios
+        .get(
+          `/api/shipping/estimated-rates?workId=${workId}${
+            zip ? '&zip=' + zip : ''
+          }`
+        )
+
+        .then((resp) => resp.data)
+        .then((data: { rates: { amount: string }[]; zip: string }) => {
+          console.log(data);
+          setShippingCost(
+            data.rates.reduce(
+              (lowestRate, rate) =>
+                Math.min(lowestRate, parseFloat(rate.amount)),
+              parseFloat(data.rates[0].amount)
+            )
+          );
+          setShippingEstimateLoading(false);
+
+          setShippingZip(data.zip);
+        })
+        .catch((e) => {
+          console.log(e.response);
+          setShippingEstimateLoading(false);
+        });
+    },
+    [setShippingEstimateLoading, setShippingCost, setShippingZip, workId]
+  );
+
+  useEffect(() => {
+    if (!workId) {
+      return;
+    }
+    const localStorageZip = sessionStorage.getItem('shippingZipCode');
+    console.log('LSZ', localStorageZip);
+    // just to be explicit
+    calculateZip(localStorageZip ? localStorageZip : undefined);
+  }, [workId]);
+
   useEffect(() => {
     if (router.isReady && !workData && workId) {
       if (typeof workId !== 'string') return;
@@ -124,6 +180,45 @@ const IndividualWork: NextPage = () => {
       <Header />
       {popup && (
         <PostDetails post={sample_posts[1]} onClose={() => setPopup(false)} />
+      )}
+      {showShippingEstimateModal && (
+        <Modal
+          small
+          open={showShippingEstimateModal}
+          onClose={() => setShowShippingEstimateModal(false)}
+        >
+          <form
+            onSubmit={(e) => {
+              setShippingZip(shippingEstimateModalZip);
+              calculateZip(shippingEstimateModalZip);
+              setShowShippingEstimateModal(false);
+              sessionStorage.setItem(
+                'shippingZipCode',
+                shippingEstimateModalZip
+              );
+              e.preventDefault();
+              return false;
+            }}
+          >
+            <h1 tw={'text-xl mb-6'}>Calculate Shipping</h1>
+            <label tw={'font-bold  block mb-2'}>Shipping Zip Code:</label>
+            <input
+              autoFocus
+              value={shippingEstimateModalZip}
+              onChange={(e) => setShippingEstimateModalZip(e.target.value)}
+              placeholder={'e.g. 13948'}
+              tw={
+                'block border border-[#D8D8D8] rounded-[6px] px-[16px] text-[16px] w-full h-[40px] mb-4'
+              }
+            />
+            <button
+              type={'submit'}
+              tw="h-9 w-20 text-center relative -top-0.5 text-white bg-theme-red rounded-[6px] px-4 py-1 cursor-pointer hover:bg-[#be4040]"
+            >
+              Save
+            </button>
+          </form>
+        </Modal>
       )}
       {showCheckoutModal && (
         <CheckoutModal
@@ -307,7 +402,9 @@ const IndividualWork: NextPage = () => {
               </p>
             </div>
           </div>
-          <div tw="mt-3 ml-2 bg-red-100 rounded-3xl w-[100px] py-2 px-3 text-xs text-red-900 font-semibold">
+
+          {/* TODO: width should be based on content */}
+          <div tw="mt-3 ml-2 bg-red-100 rounded-3xl w-[100px] py-2 px-3 text-xs text-red-900 font-semibold text-center">
             {workData.surface}
           </div>
           <div tw="mt-4 ml-3 text-xl">
@@ -332,33 +429,75 @@ const IndividualWork: NextPage = () => {
           <div tw="my-9 border border-gray-100 mx-5"></div>
           <div tw="ml-14 flex flex-col gap-y-9 text-sm text-gray-500">
             <div tw="flex">
-              <p tw="flex-auto">
-                Ship to{' '}
-                <span tw="text-black font-semibold">United States, 75222</span>
-              </p>
+              {shippingZip && (
+                <p tw="flex-auto">
+                  Ship to{' '}
+                  <span tw="text-black font-semibold">
+                    United States, {shippingZip}
+                  </span>
+                </p>
+              )}
               <div tw="flex-auto flex flex-row-reverse">
-                <a tw="underline" href="#">
+                <a
+                  tw="underline"
+                  href="#"
+                  onClick={() => {
+                    setShowShippingEstimateModal(true);
+                    setShippingEstimateModalZip(shippingZip || '');
+                  }}
+                >
                   Change Address
                 </a>
               </div>
             </div>
-            <div tw="flex flex-col gap-y-2">
-              <p>Ready to ship</p>
-              <p tw="text-black text-xl">5-7 business days</p>
-            </div>
+            {artistData.shippingProcessingTime && (
+              <div tw="flex flex-col gap-y-2">
+                <p>Ready to ship</p>
+                <p tw="text-black text-xl">
+                  {artistData.shippingProcessingTime}
+                </p>
+              </div>
+            )}
             <div tw="flex">
               <div tw="flex-auto flex flex-col gap-y-2">
                 <p>Cost to ship</p>
-                <p tw="text-black text-xl">$125.00</p>
+
+                {shippingEstimateLoading ? (
+                  <a tw="text-gray-500 text-lg">Loading...</a>
+                ) : shippingCost ? (
+                  <p tw={'text-black text-xl'}>${shippingCost}</p>
+                ) : (
+                  <a
+                    tw="underline text-gray-500 text-lg cursor-pointer select-none"
+                    onClick={() => {
+                      setShowShippingEstimateModal(true);
+                      setShippingEstimateModalZip(shippingZip || '');
+                    }}
+                  >
+                    Calculate
+                  </a>
+                )}
               </div>
               <div tw="flex-auto flex flex-col gap-y-2">
                 <p>Returns</p>
                 <p tw="text-black text-xl">Accepted</p>
               </div>
             </div>
-            <a tw="underline" href="#">
-              Shipping and Return Policies
-            </a>
+            {artistData.shippingReturnPolicies && (
+              <div>
+                <a
+                  tw="underline cursor-pointer select-none"
+                  onClick={() => setShowShippingPolicies((p) => !p)}
+                >
+                  {showShippingPolicies ? 'Hide' : 'Show'} Shipping and Return
+                  Policies
+                </a>
+
+                <p css={[!showShippingPolicies ? tw`invisible` : '']}>
+                  {artistData.shippingReturnPolicies}
+                </p>
+              </div>
+            )}
           </div>
           <div tw="ml-12 mt-14 flex flex-col gap-y-3 text-gray-500">
             <p tw="font-bold text-xl mb-3">Frequently Asked Questions</p>

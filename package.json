@@ -15,8 +15,10 @@
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.1.18",
+    "@sendgrid/mail": "^7.7.0",
     "@stripe/react-stripe-js": "^1.7.2",
     "@stripe/stripe-js": "^1.29.0",
+    "@types/shippo": "^1.5.1",
     "axios": "^0.27.2",
     "firebase": "^9.6.8",
     "firebase-admin": "^10.2.0",
@@ -28,8 +30,10 @@
     "react-drag-drop-files": "^2.3.4",
     "react-icons": "^4.3.1",
     "react-masonry-css": "^1.0.16",
+    "shippo": "^1.7.1",
     "stripe": "^9.0.0",
-    "styled-components": "^5.3.3"
+    "styled-components": "^5.3.3",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/node": "17.0.21",
