@@ -30,7 +30,7 @@ export default async function handler(
   const workId = req.query.workId;
 
   let zip = req.query.zip;
-  const ip = req.headers['x-nf-client-connection-ip'];
+  const ip = req.headers['x-real-ip'];
 
   if (!workId || typeof workId !== 'string') {
     res.status(400).json({
