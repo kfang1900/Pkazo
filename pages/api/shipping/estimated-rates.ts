@@ -38,8 +38,9 @@ export default async function handler(
       message: 'The request did not contain a valid work ID.',
     });
   }
-  console.log('abc');
+  console.log('Zip, IP, headers');
   console.log(zip, ip);
+  console.log(req.headers)
   if (!zip && !ip) {
     res.status(400).json({
       code: 'UNABLE_TO_INFER_IP',
