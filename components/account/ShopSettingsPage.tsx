@@ -208,7 +208,7 @@ export default function ShopSettingsPage() {
                       setShippingReturnPolicies(
                         firebaseShippingData.shippingReturnPolicies
                       );
-                      setProcessingTime(firebaseShippingData.processingTime);
+                      setProcessingTime(firebaseShippingData.shippingProcessingTime);
                     }
                   }}
                   tw="inline-block h-[40px] w-40 border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] ml-4 items-center hover:bg-[#F5F5F5]"
