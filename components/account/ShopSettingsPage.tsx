@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import ImageUploadButton from './ImageUploadButton';
 import { getApp } from 'firebase/app';
 import {
   collection,
@@ -11,16 +10,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { loadStorageImage } from '../../helpers/FirebaseFunctions';
-import { Field, Form, Formik, setIn } from 'formik';
 import tw from 'twin.macro';
-import {
-  Education,
-  Exhibition,
-  Experience,
-  showEdu,
-  showExh,
-  showExp,
-} from '../../obj/Artist';
 import React, { useCallback, useEffect, useState } from 'react';
 import useAuth from '../../utils/useAuth';
 import useRequireOnboarding from '../../utils/useRequireOnboarding';
@@ -29,17 +19,10 @@ import { ArtistData } from '../../types/firebaseTypes';
 export default function ShopSettingsPage() {
   useRequireOnboarding();
   const [data, setData] = useState<
-    | {
-        name: string;
-        location: string;
-        discipline: string;
-        bio: string;
-        pfp: string;
-        cover: string;
-        education: Education[];
-        experience: Experience[];
-        exhibitions: Exhibition[];
-      }
+    | (ArtistData & {
+        profilePictureURL: string;
+        coverImageURL: string;
+      })
     | undefined
   >();
   const [artistId, setArtistId] = useState('');
@@ -55,28 +38,27 @@ export default function ShopSettingsPage() {
         const app = getApp();
         const db = getFirestore(app);
 
-        const artistsRef = collection(db, 'Artists');
-        const q = query(artistsRef, where('AssociatedUser', '==', user.uid));
+        const artistsRef = collection(db, 'artists');
+        const q = query(artistsRef, where('associatedUser', '==', user.uid));
 
         const ref = await getDocs(q);
 
         ref.forEach((snapshot) => {
           setArtistId(snapshot.id); // assumes that there will only be one result
-          const artist = snapshot.data();
+          const artist = snapshot.data() as ArtistData;
           (async () => {
             setData({
-              name: artist.Name,
-              location: artist.Location,
-              discipline: artist.Discipline,
-              bio: artist.Bio,
-              pfp: await loadStorageImage(artist.ProfilePicture),
-              cover: await loadStorageImage(artist.Cover),
-              education: artist.Education,
-              experience: artist.Experience,
-              exhibitions: artist.Exhibitions,
+              ...artist,
+              profilePictureURL: await loadStorageImage(artist.profilePicture),
+              coverImageURL: await loadStorageImage(artist.coverImage),
             });
-            setKeyCounter(artist.FAQs?.length || 0);
-            setFirebaseFAQs(artist.FAQs || []);
+            setKeyCounter(artist.faqs?.length || 0);
+            setFirebaseFAQs(
+              (artist.faqs || []).map((faq, i) => ({
+                ...faq,
+                key: i,
+              })) || []
+            );
             setFirebaseShippingData({
               shippingReturnPolicies: artist.shippingReturnPolicies || '',
               shippingProcessingTime: artist.shippingProcessingTime || '',
@@ -85,7 +67,7 @@ export default function ShopSettingsPage() {
             setProcessingTime(artist.shippingProcessingTime || '');
             setInputFAQs(
               (
-                (artist.FAQs as { question: string; answer: string }[]) || []
+                (artist.faqs as { question: string; answer: string }[]) || []
               ).map((faq, i) => ({
                 ...faq,
                 key: i,
@@ -178,7 +160,8 @@ export default function ShopSettingsPage() {
             </div>
             {(firebaseShippingData.shippingReturnPolicies !==
               shippingReturnPolicies ||
-              firebaseShippingData.shippingProcessingTime !== processingTime) && (
+              firebaseShippingData.shippingProcessingTime !==
+                processingTime) && (
               <div>
                 <input
                   disabled={savingShipping}
@@ -187,10 +170,10 @@ export default function ShopSettingsPage() {
                     if (!artistId) return;
                     const app = getApp();
                     const db = getFirestore(app);
-                    await updateDoc(doc(db, 'Artists', artistId), {
+                    await updateDoc(doc(db, 'artists', artistId), {
                       shippingReturnPolicies,
                       shippingProcessingTime: processingTime,
-                    });
+                    } as Partial<ArtistData>);
                     setFirebaseShippingData({
                       shippingReturnPolicies,
                       shippingProcessingTime: processingTime,
@@ -208,7 +191,9 @@ export default function ShopSettingsPage() {
                       setShippingReturnPolicies(
                         firebaseShippingData.shippingReturnPolicies
                       );
-                      setProcessingTime(firebaseShippingData.shippingProcessingTime);
+                      setProcessingTime(
+                        firebaseShippingData.shippingProcessingTime
+                      );
                     }
                   }}
                   tw="inline-block h-[40px] w-40 border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] ml-4 items-center hover:bg-[#F5F5F5]"
@@ -354,8 +339,8 @@ export default function ShopSettingsPage() {
                       setSavingFAQs(true);
                       const app = getApp();
                       const db = getFirestore(app);
-                      await updateDoc(doc(db, 'Artists', artistId), {
-                        FAQs: inputFAQs
+                      await updateDoc(doc(db, 'artists', artistId), {
+                        faqs: inputFAQs
                           .filter((item) => item.question || item.answer)
                           .map((item) => ({
                             question: item.question,

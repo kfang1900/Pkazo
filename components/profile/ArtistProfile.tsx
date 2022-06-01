@@ -6,8 +6,6 @@ import buttons from 'styles/Button';
 import ConfirmUnfollowModal from './ConfirmUnfollow';
 import { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
 import { loadStorageImage } from 'helpers/FirebaseFunctions';
-
-import { Artist } from '../../obj/Artist';
 import { useRouter } from 'next/router';
 
 const numFormatter = (x: number) => {
@@ -51,7 +49,7 @@ const ArtistProfile = ({
   const artist = artistData[0].data();
 
   useEffect(() => {
-    loadStorageImage(artist.ProfilePicture).then((profilePictureURL) =>
+    loadStorageImage(artist.profilePicture).then((profilePictureURL) =>
       setPicture(profilePictureURL)
     );
   }, [artist]);
@@ -79,7 +77,7 @@ const ArtistProfile = ({
             <div>
               <div tw="flex items-center justify-start">
                 <h1 tw="text-3xl font-semibold text-black mr-[40px]">
-                  {artist['Name']}
+                  {artist.name}
                 </h1>
                 {isCurrentUserPage ? (
                   <button
@@ -103,11 +101,11 @@ const ArtistProfile = ({
                   •&#8201;•&#8201;•
                 </button>
               </div>
-              <p tw="text-gray-600 text-lg mt-1">{artist['Location']}</p>
+              <p tw="text-gray-600 text-lg mt-1">{artist.location}</p>
               <div tw="mt-[15px]">
                 <p tw="text-black">
                   {
-                    artist['Bio']
+                    artist.bio
                     /*
                   In his large-scale paintings, James Jean depicts detailed
                   cosmological worlds filled with allegorical and contemporary
@@ -124,25 +122,25 @@ const ArtistProfile = ({
               <div tw="grid grid-cols-[repeat(4,100px)] gap-[30px] ml-[-20px] mt-[35px]">
                 <div tw="px-5 text-center mx-auto">
                   <p tw="text-xl text-black font-semibold">
-                    {numFormatter(artist['PostNumber'])}
+                    {numFormatter(artist.numPosts)}
                   </p>
                   <p tw="text-lg text-gray-600">Posts</p>
                 </div>
                 <div tw="px-5 text-center mx-auto">
                   <p tw="text-xl text-black font-semibold">
-                    {numFormatter(artist['WorkNumber'])}
+                    {numFormatter(artist.numWorks)}
                   </p>
                   <p tw="text-lg text-gray-600">Works</p>
                 </div>
                 <div tw="px-5 text-center mx-auto">
                   <p tw="text-xl text-black font-semibold">
-                    {numFormatter(artist['Followers'])}
+                    {numFormatter(artist.numFollowers)}
                   </p>
                   <p tw="text-lg text-gray-600">Followers</p>
                 </div>
                 <div tw="px-5 text-center mx-auto">
                   <p tw="text-xl text-black font-semibold">
-                    {numFormatter(artist['Following'])}
+                    {numFormatter(artist.numFollowing)}
                   </p>
                   <p tw="text-lg text-gray-600">Following</p>
                 </div>

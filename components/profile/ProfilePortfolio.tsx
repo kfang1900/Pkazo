@@ -4,11 +4,14 @@ import Masonry from 'react-masonry-css';
 import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 
-import { portfolio_images } from 'utils/Cancer_Imports';
-import { Artist, showEdu, showExp, showExh } from 'obj/Artist';
-import { PortfolioObject } from 'types/firebaseTypes';
+import { portfolio_images } from 'utils/mockImports';
 import styles from '../../styles/ProfilePortfolio.module.css';
-
+interface PortfolioObject {
+  Portfolios: Record<string, any>[];
+  Works: Record<string, any>[][];
+  PortfolioImages: string[];
+  WorkImages: string[][];
+}
 type GalleryDataType = {
   circleImgSrc: string | StaticImageData;
   circleTitle: ReactNode;

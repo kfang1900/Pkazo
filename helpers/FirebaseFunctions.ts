@@ -25,7 +25,7 @@ const loadStorageImage = async (photoURL: string) => {
     //Create reference to the user's profile picture
     const reference = ref(storage, photoURL);
 
-    let url = String(await getDownloadURL(reference));
+    const url = (await getDownloadURL(reference)) + '';
     //console.log("Photo url is ", url)
     return url;
   } catch (error) {
@@ -41,7 +41,7 @@ const fetchArtistByID = async (artistref: string) => {
   console.log('Fetching artist ', artistref);
   let app = getApp();
   let db = getFirestore(app);
-  const docRef = doc(db, 'Artists', artistref);
+  const docRef = doc(db, 'artists', artistref);
   const docSnap = await getDoc(docRef);
   return docSnap;
 };
@@ -50,7 +50,7 @@ const fetchWorkByID = async (workref: string) => {
   let app = getApp();
   //Get that document from the database
   let db = getFirestore(app);
-  const docRef = doc(db, 'Works', workref);
+  const docRef = doc(db, 'works', workref);
   const docSnap = await getDoc(docRef);
   return docSnap;
 };
@@ -68,12 +68,12 @@ const getPortfolioHelper = async (docRef: QuerySnapshot<DocumentData>) => {
         Portfolios.push(element.data());
         curPos = Portfolios.length - 1;
         //console.log(curPos,Portfolios)
-        const portImageURL = await loadStorageImage(element.data().Picture);
+        const portImageURL = await loadStorageImage(element.data().picture);
         PortfolioImages.push(portImageURL);
         let subworks: DocumentData[] = [];
         let subworkImages: string[] = [];
         await Promise.all(
-          (element.data().Works || []).map(async (workref: string) => {
+          (element.data().works || []).map(async (workref: string) => {
             const workdata = await fetchWorkByID(workref);
 
             if (
@@ -114,7 +114,7 @@ const getPortfolioHelper = async (docRef: QuerySnapshot<DocumentData>) => {
 const getPortfolioByRef = async (artistref: string) => {
   let app = getApp();
   let db = getFirestore(app);
-  const q = await query(collection(db, 'Artists', artistref, 'Portfolios'));
+  const q = await query(collection(db, 'artists', artistref, 'portfolios'));
   const docRef = await getDocs(q);
   let dex = 0;
   const res = await getPortfolioHelper(docRef);
@@ -126,12 +126,12 @@ const getPortfolioByRef = async (artistref: string) => {
 const getPortfolioImagesOnlyByRef = async (artistref: string) => {
   let app = getApp();
   let db = getFirestore(app);
-  const q = await query(collection(db, 'Artists', artistref, 'Portfolios'));
+  const q = await query(collection(db, 'artists', artistref, 'portfolios'));
   const docRef = await getDocs(q);
   let arr: string[] = [];
   let arr2: string[] = [];
   docRef.forEach((element) => {
-    arr.push(element.data().Name);
+    arr.push(element.data().name);
     arr2.push(element.id);
   });
   return [arr, arr2];

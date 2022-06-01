@@ -9,14 +9,16 @@ import ConfirmUnfollowModal from '../profile/ConfirmUnfollow';
 import PostImage from '../popups/PostImage';
 import PostDetails, { formatPrice } from '../popups/PostDetails';
 
+import { Post, CompleteInfo, WipInfo, SocialInfo } from '../../obj/Post';
+
 interface Props {
-  post: any;
+  post: Post;
 }
 function FeedPost(props: Props) {
   const [liked, setLiked] = useState(false);
   const [popup, setPopup] = useState(false);
   const workDesc = () => {
-    const postInfo = props.post.info as any;
+    const postInfo = props.post.info as CompleteInfo;
     return (
       <>
         <Link href="/individual_work" passHref>

@@ -20,7 +20,6 @@ import {
   DocumentData,
 } from 'firebase/firestore';
 import { defaultCoverImage } from 'utils/FrontEndDefaults';
-import Resume from 'components/profile/Resume';
 import { getPortfolioByRef, loadStorageImage } from 'helpers/FirebaseFunctions';
 import useAuth from '../../utils/useAuth';
 import useRequireOnboarding from '../../utils/useRequireOnboarding';
@@ -38,11 +37,13 @@ const fetchArtist = async (
   setPortfolioData: any,
   setLoadingPortfolio: any
 ) => {
-  console.log('Fetching ' + username);
+ // TODO refactor this code -- the state shouldn't be passed in, etc.
+  // if this is to be extracted into a function, the function should be pure
+  // ie it only returns data directly, it doesn't mutate state through side effects
   const app = getApp();
-  //Get that document from the database
   const db = getFirestore(app);
-  const artistsRef = collection(db, 'Artists');
+
+  const artistsRef = collection(db, 'artists');
   const q = query(artistsRef, where('username', '==', username));
   const ref = await getDocs(q);
   const result: QueryDocumentSnapshot<DocumentData>[] = [];
@@ -50,7 +51,7 @@ const fetchArtist = async (
     result.push(snapshot);
   });
   setData(result);
-  const coverImageURL = await loadStorageImage(result[0]?.data()?.Cover);
+  const coverImageURL = await loadStorageImage(result[0]?.data()?.coverImage);
   setCover(coverImageURL);
   console.log('loaded cover image: ', coverImageURL);
   const portfolioCollection = await getPortfolioByRef(result[0]?.id);
@@ -62,23 +63,7 @@ const fetchArtist = async (
     setLoadingPortfolio(false);
   }
   console.log(portfolioCollection);
-  /*
-  let portfolioTemp = []
-  portfolioCollection.forEach(async (doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    let data = doc.data()
-    console.log("grabbing data ", data)
-    let portion = {"Name":data["Name"],"Works":data["Works"]}
-    const preview =  await getPortfolioPreview(portion)
-    const portfolioDisplay = {Name:data["Name"],Works:preview["Works"]}
-    console.log("Got Portfolio",portfolioDisplay)
-    portfolioTemp.push(portfolioDisplay)
-    console.log(portfolioTemp)
-    setPortfolios(portfolioTemp)
-  });
-  
-  console.log(portfolios)
-  */
+
 };
 
 const Portfolio: NextPage = () => {
@@ -137,7 +122,7 @@ const Portfolio: NextPage = () => {
               ? 'Loading...'
               : artistData.length === 0
               ? 'User not found'
-              : artistData[0].data()['Name']}
+              : artistData[0].data().name}
           </title>
         </Head>
         <Header />

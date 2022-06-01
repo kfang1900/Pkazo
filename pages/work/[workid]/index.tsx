@@ -20,17 +20,26 @@ import {
   loadStorageImage,
   loadStorageImages,
 } from 'helpers/FirebaseFunctions';
-import { DocumentData, DocumentSnapshot } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  DocumentData,
+  DocumentSnapshot,
+  getDocs,
+  getFirestore,
+  setDoc,
+} from 'firebase/firestore';
 import { sample_posts } from 'utils/Sample_Posts_Imports';
 import { defaultWorkPicture } from 'utils/FrontEndDefaults';
 import Link from 'next/link';
-import { ArtistData, Work } from '../../../types/firebaseTypes';
+import { ArtistData, WorkData } from '../../../types/firebaseTypes';
 import CheckoutModal from '../../../components/popups/CheckoutModal';
 import useRequireOnboarding from '../../../utils/useRequireOnboarding';
 import exp from 'constants';
 import tw from 'twin.macro';
 import axios from 'axios';
 import Modal from '../../../components/popups/Modal';
+import { getApp } from 'firebase/app';
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },
@@ -60,7 +69,7 @@ const comments = [
 
 const IndividualWork: NextPage = () => {
   const [selectedImage, setSelectedImage] = useState(0);
-  const [workData, setWorkData] = useState<Work | null>(null);
+  const [workData, setWorkData] = useState<WorkData | null>(null);
   const [artistData, setArtistData] = useState<Record<string, any>>();
   const [loading, setLoading] = useState(true);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
@@ -125,35 +134,15 @@ const IndividualWork: NextPage = () => {
     // just to be explicit
     calculateZip(localStorageZip ? localStorageZip : undefined);
   }, [workId]);
-  // TEMPORARY DATA TRANSITION CODE
-  // useEffect(() => {
-  //   // if (1 + 1 === 2) return;
-  //   (async () => {
-  //     const app = getApp();
-  //     const db = getFirestore(app);
-  //     const artistsSnapshot = await getDocs(collection(db, 'Works'));
-  //     // console.log('======= abdsca');
-  //     const promises: Promise<any>[] = [];
-  //     artistsSnapshot.forEach((snapshot) => {
-  //       const data = snapshot.data();
-  //       const id = snapshot.id;
-  //       console.log(data);
-  //       if (data.title && data.artist) {
-  //         promises.push(setDoc(doc(db, 'works', id), data));
-  //       }
-  //       promises.push(setDoc(doc(db, '__worksV1Backup', id), data));
-  //     });
-  //     await Promise.all(promises);
-  //   })();
-  // }, []);
+
   useEffect(() => {
     if (router.isReady && !workData && workId) {
       if (typeof workId !== 'string') return;
       (async () => {
         console.log('Loading Data');
-        const workData: Work | undefined = (
+        const workData: WorkData | undefined = (
           await fetchWorkByID(workId)
-        ).data() as Work | undefined;
+        ).data() as WorkData | undefined;
 
         if (!workData) {
           setWorkData(null);
@@ -168,7 +157,7 @@ const IndividualWork: NextPage = () => {
           setLoading(false);
           throw new Error('Work is associated with a nonexistent artist.');
         }
-        const artistImgURL = await loadStorageImage(artistData.ProfilePicture);
+        const artistImgURL = await loadStorageImage(artistData.profilePicture);
         setArtistPicture(artistImgURL);
         const images = await loadStorageImages(workData.images);
         console.log(images, workData, 'IMAGES');
@@ -399,10 +388,10 @@ const IndividualWork: NextPage = () => {
                   </div>
                   <div tw="ml-3.5 mt-1.5">
                     <a href={'/' + artistData.username} tw="text-xl font-bold">
-                      {artistData.Name}
+                      {artistData.name}
                     </a>
                     <p tw="mt-1.5 text-xs text-gray-500">
-                      {artistData.Location}
+                      {artistData.location}
                     </p>
                   </div>
                 </div>
@@ -523,7 +512,7 @@ const IndividualWork: NextPage = () => {
             <p tw="font-bold text-xl mb-3">Frequently Asked Questions</p>
 
             {(
-              (artistData.FAQs || [
+              (artistData.faqs || [
                 {
                   question: 'How do I get in touch?',
                   answer: 'Send me a message!',

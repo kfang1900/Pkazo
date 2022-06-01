@@ -2,14 +2,13 @@ import { Container } from '../../pages/[username]';
 import { User } from '@firebase/auth';
 import tw from 'twin.macro';
 import Image from 'next/image';
-import { portfolio_images } from '../../utils/Cancer_Imports';
+import { portfolio_images } from '../../utils/mockImports';
 import React, { useEffect, useState } from 'react';
 import greyPlus from 'public/assets/temp/temp_plus.png';
 import Modal from '../popups/Modal';
 import PortfolioWorkUpload from '../uploading/PortfolioWorkUpload';
 import { getApp } from 'firebase/app';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
-import { PortfolioObject } from '../../types/firebaseTypes';
 import { loadStorageImage } from '../../helpers/FirebaseFunctions';
 import Link from 'next/link';
 
@@ -37,7 +36,7 @@ export default function CreatePortfoliosSection({
       const app = getApp();
       const db = getFirestore(app);
       const querySnapshot = await getDocs(
-        collection(db, 'Artists', artistId, 'Portfolios')
+        collection(db, 'artists', artistId, 'portfolios')
       );
       const docs: Promise<{
         name: string;
@@ -46,8 +45,8 @@ export default function CreatePortfoliosSection({
       querySnapshot.forEach((doc) => {
         setUsername(doc.data().username);
         docs.push(
-          loadStorageImage(doc.data().Picture).then((image) => ({
-            name: doc.data().Name,
+          loadStorageImage(doc.data().picture).then((image) => ({
+            name: doc.data().name,
             image: image,
           }))
         );
@@ -62,7 +61,12 @@ export default function CreatePortfoliosSection({
           <PortfolioWorkUpload
             artistId={artistId}
             userId={user?.uid}
-            onClose={(newPortfolio) => {
+            onClose={(
+              newPortfolio: {
+                image: string;
+                name: string;
+              }
+            ) => {
               setPortfolios((state) => [...state, newPortfolio]);
               setShowPortfolioUploadModal(false);
             }}

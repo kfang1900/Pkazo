@@ -12,11 +12,13 @@ import {
   collection,
   getFirestore,
   serverTimestamp,
+  Timestamp,
 } from 'firebase/firestore';
 import { Container } from '../../pages/[username]';
 import { ReactNode, useState } from 'react';
 import tw from 'twin.macro';
 import { User } from '@firebase/auth';
+import { ArtistData } from '../../types/firebaseTypes';
 
 interface OnboardingFormValues {
   name: string;
@@ -24,7 +26,7 @@ interface OnboardingFormValues {
   discipline: 'artist' | 'painter' | 'other' | '';
   birthday: string;
   location: string;
-  acceptingCommissions: boolean | null;
+  acceptingCommissions: 'yes' | 'no' | null;
   artistType:
     | 'professional'
     | 'hobby-desiring-professional'
@@ -104,33 +106,35 @@ export default function ProfileDetailsSection({
           console.log(values, 123);
           const app = getApp();
           const db = getFirestore(app);
-          const artistRef = await addDoc(collection(db, 'Artists'), {
-            AssociatedUser: user.uid,
-            ArtistName: values.artistName,
-            ArtistType: values.artistType,
-            AcceptingCommissions: values.acceptingCommissions,
-            Bio: "This user hasn't completed their bio yet.",
-            Cover: '',
-            DOB: new Date(values.birthday),
-            Discipline: values.discipline,
-            Education: [],
-            Exhibitions: [],
-            Experience: [],
-            Followers: 0,
-            Following: 0,
-            Gender: '',
-            IsApproved: true,
-            Location: values.location,
-            Name: values.name,
-            ProfilePicture: '',
-            PostNumber: 0,
-            WorkNumber: 0,
+          const artistRef = await addDoc(collection(db, 'artists'), {
+            associatedUser: user.uid,
+            artistName: values.artistName,
+            artistType: values.artistType,
+            acceptingCommissions: values.acceptingCommissions === 'yes',
+            bio: "This user hasn't completed their bio yet.",
+            coverImage: '',
+            dob: Timestamp.fromDate(new Date(values.birthday)),
+            discipline: values.discipline,
+            education: [],
+            exhibitions: [],
+            experience: [],
+            numFollowers: 0,
+            numFollowing: 0,
+            approved: true,
+            location: values.location,
+            name: values.name,
+            profilePicture: '',
+            numPosts: 0,
+            numWorks: 0,
             username: values.name
               .split(' ')
               .map((n) => n.toLowerCase())
               .join(''),
             created: serverTimestamp(),
-          });
+            shippingProcessingTime: '',
+            shippingReturnPolicies: '',
+            faqs: [],
+          } as ArtistData);
           setArtistId(artistRef.id);
           onComplete();
           return;

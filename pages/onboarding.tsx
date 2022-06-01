@@ -55,8 +55,8 @@ function Onboarding() {
         const app = getApp();
         const db = getFirestore(app);
 
-        const artistsRef = collection(db, 'Artists');
-        const q = query(artistsRef, where('AssociatedUser', '==', user.uid));
+        const artistsRef = collection(db, 'artists');
+        const q = query(artistsRef, where('associatedUser', '==', user.uid));
 
         const ref = await getDocs(q);
 
@@ -74,7 +74,7 @@ function Onboarding() {
         }
         if (!_artistId) return;
         // const querySnapshot = await getDocs(
-        //   collection(db, 'Artists', _artistId, 'Portfolios')
+        //   collection(db, 'artists', _artistId, 'portfolios')
         // );
 
         // querySnapshot.forEach(() => {

@@ -9,6 +9,8 @@ import {
   collection,
   doc,
   getFirestore,
+  serverTimestamp,
+  Timestamp,
   updateDoc,
 } from 'firebase/firestore';
 import {
@@ -18,6 +20,7 @@ import {
   uploadBytesResumable,
 } from 'firebase/storage';
 import { loadStorageImage } from '../../helpers/FirebaseFunctions';
+import { PortfolioData, WorkData } from '../../types/firebaseTypes';
 function uploadFile(pathPrefix: string, file: File): Promise<StorageReference> {
   return new Promise((res, rej) => {
     const storage = getStorage();
@@ -227,15 +230,15 @@ export default function PortfolioWorkUpload({
               setUploading(true);
               const app = getApp();
               const db = getFirestore(app);
-              console.log('A1', db);
+
               const portfolioRef = await addDoc(
-                collection(db, 'Artists', artistId, 'Portfolios'),
+                collection(db, 'artists', artistId, 'portfolios'),
                 {
-                  Name: title,
-                  Description: description,
-                }
+                  name: title,
+                  description: description,
+                } as Partial<PortfolioData>
               );
-              console.log('A2');
+
               const portfolioId = portfolioRef.id;
               const portfolioImageRef = await uploadFile(
                 `/Artists/${artistId}/Portfolios/${portfolioId}/Cover/`,
@@ -245,30 +248,36 @@ export default function PortfolioWorkUpload({
                 uploadedImages
                   .map((i) => i.file)
                   .map(async (file) => {
-                    const workRef = await addDoc(collection(db, 'Works'), {
-                      Artist: doc(db, 'Artist', artistId),
-                      AssociatedUser: userId,
-                      Date: '',
-                      Description: '',
-                      ForSale: false,
-                      Medium: '',
-                      Name: '',
-                    });
+                    const workRef = await addDoc(collection(db, 'works'), {
+                      timestamp: serverTimestamp() as Timestamp,
+                      artist: artistId,
+                      title: '',
+                      description: '',
+                      images: [],
+                      portfolio: '',
+                      year: new Date().getFullYear(),
+                      medium: '',
+                      surface: '',
+                      height: 0,
+                      width: 0,
+                      units: 'in',
+                      forSale: false,
+                      forPrint: false,
+                    } as WorkData);
                     const workId = workRef.id;
                     const fileRef = await uploadFile(`/Works/${workId}/`, file);
-                    await updateDoc(doc(db, 'Works', workId), {
-                      Images: [fileRef.toString()],
-                      MainImage: fileRef.toString(),
+                    await updateDoc(doc(db, 'works', workId), {
+                      images: [fileRef.toString()],
                     });
                     return workId;
                   })
               );
               await updateDoc(
-                doc(db, 'Artists', artistId, 'Portfolios', portfolioId),
+                doc(db, 'artists', artistId, 'portfolios', portfolioId),
                 {
-                  Works: uploadedWorkIds,
-                  Picture: portfolioImageRef.toString(),
-                }
+                  works: uploadedWorkIds,
+                  picture: portfolioImageRef.toString(),
+                } as Partial<PortfolioData>
               );
               setUploading(false);
               const loadedPortfolioImage = await loadStorageImage(

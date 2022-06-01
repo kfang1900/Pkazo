@@ -27,7 +27,7 @@ import {
   QueryDocumentSnapshot,
   where,
 } from 'firebase/firestore';
-import { ArtistObject } from '../types/firebaseTypes';
+import { ArtistData } from '../types/firebaseTypes';
 
 export default function FirebaseProvider({
   children,
@@ -38,7 +38,7 @@ export default function FirebaseProvider({
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [email, setEmail] = useState<string>('');
-  const [artistData, setArtistData] = useState<ArtistObject | null>(null);
+  const [artistData, setArtistData] = useState<ArtistData | null>(null);
   const [artistId, setArtistId] = useState<string | null>(null);
   const apiLogin = useCallback(async (user) => {
     const res = await fetch('/api/auth/sessionLogin', {
@@ -94,15 +94,15 @@ export default function FirebaseProvider({
         const app = getApp();
         const db = getFirestore(app);
 
-        const artistsRef = collection(db, 'Artists');
-        const q = query(artistsRef, where('AssociatedUser', '==', user.uid));
+        const artistsRef = collection(db, 'artists');
+        const q = query(artistsRef, where('associatedUser', '==', user.uid));
 
         const ref = await getDocs(q);
 
         ref.forEach((snapshot) => {
           // this assumes that there will only be one result
           setArtistId(snapshot.id);
-          setArtistData(snapshot.data() as ArtistObject);
+          setArtistData(snapshot.data() as ArtistData);
           setLoading(false);
         });
       })();

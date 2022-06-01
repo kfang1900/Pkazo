@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import { ArtistData, Work } from '../../types/firebaseTypes';
+import { ArtistData, WorkData } from '../../types/firebaseTypes';
 import { ShippingRate } from '../../pages/api/shipping/create-rates';
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
@@ -372,7 +372,7 @@ export default function CheckoutModal({
 }: {
   onClose: () => void;
   workId: string;
-  workData: Work;
+  workData: WorkData;
   image: string;
   artistData: ArtistData;
 }) {
@@ -421,7 +421,7 @@ export default function CheckoutModal({
               </span>
             </h2>
             <p>
-              <i>{artistData.Name}</i> | {workData.medium}
+              <i>{artistData.name}</i> | {workData.medium}
             </p>
             <img src={image} tw={'align-middle h-1/2 mt-5'} alt="work_image" />
           </div>

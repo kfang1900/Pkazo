@@ -8,11 +8,11 @@ import buttons from '../../styles/Button';
 import ConfirmUnfollowModal from '../profile/ConfirmUnfollow';
 import PostImage from './PostImage';
 import ShowComment from './ShowComment';
-import { Post, CompleteInfo, WipInfo, SocialInfo } from '../../obj/Post';
-import { Comment } from '../../obj/Comment';
+// import { Post, CompleteInfo, WipInfo, SocialInfo } from '../../obj/Post';
+// import { Comment } from '../../obj/Comment';
 
 export interface PostDetailsProps {
-  post: Post;
+  post: any;
   onClose: () => void;
 }
 export const formatPrice = (price: number) =>
@@ -38,7 +38,7 @@ function PostDetails(props: PostDetailsProps) {
     });
   };
   const onPost = (comment: string) => {
-    setComments((prev) => {
+    setComments((prev: any) => {
       return [
         ...prev,
         {
@@ -69,7 +69,7 @@ function PostDetails(props: PostDetailsProps) {
     );
   };
   const completedDesc = () => {
-    const postInfo = props.post.info as CompleteInfo;
+    const postInfo = props.post.info as any;
     return (
       <Link href="/individual_work" passHref>
         <div tw="border border-grey-D8 hover:border-[#C0C0C0] mt-5 mb-5 w-full rounded-[5px] py-5 px-6 cursor-pointer">
@@ -117,7 +117,7 @@ function PostDetails(props: PostDetailsProps) {
     );
   };
   const wipDesc = () => {
-    const postInfo = props.post.info as WipInfo;
+    const postInfo = props.post.info as any;
     return (
       <div tw="mt-5 mb-5">
         <div tw="text-2xl font-bold to-black-light">{props.post.title}</div>
@@ -145,7 +145,7 @@ function PostDetails(props: PostDetailsProps) {
     );
   };
   const socialDesc = () => {
-    const postInfo = props.post.info as SocialInfo;
+    const postInfo = props.post.info as any;
     return (
       <div tw="mt-5 mb-5">
         <div tw="text-2xl font-bold to-black-light">{props.post.title}</div>
@@ -206,7 +206,7 @@ function PostDetails(props: PostDetailsProps) {
             {props.post.info.type === 'wip' && wipDesc()}
             {props.post.info.type === 'social' && socialDesc()}
             <div tw="h-full overflow-y-auto">
-              {comments.map((comment, index) => (
+              {comments.map((comment: any, index: any) => (
                 <ShowComment comment={comment} key={index} />
               ))}
             </div>

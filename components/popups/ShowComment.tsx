@@ -2,10 +2,16 @@ import { useState } from 'react';
 import Image from 'next/image';
 import tw from 'twin.macro';
 
-import { Comment } from '../../obj/Comment';
 
 interface Props {
-  comment: Comment;
+  comment: {
+    user: {
+      name: string;
+      profilePicture: string;
+    };
+    time: number;
+    comment: string;
+  };
 }
 
 export const timeElapsed = (timestamp: number) => {
@@ -26,13 +32,13 @@ export const timeElapsed = (timestamp: number) => {
   // years
   return Math.floor(diff / 52) + 'y';
 };
-const ShowComment = (props: Props) => {
+const Comment = (props: Props) => {
   const [liked, setLiked] = useState(false);
   return (
     <div tw="flex mb-[24px] mr-2">
       <div tw="w-[36px] h-full overflow-hidden rounded-full flex items-center">
         <Image
-          src={props.comment.user.ProfilePicture}
+          src={props.comment.user.profilePicture}
           alt="profile_image"
           width="36px"
           height="36px"
@@ -42,7 +48,7 @@ const ShowComment = (props: Props) => {
       <div tw="ml-[12px]">
         <div tw="flex">
           <div tw="text-[12px] leading-[18px] font-bold text-black">
-            {props.comment.user.Name}
+            {props.comment.user.name}
           </div>
           <div tw="text-[12px] leading-[18px] text-[#7F838B] ml-[12px]">
             {timeElapsed(props.comment.time)}
@@ -71,4 +77,4 @@ const ShowComment = (props: Props) => {
     </div>
   );
 };
-export default ShowComment;
+export default Comment;

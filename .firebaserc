@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "pkazo"
-  }
+    "default": "pkazo-302be"
+  },
+  "targets": {}
 }

@@ -8,8 +8,6 @@ import tw, { styled } from 'twin.macro';
 
 import { Container } from './[username]/index';
 import FeedPost from '../components/feed/FeedPost';
-import { Artist, User } from '../obj/Artist';
-import { Post } from '../obj/Post';
 import { sample_posts } from 'utils/Sample_Posts_Imports';
 
 const Feed: NextPage = () => {

@@ -1,62 +1,64 @@
 import { GeoPoint, Timestamp } from 'firebase/firestore';
 import { DocumentData } from 'firebase/firestore';
 
-export interface ArtistObject {
-  Name: string;
-  Bio: string;
-  AssociatedUser: string;
-  DOB: string;
-  Followers: number;
-  Following: number;
-  Gender: String;
-  IsApproved: Boolean;
-  Location: String;
-  PostNumber: number;
-  WorkNumber: number;
-  ProfilePicture: string;
-  username: String;
-}
-
+type ArtistType =
+  | 'hobbyist'
+  | 'hobbyist-desiring-professional'
+  | 'professional';
 export interface ArtistData {
-  Name: string;
-  CoverImageURL: string;
-  ProfilePictureURL: string;
-  Location: string;
-  Bio: string;
-  PostNumber: number;
-  WorkNumber: number;
-  Followers: number;
-  Following: number;
-}
+  name: string;
+  artistName: string;
+  artistType: ArtistType;
+  bio: string;
+  coverImage: string;
+  associatedUser: string;
+  profilePicture: string;
+  dob: Timestamp;
+  discipline: string;
 
-export interface PortfolioObject {
-  Portfolios: DocumentData[];
-  Works: DocumentData[][];
-  PortfolioImages: string[];
-  WorkImages: string[][];
-}
+  experience: {
+    position: string;
+    company: string;
+    start: number;
+    end?: number;
+  }[];
+  education: {
+    field: string;
+    school: string;
+    start: number;
+    end?: number;
+  }[];
+  exhibitions: {
+    gallery: string;
+    year: number;
+  }[];
 
-interface WorkCreatorProps {
-  Date: string;
-  Description: string;
-  Dimensions: string;
-  ForSale: Boolean;
-  Images: string[];
-  MainImage: string;
-  Medium: string;
-  Name: string;
-  Price: Number | undefined;
-  ShippingCost: Number | string | undefined;
-  Style: string | undefined;
-  Subject: string | undefined;
-  Type: string | undefined;
-  portfolioUrl: string;
-  artist: string;
-  AssociatedUser: string;
-}
+  acceptingCommissions: boolean;
+  approved: boolean;
+  location: string;
 
+  numPosts: number;
+  numWorks: number;
+  numFollowers: number;
+  numFollowing: number;
+
+  shippingProcessingTime: string;
+  shippingReturnPolicies: string;
+  faqs: {
+    question: string;
+    answer: string;
+  }[];
+
+  username: string;
+}
+export interface PortfolioData {
+  name: string;
+  works: string[];
+  picture: string;
+  description: string;
+}
 type DimensionUnits = 'in' | 'cm' | 'ft';
-export type Work = {
+export type WorkData = {
   timestamp: Timestamp;
   artist: string;
 

@@ -19,8 +19,8 @@ import {
   doc,
   getDocs,
   getFirestore,
-  serverTimestamp,
-  updateDoc,
+  serverTimestamp, Timestamp,
+  updateDoc
 } from 'firebase/firestore';
 import { FirebaseStorage } from '@firebase/storage';
 import {
@@ -30,7 +30,7 @@ import {
   uploadBytesResumable,
 } from 'firebase/storage';
 import { useRouter } from 'next/router';
-import { Work } from '../../types/firebaseTypes';
+import { WorkData } from '../../types/firebaseTypes';
 
 export interface UploadWorkProps {
   onClose: () => void;
@@ -172,12 +172,12 @@ function UploadWork(props: UploadWorkProps) {
     if (auth.loading || !auth.artistId || portfolios.length > 0) return;
     const app = getApp();
     const db = getFirestore();
-    getDocs(collection(db, 'Artists', auth.artistId, 'Portfolios')).then(
+    getDocs(collection(db, 'artists', auth.artistId, 'portfolios')).then(
       (querySnapshot) => {
         setPortfolios(
           querySnapshot.docs.map((portfolio) => ({
             id: portfolio.id,
-            name: portfolio.data().Name,
+            name: portfolio.data().name,
           }))
         );
       }
@@ -245,15 +245,15 @@ function UploadWork(props: UploadWorkProps) {
                 const db = getFirestore(app);
                 const storage = getStorage(app);
 
-                const workRef = await addDoc(collection(db, 'Works'), {
+                const workRef = await addDoc(collection(db, 'works'), {
                   title: values.title,
                   description: values.description,
                   portfolio: values.portfolio,
                   year: values.year,
                   medium: values.medium,
                   surface: values.surface,
-                  height: values.height,
-                  width: values.width,
+                  height: parseFloat(values.height),
+                  width: parseFloat(values.width),
                   units: values.units,
                   forSale: values.forSale === 'yes',
                   ...(values.forSale === 'yes'
@@ -273,8 +273,8 @@ function UploadWork(props: UploadWorkProps) {
                     ? {
                         print: {
                           price: values.printPrice,
-                          height: values.height,
-                          width: values.width,
+                          height: parseFloat(values.height),
+                          width: parseFloat(values.width),
                           units: values.units,
                           surface: values.printSurface,
                           framing: values.printFraming,
@@ -282,8 +282,10 @@ function UploadWork(props: UploadWorkProps) {
                       }
                     : {}),
                   artist: auth.artistId,
-                  timestamp: serverTimestamp(),
-                });
+                  // serverTimestamp() is not a timestamp, but it will become one on the server.
+                  timestamp: serverTimestamp() as Timestamp,
+                  images:[]
+                } as WorkData);
                 const workId = workRef.id;
                 await updateDoc(
                   doc(

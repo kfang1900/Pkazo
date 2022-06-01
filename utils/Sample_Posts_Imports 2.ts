@@ -1,4 +1,6 @@
-export const sample_artist: any = {
+import { Artist, User } from '../obj/Artist';
+import { Post } from '../obj/Post';
+export const sample_artist: Artist = {
   username: 'jamesjean',
   Name: 'James Jean',
   ProfilePicture: '/store_assets/img/pfp.jpg',
@@ -31,7 +33,7 @@ export const sample_artist: any = {
     { Gallery: 'The Museum of Modern Art', Year: 2020 },
   ],
 };
-export const sample_users: { [key: string]: any } = {
+export const sample_users: { [key: string]: User | Artist } = {
   will: {
     Name: 'William Sanger',
     ProfilePicture: '/assets/images/users/william_sanger.png',
@@ -47,7 +49,7 @@ export const sample_users: { [key: string]: any } = {
     ProfilePicture: '/assets/images/users/prashant_singh.png',
   },
 };
-export const sample_posts: any[] = [
+export const sample_posts: Post[] = [
   {
     user: sample_artist,
     imgs: ['/post_assets/social.png'],

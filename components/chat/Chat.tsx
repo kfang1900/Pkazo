@@ -17,7 +17,6 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import { ArtistObject } from '../../types/firebaseTypes';
 
 export default function Chat({
   partnerId,
@@ -83,15 +82,15 @@ export default function Chat({
     (async () => {
       const app = getApp();
       const db = getFirestore(app);
-      const artistsRef = collection(db, 'Artists');
-      const q = query(artistsRef, where('AssociatedUser', '==', partnerId));
+      const artistsRef = collection(db, 'artists');
+      const q = query(artistsRef, where('associatedUser', '==', partnerId));
 
       const ref = await getDocs(q);
 
       ref.forEach((snapshot) => {
         // this assumes that there will only be one result
         setPartnerData({
-          name: snapshot.data().Name,
+          name: snapshot.data().name,
         });
       });
     })();

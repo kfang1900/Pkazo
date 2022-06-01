@@ -13,14 +13,6 @@ import {
 import { loadStorageImage } from '../../helpers/FirebaseFunctions';
 import { Field, Form, Formik } from 'formik';
 import tw from 'twin.macro';
-import {
-  Education,
-  Exhibition,
-  Experience,
-  showEdu,
-  showExh,
-  showExp,
-} from '../../obj/Artist';
 import React, { useCallback, useEffect, useState } from 'react';
 import useAuth from '../../utils/useAuth';
 import useRequireOnboarding from '../../utils/useRequireOnboarding';
@@ -28,17 +20,10 @@ import { ArtistData } from '../../types/firebaseTypes';
 
 export default function EditProfilePage() {
   const [data, setData] = useState<
-    | {
-        name: string;
-        location: string;
-        discipline: string;
-        bio: string;
-        pfp: string;
-        cover: string;
-        education: Education[];
-        experience: Experience[];
-        exhibitions: Exhibition[];
-      }
+    | (ArtistData & {
+        profilePictureURL: string;
+        coverImageURL: string;
+      })
     | undefined
   >();
   const [artistId, setArtistId] = useState('');
@@ -54,25 +39,20 @@ export default function EditProfilePage() {
         const app = getApp();
         const db = getFirestore(app);
 
-        const artistsRef = collection(db, 'Artists');
-        const q = query(artistsRef, where('AssociatedUser', '==', user.uid));
+        const artistsRef = collection(db, 'artists');
+        const q = query(artistsRef, where('associatedUser', '==', user.uid));
 
         const ref = await getDocs(q);
 
         ref.forEach((snapshot) => {
           setArtistId(snapshot.id); // assumes that there will only be one result
-          const artist = snapshot.data();
+          const artist = snapshot.data() as ArtistData;
+
           (async () => {
             setData({
-              name: artist.Name,
-              location: artist.Location,
-              discipline: artist.Discipline,
-              bio: artist.Bio,
-              pfp: await loadStorageImage(artist.ProfilePicture),
-              cover: await loadStorageImage(artist.Cover),
-              education: artist.Education,
-              experience: artist.Experience,
-              exhibitions: artist.Exhibitions,
+              ...artist,
+              profilePictureURL: await loadStorageImage(artist.profilePicture),
+              coverImageURL: await loadStorageImage(artist.coverImage),
             });
           })();
         });
@@ -110,9 +90,9 @@ export default function EditProfilePage() {
           <div tw="flex">
             <div tw="w-[132px] h-[132px] relative">
               <div tw="overflow-hidden rounded-full flex items-center ">
-                {data.pfp ? (
+                {data.profilePictureURL ? (
                   <Image
-                    src={data.pfp}
+                    src={data.profilePictureURL}
                     alt="profile_image"
                     width="132px"
                     height="132px"
@@ -133,15 +113,15 @@ export default function EditProfilePage() {
                   const db = getFirestore(app);
                   const gsURL = uploadRef.toString();
 
-                  await updateDoc(doc(db, 'Artists', artistId), {
-                    ProfilePicture: gsURL,
-                  });
+                  await updateDoc(doc(db, 'artists', artistId), {
+                    profilePicture: gsURL,
+                  } as Partial<ArtistData>);
 
                   const pfpURL = await loadStorageImage(gsURL);
 
                   setData((oldData) => {
                     return Object.assign({}, oldData, {
-                      pfp: pfpURL,
+                      profilePictureURL: pfpURL,
                     });
                   });
                 }}
@@ -166,14 +146,14 @@ export default function EditProfilePage() {
             onSubmit={async (values) => {
               const app = getApp();
               const db = getFirestore(app);
-              await updateDoc(doc(db, 'Artists', artistId), {
-                Name: values.name,
-                Discipline: values.discipline,
-                Location: values.location,
-                Bio: values.bio,
-                PostNumber: 0,
-                WorkNumber: 3, //TODO make this do something better
-              });
+              await updateDoc(doc(db, 'artists', artistId), {
+                name: values.name,
+                discipline: values.discipline,
+                location: values.location,
+                bio: values.bio,
+                numPosts: 0,
+                numWorks: 3, //TODO make this do something better
+              } as Partial<ArtistData>);
               setData((oldData) => {
                 return Object.assign({}, oldData, values);
               });
@@ -224,9 +204,9 @@ export default function EditProfilePage() {
           <div tw="font-semibold mt-9 text-[20px]">Cover Image</div>
           <div tw="relative mt-6">
             <div tw="w-[852px] h-[201px] bg-gray-200">
-              {data.cover && (
+              {data.coverImageURL && (
                 <Image
-                  src={data.cover}
+                  src={data.coverImageURL}
                   alt="Cover Photo"
                   layout="fill"
                   objectFit="cover"
@@ -245,15 +225,16 @@ export default function EditProfilePage() {
                   const db = getFirestore(app);
                   const gsURL = uploadRef.toString();
 
-                  await updateDoc(doc(db, 'Artists', artistId), {
-                    Cover: gsURL,
-                  });
+                  await updateDoc(doc(db, 'artists', artistId), {
+                    coverImage: gsURL,
+                  } as Partial<ArtistData>);
 
                   const coverImageURL = await loadStorageImage(gsURL);
 
                   setData((oldData) => {
                     return Object.assign({}, oldData, {
-                      cover: coverImageURL,
+                      coverImage: gsURL,
+                      coverImageURL: coverImageURL,
                     });
                   });
                 }}
@@ -275,10 +256,18 @@ export default function EditProfilePage() {
                 <div tw="ml-2">Add a college (coming soon)</div>
               </button>
               {data.education
-                .sort((a, b) => b.End - a.End)
+                .sort((a, b) => (b.end || 9999) - (a.end || 9999))
                 .map((x, i) => (
                   <div key={i} tw="mt-5">
-                    {showEdu(x)}
+                    <div tw="text-[16px] text-[#3C3C3C] leading-[24px]">
+                      Studied{' '}
+                      {x.field && <span tw="font-semibold">{x.field}</span>} at{' '}
+                      <span tw="font-semibold">{x.school}</span>
+                    </div>
+                    <div tw="text-[16px] text-[#8B8B8B] leading-[24px] mt-1">
+                      {x.start}
+                      {x.start !== x.end && '-' + (x.end || '')}
+                    </div>
                   </div>
                 ))}
             </div>
@@ -297,10 +286,21 @@ export default function EditProfilePage() {
                 <div tw="ml-2">Add a workplace (coming soon)</div>
               </button>
               {data.experience
-                .sort((a, b) => b.End - a.End)
+                .sort((a, b) => (b.end || 9999) - (a.end || 9999))
                 .map((x, i) => (
                   <div key={i} tw="mt-5">
-                    {showExp(x)}
+                    <div tw="text-[16px] text-[#3C3C3C] leading-[24px] font-semibold">
+                      {x.position !== undefined && (
+                        <>
+                          {x.position} <span tw="font-normal"> at </span>
+                        </>
+                      )}
+                      {x.company}
+                    </div>
+                    <div tw="text-[16px] text-[#8B8B8B] leading-[24px] mt-1">
+                      {x.start}
+                      {x.start !== x.end && '-' + x.end}
+                    </div>
                   </div>
                 ))}
             </div>
@@ -316,10 +316,15 @@ export default function EditProfilePage() {
                 <div tw="ml-2">Add an exhibition (coming soon)</div>
               </button>
               {data.exhibitions
-                .sort((a, b) => b.Year - a.Year)
-                .map((x, i) => (
+                .sort((a, b) => b.year - a.year)
+                .map((exhibition, i) => (
                   <div key={i} tw="mt-5">
-                    {showExh(x)}
+                    <div tw="text-[16px] text-[#3C3C3C] leading-[24px] font-semibold">
+                      {exhibition.gallery}
+                    </div>
+                    <div tw="text-[16px] text-[#8B8B8B] leading-[24px]">
+                      {exhibition.year}
+                    </div>
                   </div>
                 ))}
             </div>

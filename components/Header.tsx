@@ -97,11 +97,11 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
   const username = artistData?.username;
   useEffect(() => {
     console.log('user', user);
-    if (!artistData || !artistData?.ProfilePicture) {
+    if (!artistData || !artistData?.profilePicture) {
       return;
     }
     (async () => {
-      setPfp(await loadStorageImage(artistData?.ProfilePicture));
+      setPfp(await loadStorageImage(artistData?.profilePicture));
     })();
   }, [artistData]);
   return (
