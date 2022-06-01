@@ -125,7 +125,71 @@ const IndividualWork: NextPage = () => {
     // just to be explicit
     calculateZip(localStorageZip ? localStorageZip : undefined);
   }, [workId]);
-
+  // TEMPORARY DATA MIGRATION CODE
+  // useEffect(() => {
+  //   if (1 + 1 === 2) return;
+  //   (async () => {
+  //     const app = getApp();
+  //     const db = getFirestore(app);
+  //     const artistsSnapshot = await getDocs(collection(db, 'Artists'));
+  //     console.log('======= abdsca');
+  //     const promises: Promise<any>[] = [];
+  //     artistsSnapshot.forEach((snapshot) => {
+  //       const data = snapshot.data();
+  //       const newData = {
+  //         __v1DataBackup: data,
+  //         acceptingCommissions: data.AcceptingCommissions !== 'no',
+  //         artistName: data.ArtistName || '',
+  //         artistType: data.ArtistType || 'professional',
+  //         associatedUser: data.AssociatedUser,
+  //         bio: data.Bio,
+  //         cover: data.Cover,
+  //         dob: data.DOB,
+  //         discipline: data.Discipline,
+  //         education: data.Education || [],
+  //         exhibitions: data.Exhibitions || [],
+  //         experience: data.Experience || [],
+  //         followers: data.Followers || 0,
+  //         following: data.Following || 0,
+  //         // gender: data.Gender,
+  //         approved: true,
+  //         location: data.Location,
+  //         name: data.Name,
+  //         numPosts: data.PostNumber,
+  //         numWorks: data.WorkNumber,
+  //         username: data.username,
+  //         shippingProcessingTime: data.shippingProcessingTime || '',
+  //         shippingReturnPolicies: data.shippingReturnPolicies || '',
+  //       };
+  //       const artistId2 = snapshot.id;
+  //       // promises.push(setDoc(doc(db, 'Artists', snapshot.id), newData));
+  //       promises.push(
+  //         getDocs(collection(db, 'Artists', artistId2, 'Portfolios')).then(
+  //           (portfoliosSnapshot) => {
+  //             const promises2: Promise<void>[] = [];
+  //             portfoliosSnapshot.forEach((portSnap) => {
+  //               const portData = portSnap.data();
+  //               promises2.push(
+  //                 setDoc(
+  //                   doc(db, 'Artists', artistId2, 'Portfolios', portSnap.id),
+  //                   {
+  //                     __v1DataBackup: portData,
+  //                     description: portData.Description,
+  //                     name: portData.Name,
+  //                     picture: portData.Picture,
+  //                     works: portData.Works || [],
+  //                   }
+  //                 )
+  //               );
+  //             });
+  //             return Promise.all(promises2);
+  //           }
+  //         )
+  //       );
+  //     });
+  //     await Promise.all(promises);
+  //   })();
+  // }, []);
   useEffect(() => {
     if (router.isReady && !workData && workId) {
       if (typeof workId !== 'string') return;
