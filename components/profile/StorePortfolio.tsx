@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiDollarSign, FiMinus, FiPlus, FiSearch } from 'react-icons/fi';
 import {
   BsSliders,
@@ -19,6 +19,17 @@ import Img03 from 'public/assets/images/portfolios/pf2/3.jpeg';
 import Img04 from 'public/assets/images/portfolios/pf3/4.jpeg';
 import Img05 from 'public/assets/images/portfolios/pf4/2.jpeg';
 import Img06 from 'public/assets/images/portfolios/pf5/7.jpeg';
+import { WorkData } from '../../types/firebaseTypes';
+import useAuth from '../../utils/useAuth';
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from 'firebase/firestore';
+import { getApp } from 'firebase/app';
+import { loadStorageImage } from '../../helpers/FirebaseFunctions';
 
 const ListCheckGroup = styled.ul`
   .check-group input[type='radio'],
@@ -91,6 +102,50 @@ const StorePortFolio = () => {
   const [filterInitialMax, setFilterInitialMax] = React.useState(0);
   const [minValue, setMinValue] = React.useState(0);
   const [maxValue, setMaxValue] = React.useState(10000);
+  const [works, setWorks] = useState<
+    {
+      id: string;
+      data: WorkData & { forSale: true };
+      imageURL: string;
+    }[]
+  >([]);
+
+  const { artistId } = useAuth();
+
+  useEffect(() => {
+    (async () => {
+      const app = getApp();
+      const db = getFirestore(app);
+      const querySnapshot = await getDocs(
+        query(
+          collection(db, 'works'),
+          where('artist', '==', artistId),
+          where('forSale', '==', true)
+        )
+      );
+      const newWorks: {
+        id: string;
+        data: WorkData & { forSale: true };
+        imageURL: string;
+      }[] = [];
+      await Promise.all(
+        querySnapshot.docs.map(async (snapshot) => {
+          const workData = snapshot.data() as WorkData & { forSale: true };
+          newWorks.push({
+            id: snapshot.id,
+            data: workData,
+            imageURL: await loadStorageImage(workData.images[0]),
+          });
+          console.log(workData);
+          if (!workData.forSale) {
+            console.log('ALERT ALERT ^^^');
+          }
+        })
+      );
+      setWorks(newWorks);
+    })();
+  }, []);
+
   const progressRef = React.useRef(null);
 
   const { initialMin, initialMax, min, max, step } = pricefilter;
@@ -129,46 +184,7 @@ const StorePortFolio = () => {
     setLoadmore(getID);
   };
 
-  const portfolioList = [
-    {
-      src: Img01,
-      label: 'Transcendence',
-      medium: 'Acrylic on Canvas',
-      price: 340,
-    },
-    {
-      src: Img02,
-      label: 'Batman',
-      medium: 'Oil on Linen',
-      price: 420,
-    },
-    {
-      src: Img03,
-      label: 'First day of School',
-      medium: 'Lithograph',
-      price: 480,
-    },
-    {
-      src: Img04,
-      label: 'Childhood',
-      medium: 'Acrylic on Paper',
-      price: 1300,
-    },
-    {
-      src: Img05,
-      label: 'Climate Change',
-      medium: 'Acrylic on Gesso',
-      price: 1820,
-    },
-    {
-      src: Img06,
-      label: 'Judgement Day',
-      medium: 'Acylic on Canvas',
-      price: 2430,
-    },
-  ];
-
-  const Filter = {
+  const filters = {
     category: {
       heading: 'Category',
       list: [
@@ -501,23 +517,19 @@ const StorePortFolio = () => {
             columnClassName={styles['my-masonry-grid_column']}
           >
             {/* Single Portfolio */}
-            {portfolioList.map((portfolio, idx) => (
-              <div key={idx} tw="my-[18px]">
+            {works.map(({ id, data: work, imageURL }, i) => (
+              <a key={id} tw={'cursor-pointer my-[18px]'} href={'/work/' + id}>
                 <div tw="w-full mb-6">
-                  <Image
-                    src={portfolio.src}
-                    alt="Image Alt"
-                    layout="responsive"
-                  />
+                  <img src={imageURL} alt="Image Alt" />
                 </div>
                 <div>
-                  <h4>{portfolio.label}</h4>
+                  <h4>{work.title}</h4>
                   <div tw="flex items-center justify-between">
-                    <p tw="text-gray-600">{portfolio.medium}</p>
-                    <strong>${portfolio.price}</strong>
+                    <p tw="text-gray-600">{work.medium}</p>
+                    <strong>${work.sale.price}</strong>
                   </div>
                 </div>
-              </div>
+              </a>
             ))}
           </Masonry>
         </div>
@@ -544,14 +556,14 @@ const StorePortFolio = () => {
               <h2 tw="text-3xl font-bold mb-4">Filters</h2>
 
               <ul tw="pl-6">
-                {Filter.category && (
+                {filters.category && (
                   <li>
                     <h3 tw="mb-3 font-bold text-lg">
-                      {Filter.category.heading}
+                      {filters.category.heading}
                     </h3>
                     <ListCheckGroup tw="mb-5">
                       {loadmore === 'load-more--category'
-                        ? Filter.category.list.map((item, idx) => (
+                        ? filters.category.list.map((item, idx) => (
                             <li key={idx}>
                               <div className="check-group">
                                 <input
@@ -568,7 +580,7 @@ const StorePortFolio = () => {
                               </div>
                             </li>
                           ))
-                        : Filter.category.list.slice(0, 5).map((item, idx) => (
+                        : filters.category.list.slice(0, 5).map((item, idx) => (
                             <li key={idx}>
                               <div className="check-group">
                                 <input
@@ -596,9 +608,9 @@ const StorePortFolio = () => {
                     </ListCheckGroup>
                   </li>
                 )}
-                {Filter.price && (
+                {filters.price && (
                   <li className="filter__cat-item">
-                    <h3 tw="mb-3 font-bold text-lg">{Filter.price.heading}</h3>
+                    <h3 tw="mb-3 font-bold text-lg">{filters.price.heading}</h3>
 
                     <div>
                       <form tw="flex bg-gray-100 rounded-xl px-3 items-center justify-center relative border border-gray-200/50">
@@ -660,7 +672,7 @@ const StorePortFolio = () => {
                     </div>
 
                     <ListCheckGroup tw="mb-5">
-                      {Filter.price.list.map((item, idx) => (
+                      {filters.price.list.map((item, idx) => (
                         <li key={idx}>
                           <div className="form-check">
                             <input
@@ -705,14 +717,14 @@ const StorePortFolio = () => {
                   </li>
                 )}
 
-                {Filter.subject && (
+                {filters.subject && (
                   <li className="filter__cat-item">
                     <h3 tw="mb-3 font-bold text-lg">
-                      {Filter.subject.heading}
+                      {filters.subject.heading}
                     </h3>
                     <ListCheckGroup tw="mb-5">
                       {loadmore === 'load-more--subject'
-                        ? Filter.subject.list.map((item, idx) => (
+                        ? filters.subject.list.map((item, idx) => (
                             <li key={idx}>
                               <div className="check-group">
                                 <input
@@ -729,7 +741,7 @@ const StorePortFolio = () => {
                               </div>
                             </li>
                           ))
-                        : Filter.subject.list.slice(0, 5).map((item, idx) => (
+                        : filters.subject.list.slice(0, 5).map((item, idx) => (
                             <li key={idx}>
                               <div className="check-group">
                                 <input
@@ -758,12 +770,12 @@ const StorePortFolio = () => {
                   </li>
                 )}
 
-                {Filter.style && (
+                {filters.style && (
                   <li className="filter__cat-item">
-                    <h3 tw="mb-3 font-bold text-lg">{Filter.style.heading}</h3>
+                    <h3 tw="mb-3 font-bold text-lg">{filters.style.heading}</h3>
                     <ListCheckGroup tw="mb-5">
                       {loadmore === 'load-more-style'
-                        ? Filter.style.list.map((item, idx) => (
+                        ? filters.style.list.map((item, idx) => (
                             <li key={idx}>
                               <div className="check-group">
                                 <input
@@ -780,7 +792,7 @@ const StorePortFolio = () => {
                               </div>
                             </li>
                           ))
-                        : Filter.style.list.slice(0, 5).map((item, idx) => (
+                        : filters.style.list.slice(0, 5).map((item, idx) => (
                             <li key={idx}>
                               <div className="check-group">
                                 <input
@@ -809,13 +821,13 @@ const StorePortFolio = () => {
                   </li>
                 )}
 
-                {Filter.location && (
+                {filters.location && (
                   <li className="filter__cat-item">
                     <h3 tw="mb-3 font-bold text-lg">
-                      {Filter.location.heading}
+                      {filters.location.heading}
                     </h3>
                     <ListCheckGroup tw="mb-5">
-                      {Filter.location.list.map((item, idx) => (
+                      {filters.location.list.map((item, idx) => (
                         <li key={idx}>
                           <div className="form-check">
                             <input
@@ -860,13 +872,13 @@ const StorePortFolio = () => {
                   </li>
                 )}
 
-                {Filter.itemType && (
+                {filters.itemType && (
                   <li className="filter__cat-item">
                     <h3 tw="mb-3 font-bold text-lg">
-                      {Filter.itemType.heading}
+                      {filters.itemType.heading}
                     </h3>
                     <ListCheckGroup tw="mb-5">
-                      {Filter.itemType.list.map((item, idx) => (
+                      {filters.itemType.list.map((item, idx) => (
                         <li key={idx}>
                           <div className="form-check">
                             <input

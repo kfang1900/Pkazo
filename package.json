@@ -11,6 +11,7 @@
     "fbemu": "firebase emulators:start"
   },
   "dependencies": {
+    "@algolia/satellite": "^1.0.0-beta.133",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
@@ -19,6 +20,7 @@
     "@stripe/react-stripe-js": "^1.7.2",
     "@stripe/stripe-js": "^1.29.0",
     "@types/shippo": "^1.5.1",
+    "algoliasearch": "^4.13.1",
     "axios": "^0.27.2",
     "firebase": "^9.6.8",
     "firebase-admin": "^10.2.0",
@@ -29,6 +31,7 @@
     "react-dom": "17.0.2",
     "react-drag-drop-files": "^2.3.4",
     "react-icons": "^4.3.1",
+    "react-instantsearch-hooks-web": "^6.26.0",
     "react-masonry-css": "^1.0.16",
     "shippo": "^1.7.1",
     "stripe": "^9.0.0",

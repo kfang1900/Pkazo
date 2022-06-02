@@ -134,7 +134,19 @@ const IndividualWork: NextPage = () => {
     // just to be explicit
     calculateZip(localStorageZip ? localStorageZip : undefined);
   }, [workId]);
-
+  useEffect(() => {
+    const db = getFirestore();
+    getDocs(collection(db, 'works')).then((qs) => {
+      const data: Record<string, any>[] = [];
+      qs.forEach((snapshot) => {
+        data.push({
+          id: snapshot.id,
+          ...snapshot.data(),
+        });
+      });
+      console.log(data);
+    });
+  }, []);
   useEffect(() => {
     if (router.isReady && !workData && workId) {
       if (typeof workId !== 'string') return;
