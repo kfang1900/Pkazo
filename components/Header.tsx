@@ -23,7 +23,7 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import { ArtistData } from '../types/firebaseTypes';
+import { ArtistData } from '../types/dbTypes';
 import LoginForm from './popups/LoginForm';
 import { useRouter } from 'next/router';
 import {

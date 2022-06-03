@@ -32,7 +32,7 @@ import {
 import { sample_posts } from 'utils/Sample_Posts_Imports';
 import { defaultWorkPicture } from 'utils/FrontEndDefaults';
 import Link from 'next/link';
-import { ArtistData, WorkData } from '../../../types/firebaseTypes';
+import { ArtistData, WorkData } from '../../../types/dbTypes';
 import CheckoutModal from '../../../components/popups/CheckoutModal';
 import useRequireOnboarding from '../../../utils/useRequireOnboarding';
 import exp from 'constants';

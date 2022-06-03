@@ -120,3 +120,6 @@ export type WorkData = {
         printFraming: boolean;
       }
   );
+
+export type WorkRecord = WorkData & { id: string };
+export type ForSaleWorkRecord = WorkRecord & { forSale: true };

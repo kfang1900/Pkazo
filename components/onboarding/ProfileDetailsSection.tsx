@@ -18,7 +18,7 @@ import { Container } from '../../pages/[username]';
 import { ReactNode, useState } from 'react';
 import tw from 'twin.macro';
 import { User } from '@firebase/auth';
-import { ArtistData } from '../../types/firebaseTypes';
+import { ArtistData } from '../../types/dbTypes';
 
 interface OnboardingFormValues {
   name: string;

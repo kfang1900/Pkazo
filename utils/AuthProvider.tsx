@@ -27,7 +27,7 @@ import {
   QueryDocumentSnapshot,
   where,
 } from 'firebase/firestore';
-import { ArtistData } from '../types/firebaseTypes';
+import { ArtistData } from '../types/dbTypes';
 
 export default function FirebaseProvider({
   children,

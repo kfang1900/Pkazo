@@ -26,93 +26,6 @@ type GalleryType = {
   imgSrc: StaticImageData;
 };
 
-const galleryData: GalleryDataType[] = [
-  {
-    circleImgSrc: portfolio_images[0][0],
-    circleTitle: 'Moon Child',
-    descriptionBox: {
-      title: 'Moon Child',
-      description:
-        'One famous piece, Day is Done (2005), is a massive multimedia project that explores the rituals and traditions of American adolescence through imagined, reconstructed high school yearbook photographs. ',
-    },
-    galleries: portfolio_images[0].map((value: StaticImageData) => ({
-      imgSrc: value,
-    })),
-  },
-  {
-    circleImgSrc: portfolio_images[1][0],
-    circleTitle: 'Seven Phases',
-    descriptionBox: {
-      title: 'Seven Phases',
-      description:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, adipisci expedita voluptates vero neque quo deserunt soluta? amet consectetur adipisicing elit. Ut, adipisci expedit',
-    },
-    galleries: portfolio_images[1].map((value: StaticImageData) => ({
-      imgSrc: value,
-    })),
-  },
-  {
-    circleImgSrc: portfolio_images[2][0],
-    circleTitle: 'Meowtide',
-    descriptionBox: {
-      title: 'Meowtide',
-      description:
-        'magni voluptatum nesciunt perferendis rem reprehenderit necessitatibus ea provident, sed ullam. Quam, sapiente explicabo ab perferendis molestiae sint officia. Possimus, eos at!',
-    },
-    galleries: portfolio_images[2].map((value: StaticImageData) => ({
-      imgSrc: value,
-    })),
-  },
-  {
-    circleImgSrc: portfolio_images[3][0],
-    circleTitle: 'Kali',
-    descriptionBox: {
-      title: 'Kali',
-      description:
-        'Quidem expedita nostrum et neque blanditiis consectetur rerum nulla. Illum eligendi nemo, sapiente sunt libero similique perspiciatis neque iusto cumque, doloremque tenetur voluptatem totam? ',
-    },
-    galleries: portfolio_images[3].map((value: StaticImageData) => ({
-      imgSrc: value,
-    })),
-  },
-  {
-    circleImgSrc: portfolio_images[4][0],
-    circleTitle: 'Sadhu',
-    descriptionBox: {
-      title: 'Sadhu',
-      description:
-        'Dicta, accusamus et perspiciatis facere, beatae sunt est nesciunt cumque doloribus a assumenda provident sequi eligendi? Cumque cupiditate exercitationem, necessitatibus, nesciunt voluptates consectetur',
-    },
-    galleries: portfolio_images[4].map((value: StaticImageData) => ({
-      imgSrc: value,
-    })),
-  },
-];
-
-// Credit: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-function shuffle(obj: { Data: any[]; Images: any[] }) {
-  let currentIndex = obj.Images.length,
-    randomIndex;
-
-  // While there remain elements to shuffle...
-  while (currentIndex !== 0) {
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // And swap it with the current element.
-    [obj.Images[currentIndex], obj.Images[randomIndex]] = [
-      obj.Images[randomIndex],
-      obj.Images[currentIndex],
-    ];
-    [obj.Data[currentIndex], obj.Data[randomIndex]] = [
-      obj.Data[randomIndex],
-      obj.Data[currentIndex],
-    ];
-  }
-  return obj;
-}
-
 function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
   const [curGallery, setCurGallery] = useState<{
@@ -163,7 +76,7 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
                     />
                   )}
                 </div>
-                <p tw="text-black mt-2 text-center">{portfolio.Name}</p>
+                <p tw="text-black mt-2 text-center">{portfolio.name}</p>
               </div>
             ))}
           </div>
@@ -297,9 +210,9 @@ const CircleDescriptionBox = ({
         )}
       </div>
       <div>
-        <h6 tw="text-[28px] font-semibold text-[#595959]">{data.Name}</h6>
+        <h6 tw="text-[28px] font-semibold text-[#595959]">{data.name}</h6>
         <div tw="text-black text-[16px] mt-4 max-w-[700px]">
-          {data.Description}
+          {data.description}
         </div>
       </div>
     </div>

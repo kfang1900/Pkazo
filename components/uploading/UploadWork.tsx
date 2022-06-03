@@ -30,7 +30,7 @@ import {
   uploadBytesResumable,
 } from 'firebase/storage';
 import { useRouter } from 'next/router';
-import { WorkData } from '../../types/firebaseTypes';
+import { WorkData } from '../../types/dbTypes';
 
 export interface UploadWorkProps {
   onClose: () => void;

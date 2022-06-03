@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 import { User, UserCredential } from '@firebase/auth';
-import { ArtistData } from '../types/firebaseTypes';
+import { ArtistData } from '../types/dbTypes';
 
 export type Auth = {
   signInWithEmailAndPassword: (

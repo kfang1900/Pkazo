@@ -14,14 +14,15 @@ import {
   Hits,
   useSearchBox,
 } from 'react-instantsearch-hooks-web';
+import { useEffect } from 'react';
+import { useField } from 'formik';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
 
 const searchClient = algoliasearch(
   'C7MS0BD8WG',
   '6a66c7b3a0c0cf3d52edb60146226383'
 );
-function Hit({ hit }: {
-  hit: Record<string, any>
-}) {
+function Hit({ hit }: { hit: Record<string, any> }) {
   return (
     <a href={`/work/${hit.id}`}>
       <div tw={'text-gray-900 hover:bg-gray-300 cursor-pointer underline'}>
@@ -48,7 +49,22 @@ function Hit({ hit }: {
 // }
 const SearchPage: NextPage = () => {
   const auth = useAuth();
-
+  // code to get index:
+  // useEffect(() => {
+  //   (async () => {
+  //     const db = getFirestore();
+  //     const qs = await getDocs(collection(db, 'works'));
+  //     const data = [];
+  //     qs.forEach((snapshot) => {
+  //       data.push({
+  //         ...snapshot.data(),
+  //         id: snapshot.id,
+  //         height: TODO
+  //       });
+  //     });
+  //     console.log(data);
+  //   })();
+  // }, []);
   return (
     <>
       <Header />
@@ -64,8 +80,8 @@ const SearchPage: NextPage = () => {
             Search
           </h1>
           <InstantSearch searchClient={searchClient} indexName="pkazo-works">
-
-            <SearchBox /><RefinementList attribute="medium" />
+            <SearchBox />
+            <RefinementList attribute="medium" />
             <Hits hitComponent={Hit} />
           </InstantSearch>
         </div>

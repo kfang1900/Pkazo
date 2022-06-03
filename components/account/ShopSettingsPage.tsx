@@ -14,7 +14,7 @@ import tw from 'twin.macro';
 import React, { useCallback, useEffect, useState } from 'react';
 import useAuth from '../../utils/useAuth';
 import useRequireOnboarding from '../../utils/useRequireOnboarding';
-import { ArtistData } from '../../types/firebaseTypes';
+import { ArtistData } from '../../types/dbTypes';
 
 export default function ShopSettingsPage() {
   useRequireOnboarding();

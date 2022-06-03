@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import { ArtistData, WorkData } from '../../types/firebaseTypes';
+import { ArtistData, WorkData } from '../../types/dbTypes';
 import { ShippingRate } from '../../pages/api/shipping/create-rates';
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.

@@ -103,47 +103,7 @@ const ArtistProfile = ({
               </div>
               <p tw="text-gray-600 text-lg mt-1">{artist.location}</p>
               <div tw="mt-[15px]">
-                <p tw="text-black">
-                  {
-                    artist.bio
-                    /*
-                  In his large-scale paintings, James Jean depicts detailed
-                  cosmological worlds filled with allegorical and contemporary
-                  imagery. He incorporates elements of traditional Chinese and
-                  Japanese scroll paintings, Japanese woodblock prints,
-                  Renaissance portraiture, comic books, and anime into these
-                  complex compositions. As he experiments with such different
-                  styles and art historical genres, Jean diminishes the boundary
-                  between new and old, and between Eastern and Western
-                  artmaking.*/
-                  }
-                </p>
-              </div>
-              <div tw="grid grid-cols-[repeat(4,100px)] gap-[30px] ml-[-20px] mt-[35px]">
-                <div tw="px-5 text-center mx-auto">
-                  <p tw="text-xl text-black font-semibold">
-                    {numFormatter(artist.numPosts)}
-                  </p>
-                  <p tw="text-lg text-gray-600">Posts</p>
-                </div>
-                <div tw="px-5 text-center mx-auto">
-                  <p tw="text-xl text-black font-semibold">
-                    {numFormatter(artist.numWorks)}
-                  </p>
-                  <p tw="text-lg text-gray-600">Works</p>
-                </div>
-                <div tw="px-5 text-center mx-auto">
-                  <p tw="text-xl text-black font-semibold">
-                    {numFormatter(artist.numFollowers)}
-                  </p>
-                  <p tw="text-lg text-gray-600">Followers</p>
-                </div>
-                <div tw="px-5 text-center mx-auto">
-                  <p tw="text-xl text-black font-semibold">
-                    {numFormatter(artist.numFollowing)}
-                  </p>
-                  <p tw="text-lg text-gray-600">Following</p>
-                </div>
+                <p tw="text-black">{artist.bio}</p>
               </div>
             </div>
           </div>

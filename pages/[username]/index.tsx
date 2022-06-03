@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -37,7 +37,7 @@ const fetchArtist = async (
   setPortfolioData: any,
   setLoadingPortfolio: any
 ) => {
- // TODO refactor this code -- the state shouldn't be passed in, etc.
+  // TODO refactor this code -- the state shouldn't be passed in, etc.
   // if this is to be extracted into a function, the function should be pure
   // ie it only returns data directly, it doesn't mutate state through side effects
   const app = getApp();
@@ -51,6 +51,10 @@ const fetchArtist = async (
     result.push(snapshot);
   });
   setData(result);
+  if (result.length === 0) {
+    setLoadingPortfolio(false);
+    return;
+  }
   const coverImageURL = await loadStorageImage(result[0]?.data()?.coverImage);
   setCover(coverImageURL);
   console.log('loaded cover image: ', coverImageURL);
@@ -63,13 +67,25 @@ const fetchArtist = async (
     setLoadingPortfolio(false);
   }
   console.log(portfolioCollection);
-
 };
 
 const Portfolio: NextPage = () => {
   const router = useRouter();
   const { username } = router.query;
-  const [page, setPage] = useState(1);
+  const [page, _setPage] = useState(1);
+  const setPage = useCallback(
+    (page: number) => {
+      _setPage(page);
+      if (page === 0) {
+        window.location.hash = 'posts';
+      } else if (page === 2) {
+        window.location.hash = 'store';
+      } else {
+        window.location.hash = '';
+      }
+    },
+    [_setPage]
+  );
   const [artistData, setData] = useState<QueryDocumentSnapshot<DocumentData>[]>(
     []
   );
@@ -93,6 +109,31 @@ const Portfolio: NextPage = () => {
   const isCurrentUserPage =
     currentUserArtistData && username === currentUserArtistData.username;
   const pages = ['Posts', 'Portfolio', 'Store'];
+  useEffect(() => {
+    const handler = () => {
+      if (window.location.hash) {
+        switch (window.location.hash) {
+          case '#posts':
+            setPage(0);
+            return;
+          case '#store':
+            setPage(2);
+            return;
+          case '#':
+          case '#portfolio': // these cases are typed out so it's explicit
+          default:
+            window.location.hash = '#';
+            setPage(1);
+            return;
+        }
+      }
+    };
+    handler();
+    window.addEventListener('hashchange', handler);
+    return () => {
+      window.removeEventListener('hashchange', handler);
+    };
+  }, [page]);
   useEffect(() => {
     if (router.isReady && artistData.length === 0) {
       console.log(username);
@@ -132,7 +173,9 @@ const Portfolio: NextPage = () => {
           </div>
         ) : artistData.length === 0 ? (
           <div>
-            <h2>404: User not found</h2>
+            <h2 tw={'text-center text-xl my-10 font-bold'}>
+              Error 404: Page not found
+            </h2>
           </div>
         ) : (
           <div>

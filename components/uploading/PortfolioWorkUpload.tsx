@@ -20,7 +20,7 @@ import {
   uploadBytesResumable,
 } from 'firebase/storage';
 import { loadStorageImage } from '../../helpers/FirebaseFunctions';
-import { PortfolioData, WorkData } from '../../types/firebaseTypes';
+import { PortfolioData, WorkData } from '../../types/dbTypes';
 function uploadFile(pathPrefix: string, file: File): Promise<StorageReference> {
   return new Promise((res, rej) => {
     const storage = getStorage();
