@@ -4,9 +4,21 @@ import tw from 'twin.macro';
 
 import buttons from 'styles/Button';
 import ConfirmUnfollowModal from './ConfirmUnfollow';
-import { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
+import {
+  QueryDocumentSnapshot,
+  DocumentData,
+  getFirestore,
+  doc,
+  updateDoc,
+  arrayUnion,
+  getDocs,
+  collection,
+  setDoc,
+} from 'firebase/firestore';
 import { loadStorageImage } from 'helpers/FirebaseFunctions';
 import { useRouter } from 'next/router';
+import { getApp } from 'firebase/app';
+import useAuth from '../../utils/useAuth';
 
 const numFormatter = (x: number) => {
   if (x > 999 && x < 1000000) {
@@ -23,6 +35,7 @@ const ArtistProfile = ({
   artistData: QueryDocumentSnapshot<DocumentData>[];
   isCurrentUserPage?: boolean;
 }) => {
+  const { artistId, user } = useAuth();
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
   const [picture, setPicture] = useState('');
   const [isShowUnfollowConfirmModal, setIsShowUnfollwConfirmModal] =
@@ -79,7 +92,7 @@ const ArtistProfile = ({
                 <h1 tw="text-3xl font-semibold text-black mr-[40px]">
                   {artist.name}
                 </h1>
-                {isCurrentUserPage ? (
+                {!isCurrentUserPage ? (
                   <button
                     onClick={() => router.push('/account/edit')}
                     css={buttons.white}
@@ -87,12 +100,33 @@ const ArtistProfile = ({
                     Edit Profile
                   </button>
                 ) : (
-                  <button
-                    onClick={follwButtonHandler}
-                    css={isFollowing ? buttons.white : buttons.red}
-                  >
-                    {isFollowing ? 'Following' : 'Follow'}
-                  </button>
+                  <>
+                    {' '}
+                    <button
+                      onClick={follwButtonHandler}
+                      css={isFollowing ? buttons.white : buttons.red}
+                    >
+                      {isFollowing ? 'Following' : 'Follow'}
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!user || !artistData[0].id) {
+                          return;
+                        }
+                        const app = getApp();
+                        const db = getFirestore(app);
+
+                        updateDoc(doc(db, 'users', user.uid), {
+                          chats: arrayUnion(artistData[0].id),
+                        }).then(() => {
+                          return router.push(`/chat#${artistData[0].id}`);
+                        });
+                      }}
+                      css={buttons.red}
+                    >
+                      Message
+                    </button>
+                  </>
                 )}
                 <button
                   css={buttons.white}

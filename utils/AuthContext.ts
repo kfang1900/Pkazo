@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 import { User, UserCredential } from '@firebase/auth';
-import { ArtistData } from '../types/dbTypes';
+import { ArtistData, UserData } from '../types/dbTypes';
 
 export type Auth = {
   signInWithEmailAndPassword: (
@@ -22,6 +22,7 @@ export type Auth = {
   user: User | null;
   artistData: ArtistData | null;
   artistId: string | null;
+  userData: UserData | null;
 };
 
 const AuthContext = createContext<Auth>({
@@ -32,15 +33,24 @@ const AuthContext = createContext<Auth>({
     password: string
   ) => null,
   apiLogin: async (user: User) => null,
-  signInWithGoogle: async () => {/* noop */},
-  signInWithFacebook: async () => {/* noop */},
-  setRememberSession: async (staySignedIn: boolean) => {/* noop */},
-  signOut: async () => {/* noop */},
+  signInWithGoogle: async () => {
+    /* noop */
+  },
+  signInWithFacebook: async () => {
+    /* noop */
+  },
+  setRememberSession: async (staySignedIn: boolean) => {
+    /* noop */
+  },
+  signOut: async () => {
+    /* noop */
+  },
   email: '',
   loading: true,
   user: null,
   artistData: null,
   artistId: null,
+  userData: null,
 });
 
 export default AuthContext;

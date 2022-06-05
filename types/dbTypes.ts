@@ -13,7 +13,6 @@ export interface ArtistData {
   coverImage: string;
   associatedUser: string;
   profilePicture: string;
-  dob: Timestamp;
   discipline: string;
 
   experience: {
@@ -51,6 +50,13 @@ export interface ArtistData {
 
   username: string;
 }
+
+export interface UserData {
+  dob: Timestamp;
+  username: string;
+  chats?: string[];
+}
+
 export interface PortfolioData {
   name: string;
   works: string[];

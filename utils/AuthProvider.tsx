@@ -20,14 +20,16 @@ import { browserLocalPersistence, User } from '@firebase/auth';
 import { getApp } from 'firebase/app';
 import {
   collection,
+  doc,
   DocumentData,
+  getDoc,
   getDocs,
   getFirestore,
   query,
   QueryDocumentSnapshot,
   where,
 } from 'firebase/firestore';
-import { ArtistData } from '../types/dbTypes';
+import { ArtistData, UserData } from '../types/dbTypes';
 
 export default function FirebaseProvider({
   children,
@@ -39,7 +41,9 @@ export default function FirebaseProvider({
   const [user, setUser] = useState<User | null>(null);
   const [email, setEmail] = useState<string>('');
   const [artistData, setArtistData] = useState<ArtistData | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [artistId, setArtistId] = useState<string | null>(null);
+
   const apiLogin = useCallback(async (user) => {
     const res = await fetch('/api/auth/sessionLogin', {
       method: 'POST',
@@ -94,17 +98,21 @@ export default function FirebaseProvider({
         const app = getApp();
         const db = getFirestore(app);
 
-        const artistsRef = collection(db, 'artists');
-        const q = query(artistsRef, where('associatedUser', '==', user.uid));
-
-        const ref = await getDocs(q);
-
-        ref.forEach((snapshot) => {
+        const artistsSnapshot = await getDocs(
+          query(
+            collection(db, 'artists'),
+            where('associatedUser', '==', user.uid)
+          )
+        );
+        artistsSnapshot.forEach((snapshot) => {
           // this assumes that there will only be one result
           setArtistId(snapshot.id);
           setArtistData(snapshot.data() as ArtistData);
           setLoading(false);
         });
+
+        const userDataSnapshot = await getDoc(doc(db, 'users', user.uid));
+        setUserData((userDataSnapshot.data() as UserData) || {});
       })();
     });
 
@@ -144,6 +152,7 @@ export default function FirebaseProvider({
         user,
         loading,
         artistData,
+        userData,
         artistId,
         signOut: () => {
           return signOut(getAuth());

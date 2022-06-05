@@ -45,6 +45,7 @@ export default function Chat({
       rtdb,
       'chats/' + [user.uid, partnerId].sort().join('--') + '/messages'
     );
+    setMessages([]);
     onChildAdded(messagesRef, (snapshot) => {
       const data = snapshot.val();
       setMessages((v) => [
@@ -55,7 +56,7 @@ export default function Chat({
         },
       ]);
     });
-  }, [user]);
+  }, [user, partnerId]);
   const onSend = useCallback(() => {
     if (!user) return;
 
@@ -71,7 +72,7 @@ export default function Chat({
       text: text,
     });
     setText('');
-  }, [user, text, setText]);
+  }, [user, text, setText, partnerId]);
   const [partnerData, setPartnerData] = useState<
     | {
         name: string;

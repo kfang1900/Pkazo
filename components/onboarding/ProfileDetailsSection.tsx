@@ -10,9 +10,14 @@ import { getApp } from 'firebase/app';
 import {
   addDoc,
   collection,
+  doc,
+  getDocs,
   getFirestore,
+  query,
   serverTimestamp,
+  setDoc,
   Timestamp,
+  where,
 } from 'firebase/firestore';
 import { Container } from '../../pages/[username]';
 import { ReactNode, useState } from 'react';
@@ -106,6 +111,32 @@ export default function ProfileDetailsSection({
           console.log(values, 123);
           const app = getApp();
           const db = getFirestore(app);
+          const originalUsername = values.name
+            .split(' ')
+            .map((n) => n.toLowerCase())
+            .join('');
+          let username = originalUsername;
+          // check if username exists
+          for (let i = 0; i < 10; i++) {
+            if (i > -0) {
+              username = originalUsername + '' + i;
+            }
+            const qs = await getDocs(
+              query(
+                collection(db, 'artists'),
+                where('username', '==', username)
+              )
+            );
+            if (qs.docs.length === 0) {
+              break;
+            }
+            if (qs.docs.length > 0 && i >= 9) {
+              alert(
+                'We were unable to generate a username for you. Please contact support.'
+              );
+              throw new Error('Unable to generate username.');
+            }
+          }
           const artistRef = await addDoc(collection(db, 'artists'), {
             associatedUser: user.uid,
             artistName: values.artistName,
@@ -113,7 +144,6 @@ export default function ProfileDetailsSection({
             acceptingCommissions: values.acceptingCommissions === 'yes',
             bio: "This user hasn't completed their bio yet.",
             coverImage: '',
-            dob: Timestamp.fromDate(new Date(values.birthday)),
             discipline: values.discipline,
             education: [],
             exhibitions: [],
@@ -126,15 +156,17 @@ export default function ProfileDetailsSection({
             profilePicture: '',
             numPosts: 0,
             numWorks: 0,
-            username: values.name
-              .split(' ')
-              .map((n) => n.toLowerCase())
-              .join(''),
+            username: username,
             created: serverTimestamp(),
             shippingProcessingTime: '',
             shippingReturnPolicies: '',
             faqs: [],
           } as ArtistData);
+          await setDoc(doc(db, 'users', user.uid), {
+            dob: Timestamp.fromDate(new Date(values.birthday)),
+            username: username,
+            artistId: artistRef.id,
+          });
           setArtistId(artistRef.id);
           onComplete();
           return;
