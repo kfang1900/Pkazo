@@ -6,48 +6,6 @@ import {
 import 'twin.macro';
 import { FiDollarSign, FiMinus, FiPlus } from 'react-icons/fi';
 import tw, { styled } from 'twin.macro';
-const ListCheckGroup = styled.ul`
-  .check-group input[type='radio'],
-  .check-group input[type='checkbox'] {
-    ${tw`hidden`}
-  }
-  .check-group input[type='radio']:checked + label:before,
-  .check-group input[type='checkbox']:checked + label:before {
-    ${tw`bg-[#C4C4C4]`}
-  }
-  .check-group label {
-    position: relative;
-    padding-left: 30px;
-    cursor: pointer;
-    line-height: 2;
-  }
-  .check-group label:before {
-    ${tw`inline-block min-h-[1em] w-[1em]`}
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    border-radius: 30em;
-    border: 2px solid #c4c4c4;
-  }
-  .check-group label.color-check:before {
-    background: var(--checkbg) !important;
-    border: 0;
-  }
-  .check-group input:checked + label.color-check:after {
-    --check-after-size: 6px;
-    content: '';
-    position: absolute;
-    width: var(--check-after-size);
-    height: var(--check-after-size);
-    left: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    border-radius: 30em;
-    ${/*background: theme('colors.white');*/ tw`bg-white`}
-  }
-`;
 
 export default function CustomRefinementList(
   props: UseRefinementListProps & { title?: string }

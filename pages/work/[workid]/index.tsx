@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import 'twin.macro';
 import { useRouter } from 'next/router';
 import Header from 'components/Header';
@@ -302,20 +302,27 @@ const IndividualWork: NextPage = () => {
                 ) : (
                   <p>Unable to load image</p>
                 )}
-                <button tw="absolute bg-white rounded-full w-9 h-9 top-4 right-4 flex justify-center items-center">
-                  <svg
-                    width="18"
-                    height="16"
-                    viewBox="0 0 18 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M16.1156 1.26059C14.0836 -0.448009 10.9441 -0.191368 9.00001 1.78793C7.05586 -0.191368 3.91641 -0.451525 1.88438 1.26059C-0.759371 3.48598 -0.372652 7.1141 1.51172 9.03715L7.67813 15.3196C8.02969 15.6782 8.50079 15.8786 9.00001 15.8786C9.50274 15.8786 9.97032 15.6817 10.3219 15.3231L16.4883 9.04066C18.3691 7.11762 18.7629 3.48949 16.1156 1.26059ZM15.2859 7.85238L9.11954 14.1348C9.03516 14.2192 8.96485 14.2192 8.88047 14.1348L2.71407 7.85238C1.43086 6.54457 1.17071 4.06957 2.97071 2.55434C4.33829 1.40473 6.44766 1.57699 7.76954 2.92348L9.00001 4.17855L10.2305 2.92348C11.5594 1.56996 13.6688 1.40473 15.0293 2.55082C16.8258 4.06605 16.5586 6.55512 15.2859 7.85238Z"
-                      fill="#222222"
-                    />
-                  </svg>
-                </button>
+                <div tw={'absolute top-4 right-4 flex flex-row gap-4'}>
+                  <ShareButton
+                    title={`${workData.title} | Pkazo`}
+                    text={`Checkout this work I found on Pkazo: ${workData.title} https://pkazo.com/work/${workId}`}
+                    url={`https://pkazo.com/work/${workId}`}
+                  />
+                  <button tw="bg-white rounded-full w-9 h-9 flex justify-center items-center">
+                    <svg
+                      width="18"
+                      height="16"
+                      viewBox="0 0 18 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M16.1156 1.26059C14.0836 -0.448009 10.9441 -0.191368 9.00001 1.78793C7.05586 -0.191368 3.91641 -0.451525 1.88438 1.26059C-0.759371 3.48598 -0.372652 7.1141 1.51172 9.03715L7.67813 15.3196C8.02969 15.6782 8.50079 15.8786 9.00001 15.8786C9.50274 15.8786 9.97032 15.6817 10.3219 15.3231L16.4883 9.04066C18.3691 7.11762 18.7629 3.48949 16.1156 1.26059ZM15.2859 7.85238L9.11954 14.1348C9.03516 14.2192 8.96485 14.2192 8.88047 14.1348L2.71407 7.85238C1.43086 6.54457 1.17071 4.06957 2.97071 2.55434C4.33829 1.40473 6.44766 1.57699 7.76954 2.92348L9.00001 4.17855L10.2305 2.92348C11.5594 1.56996 13.6688 1.40473 15.0293 2.55082C16.8258 4.06605 16.5586 6.55512 15.2859 7.85238Z"
+                        fill="#222222"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
               <button
                 tw="bg-gray-100 rounded-full w-8 h-8 flex justify-center items-center"
@@ -570,4 +577,33 @@ const IndividualWork: NextPage = () => {
   );
 };
 
+function ShareButton(props: { title: string; text: string; url: string }) {
+  const data = props;
+  const canShare = useMemo(
+    () => navigator.canShare && navigator.canShare(data),
+    []
+  );
+  if (!canShare) {
+    return <></>;
+  }
+  return (
+    <button
+      tw="bg-white rounded-full w-9 h-9 flex justify-center items-center"
+      onClick={() => navigator.share(data)}
+    >
+      <svg
+        width="16"
+        height="19"
+        viewBox="0 0 16 19"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12 4L10.58 5.42L8.99 3.83V13H7.01V3.83L5.42 5.42L4 4L8 0L12 4ZM16 9V16.75C16 17.85 15.1 18.75 14 18.75H2C0.89 18.75 0 17.85 0 16.75V9C0 7.89 0.89 7 2 7H5V9H2V16.75H14V9H11V7H14C15.1 7 16 7.89 16 9Z"
+          fill="#222222"
+        />
+      </svg>
+    </button>
+  );
+}
 export default IndividualWork;

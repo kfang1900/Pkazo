@@ -34,7 +34,49 @@ import {
 import CustomSearch from './store/CustomSearch';
 import Hit from './store/Hit';
 import CustomHits from './store/CustomHits';
-import CustomRefinementList from './store/CustomRefinementList';
+import CustomRefinementGroup from './store/CustomRefinementList';
+const ListCheckGroup = styled.ul`
+  .check-group input[type='radio'],
+  .check-group input[type='checkbox'] {
+    ${tw`hidden`}
+  }
+  .check-group input[type='radio']:checked + label:before,
+  .check-group input[type='checkbox']:checked + label:before {
+    ${tw`bg-[#C4C4C4]`}
+  }
+  .check-group label {
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    line-height: 2;
+  }
+  .check-group label:before {
+    ${tw`inline-block min-h-[1em] w-[1em]`}
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 30em;
+    border: 2px solid #c4c4c4;
+  }
+  .check-group label.color-check:before {
+    background: var(--checkbg) !important;
+    border: 0;
+  }
+  .check-group input:checked + label.color-check:after {
+    --check-after-size: 6px;
+    content: '';
+    position: absolute;
+    width: var(--check-after-size);
+    height: var(--check-after-size);
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 30em;
+    ${/*background: theme('colors.white');*/ tw`bg-white`}
+  }
+`;
 
 const searchClient = algoliasearch(
   'C7MS0BD8WG',
@@ -494,14 +536,15 @@ const StorePortFolio = () => {
                 <h2 tw="text-3xl font-bold mb-4">Filters</h2>
 
                 <ul tw={'pl-6'}>
+                  <div>{/* TODO: put the price refinement in here */}</div>
 
-                  <CustomRefinementList attribute={'medium'} />
-                  <CustomRefinementList attribute={'year'} />
-                  <CustomRefinementList
+                  <CustomRefinementGroup attribute={'medium'} />
+                  <CustomRefinementGroup attribute={'year'} />
+                  <CustomRefinementGroup
                     attribute={'sale.color'}
                     title={'Color'}
                   />
-                  <CustomRefinementList attribute={'dimensions'} />
+                  <CustomRefinementGroup attribute={'dimensions'} />
                 </ul>
               </div>
             </div>
