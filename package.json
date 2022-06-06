@@ -33,6 +33,7 @@
     "react-icons": "^4.3.1",
     "react-instantsearch-hooks-web": "^6.26.0",
     "react-masonry-css": "^1.0.16",
+    "react-responsive": "^9.0.0-beta.8",
     "shippo": "^1.7.1",
     "stripe": "^9.0.0",
     "styled-components": "^5.3.3",
