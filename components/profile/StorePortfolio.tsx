@@ -1,11 +1,12 @@
 import React from 'react';
 import { FiDollarSign, FiMinus, FiPlus, FiSearch } from 'react-icons/fi';
 import {
-  BsSliders,
-  BsChevronCompactDown,
-  BsGrid3X3GapFill,
-} from 'react-icons/bs';
-import { MdWidgets } from 'react-icons/md';
+  Field,
+  FieldProps,
+  Form,
+  Formik,
+  FormikErrors,
+} from 'formik';
 import { FiX } from 'react-icons/fi';
 import Image from 'next/image';
 import tw, { styled } from 'twin.macro';
@@ -19,6 +20,8 @@ import Img03 from 'public/assets/images/portfolios/pf2/3.jpeg';
 import Img04 from 'public/assets/images/portfolios/pf3/4.jpeg';
 import Img05 from 'public/assets/images/portfolios/pf4/2.jpeg';
 import Img06 from 'public/assets/images/portfolios/pf5/7.jpeg';
+import buttons from 'styles/Button';
+import Dropdown from 'styles/Dropdown';
 
 const ListCheckGroup = styled.ul`
   .check-group input[type='radio'],
@@ -70,7 +73,7 @@ const PriceFilterDimension = styled.div`
   }
 `;
 
-const StorePortFolio = () => {
+const StorePortfolio = () => {
   const [open, setOpen] = React.useState(false);
   const [loadmore, setLoadmore] = React.useState(null);
 
@@ -110,10 +113,6 @@ const StorePortFolio = () => {
 
   // const drawerToggle = React.useRef('');
 
-  const handleOpenFilter = () => {
-    // drawerToggle.classList.add("open");
-    setOpen(true);
-  };
   const handleCloseFilter = () => {
     // drawerToggle.classList.remove("open");
     setOpen(false);
@@ -377,20 +376,21 @@ const StorePortFolio = () => {
         {/* Heading */}
         <div tw="mb-10 flex items-center gap-3 gap-x-10">
           {/* Filter Button */}
-          <div
-            onClick={handleOpenFilter}
-            tw="cursor-pointer flex items-center gap-3 py-2 px-8 border border-gray-200 rounded-full"
+          <button
+            onClick={() => setOpen(true)}
+            css={buttons.white}
+            tw="border border-[#D8D8D8] flex text-[#65676B] px-6 h-11 font-normal text-[16px] items-center gap-[10px]"
           >
-            <BsSliders tw="text-2xl" />
-            <span tw="text-lg">Filters</span>
-          </div>
+            <img src='/assets/svgs/filter.svg' />
+            <div>All Filters</div>
+          </button>
           {/* Search  */}
-          <div tw="w-full">
+          <div tw="w-auto flex-grow">
             <form
               action=""
-              tw="relative px-4 flex items-center border border-gray-200 rounded-full w-full"
+              tw="relative px-4 flex items-center border border-[#D8D8D8] rounded-full w-full"
             >
-              <FiSearch tw="text-gray-400" />
+              <FiSearch tw="text-[#8E8E93]" />
               <input
                 type="text"
                 tw="py-2 px-4 outline-none shadow-none w-full"
@@ -399,93 +399,12 @@ const StorePortFolio = () => {
             </form>
           </div>
           {/* Price Sort */}
-          <div>
-            <div tw="relative">
-              <span
-                onClick={() => setSortDropdown(true)}
-                tw="border border-gray-200 rounded-xl flex items-center cursor-pointer gap-4 py-2 px-6"
-              >
-                <span tw="whitespace-nowrap">
-                  Price: <strong>{sortValueDropdown}</strong>
-                </span>
-                <BsChevronCompactDown tw="text-gray-400" />
-              </span>
-              {sortDropdown && (
-                <>
-                  <div
-                    onClick={() => setSortDropdown(false)}
-                    tw="w-full h-full fixed left-0 top-0 z-10"
-                  ></div>
-                  <ul tw="bg-white rounded-b-xl border-b border-l border-r border-gray-200 z-40 left-0 right-0 absolute top-9">
-                    <li>
-                      <a
-                        onClick={(e: any) =>
-                          handleDropdownClick(e, 'Relevancy')
-                        }
-                        tw="block px-6 leading-10 hover:bg-gray-100 text-sm"
-                        href="#"
-                      >
-                        Relevancy
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        onClick={(e: any) =>
-                          handleDropdownClick(e, 'Lowest Price')
-                        }
-                        tw="block px-6 leading-10 hover:bg-gray-100 text-sm"
-                        href="#"
-                      >
-                        Lowest Price
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        onClick={(e: any) =>
-                          handleDropdownClick(e, 'Highest Price')
-                        }
-                        tw="block px-6 leading-10 hover:bg-gray-100 text-sm"
-                        href="#"
-                      >
-                        Highest Price
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        onClick={(e: any) =>
-                          handleDropdownClick(e, 'Top Customzer Reviews')
-                        }
-                        tw="block px-6 leading-10 hover:bg-gray-100 text-sm"
-                        href="#"
-                      >
-                        Top Customzer Reviews
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        onClick={(e: any) =>
-                          handleDropdownClick(e, 'Most Recent')
-                        }
-                        tw="block px-6 leading-10 hover:bg-gray-100 text-sm"
-                        href="#"
-                      >
-                        Most Recent
-                      </a>
-                    </li>
-                  </ul>
-                </>
-              )}
-            </div>
-          </div>
-          {/* Grid */}
-          <div tw="flex items-center text-2xl rounded border border-gray-200">
-            <span tw="px-4 py-2 cursor-pointer transition-all duration-300 text-gray-700 hover:text-black border-r border-gray-200">
-              <MdWidgets />
-            </span>
-            <span tw="px-4 py-2 cursor-pointer transition-all duration-300 text-gray-700 hover:text-black">
-              <BsGrid3X3GapFill />
-            </span>
-          </div>
+          <Dropdown look={tw`w-[200px] h-11 rounded-[40px]`}>
+            <option value='low'>Price: Low to High</option>
+            <option value='high'>Price: High to Low</option>
+            <option value='new'>Most Recent</option>
+            <option value='popular'>Most Popular</option>
+          </Dropdown>
         </div>
 
         {/* Portfolio Found */}
@@ -539,8 +458,8 @@ const StorePortFolio = () => {
           </span>
 
           {/* Filter Box */}
-          <div>
-            <div tw="overflow-auto pr-14 m-6 h-[calc(100vh-120px)]">
+          <div tw='overflow-auto h-full'>
+            <div tw="pr-14 m-6">
               <h2 tw="text-3xl font-bold mb-4">Filters</h2>
 
               <ul tw="pl-6">
@@ -552,39 +471,39 @@ const StorePortFolio = () => {
                     <ListCheckGroup tw="mb-5">
                       {loadmore === 'load-more--category'
                         ? Filter.category.list.map((item, idx) => (
-                            <li key={idx}>
-                              <div className="check-group">
-                                <input
-                                  type="checkbox"
-                                  id={`check-category-id--${idx}`}
-                                  name={`check-category-id--${idx}`}
-                                />
-                                <label
-                                  htmlFor={`check-category-id--${idx}`}
-                                  className="check-label"
-                                >
-                                  {item.label}
-                                </label>
-                              </div>
-                            </li>
-                          ))
+                          <li key={idx}>
+                            <div className="check-group">
+                              <input
+                                type="checkbox"
+                                id={`check-category-id--${idx}`}
+                                name={`check-category-id--${idx}`}
+                              />
+                              <label
+                                htmlFor={`check-category-id--${idx}`}
+                                className="check-label"
+                              >
+                                {item.label}
+                              </label>
+                            </div>
+                          </li>
+                        ))
                         : Filter.category.list.slice(0, 5).map((item, idx) => (
-                            <li key={idx}>
-                              <div className="check-group">
-                                <input
-                                  type="checkbox"
-                                  id={`check-category-id--${idx}`}
-                                  name={`check-category-id--${idx}`}
-                                />
-                                <label
-                                  htmlFor={`check-category-id--${idx}`}
-                                  className="check-label"
-                                >
-                                  {item.label}
-                                </label>
-                              </div>
-                            </li>
-                          ))}
+                          <li key={idx}>
+                            <div className="check-group">
+                              <input
+                                type="checkbox"
+                                id={`check-category-id--${idx}`}
+                                name={`check-category-id--${idx}`}
+                              />
+                              <label
+                                htmlFor={`check-category-id--${idx}`}
+                                className="check-label"
+                              >
+                                {item.label}
+                              </label>
+                            </div>
+                          </li>
+                        ))}
                       <li>
                         <div className="show-more-button">
                           {loadMoreButton(
@@ -713,39 +632,39 @@ const StorePortFolio = () => {
                     <ListCheckGroup tw="mb-5">
                       {loadmore === 'load-more--subject'
                         ? Filter.subject.list.map((item, idx) => (
-                            <li key={idx}>
-                              <div className="check-group">
-                                <input
-                                  type="checkbox"
-                                  id={`check-subject-id--${idx}`}
-                                  name={`check-subject-id--${idx}`}
-                                />
-                                <label
-                                  htmlFor={`check-subject-id--${idx}`}
-                                  className="check-label"
-                                >
-                                  {item.label}
-                                </label>
-                              </div>
-                            </li>
-                          ))
+                          <li key={idx}>
+                            <div className="check-group">
+                              <input
+                                type="checkbox"
+                                id={`check-subject-id--${idx}`}
+                                name={`check-subject-id--${idx}`}
+                              />
+                              <label
+                                htmlFor={`check-subject-id--${idx}`}
+                                className="check-label"
+                              >
+                                {item.label}
+                              </label>
+                            </div>
+                          </li>
+                        ))
                         : Filter.subject.list.slice(0, 5).map((item, idx) => (
-                            <li key={idx}>
-                              <div className="check-group">
-                                <input
-                                  type="checkbox"
-                                  id={`check-subject-id--${idx}`}
-                                  name={`check-subject-id--${idx}`}
-                                />
-                                <label
-                                  htmlFor={`check-subject-id--${idx}`}
-                                  className="check-label"
-                                >
-                                  {item.label}
-                                </label>
-                              </div>
-                            </li>
-                          ))}
+                          <li key={idx}>
+                            <div className="check-group">
+                              <input
+                                type="checkbox"
+                                id={`check-subject-id--${idx}`}
+                                name={`check-subject-id--${idx}`}
+                              />
+                              <label
+                                htmlFor={`check-subject-id--${idx}`}
+                                className="check-label"
+                              >
+                                {item.label}
+                              </label>
+                            </div>
+                          </li>
+                        ))}
                       <li>
                         <div className="show-more-button">
                           {loadMoreButton(
@@ -764,39 +683,39 @@ const StorePortFolio = () => {
                     <ListCheckGroup tw="mb-5">
                       {loadmore === 'load-more-style'
                         ? Filter.style.list.map((item, idx) => (
-                            <li key={idx}>
-                              <div className="check-group">
-                                <input
-                                  type="checkbox"
-                                  id={`check.style-id--${idx}`}
-                                  name={`check.style-id--${idx}`}
-                                />
-                                <label
-                                  htmlFor={`check.style-id--${idx}`}
-                                  className="check-label"
-                                >
-                                  {item.label}
-                                </label>
-                              </div>
-                            </li>
-                          ))
+                          <li key={idx}>
+                            <div className="check-group">
+                              <input
+                                type="checkbox"
+                                id={`check.style-id--${idx}`}
+                                name={`check.style-id--${idx}`}
+                              />
+                              <label
+                                htmlFor={`check.style-id--${idx}`}
+                                className="check-label"
+                              >
+                                {item.label}
+                              </label>
+                            </div>
+                          </li>
+                        ))
                         : Filter.style.list.slice(0, 5).map((item, idx) => (
-                            <li key={idx}>
-                              <div className="check-group">
-                                <input
-                                  type="checkbox"
-                                  id={`check.style-id--${idx}`}
-                                  name={`check.style-id--${idx}`}
-                                />
-                                <label
-                                  htmlFor={`check.style-id--${idx}`}
-                                  className="check-label"
-                                >
-                                  {item.label}
-                                </label>
-                              </div>
-                            </li>
-                          ))}
+                          <li key={idx}>
+                            <div className="check-group">
+                              <input
+                                type="checkbox"
+                                id={`check.style-id--${idx}`}
+                                name={`check.style-id--${idx}`}
+                              />
+                              <label
+                                htmlFor={`check.style-id--${idx}`}
+                                className="check-label"
+                              >
+                                {item.label}
+                              </label>
+                            </div>
+                          </li>
+                        ))}
                       <li>
                         <div className="show-more-button">
                           {loadMoreButton(
@@ -944,4 +863,4 @@ const StorePortFolio = () => {
   );
 };
 
-export default StorePortFolio;
+export default StorePortfolio;
