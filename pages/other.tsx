@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import Link from 'next/link';
-import useAuth from 'utils/useAuth';
+import useAuth from 'utils/auth/useAuth';
 
 const Other: NextPage = () => {
   const auth = useAuth();

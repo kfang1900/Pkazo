@@ -19,7 +19,7 @@ import {
 import { loadStorageImage } from 'helpers/FirebaseFunctions';
 import { useRouter } from 'next/router';
 import { getApp } from 'firebase/app';
-import useAuth from '../../utils/useAuth';
+import useAuth from '../../utils/auth/useAuth';
 import { useMediaQuery } from 'react-responsive';
 
 const numFormatter = (x: number) => {

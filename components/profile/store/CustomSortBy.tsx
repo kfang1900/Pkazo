@@ -1,7 +1,7 @@
 import { useSortBy, UseSortByProps } from 'react-instantsearch-hooks-web';
 import { BsChevronCompactDown } from 'react-icons/bs';
 import React, { useEffect, useRef, useState } from 'react';
-import useClickOutsideEffect from '../../../utils/useOutsideClickEffect';
+import useClickOutsideEffect from '../../../utils/hooks/useOutsideClickEffect';
 import tw from 'twin.macro';
 export default function CustomSortBy() {
   const { initialIndex, currentRefinement, options, refine, hasNoResults } =

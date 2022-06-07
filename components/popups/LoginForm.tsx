@@ -9,7 +9,7 @@ import buttons from '../../styles/Button';
 import ConfirmUnfollowModal from '../profile/ConfirmUnfollow';
 import PostImage from './PostImage';
 import { MdRadioButtonUnchecked } from 'react-icons/md';
-import useAuth from '../../utils/useAuth';
+import useAuth from '../../utils/auth/useAuth';
 
 interface LoginErrors {
   email?: string;

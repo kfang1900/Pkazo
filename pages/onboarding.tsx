@@ -3,7 +3,7 @@ import Head from 'next/head';
 import tw, { styled } from 'twin.macro';
 
 import LoginForm from '../components/popups/LoginForm';
-import useAuth from '../utils/useAuth';
+import useAuth from '../utils/auth/useAuth';
 import { getApp } from 'firebase/app';
 import {
   addDoc,

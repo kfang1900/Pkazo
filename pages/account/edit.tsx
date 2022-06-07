@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Header from 'components/Header';
 import tw, { styled } from 'twin.macro';
 
-import useRequireOnboarding from '../../utils/useRequireOnboarding';
+import useRequireOnboarding from '../../utils/hooks/useRequireOnboarding';
 import EditProfilePage from '../../components/account/EditProfilePage';
 import ShopSettingsPage from '../../components/account/ShopSettingsPage';
 

@@ -34,7 +34,7 @@ import { defaultWorkPicture } from 'utils/FrontEndDefaults';
 import Link from 'next/link';
 import { ArtistData, WorkData } from '../../../types/dbTypes';
 import CheckoutModal from '../../../components/popups/CheckoutModal';
-import useRequireOnboarding from '../../../utils/useRequireOnboarding';
+import useRequireOnboarding from '../../../utils/hooks/useRequireOnboarding';
 import exp from 'constants';
 import tw from 'twin.macro';
 import axios from 'axios';

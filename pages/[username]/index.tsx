@@ -20,8 +20,8 @@ import {
 } from 'firebase/firestore';
 import { defaultCoverImage } from 'utils/FrontEndDefaults';
 import { getPortfolioByRef, loadStorageImage } from 'helpers/FirebaseFunctions';
-import useAuth from '../../utils/useAuth';
-import useRequireOnboarding from '../../utils/useRequireOnboarding';
+import useAuth from '../../utils/auth/useAuth';
+import useRequireOnboarding from '../../utils/hooks/useRequireOnboarding';
 import { useMediaQuery } from 'react-responsive';
 
 //import { sample_artist } from 'utils/Sample_Posts_Imports';

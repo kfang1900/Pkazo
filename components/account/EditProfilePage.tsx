@@ -14,8 +14,8 @@ import { loadStorageImage } from '../../helpers/FirebaseFunctions';
 import { Field, Form, Formik } from 'formik';
 import tw from 'twin.macro';
 import React, { useCallback, useEffect, useState } from 'react';
-import useAuth from '../../utils/useAuth';
-import useRequireOnboarding from '../../utils/useRequireOnboarding';
+import useAuth from '../../utils/auth/useAuth';
+import useRequireOnboarding from '../../utils/hooks/useRequireOnboarding';
 import { ArtistData } from '../../types/dbTypes';
 
 export default function EditProfilePage() {

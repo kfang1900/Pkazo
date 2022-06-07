@@ -12,7 +12,7 @@ import ProfilePlaceholderImg from '/public/assets/svgs/profile.svg';
 import SearchIcon from '/public/assets/images/search.svg';
 
 import { UrlObject } from 'url';
-import useAuth from '../utils/useAuth';
+import useAuth from '../utils/auth/useAuth';
 import tw, { TwStyle } from 'twin.macro';
 import React, { useEffect, useState } from 'react';
 import { getApp } from 'firebase/app';
@@ -31,6 +31,7 @@ import {
   loadStorageImages,
 } from '../helpers/FirebaseFunctions';
 import UploadWork from './uploading/UploadWork';
+import SearchBar from './SearchBar';
 
 /* Copied from image.tsx source */
 interface StaticRequire {
@@ -117,11 +118,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
           </Link>
         </div>
         <div tw={'flex-1 w-48 mx-2 md:mx-4 lg:mx-8 hidden md:block'}>
-          <input
-            type="text"
-            placeholder="Search"
-            tw="px-4 py-1 bg-gray-100 outline-none rounded-full w-full"
-          />
+          <SearchBar/>
         </div>
 
         <div tw={'flex-none w-36'}>

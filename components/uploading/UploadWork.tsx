@@ -10,7 +10,7 @@ import { FileUploader } from 'react-drag-drop-files';
 
 import buttons from 'styles/Button';
 import extraStyle from 'styles/UploadWork.module.css';
-import useAuth from '../../utils/useAuth';
+import useAuth from '../../utils/auth/useAuth';
 import { getApp } from 'firebase/app';
 import {
   addDoc,

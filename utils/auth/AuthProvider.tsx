@@ -15,7 +15,7 @@ import {
   updateProfile,
 } from 'firebase/auth';
 
-import './FirebaseClient';
+import '../firebase/FirebaseClient';
 import { browserLocalPersistence, User } from '@firebase/auth';
 import { getApp } from 'firebase/app';
 import {
@@ -29,7 +29,7 @@ import {
   QueryDocumentSnapshot,
   where,
 } from 'firebase/firestore';
-import { ArtistData, UserData } from '../types/dbTypes';
+import { ArtistData, UserData } from '../../types/dbTypes';
 
 export default function FirebaseProvider({
   children,

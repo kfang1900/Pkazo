@@ -12,7 +12,7 @@ import styles from '../../styles/ProfilePortfolio.module.css';
 
 import { Container } from 'pages/[username]/index';
 import { WorkData } from '../../types/dbTypes';
-import useAuth from '../../utils/useAuth';
+import useAuth from '../../utils/auth/useAuth';
 import {
   collection,
   getDocs,
@@ -36,6 +36,7 @@ import Hit from './store/Hit';
 import CustomHits from './store/CustomHits';
 import CustomRefinementGroup from './store/CustomRefinementList';
 import CustomSortBy from './store/CustomSortBy';
+import algoliaSearchClient from '../shared/algoliaSearchClient';
 const ListCheckGroup = styled.ul`
   .check-group input[type='radio'],
   .check-group input[type='checkbox'] {
@@ -78,11 +79,6 @@ const ListCheckGroup = styled.ul`
     ${/*background: theme('colors.white');*/ tw`bg-white`}
   }
 `;
-
-const searchClient = algoliasearch(
-  'C7MS0BD8WG',
-  '6a66c7b3a0c0cf3d52edb60146226383'
-);
 
 const PriceFilterDimension = styled.div`
   ${tw`py-3 flex justify-between items-center`}
@@ -384,7 +380,7 @@ const StorePortFolio = () => {
     }
   };
   return (
-    <InstantSearch searchClient={searchClient} indexName="pkazo-works">
+    <InstantSearch searchClient={algoliaSearchClient} indexName="pkazo-works">
       <Configure facetFilters={[`artist:${artistId}`, 'forSale:true']} />
       <div>
         <Container>
