@@ -38,7 +38,7 @@ const ArtistProfile = ({
   isCurrentUserPage?: boolean;
 }) => {
   const { artistId, user } = useAuth();
-  const isMobile = useMediaQuery({ query: `(max-width: 760px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 640px)` });
 
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
   const [picture, setPicture] = useState('');
@@ -68,25 +68,16 @@ const ArtistProfile = ({
             )}
           </div>
           <div>
-            <div tw="text-[20px] text-black font-medium">{artist['Name']}</div>
-            <div tw="text-[14px] mt-1 text-[#727373] font-medium">
-              {artist['Location']}
-            </div>
-            <div tw="flex mt-[14px]">
+            <div tw='text-[20px] text-black font-medium'>{artist.name}</div>
+            <div tw='text-[14px] mt-1 text-[#727373] font-medium'>{artist.location}</div>
+            <div tw='flex mt-[14px]'>
               <button
                 onClick={() => setIsFollowing(!isFollowing)}
                 css={buttons.white}
                 tw="text-[#3B3B3B] h-7 text-[13px] px-2 gap-1 flex justify-center items-center font-semibold"
               >
-                <img
-                  src={
-                    isFollowing
-                      ? '/assets/svgs/red_like.svg'
-                      : '/assets/svgs/like.svg'
-                  }
-                  tw="w-4 h-3"
-                />
-                {numFormatter(artist['Followers'])}
+                <img src={isFollowing ? '/assets/svgs/red_like.svg' : '/assets/svgs/like.svg'} tw='w-4 h-3' />
+                {numFormatter(artist.followers)}
               </button>
               <button
                 onClick={() => 0}
@@ -98,12 +89,12 @@ const ArtistProfile = ({
             </div>
           </div>
         </div>
-        <div tw="mt-3 text-[#3C3C3C] text-[14px]">{artist['Bio']}</div>
-        <div tw="flex mt-3 items-center">
-          <img src="/assets/svgs/star.svg" tw="w-[15px] h-[14px]" />
-          <div tw="text-[13px] text-black ml-1 font-semibold">4.9 </div>
-          <Link href="#" passHref>
-            <div tw="text-[13px] text-[#838383] ml-[6px] underline cursor-pointer">
+        <div tw='mt-3 text-[#3C3C3C] text-[14px]'>{artist.bio}</div>
+        <div tw='flex mt-3 items-center'>
+          <img src='/assets/svgs/star.svg' tw='w-[15px] h-[14px]' />
+          <div tw='text-[13px] text-black ml-1 font-semibold'>4.9 </div>
+          <Link href='#' passHref>
+            <div tw='text-[13px] text-[#838383] ml-[6px] underline cursor-pointer'>
               See {numFormatter(313)} reviews
             </div>
           </Link>
@@ -170,9 +161,7 @@ const ArtistProfile = ({
                             return router.push(`/chat#${artistData[0].id}`);
                           });
                         }}
-                        css={buttons.white}
-                        tw="ml-5 px-7 py-2 font-semibold"
-                      >
+                        css={buttons.white} tw='ml-5 px-7 py-2 font-semibold'>
                         Message
                       </button>
                     )}
@@ -186,15 +175,15 @@ const ArtistProfile = ({
                   </>
                 )}
               </div>
-              <p tw="text-gray-600 text-lg mt-1">{artist['Location']}</p>
-              <div tw="mt-[15px] text-black text-[16px] ">{artist.bio}</div>
-              <div tw="flex mt-auto items-center">
-                <img src="/assets/svgs/star.svg" tw="w-6 h-[22px]" />
-                <div tw="text-[18px] text-black ml-[7px] font-semibold">
-                  4.9{' '}
-                </div>
-                <Link href="#" passHref>
-                  <div tw="text-[18px] text-[#8E8E93] ml-[10px] underline cursor-pointer">
+              <p tw="text-gray-600 text-lg mt-1">{artist.location}</p>
+              <div tw="mt-[15px] text-black text-[16px] ">
+                {artist.bio}
+              </div>
+              <div tw='flex mt-auto items-center'>
+                <img src='/assets/svgs/star.svg' tw='w-6 h-[22px]' />
+                <div tw='text-[18px] text-black ml-[7px] font-semibold'>4.9 </div>
+                <Link href='#' passHref>
+                  <div tw='text-[18px] text-[#8E8E93] ml-[10px] underline cursor-pointer'>
                     See {numFormatter(313)} reviews
                   </div>
                 </Link>
