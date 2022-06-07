@@ -2,9 +2,15 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  margin: auto -18px;
+  margin: auto;
 }
 .my-masonry-grid_column {
   padding: 0 18px;
   background-clip: padding-box;
+}
+
+@media (max-width: 640px) {
+  .my-masonry-grid_column {
+    padding: 0 2px;
+  }
 }

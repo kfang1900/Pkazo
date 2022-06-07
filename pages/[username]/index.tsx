@@ -70,7 +70,7 @@ const fetchArtist = async (
 };
 
 const Portfolio: NextPage = () => {
-  const isMobile = useMediaQuery({ query: `(max-width: 760px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 640px)` });
 
   const [profileType, setProfileType] = useState(1);
   const router = useRouter();

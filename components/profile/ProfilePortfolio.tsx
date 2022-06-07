@@ -6,6 +6,7 @@ import tw, { styled } from 'twin.macro';
 
 import { portfolio_images } from 'utils/mockImports';
 import styles from '../../styles/ProfilePortfolio.module.css';
+import { useMediaQuery } from 'react-responsive';
 interface PortfolioObject {
   Portfolios: Record<string, any>[];
   Works: Record<string, any>[][];
@@ -27,6 +28,7 @@ type GalleryType = {
 };
 
 function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
+  const isMobile = useMediaQuery({ query: `(max-width: 640px)` });
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
   const [curGallery, setCurGallery] = useState<{
     Data: any[];
@@ -43,11 +45,11 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
     else setSeeNum(seeNum + 9);
   }
   return (
-    <div tw="pb-[100px]">
+    <div>
       {/* Circle Images Section --Start-- */}
-      <section tw="mt-10">
+      <section css={[isMobile ? tw`mt-4` : tw`mt-10`]}>
         <div className="container">
-          <div tw="flex justify-center mb-12">
+          <div tw="flex justify-center">
             {portfolioData.Portfolios.map((portfolio, index) => (
               <div
                 key={index}
@@ -64,8 +66,9 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
               >
                 <div
                   css={[
-                    tw`w-[128px] h-[128px] relative rounded-full overflow-hidden duration-200 origin-bottom border-4 border-transparent mx-[60px]`,
+                    tw`relative rounded-full overflow-hidden origin-bottom border-transparent mx-[60px]`,
                     activeIndex === index && tw`border-[#C6C5C3]`,
+                    isMobile ? tw`w-[56px] h-[56px] border-2` : tw`w-[128px] h-[128px] border-4`
                   ]}
                 >
                   {portfolioData.PortfolioImages[index] && (
@@ -76,7 +79,11 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
                     />
                   )}
                 </div>
-                <p tw="text-black mt-2 text-center">{portfolio.name}</p>
+
+                <div css={[
+                  tw`text-[#3C3C3C] text-center`,
+                  isMobile ? tw`text-[12px] mt-1` : tw`text-[16px] mt-2`
+                ]}>{portfolio.name}</div>
               </div>
             ))}
           </div>
@@ -84,15 +91,16 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
           <CircleDescriptionBox
             activeIndex={activeIndex}
             portfolioData={portfolioData}
+            isMobile={isMobile}
           />
         </div>
       </section>
       {/* Circle Images Section --End-- */}
       {/* Gallery Section --Start-- */}
-      <section tw="mt-[55px]">
+      <section css={[isMobile ? tw`mt-[18px]` : tw`mt-12`]}>
         <div className="container">
           <Masonry
-            breakpointCols={{ default: 3, 800: 2, 400: 1 }}
+            breakpointCols={{ default: 3, 500: 2 }}
             className={styles['my-masonry-grid']}
             columnClassName={styles['my-masonry-grid_column']}
           >
@@ -102,13 +110,12 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
                 <>
                   <Link
                     key={i}
-                    tw="my-[18px]"
                     passHref
                     href={'/work/' + curGallery.Data[i].__id}
                   >
-                    <a tw={'cursor-pointer'}>
-                      <img src={gallery} tw=" w-full h-auto" alt=""></img>
-                    </a>
+                    <img src={gallery} tw="cursor-pointer w-full h-auto"
+                      css={[isMobile ? tw`my-[5px]` : tw`my-[36px]`]}
+                      alt="" />
                   </Link>
                 </>
               ))
@@ -116,7 +123,8 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
           </Masonry>
         </div>
 
-        <div tw="flex w-full justify-center items-center mt-[30px]">
+        <div tw="flex w-full justify-center items-center mt-[30px]"
+          css={[curGallery.Images.length > 9 && tw`mb-[20px]`]}>
           <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
           {curGallery.Images.length > 9 && (
             <button
@@ -171,7 +179,7 @@ export default GallerySection;
 
 const getGalleryData = (
   portfolioData: PortfolioObject,
-  activeIndex: null | number
+  activeIndex: null | number,
 ) => {
   if (activeIndex === null) {
     const a = portfolioData.Works.map((i) => i).flat();
@@ -189,17 +197,22 @@ const getGalleryData = (
 const CircleDescriptionBox = ({
   activeIndex,
   portfolioData,
+  isMobile
 }: {
   activeIndex: null | number;
   portfolioData: PortfolioObject;
+  isMobile: boolean;
 }) => {
   //console.log("rendering description box", props)
 
   if (activeIndex === null) return null;
   const data = portfolioData.Portfolios[activeIndex];
 
+  if (isMobile)
+    return <div tw='mt-[18px] text-[14px] text-[#3C3C3C] px-4 '>{data.description}</div>
+
   return (
-    <div tw="flex rounded-3xl border-2 border-[#D8D8D8] max-w-[1000px] mx-auto pr-[60px] py-9">
+    <div tw="mt-12 flex rounded-3xl border-2 border-[#D8D8D8] max-w-[1000px] mx-auto pr-[60px] py-9">
       <div tw="w-[120px] h-[120px] relative rounded-full overflow-hidden duration-200 origin-bottom ml-[52px] mr-[44px] my-auto flex-shrink-0">
         {portfolioData.PortfolioImages[activeIndex] && (
           <Image
