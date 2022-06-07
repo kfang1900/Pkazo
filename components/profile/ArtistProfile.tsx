@@ -52,53 +52,65 @@ const ArtistProfile = ({
       setPicture(profilePictureURL)
     );
   }, [artist]);
-  return (isMobile ?
+  return isMobile ? (
     <>
-      <div tw='mt-4 mb-3 px-4'>
-        <div tw='grid grid-cols-[91px auto] gap-3'>
-          <div tw='w-[90px] h-[90px] my-auto overflow-hidden rounded-full flex items-center'>
+      <div tw="mt-4 mb-3 px-4">
+        <div tw="grid grid-cols-[91px auto] gap-3">
+          <div tw="w-[90px] h-[90px] my-auto overflow-hidden rounded-full flex items-center">
             {picture && (
               <Image
                 src={picture}
-                alt='profile_image'
-                width='90px'
-                height='90px'
-                objectFit='cover'
+                alt="profile_image"
+                width="90px"
+                height="90px"
+                objectFit="cover"
               />
             )}
           </div>
           <div>
-            <div tw='text-[20px] text-black font-medium'>{artist['Name']}</div>
-            <div tw='text-[14px] mt-1 text-[#727373] font-medium'>{artist['Location']}</div>
-            <div tw='flex mt-[14px]'>
+            <div tw="text-[20px] text-black font-medium">{artist['Name']}</div>
+            <div tw="text-[14px] mt-1 text-[#727373] font-medium">
+              {artist['Location']}
+            </div>
+            <div tw="flex mt-[14px]">
               <button
                 onClick={() => setIsFollowing(!isFollowing)}
                 css={buttons.white}
-                tw='text-[#3B3B3B] h-7 text-[13px] px-2 gap-1 flex justify-center items-center font-semibold'
+                tw="text-[#3B3B3B] h-7 text-[13px] px-2 gap-1 flex justify-center items-center font-semibold"
               >
-                <img src={isFollowing ? '/assets/svgs/red_like.svg' : '/assets/svgs/like.svg'} tw='w-4 h-3' />
+                <img
+                  src={
+                    isFollowing
+                      ? '/assets/svgs/red_like.svg'
+                      : '/assets/svgs/like.svg'
+                  }
+                  tw="w-4 h-3"
+                />
                 {numFormatter(artist['Followers'])}
               </button>
               <button
                 onClick={() => 0}
                 css={buttons.red}
-                tw='text-[13px] ml-[10px] px-3 font-semibold h-7'
-              >Commission</button>
+                tw="text-[13px] ml-[10px] px-3 font-semibold h-7"
+              >
+                Commission
+              </button>
             </div>
           </div>
         </div>
-        <div tw='mt-3 text-[#3C3C3C] text-[14px]'>{artist['Bio']}</div>
-        <div tw='flex mt-3 items-center'>
-          <img src='/assets/svgs/star.svg' tw='w-[15px] h-[14px]' />
-          <div tw='text-[13px] text-black ml-1 font-semibold'>4.9 </div>
-          <Link href='#' passHref>
-            <div tw='text-[13px] text-[#838383] ml-[6px] underline cursor-pointer'>
+        <div tw="mt-3 text-[#3C3C3C] text-[14px]">{artist['Bio']}</div>
+        <div tw="flex mt-3 items-center">
+          <img src="/assets/svgs/star.svg" tw="w-[15px] h-[14px]" />
+          <div tw="text-[13px] text-black ml-1 font-semibold">4.9 </div>
+          <Link href="#" passHref>
+            <div tw="text-[13px] text-[#838383] ml-[6px] underline cursor-pointer">
               See {numFormatter(313)} reviews
             </div>
           </Link>
         </div>
       </div>
-    </> :
+    </>
+  ) : (
     <>
       <section tw="mt-[48px] mb-[40px]">
         <div className="container">
@@ -114,7 +126,7 @@ const ArtistProfile = ({
                 />
               )}
             </div>
-            <div tw='flex flex-col'>
+            <div tw="flex flex-col">
               <div tw="flex items-start justify-start">
                 <h1 tw="text-[32px] leading-[32px] font-semibold text-black mr-[40px]">
                   {artist.name}
@@ -131,46 +143,58 @@ const ArtistProfile = ({
                     <button
                       onClick={() => setIsFollowing(!isFollowing)}
                       css={buttons.white}
-                      tw='text-[#3B3B3B] text-[16px] px-5 py-3 gap-2 flex justify-center items-center font-semibold'
+                      tw="text-[#3B3B3B] text-[16px] px-5 py-3 gap-2 flex justify-center items-center font-semibold"
                     >
-                      <img src={isFollowing ? '/assets/svgs/red_like.svg' : '/assets/svgs/like.svg'} tw='w-5 h-4' />
+                      <img
+                        src={
+                          isFollowing
+                            ? '/assets/svgs/red_like.svg'
+                            : '/assets/svgs/like.svg'
+                        }
+                        tw="w-5 h-4"
+                      />
                       {numFormatter(artist['Followers'])}
                     </button>
-                    {isFollowing &&
+                    {isFollowing && (
                       <button
-                      onClick={() => {
-                        if (!user || !artistData[0].id) {
-                          return;
-                        }
-                        const app = getApp();
-                        const db = getFirestore(app);
+                        onClick={() => {
+                          if (!user || !artistData[0].id) {
+                            return;
+                          }
+                          const app = getApp();
+                          const db = getFirestore(app);
 
-                        updateDoc(doc(db, 'users', user.uid), {
-                          chats: arrayUnion(artistData[0].id),
-                        }).then(() => {
-                          return router.push(`/chat#${artistData[0].id}`);
-                        });
-                      }}
-                        css={buttons.white} tw='ml-5 px-7 py-2 font-semibold'>
+                          updateDoc(doc(db, 'users', user.uid), {
+                            chats: arrayUnion(artistData[0].id),
+                          }).then(() => {
+                            return router.push(`/chat#${artistData[0].id}`);
+                          });
+                        }}
+                        css={buttons.white}
+                        tw="ml-5 px-7 py-2 font-semibold"
+                      >
                         Message
-                      </button>}
+                      </button>
+                    )}
                     <button
                       onClick={() => 0}
                       css={buttons.red}
-                      tw='ml-5 px-7 py-2 font-semibold'
-                    >Commission</button>
+                      tw="ml-5 px-7 py-2 font-semibold"
+                    >
+                      Commission
+                    </button>
                   </>
                 )}
               </div>
               <p tw="text-gray-600 text-lg mt-1">{artist['Location']}</p>
-              <div tw="mt-[15px] text-black text-[16px] ">
-                {artist.bio}
-              </div>
-              <div tw='flex mt-auto items-center'>
-                <img src='/assets/svgs/star.svg' tw='w-6 h-[22px]' />
-                <div tw='text-[18px] text-black ml-[7px] font-semibold'>4.9 </div>
-                <Link href='#' passHref>
-                  <div tw='text-[18px] text-[#8E8E93] ml-[10px] underline cursor-pointer'>
+              <div tw="mt-[15px] text-black text-[16px] ">{artist.bio}</div>
+              <div tw="flex mt-auto items-center">
+                <img src="/assets/svgs/star.svg" tw="w-6 h-[22px]" />
+                <div tw="text-[18px] text-black ml-[7px] font-semibold">
+                  4.9{' '}
+                </div>
+                <Link href="#" passHref>
+                  <div tw="text-[18px] text-[#8E8E93] ml-[10px] underline cursor-pointer">
                     See {numFormatter(313)} reviews
                   </div>
                 </Link>

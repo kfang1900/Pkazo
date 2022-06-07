@@ -18,7 +18,6 @@ export default async function handler(
 ) {
   const idToken = req.body.idToken;
   if (typeof idToken !== 'string') {
-
     res.status(400).end();
     return;
   }

@@ -40,7 +40,7 @@ export default async function handler(
   }
   console.log('Zip, IP, headers');
   console.log(zip, ip);
-  console.log(req.headers)
+  console.log(req.headers);
   if (!zip && !ip) {
     res.status(400).json({
       code: 'UNABLE_TO_INFER_IP',

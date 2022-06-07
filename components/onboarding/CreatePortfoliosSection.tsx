@@ -61,12 +61,7 @@ export default function CreatePortfoliosSection({
           <PortfolioWorkUpload
             artistId={artistId}
             userId={user?.uid}
-            onClose={(
-              newPortfolio: {
-                image: string;
-                name: string;
-              }
-            ) => {
+            onClose={(newPortfolio: { image: string; name: string }) => {
               setPortfolios((state) => [...state, newPortfolio]);
               setShowPortfolioUploadModal(false);
             }}

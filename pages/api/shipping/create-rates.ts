@@ -57,11 +57,11 @@ export default async function handler(
     },
     address_to: {
       name: address.name,
-      street1:address.streetOne,
-      street2:address.streetTwo,
-      city: address.cityStateZip.split(", ")[0],
-      state: address.cityStateZip.split(", ")[1],
-      zip: address.cityStateZip.split(", ")[2],
+      street1: address.streetOne,
+      street2: address.streetTwo,
+      city: address.cityStateZip.split(', ')[0],
+      state: address.cityStateZip.split(', ')[1],
+      zip: address.cityStateZip.split(', ')[2],
       country: 'US',
     },
     parcels: [
