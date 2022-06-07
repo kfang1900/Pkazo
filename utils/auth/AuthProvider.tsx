@@ -157,6 +157,8 @@ export default function FirebaseProvider({
         signOut: () => {
           return signOut(getAuth());
         },
+        // TODO actually differentiate between artists and non artists
+        isArtist: !!artistData,
       }}
     >
       {children}

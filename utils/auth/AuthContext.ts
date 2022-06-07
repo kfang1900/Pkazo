@@ -23,6 +23,7 @@ export type Auth = {
   artistData: ArtistData | null;
   artistId: string | null;
   userData: UserData | null;
+  isArtist: boolean | null;
 };
 
 const AuthContext = createContext<Auth>({
@@ -51,6 +52,7 @@ const AuthContext = createContext<Auth>({
   artistData: null,
   artistId: null,
   userData: null,
+  isArtist: null,
 });
 
 export default AuthContext;

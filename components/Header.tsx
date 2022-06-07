@@ -88,7 +88,7 @@ function NavbarIcon(
 
 const Header = (props: { isBuyer?: boolean | undefined }) => {
   const isMobile = useMediaQuery({ query: `(max-width: 640px)` });
-  const { user, signOut } = useAuth();
+  const { user, signOut, isArtist } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [pfp, setPfp] = useState('');
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
