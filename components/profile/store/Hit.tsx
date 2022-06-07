@@ -14,12 +14,12 @@ export default function Hit({
   hit: ForSaleWorkRecord;
   imageURL: string;
 }) {
-  console.log("DFSIJOSJFIDOSFJI")
-  console.log(imageURL)
+  console.log('DFSIJOSJFIDOSFJI');
+  console.log(imageURL);
   return (
     <a tw={'cursor-pointer my-[18px]'} href={'/work/' + work.id}>
       <div tw="w-full mb-6">
-        {imageURL && <img src={imageURL} alt='Image Alt' />}
+        {imageURL && <img src={imageURL} alt="Image Alt" />}
       </div>
       <div>
         <h4>{work.title}</h4>

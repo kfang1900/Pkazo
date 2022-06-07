@@ -1,4 +1,4 @@
-import useAuth from './useAuth';
+import useAuth from '../auth/useAuth';
 import { useRouter } from 'next/router';
 
 /**

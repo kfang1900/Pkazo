@@ -29,12 +29,11 @@ export default function CustomSearch(props: UseSearchBoxProps) {
 
   return (
     <div tw="w-full">
-      <div
-        tw="relative px-4 flex items-center border border-gray-200 rounded-full w-full"
-      >
+      <div tw="relative px-4 flex items-center border border-gray-200 rounded-full w-full">
         <FiSearch tw="text-gray-400" />
         <input
-          value={value} ref={inputRef}
+          value={value}
+          ref={inputRef}
           onChange={(e) => setValue(e.target.value)}
           type="text"
           tw="py-2 px-4 outline-none shadow-none w-full"

@@ -12,7 +12,7 @@ import styles from '../../styles/ProfilePortfolio.module.css';
 
 import { Container } from 'pages/[username]/index';
 import { WorkData } from '../../types/dbTypes';
-import useAuth from '../../utils/useAuth';
+import useAuth from '../../utils/auth/useAuth';
 import {
   collection,
   getDocs,
@@ -35,6 +35,8 @@ import CustomSearch from './store/CustomSearch';
 import Hit from './store/Hit';
 import CustomHits from './store/CustomHits';
 import CustomRefinementGroup from './store/CustomRefinementList';
+import CustomSortBy from './store/CustomSortBy';
+import algoliaSearchClient from '../shared/algoliaSearchClient';
 const ListCheckGroup = styled.ul`
   .check-group input[type='radio'],
   .check-group input[type='checkbox'] {
@@ -77,11 +79,6 @@ const ListCheckGroup = styled.ul`
     ${/*background: theme('colors.white');*/ tw`bg-white`}
   }
 `;
-
-const searchClient = algoliasearch(
-  'C7MS0BD8WG',
-  '6a66c7b3a0c0cf3d52edb60146226383'
-);
 
 const PriceFilterDimension = styled.div`
   ${tw`py-3 flex justify-between items-center`}
@@ -346,14 +343,6 @@ const StorePortFolio = () => {
     const a = 69;
   };
 
-  // React.useEffect(() => {
-  //   progressRef.current.style.left = (minValue / max) * step + '%';
-  //   progressRef.current.style.right = step - (maxValue / max) * step + '%';
-
-  // }, []);
-
-  // const drawerToggle = React.useRef('');
-
   const handleOpenFilter = () => {
     // drawerToggle.classList.add("open");
     setOpen(true);
@@ -361,11 +350,6 @@ const StorePortFolio = () => {
   const handleCloseFilter = () => {
     // drawerToggle.classList.remove("open");
     setOpen(false);
-  };
-  const handleDropdownClick = (event: any, getValue: any) => {
-    event.preventDefault();
-    setSortValueDropdown(getValue);
-    setSortDropdown(false);
   };
 
   const handleLoadMore = (event: any, getID: any) => {
@@ -396,7 +380,7 @@ const StorePortFolio = () => {
     }
   };
   return (
-    <InstantSearch searchClient={searchClient} indexName="pkazo-works">
+    <InstantSearch searchClient={algoliaSearchClient} indexName="pkazo-works">
       <Configure facetFilters={[`artist:${artistId}`, 'forSale:true']} />
       <div>
         <Container>
@@ -414,82 +398,7 @@ const StorePortFolio = () => {
             <CustomSearch />
             {/* Price Sort */}
             <div>
-              <div tw="relative">
-                <span
-                  onClick={() => setSortDropdown(true)}
-                  tw="border border-gray-200 rounded-xl flex items-center cursor-pointer gap-4 py-2 px-6"
-                >
-                  <span tw="whitespace-nowrap">
-                    Price: <strong>{sortValueDropdown}</strong>
-                  </span>
-                  <BsChevronCompactDown tw="text-gray-400" />
-                </span>
-                {sortDropdown && (
-                  <>
-                    <div
-                      onClick={() => setSortDropdown(false)}
-                      tw="w-full h-full fixed left-0 top-0 z-10"
-                    ></div>
-                    <ul tw="bg-white rounded-b-xl border-b border-l border-r border-gray-200 z-40 left-0 right-0 absolute top-9">
-                      <li>
-                        <a
-                          onClick={(e: any) =>
-                            handleDropdownClick(e, 'Relevancy')
-                          }
-                          tw="block px-6 leading-10 hover:bg-gray-100 text-sm"
-                          href="#"
-                        >
-                          Relevancy
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          onClick={(e: any) =>
-                            handleDropdownClick(e, 'Lowest Price')
-                          }
-                          tw="block px-6 leading-10 hover:bg-gray-100 text-sm"
-                          href="#"
-                        >
-                          Lowest Price
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          onClick={(e: any) =>
-                            handleDropdownClick(e, 'Highest Price')
-                          }
-                          tw="block px-6 leading-10 hover:bg-gray-100 text-sm"
-                          href="#"
-                        >
-                          Highest Price
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          onClick={(e: any) =>
-                            handleDropdownClick(e, 'Top Customzer Reviews')
-                          }
-                          tw="block px-6 leading-10 hover:bg-gray-100 text-sm"
-                          href="#"
-                        >
-                          Top Customer Reviews
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          onClick={(e: any) =>
-                            handleDropdownClick(e, 'Most Recent')
-                          }
-                          tw="block px-6 leading-10 hover:bg-gray-100 text-sm"
-                          href="#"
-                        >
-                          Most Recent
-                        </a>
-                      </li>
-                    </ul>
-                  </>
-                )}
-              </div>
+              <CustomSortBy />
             </div>
             {/*/!* Grid *!/*/}
             {/*<div tw="flex items-center text-2xl rounded border border-gray-200">*/}

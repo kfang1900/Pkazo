@@ -12,7 +12,7 @@ import ProfilePlaceholderImg from '/public/assets/svgs/profile.svg';
 import SearchIcon from '/public/assets/images/search.svg';
 
 import { UrlObject } from 'url';
-import useAuth from '../utils/useAuth';
+import useAuth from '../utils/auth/useAuth';
 import tw, { TwStyle } from 'twin.macro';
 import React, { useEffect, useState } from 'react';
 import { getApp } from 'firebase/app';
@@ -32,6 +32,7 @@ import {
 } from '../helpers/FirebaseFunctions';
 import UploadWork from './uploading/UploadWork';
 import { useMediaQuery } from 'react-responsive';
+import SearchBar from './SearchBar';
 
 /* Copied from image.tsx source */
 interface StaticRequire {

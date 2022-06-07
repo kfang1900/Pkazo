@@ -19,7 +19,7 @@ import {
 import { loadStorageImage } from 'helpers/FirebaseFunctions';
 import { useRouter } from 'next/router';
 import { getApp } from 'firebase/app';
-import useAuth from '../../utils/useAuth';
+import useAuth from '../../utils/auth/useAuth';
 import { useMediaQuery } from 'react-responsive';
 
 const numFormatter = (x: number) => {
@@ -52,18 +52,18 @@ const ArtistProfile = ({
       setPicture(profilePictureURL)
     );
   }, [artist]);
-  return (isMobile ?
+  return isMobile ? (
     <>
-      <div tw='mt-4 mb-3 px-4'>
-        <div tw='grid grid-cols-[91px auto] gap-3'>
-          <div tw='w-[90px] h-[90px] my-auto overflow-hidden rounded-full flex items-center'>
+      <div tw="mt-4 mb-3 px-4">
+        <div tw="grid grid-cols-[91px auto] gap-3">
+          <div tw="w-[90px] h-[90px] my-auto overflow-hidden rounded-full flex items-center">
             {picture && (
               <Image
                 src={picture}
-                alt='profile_image'
-                width='90px'
-                height='90px'
-                objectFit='cover'
+                alt="profile_image"
+                width="90px"
+                height="90px"
+                objectFit="cover"
               />
             )}
           </div>
@@ -74,7 +74,7 @@ const ArtistProfile = ({
               <button
                 onClick={() => setIsFollowing(!isFollowing)}
                 css={buttons.white}
-                tw='text-[#3B3B3B] h-7 text-[13px] px-2 gap-1 flex justify-center items-center font-semibold'
+                tw="text-[#3B3B3B] h-7 text-[13px] px-2 gap-1 flex justify-center items-center font-semibold"
               >
                 <img src={isFollowing ? '/assets/svgs/red_like.svg' : '/assets/svgs/like.svg'} tw='w-4 h-3' />
                 {numFormatter(artist.followers)}
@@ -82,8 +82,10 @@ const ArtistProfile = ({
               <button
                 onClick={() => 0}
                 css={buttons.red}
-                tw='text-[13px] ml-[10px] px-3 font-semibold h-7'
-              >Commission</button>
+                tw="text-[13px] ml-[10px] px-3 font-semibold h-7"
+              >
+                Commission
+              </button>
             </div>
           </div>
         </div>
@@ -98,7 +100,8 @@ const ArtistProfile = ({
           </Link>
         </div>
       </div>
-    </> :
+    </>
+  ) : (
     <>
       <section tw="mt-[48px] mb-[40px]">
         <div className="container">
@@ -114,7 +117,7 @@ const ArtistProfile = ({
                 />
               )}
             </div>
-            <div tw='flex flex-col'>
+            <div tw="flex flex-col">
               <div tw="flex items-start justify-start">
                 <h1 tw="text-[32px] leading-[32px] font-semibold text-black mr-[40px]">
                   {artist.name}
@@ -131,12 +134,19 @@ const ArtistProfile = ({
                     <button
                       onClick={() => setIsFollowing(!isFollowing)}
                       css={buttons.white}
-                      tw='text-[#3B3B3B] text-[16px] px-5 py-3 gap-2 flex justify-center items-center font-semibold'
+                      tw="text-[#3B3B3B] text-[16px] px-5 py-3 gap-2 flex justify-center items-center font-semibold"
                     >
-                      <img src={isFollowing ? '/assets/svgs/red_like.svg' : '/assets/svgs/like.svg'} tw='w-5 h-4' />
+                      <img
+                        src={
+                          isFollowing
+                            ? '/assets/svgs/red_like.svg'
+                            : '/assets/svgs/like.svg'
+                        }
+                        tw="w-5 h-4"
+                      />
                       {numFormatter(artist['Followers'])}
                     </button>
-                    {isFollowing &&
+                    {isFollowing && (
                       <button
                         onClick={() => {
                           if (!user || !artistData[0].id) {
@@ -153,12 +163,15 @@ const ArtistProfile = ({
                         }}
                         css={buttons.white} tw='ml-5 px-7 py-2 font-semibold'>
                         Message
-                      </button>}
+                      </button>
+                    )}
                     <button
                       onClick={() => 0}
                       css={buttons.red}
-                      tw='ml-5 px-7 py-2 font-semibold'
-                    >Commission</button>
+                      tw="ml-5 px-7 py-2 font-semibold"
+                    >
+                      Commission
+                    </button>
                   </>
                 )}
               </div>

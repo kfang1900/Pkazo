@@ -14,7 +14,7 @@ const firebaseConfig = {
 if (getApps().length === 0) {
   setFirebaseEmulatorEnv();
   initializeApp(firebaseConfig);
-  console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY)
+  console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
   if (process.env.FIREBASE_AUTH_EMULATOR_HOST)
     connectAuthEmulator(
       getAuth(),

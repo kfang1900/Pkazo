@@ -10,7 +10,7 @@ import { FileUploader } from 'react-drag-drop-files';
 
 import buttons from 'styles/Button';
 import extraStyle from 'styles/UploadWork.module.css';
-import useAuth from '../../utils/useAuth';
+import useAuth from '../../utils/auth/useAuth';
 import { getApp } from 'firebase/app';
 import {
   addDoc,
@@ -19,8 +19,9 @@ import {
   doc,
   getDocs,
   getFirestore,
-  serverTimestamp, Timestamp,
-  updateDoc
+  serverTimestamp,
+  Timestamp,
+  updateDoc,
 } from 'firebase/firestore';
 import { FirebaseStorage } from '@firebase/storage';
 import {
@@ -284,7 +285,7 @@ function UploadWork(props: UploadWorkProps) {
                   artist: auth.artistId,
                   // serverTimestamp() is not a timestamp, but it will become one on the server.
                   timestamp: serverTimestamp() as Timestamp,
-                  images:[]
+                  images: [],
                 } as WorkData);
                 const workId = workRef.id;
                 await updateDoc(

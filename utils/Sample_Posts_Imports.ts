@@ -36,8 +36,14 @@ export const sample_users: { [key: string]: any } = {
     Name: 'William Sanger',
     ProfilePicture: '/assets/images/users/william_sanger.png',
   },
-  tyler: { Name: 'Tyler Wu', ProfilePicture: '/assets/images/users/tyler_wu.png' },
-  jake: { Name: 'Jake Hill', ProfilePicture: '/assets/images/users/jake_hill.png' },
+  tyler: {
+    Name: 'Tyler Wu',
+    ProfilePicture: '/assets/images/users/tyler_wu.png',
+  },
+  jake: {
+    Name: 'Jake Hill',
+    ProfilePicture: '/assets/images/users/jake_hill.png',
+  },
   amanda: {
     Name: 'Amanda Evans',
     ProfilePicture: '/assets/images/users/amanda_evans.png',

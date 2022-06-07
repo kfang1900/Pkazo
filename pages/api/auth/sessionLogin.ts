@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { setCookie } from 'nookies';
 
-import { auth } from 'utils/FirebaseServer';
+import { auth } from 'utils/firebase/FirebaseServer';
 
 const SESSION_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 1 week
 const SESSION_COOKIE_OPTIONS = {
@@ -18,7 +18,6 @@ export default async function handler(
 ) {
   const idToken = req.body.idToken;
   if (typeof idToken !== 'string') {
-
     res.status(400).end();
     return;
   }

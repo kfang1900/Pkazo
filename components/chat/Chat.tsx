@@ -1,4 +1,4 @@
-import useAuth from '../../utils/useAuth';
+import useAuth from '../../utils/auth/useAuth';
 import 'twin.macro';
 import { useCallback, useEffect, useState } from 'react';
 import {

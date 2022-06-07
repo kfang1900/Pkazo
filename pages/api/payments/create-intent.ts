@@ -15,7 +15,6 @@ if (admin.apps.length === 0) {
   });
 }
 
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
