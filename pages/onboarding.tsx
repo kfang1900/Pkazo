@@ -69,10 +69,10 @@ function Onboarding() {
           result.push(snapshot);
           username = snapshot.data().username;
         });
-        if (result.length > 0) {
-          setStage(1);
-        }
-        if (!_artistId) return;
+        // if (result.length > 0) {
+        //   setStage(1);
+        // }
+        // if (!_artistId) return;
         // const querySnapshot = await getDocs(
         //   collection(db, 'artists', _artistId, 'portfolios')
         // );
