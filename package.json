@@ -8,7 +8,8 @@
     "start": "npm run dev",
     "serve": "next start",
     "lint": "next lint",
-    "fbemu": "firebase emulators:start"
+    "fbemu": "firebase emulators:start",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@algolia/satellite": "^1.0.0-beta.133",
@@ -55,5 +56,9 @@
     "tailwindcss": "^3.0.23",
     "twin.macro": "^2.8.2",
     "typescript": "4.6.2"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
+    "*.{js,jsx,ts,tsx,css,md}": "prettier --write"
   }
 }
