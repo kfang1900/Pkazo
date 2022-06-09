@@ -12,7 +12,7 @@ const Dropdown = (props: DropdownProps) => {
       <select
         onChange={props.onChange}
         css={[
-          tw`border border-[#D8D8D8] pl-5 appearance-none outline-none`,
+          tw`border border-[#D8D8D8] bg-white pl-5 appearance-none outline-none`,
           props.appearance,
         ]}
       >
