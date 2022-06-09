@@ -28,8 +28,8 @@ export default function CustomSearch(props: UseSearchBoxProps) {
   }, [query]);
 
   return (
-    <div tw="w-full">
-      <div tw="relative px-4 flex items-center border border-gray-200 rounded-full w-full">
+    <div tw='flex-grow'>
+      <div tw="relative px-4 flex items-center border border-[#D8D8D8] focus-within:border-[#A2A2A2] rounded-full w-full h-11">
         <FiSearch tw="text-gray-400" />
         <input
           value={value}

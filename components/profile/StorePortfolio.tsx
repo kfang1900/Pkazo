@@ -9,6 +9,8 @@ import { FiX } from 'react-icons/fi';
 import tw, { styled } from 'twin.macro';
 import Masonry from 'react-masonry-css';
 import styles from '../../styles/ProfilePortfolio.module.css';
+import Dropdown from 'styles/Dropdown';
+import Image from 'next/image';
 
 import { Container } from 'pages/[username]/index';
 import { WorkData } from '../../types/dbTypes';
@@ -37,6 +39,7 @@ import CustomHits from './store/CustomHits';
 import CustomRefinementGroup from './store/CustomRefinementList';
 import CustomSortBy from './store/CustomSortBy';
 import algoliaSearchClient from '../shared/algoliaSearchClient';
+import { useMediaQuery } from 'react-responsive';
 const ListCheckGroup = styled.ul`
   .check-group input[type='radio'],
   .check-group input[type='checkbox'] {
@@ -267,9 +270,24 @@ const filters = {
   },
 };
 
-const StorePortFolio = () => {
+interface PortfolioObject {
+  Portfolios: Record<string, any>[];
+  Works: Record<string, any>[][];
+  PortfolioImages: string[];
+  WorkImages: string[][];
+}
+
+const StorePortFolio = ({
+  profileType,
+  portfolioData
+}: {
+  profileType: number;
+  portfolioData: PortfolioObject;
+}) => {
+  const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   const [open, setOpen] = React.useState(false);
   const [loadmore, setLoadmore] = React.useState(null);
+  const [activeIndex, setActiveIndex] = useState<null | number>(null);
 
   const [sortDropdown, setSortDropdown] = React.useState(false);
   const [sortValueDropdown, setSortValueDropdown] =
@@ -384,22 +402,76 @@ const StorePortFolio = () => {
       <Configure facetFilters={[`artist:${artistId}`, 'forSale:true']} />
       <div>
         <Container>
+          {profileType === 3 &&
+
+            <div tw="flex justify-center gap-6 md:gap-[140px] mt-12">
+              {portfolioData.Portfolios.map((portfolio, index) => (
+                <div
+                  key={index}
+                  tw="cursor-pointer"
+                  onClick={() => {
+                    setActiveIndex(activeIndex === index ? null : index);
+                    // setCurGallery(
+                    //   getGalleryData(
+                    //     portfolioData,
+                    //     activeIndex === index ? null : index
+                    //   )
+                    // );
+                  }}
+                >
+                  <div
+                    css={[
+                      tw`relative rounded-full overflow-hidden origin-bottom border-transparent`,
+                      activeIndex === index && tw`border-[#C6C5C3]`,
+                      isMobile ? tw`w-[56px] h-[56px] border-2` : tw`w-[128px] h-[128px] border-4`
+                    ]}
+                  >
+                    {portfolioData.PortfolioImages[index] && (
+                      <Image
+                        src={portfolioData.PortfolioImages[index]}
+                        alt="Portfolio Image"
+                        layout="fill"
+                      />
+                    )}
+                  </div>
+
+                  <div css={[
+                    tw`text-[#3C3C3C] text-center`,
+                    isMobile ? tw`text-[12px] mt-1` : tw`text-[16px] mt-2`
+                  ]}>{portfolio.name}</div>
+                </div>
+              ))}
+            </div>
+          }
           {/* Heading */}
-          <div tw="mb-10 flex items-center gap-3 gap-x-10">
+          <div
+            tw="mb-10 flex items-center gap-x-6"
+            css={[
+              profileType === 1 && tw`mt-6`,
+              profileType === 2 && tw`mt-[52px]`,
+              profileType === 3 && tw`mt-12`]}>
             {/* Filter Button */}
             <div
               onClick={handleOpenFilter}
-              tw="cursor-pointer flex items-center gap-3 py-2 px-8 border border-gray-200 rounded-full"
+              tw="cursor-pointer flex items-center gap-[10px] py-[11px] pl-[22px] pr-6 border border-[#D8D8D8] focus:border-[#A2A2A2] rounded-[40px] text-[#65676B] flex-shrink-0"
             >
-              <BsSliders tw="text-2xl" />
-              <span tw="text-lg">Filters</span>
+              <img src="/assets/svgs/filter.svg" />
+              All Filters
             </div>
             {/* Search  */}
             <CustomSearch />
+            {/* Portfolio for profile 1 and 2 */}
+            {profileType !== 3 &&
+              <Dropdown
+                onChange={(event) => (event.target.value)}
+                appearance={tw`border-[#D8D8D8] rounded-[40px] pl-5 min-w-[160px] h-11 focus:border-[#A2A2A2] text-[#3C3C3C]`}
+              >
+                <option value="all">All Portfolios</option>
+                {portfolioData.Portfolios.map((portfolio) => <option value={portfolio.name} key={portfolio.name}>{portfolio.name}</option>)}
+              </Dropdown>
+            }
             {/* Price Sort */}
-            <div>
-              <CustomSortBy />
-            </div>
+            <CustomSortBy />
             {/*/!* Grid *!/*/}
             {/*<div tw="flex items-center text-2xl rounded border border-gray-200">*/}
             {/*  <span tw="px-4 py-2 cursor-pointer transition-all duration-300 text-gray-700 hover:text-black border-r border-gray-200">*/}
@@ -468,8 +540,8 @@ const StorePortFolio = () => {
         </div>
 
         {/* <DrawerFilter drawerToggle={drawerToggle} handleCloseFilter={handleCloseFilter}/> */}
-      </div>
-    </InstantSearch>
+      </div >
+    </InstantSearch >
   );
 };
 

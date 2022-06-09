@@ -38,7 +38,7 @@ const ArtistProfile = ({
   isCurrentUserPage?: boolean;
 }) => {
   const { artistId, user } = useAuth();
-  const isMobile = useMediaQuery({ query: `(max-width: 640px)` });
+  const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
 
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
   const [picture, setPicture] = useState('');

@@ -87,7 +87,7 @@ function NavbarIcon(
 }
 
 const Header = (props: { isBuyer?: boolean | undefined }) => {
-  const isMobile = useMediaQuery({ query: `(max-width: 640px)` });
+  const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   const { user, signOut, isArtist } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [pfp, setPfp] = useState('');
@@ -113,7 +113,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
       {showUploadWorkPopup && (
         <UploadWork onClose={() => setShowUploadWorkPopup(false)} />
       )}
-      <div tw="px-4 sm:px-[60px] py-[18px] sm:py-[10px] h-[68px] flex items-center">
+      <div tw="px-4 md:px-[60px] py-[18px] sm:py-[10px] h-[68px] flex items-center">
         <Link href="/" passHref>
           <Image src={Logo} tw="cursor-pointer" width="92px" height="32px" alt="Pkazo" />
         </Link>

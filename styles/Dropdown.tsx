@@ -2,16 +2,18 @@ import React from 'react';
 import tw, { styled, TwStyle } from 'twin.macro';
 
 interface DropdownProps {
-  children: JSX.Element[];
-  look: TwStyle;
+  children: any;
+  onChange: (event: any) => void;
+  appearance: TwStyle;
 }
 const Dropdown = (props: DropdownProps) => {
   return (
     <div tw="relative">
       <select
+        onChange={props.onChange}
         css={[
-          props.look,
-          tw`border border-[#D8D8D8] pl-4 appearance-none focus:outline-none focus:border-[#888888] text-[14px] text-[#838383]`,
+          tw`border border-[#D8D8D8] pl-5 appearance-none outline-none`,
+          props.appearance,
         ]}
       >
         {props.children}

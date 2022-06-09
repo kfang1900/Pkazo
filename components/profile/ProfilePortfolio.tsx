@@ -28,7 +28,7 @@ type GalleryType = {
 };
 
 function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
-  const isMobile = useMediaQuery({ query: `(max-width: 640px)` });
+  const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
   const [curGallery, setCurGallery] = useState<{
     Data: any[];
@@ -49,7 +49,7 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
       {/* Circle Images Section --Start-- */}
       <section css={[isMobile ? tw`mt-4` : tw`mt-10`]}>
         <div className="container">
-          <div tw="flex justify-center">
+          <div tw="flex justify-center gap-6 md:gap-[140px] ">
             {portfolioData.Portfolios.map((portfolio, index) => (
               <div
                 key={index}
@@ -66,7 +66,7 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
               >
                 <div
                   css={[
-                    tw`relative rounded-full overflow-hidden origin-bottom border-transparent mx-[60px]`,
+                    tw`relative rounded-full overflow-hidden origin-bottom border-transparent`,
                     activeIndex === index && tw`border-[#C6C5C3]`,
                     isMobile ? tw`w-[56px] h-[56px] border-2` : tw`w-[128px] h-[128px] border-4`
                   ]}

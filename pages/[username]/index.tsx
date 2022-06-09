@@ -27,7 +27,7 @@ import { useMediaQuery } from 'react-responsive';
 //import { sample_artist } from 'utils/Sample_Posts_Imports';
 
 export const Container = styled.div`
-  ${tw`max-w-[1320px] mx-auto`}
+  ${tw`max-w-[1320px] mx-auto md:px-5`}
 `;
 
 const fetchArtist = async (
@@ -74,8 +74,9 @@ enum Page {
   STORE = 'store',
 }
 const Portfolio: NextPage = () => {
-  const isMobile = useMediaQuery({ query: `(max-width: 640px)` });
-
+  const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
+  // profile types based on figma
+  // TODO store as artist data maybe?
   const [profileType, setProfileType] = useState(1);
   const router = useRouter();
   const { username } = router.query;
@@ -127,8 +128,8 @@ const Portfolio: NextPage = () => {
   const { artistData: currentUserArtistData } = useAuth();
   useRequireOnboarding(
     artistData.length > 0 &&
-      artistData[0].data() &&
-      artistData[0].data().username === username
+    artistData[0].data() &&
+    artistData[0].data().username === username
   );
 
   const isCurrentUserPage =
@@ -192,8 +193,8 @@ const Portfolio: NextPage = () => {
           {loading
             ? 'Loading...'
             : artistData.length === 0
-            ? 'User not found'
-            : artistData[0].data().name}
+              ? 'User not found'
+              : artistData[0].data().name}
         </title>
       </Head>
       <Header />
@@ -252,7 +253,7 @@ const Portfolio: NextPage = () => {
                         : tw`text-[18px] w-[200px] py-2 border-b-4 mb-[-4px]`,
                       tw`relative z-10 font-semibold text-gray-600 hover:bg-black/5 duration-150 border-transparent cursor-pointer`,
                       page === value &&
-                        tw`border-soft-red pointer-events-none hover:bg-transparent`,
+                      tw`border-soft-red pointer-events-none hover:bg-transparent`,
                     ]}
                     type={'button'}
                   >
@@ -273,7 +274,9 @@ const Portfolio: NextPage = () => {
                   {/*  TODO fix resume section */}
                 </>
               )}
-              {(page === Page.STORE || profileType !== 1) && <StorePortfolio />}
+              {(page === Page.STORE || profileType !== 1) &&
+                <StorePortfolio profileType={profileType} portfolioData={portfolioData} />
+              }
             </Container>
           )}
         </div>
