@@ -68,7 +68,7 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
                   css={[
                     tw`relative rounded-full overflow-hidden origin-bottom border-transparent`,
                     activeIndex === index && tw`border-[#C6C5C3]`,
-                    isMobile ? tw`w-[56px] h-[56px] border-2` : tw`w-[128px] h-[128px] border-4`
+                    isMobile ? tw`w-[60px] h-[60px] border-2` : tw`w-[128px] h-[128px] border-4`
                   ]}
                 >
                   {portfolioData.PortfolioImages[index] && (
