@@ -12,6 +12,7 @@ import {
   autocomplete,
   AutocompleteComponents,
   getAlgoliaResults,
+  Render,
 } from '@algolia/autocomplete-js';
 import algoliaSearchClient from './shared/algoliaSearchClient';
 import { WorkRecord } from '../types/dbTypes';
@@ -100,7 +101,7 @@ export default function SearchBar() {
     const search = autocomplete<WorkRecord>({
       placeholder: 'Search for products',
       container: containerRef.current,
-      renderer: { createElement, Fragment, render },
+      renderer: { createElement, Fragment, render: render as Render },
       openOnFocus: true,
 
       getSources({ query }) {
