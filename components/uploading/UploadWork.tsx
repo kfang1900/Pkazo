@@ -291,13 +291,13 @@ function UploadWork(props: UploadWorkProps) {
                 await updateDoc(
                   doc(
                     db,
-                    'Artists',
+                    'artists',
                     auth.artistId || '',
-                    'Portfolios',
+                    'portfolios',
                     values.portfolio
                   ),
                   {
-                    Works: arrayUnion(workId),
+                    works: arrayUnion(workId),
                   }
                 );
                 const imageReferences = await Promise.all(
@@ -305,7 +305,7 @@ function UploadWork(props: UploadWorkProps) {
                     uploadImage(storage, file, `/Works/${workId}/`)
                   )
                 );
-                await updateDoc(doc(db, 'Works', workId), {
+                await updateDoc(doc(db, 'works', workId), {
                   images: imageReferences,
                 });
                 return router.push(`/work/${workId}`);
