@@ -63,7 +63,7 @@ const ArtistProfile = ({
     } else {
       setMoreBio(false);
     }
-  }
+  };
   useEffect(() => {
     window.addEventListener('resize', handleBioResize);
   });
@@ -84,15 +84,24 @@ const ArtistProfile = ({
             )}
           </div>
           <div>
-            <div tw='text-[20px] text-black font-medium'>{artist.name}</div>
-            <div tw='text-[14px] mt-1 text-[#727373] font-medium'>{artist.location}</div>
-            <div tw='flex mt-[14px]'>
+            <div tw="text-[20px] text-black font-medium">{artist.name}</div>
+            <div tw="text-[14px] mt-1 text-[#727373] font-medium">
+              {artist.location}
+            </div>
+            <div tw="flex mt-[14px]">
               <button
                 onClick={() => setIsFollowing(!isFollowing)}
                 css={buttons.white}
                 tw="text-[#3B3B3B] h-7 text-[13px] px-2 gap-1 flex justify-center items-center font-semibold"
               >
-                <img src={isFollowing ? '/assets/svgs/red_like.svg' : '/assets/svgs/like.svg'} tw='w-4 h-3' />
+                <img
+                  src={
+                    isFollowing
+                      ? '/assets/svgs/red_like.svg'
+                      : '/assets/svgs/like.svg'
+                  }
+                  tw="w-4 h-3"
+                />
                 {numFormatter(artist.followers)}
               </button>
               <button
@@ -112,11 +121,11 @@ const ArtistProfile = ({
         >
           <div>{artist.bio}</div>
         </ShowMore>
-        <div tw='flex mt-3 items-center'>
-          <img src='/assets/svgs/star.svg' tw='w-[15px] h-[14px]' />
-          <div tw='text-[13px] text-black ml-1 font-semibold'>4.9 </div>
-          <Link href='#' passHref>
-            <div tw='text-[13px] text-[#838383] ml-[6px] underline cursor-pointer'>
+        <div tw="flex mt-3 items-center">
+          <img src="/assets/svgs/star.svg" tw="w-[15px] h-[14px]" />
+          <div tw="text-[13px] text-black ml-1 font-semibold">4.9 </div>
+          <Link href="#" passHref>
+            <div tw="text-[13px] text-[#838383] ml-[6px] underline cursor-pointer">
               See {numFormatter(313)} reviews
             </div>
           </Link>
@@ -144,7 +153,7 @@ const ArtistProfile = ({
                 <h1 tw="text-[32px] leading-[32px] font-semibold text-black mr-[40px]">
                   {artist.name}
                 </h1>
-                {!isCurrentUserPage ? (
+                {isCurrentUserPage ? (
                   <button
                     onClick={() => router.push('/account/edit')}
                     css={buttons.white}
@@ -183,7 +192,9 @@ const ArtistProfile = ({
                             return router.push(`/chat#${artistData[0].id}`);
                           });
                         }}
-                        css={buttons.white} tw='ml-5 px-7 py-2 font-semibold'>
+                        css={buttons.white}
+                        tw="ml-5 px-7 py-2 font-semibold"
+                      >
                         Message
                       </button>
                     )}
@@ -205,11 +216,13 @@ const ArtistProfile = ({
               >
                 <div>{artist.bio}</div>
               </ShowMore>
-              <div tw='flex mt-3 items-center'>
-                <img src='/assets/svgs/star.svg' tw='w-6 h-[22px]' />
-                <div tw='text-[18px] text-black ml-[7px] font-semibold'>4.9 </div>
-                <Link href='#' passHref>
-                  <div tw='text-[18px] text-[#8E8E93] ml-[10px] underline cursor-pointer'>
+              <div tw="flex mt-3 items-center">
+                <img src="/assets/svgs/star.svg" tw="w-6 h-[22px]" />
+                <div tw="text-[18px] text-black ml-[7px] font-semibold">
+                  4.9{' '}
+                </div>
+                <Link href="#" passHref>
+                  <div tw="text-[18px] text-[#8E8E93] ml-[10px] underline cursor-pointer">
                     See {numFormatter(313)} reviews
                   </div>
                 </Link>
