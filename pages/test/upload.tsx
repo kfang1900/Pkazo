@@ -6,7 +6,7 @@ import Header from 'components/Header';
 import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 
-import { Container } from '../[username]/index';
+import { Container } from 'styles/Container';
 import UploadWork from 'components/uploading/UploadWork';
 
 const Upload: NextPage = () => {

@@ -1,4 +1,3 @@
-import { FiSearch } from 'react-icons/fi';
 import React, { Ref, useEffect, useRef, useState } from 'react';
 import { useSearchBox, UseSearchBoxProps } from 'react-instantsearch-hooks-web';
 import tw from 'twin.macro';
@@ -35,7 +34,7 @@ export default function CustomSearch(props: UseSearchBoxProps) {
         tw="relative flex items-center border border-[#D8D8D8] focus-within:border-[#A2A2A2] w-full"
         css={[isMobile ? tw`px-3 rounded-[24px] h-8` : tw`px-6 rounded-[35px] h-11`]}
       >
-        <FiSearch tw="text-gray-400" />
+        <img src='/assets/svgs/search.svg' />
         <input
           value={value}
           ref={inputRef}

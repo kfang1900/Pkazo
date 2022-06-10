@@ -6,7 +6,7 @@ import Header from 'components/Header';
 import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 
-import { Container } from './[username]/index';
+import { Container } from 'styles/Container';
 import FeedPost from '../components/feed/FeedPost';
 import { sample_posts } from 'utils/Sample_Posts_Imports';
 
@@ -31,7 +31,7 @@ const Feed: NextPage = () => {
                 css={[
                   tw`w-[15%] text-lg relative z-10 font-semibold text-[#8B8B8B] hover:bg-black/5 duration-150 py-1 border-b-4 border-transparent cursor-pointer text-center`,
                   page === index &&
-                    tw`border-soft-red pointer-events-none hover:bg-transparent text-[#333333]`,
+                  tw`border-soft-red pointer-events-none hover:bg-transparent text-[#333333]`,
                 ]}
               >
                 {p}

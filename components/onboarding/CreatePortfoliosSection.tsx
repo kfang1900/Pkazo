@@ -1,4 +1,4 @@
-import { Container } from '../../pages/[username]';
+import { Container } from 'styles/Container';
 import { User } from '@firebase/auth';
 import tw from 'twin.macro';
 import Image from 'next/image';

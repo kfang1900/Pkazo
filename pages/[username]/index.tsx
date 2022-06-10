@@ -23,12 +23,9 @@ import { getPortfolioByRef, loadStorageImage } from 'helpers/FirebaseFunctions';
 import useAuth from '../../utils/auth/useAuth';
 import useRequireOnboarding from '../../utils/hooks/useRequireOnboarding';
 import { useMediaQuery } from 'react-responsive';
+import { Container } from 'styles/Container'
 
 //import { sample_artist } from 'utils/Sample_Posts_Imports';
-
-export const Container = styled.div`
-  ${tw`max-w-[1320px] mx-auto md:px-5`}
-`;
 
 const fetchArtist = async (
   username: string,

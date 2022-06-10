@@ -13,7 +13,7 @@ import Dropdown from 'styles/Dropdown';
 import Image from 'next/image';
 import { useMediaQuery } from 'react-responsive';
 
-import { Container } from 'pages/[username]/index';
+import { Container } from 'styles/Container';
 import { WorkData } from '../../types/dbTypes';
 import useAuth from '../../utils/auth/useAuth';
 import {
@@ -453,7 +453,7 @@ const StorePortFolio = ({
             <div
               onClick={handleOpenFilter}
               tw="cursor-pointer flex items-center border border-[#D8D8D8] focus:border-[#A2A2A2] text-[#65676B] flex-shrink-0"
-              css={[isMobile ? tw`w-[32px] h-[32px] rounded-full justify-center` : tw`gap-[10px] py-[11px] pl-[22px] pr-6 rounded-[40px]`]}
+              css={[isMobile ? tw`w-[32px] h-[32px] rounded-full justify-center` : tw`gap-[10px] h-11 pl-[22px] pr-6 rounded-[40px]`]}
             >
               <img src="/assets/svgs/filter.svg" tw="w-4 h-4 md:w-auto md:h-auto" />
               {!isMobile && 'All Filters'}

@@ -6,7 +6,7 @@ import Header from 'components/Header';
 import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 
-import { Container } from '../[username]/index';
+import { Container } from 'styles/Container';
 import LoginForm from 'components/popups/LoginForm';
 
 const Login: NextPage = () => {

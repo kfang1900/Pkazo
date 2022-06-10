@@ -19,7 +19,7 @@ import {
   Timestamp,
   where,
 } from 'firebase/firestore';
-import { Container } from '../../pages/[username]';
+import { Container } from 'styles/Container';
 import { ReactNode, useState } from 'react';
 import tw from 'twin.macro';
 import { User } from '@firebase/auth';
@@ -33,11 +33,11 @@ interface OnboardingFormValues {
   location: string;
   acceptingCommissions: 'yes' | 'no' | null;
   artistType:
-    | 'professional'
-    | 'hobby-desiring-professional'
-    | 'hobby'
-    | 'other'
-    | '';
+  | 'professional'
+  | 'hobby-desiring-professional'
+  | 'hobby'
+  | 'other'
+  | '';
 }
 
 export default function ProfileDetailsSection({
@@ -279,7 +279,7 @@ function OnboardingInput({
   optional?: boolean;
   children?: ReactNode;
 } & (
-  | {
+    | {
       type: 'select' | 'radio';
       /**
        * The options for the select or radio.
@@ -291,8 +291,8 @@ function OnboardingInput({
       optionValues?: string[];
       inline?: boolean;
     }
-  | { type: 'text' | 'date' }
-)) {
+    | { type: 'text' | 'date' }
+  )) {
   const styles = {
     label: tw`font-semibold text-[16px] text-[#333333]`,
     input: tw`border border-[#D8D8D8] rounded-[6px] p-[10px] text-[16px] leading-7 w-full`,
