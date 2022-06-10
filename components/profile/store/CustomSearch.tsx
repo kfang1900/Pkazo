@@ -1,9 +1,11 @@
 import { FiSearch } from 'react-icons/fi';
 import React, { Ref, useEffect, useRef, useState } from 'react';
 import { useSearchBox, UseSearchBoxProps } from 'react-instantsearch-hooks-web';
-import 'twin.macro';
+import tw from 'twin.macro';
+import { useMediaQuery } from 'react-responsive';
 
 export default function CustomSearch(props: UseSearchBoxProps) {
+  const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   const { query, refine } = useSearchBox(props);
   const [value, setValue] = useState('');
 
@@ -29,15 +31,18 @@ export default function CustomSearch(props: UseSearchBoxProps) {
 
   return (
     <div tw='flex-grow'>
-      <div tw="relative px-4 flex items-center border border-[#D8D8D8] focus-within:border-[#A2A2A2] rounded-full w-full h-11">
+      <div
+        tw="relative flex items-center border border-[#D8D8D8] focus-within:border-[#A2A2A2] w-full"
+        css={[isMobile ? tw`px-3 rounded-[24px] h-8` : tw`px-6 rounded-[35px] h-11`]}
+      >
         <FiSearch tw="text-gray-400" />
         <input
           value={value}
           ref={inputRef}
           onChange={(e) => setValue(e.target.value)}
           type="text"
-          tw="py-2 px-4 outline-none shadow-none w-full"
-          placeholder="Search name, description, medium, anything ..."
+          tw="pl-2 md:pl-4 outline-none shadow-none w-full text-[12px] md:text-[16px] "
+          placeholder="Search"
         />
       </div>
     </div>

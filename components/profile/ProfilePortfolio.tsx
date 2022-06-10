@@ -6,6 +6,7 @@ import tw, { styled } from 'twin.macro';
 
 import { portfolio_images } from 'utils/mockImports';
 import styles from '../../styles/ProfilePortfolio.module.css';
+import ShowMore from 'styles/ShowMore';
 import { useMediaQuery } from 'react-responsive';
 interface PortfolioObject {
   Portfolios: Record<string, any>[];
@@ -209,7 +210,12 @@ const CircleDescriptionBox = ({
   const data = portfolioData.Portfolios[activeIndex];
 
   if (isMobile)
-    return <div tw='mt-[18px] text-[14px] text-[#3C3C3C] px-4 '>{data.description}</div>
+    return <ShowMore
+      appearance={tw`mt-[18px] text-[14px] leading-[19px] text-[#3C3C3C] mx-4 `}
+      height={57}
+    >
+      {data.description}
+    </ShowMore>
 
   return (
     <div tw="mt-12 flex rounded-3xl border-2 border-[#D8D8D8] max-w-[1000px] mx-auto pr-[60px] py-9">

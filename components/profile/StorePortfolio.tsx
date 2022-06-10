@@ -11,6 +11,7 @@ import Masonry from 'react-masonry-css';
 import styles from '../../styles/ProfilePortfolio.module.css';
 import Dropdown from 'styles/Dropdown';
 import Image from 'next/image';
+import { useMediaQuery } from 'react-responsive';
 
 import { Container } from 'pages/[username]/index';
 import { WorkData } from '../../types/dbTypes';
@@ -39,7 +40,6 @@ import CustomHits from './store/CustomHits';
 import CustomRefinementGroup from './store/CustomRefinementList';
 import CustomSortBy from './store/CustomSortBy';
 import algoliaSearchClient from '../shared/algoliaSearchClient';
-import { useMediaQuery } from 'react-responsive';
 const ListCheckGroup = styled.ul`
   .check-group input[type='radio'],
   .check-group input[type='checkbox'] {
@@ -401,9 +401,8 @@ const StorePortFolio = ({
     <InstantSearch searchClient={algoliaSearchClient} indexName="pkazo-works">
       <Configure facetFilters={[`artist:${artistId}`, 'forSale:true']} />
       <div>
-        <Container>
+        <Container tw='px-4 md:px-0'>
           {profileType === 3 &&
-
             <div tw="flex justify-center gap-6 md:gap-[140px] mt-12">
               {portfolioData.Portfolios.map((portfolio, index) => (
                 <div
@@ -447,16 +446,17 @@ const StorePortFolio = ({
           <div
             tw="mb-10 flex items-center gap-x-6"
             css={[
-              profileType === 1 && tw`mt-6`,
-              profileType === 2 && tw`mt-[52px]`,
-              profileType === 3 && tw`mt-12`]}>
+              profileType === 1 && tw`mt-3 md:mt-6`,
+              profileType === 2 && tw`mt-4 md:mt-[52px]`,
+              profileType === 3 && tw`mt-4 md:mt-12`]}>
             {/* Filter Button */}
             <div
               onClick={handleOpenFilter}
-              tw="cursor-pointer flex items-center gap-[10px] py-[11px] pl-[22px] pr-6 border border-[#D8D8D8] focus:border-[#A2A2A2] rounded-[40px] text-[#65676B] flex-shrink-0"
+              tw="cursor-pointer flex items-center border border-[#D8D8D8] focus:border-[#A2A2A2] text-[#65676B] flex-shrink-0"
+              css={[isMobile ? tw`w-[32px] h-[32px] rounded-full justify-center` : tw`gap-[10px] py-[11px] pl-[22px] pr-6 rounded-[40px]`]}
             >
-              <img src="/assets/svgs/filter.svg" />
-              All Filters
+              <img src="/assets/svgs/filter.svg" tw="w-4 h-4 md:w-auto md:h-auto" />
+              {!isMobile && 'All Filters'}
             </div>
             {/* Search  */}
             <CustomSearch />

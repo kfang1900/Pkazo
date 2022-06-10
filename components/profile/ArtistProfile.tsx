@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import tw from 'twin.macro';
 import Link from 'next/link';
 
 import buttons from 'styles/Button';
+import ShowMore from 'styles/ShowMore';
 import ConfirmUnfollowModal from './ConfirmUnfollow';
 import {
   QueryDocumentSnapshot,
@@ -52,6 +53,21 @@ const ArtistProfile = ({
       setPicture(profilePictureURL)
     );
   }, [artist]);
+
+  const bioRef = useRef<HTMLDivElement>(null);
+  const [moreBio, setMoreBio] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+  const handleBioResize = () => {
+    if (bioRef.current && 72 < bioRef.current['scrollHeight']) {
+      setMoreBio(true);
+    } else {
+      setMoreBio(false);
+    }
+  }
+  useEffect(() => {
+    window.addEventListener('resize', handleBioResize);
+  });
+  useEffect(handleBioResize, [bioRef]);
   return isMobile ? (
     <>
       <div tw="mt-4 mb-3 px-4">
@@ -89,7 +105,13 @@ const ArtistProfile = ({
             </div>
           </div>
         </div>
-        <div tw='mt-3 text-[#3C3C3C] text-[14px]'>{artist.bio}</div>
+        <ShowMore
+          appearance={tw`mt-3 text-[#3C3C3C] text-[14px] leading-[19px]`}
+          height={57}
+          fixed
+        >
+          <div>{artist.bio}</div>
+        </ShowMore>
         <div tw='flex mt-3 items-center'>
           <img src='/assets/svgs/star.svg' tw='w-[15px] h-[14px]' />
           <div tw='text-[13px] text-black ml-1 font-semibold'>4.9 </div>
@@ -175,11 +197,15 @@ const ArtistProfile = ({
                   </>
                 )}
               </div>
-              <p tw="text-gray-600 text-lg mt-1">{artist.location}</p>
-              <div tw="mt-[15px] text-black text-[16px] ">
-                {artist.bio}
-              </div>
-              <div tw='flex mt-auto items-center'>
+              <p tw="text-gray-600 text-[20px] mt-1">{artist.location}</p>
+              <ShowMore
+                appearance={tw`mt-3 text-black text-[16px] leading-[24px]`}
+                height={72}
+                fixed
+              >
+                <div>{artist.bio}</div>
+              </ShowMore>
+              <div tw='flex mt-3 items-center'>
                 <img src='/assets/svgs/star.svg' tw='w-6 h-[22px]' />
                 <div tw='text-[18px] text-black ml-[7px] font-semibold'>4.9 </div>
                 <Link href='#' passHref>
