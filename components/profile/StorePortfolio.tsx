@@ -18,6 +18,7 @@ import { WorkData } from '../../types/dbTypes';
 import useAuth from '../../utils/auth/useAuth';
 import {
   collection,
+  getDoc,
   getDocs,
   getFirestore,
   query,
@@ -40,6 +41,7 @@ import CustomHits from './store/CustomHits';
 import CustomRefinementGroup from './store/CustomRefinementList';
 import CustomSortBy from './store/CustomSortBy';
 import algoliaSearchClient from '../shared/algoliaSearchClient';
+import { useRouter } from 'next/router';
 const ListCheckGroup = styled.ul`
   .check-group input[type='radio'],
   .check-group input[type='checkbox'] {
@@ -279,7 +281,7 @@ interface PortfolioObject {
 
 const StorePortFolio = ({
   profileType,
-  portfolioData
+  portfolioData,
 }: {
   profileType: number;
   portfolioData: PortfolioObject;
@@ -313,17 +315,25 @@ const StorePortFolio = ({
       imageURL: string;
     }[]
   >([]);
-
-  const { artistId } = useAuth();
-
+  const router = useRouter();
+  const { username } = router.query;
+  const [artistId, setArtistId] = useState('');
   useEffect(() => {
     (async () => {
       const app = getApp();
       const db = getFirestore(app);
+      const artistIdSnapshot = await getDocs(
+        query(collection(db, 'artists'), where('username', '==', username))
+      );
+      if (artistIdSnapshot.docs.length === 0) {
+        throw new Error('user not found.');
+      }
+      const _artistId = artistIdSnapshot.docs[0].id;
+      setArtistId(_artistId);
       const querySnapshot = await getDocs(
         query(
           collection(db, 'works'),
-          where('artist', '==', artistId),
+          where('artist', '==', _artistId),
           where('forSale', '==', true)
         )
       );
@@ -401,8 +411,8 @@ const StorePortFolio = ({
     <InstantSearch searchClient={algoliaSearchClient} indexName="pkazo-works">
       <Configure facetFilters={[`artist:${artistId}`, 'forSale:true']} />
       <div>
-        <Container tw='px-4 md:px-0'>
-          {profileType === 3 &&
+        <Container tw="px-4 md:px-0">
+          {profileType === 3 && (
             <div tw="flex justify-center gap-6 md:gap-[140px] mt-12">
               {portfolioData.Portfolios.map((portfolio, index) => (
                 <div
@@ -422,7 +432,9 @@ const StorePortFolio = ({
                     css={[
                       tw`relative rounded-full overflow-hidden origin-bottom border-transparent`,
                       activeIndex === index && tw`border-[#C6C5C3]`,
-                      isMobile ? tw`w-[60px] h-[60px] border-2` : tw`w-[128px] h-[128px] border-4`
+                      isMobile
+                        ? tw`w-[60px] h-[60px] border-2`
+                        : tw`w-[128px] h-[128px] border-4`,
                     ]}
                   >
                     {portfolioData.PortfolioImages[index] && (
@@ -434,42 +446,57 @@ const StorePortFolio = ({
                     )}
                   </div>
 
-                  <div css={[
-                    tw`text-[#3C3C3C] text-center`,
-                    isMobile ? tw`text-[12px] mt-1` : tw`text-[16px] mt-2`
-                  ]}>{portfolio.name}</div>
+                  <div
+                    css={[
+                      tw`text-[#3C3C3C] text-center`,
+                      isMobile ? tw`text-[12px] mt-1` : tw`text-[16px] mt-2`,
+                    ]}
+                  >
+                    {portfolio.name}
+                  </div>
                 </div>
               ))}
             </div>
-          }
+          )}
           {/* Heading */}
           <div
             tw="mb-10 flex items-center gap-x-6"
             css={[
               profileType === 1 && tw`mt-3 md:mt-6`,
               profileType === 2 && tw`mt-4 md:mt-[52px]`,
-              profileType === 3 && tw`mt-4 md:mt-12`]}>
+              profileType === 3 && tw`mt-4 md:mt-12`,
+            ]}
+          >
             {/* Filter Button */}
             <div
               onClick={handleOpenFilter}
               tw="cursor-pointer flex items-center border border-[#D8D8D8] focus:border-[#A2A2A2] text-[#65676B] flex-shrink-0"
               css={[isMobile ? tw`w-[32px] h-[32px] rounded-full justify-center` : tw`gap-[10px] h-11 pl-[22px] pr-6 rounded-[40px]`]}
             >
-              <img src="/assets/svgs/filter.svg" tw="w-4 h-4 md:w-auto md:h-auto" />
+              <img
+                src="/assets/svgs/filter.svg"
+                tw="w-4 h-4 md:w-auto md:h-auto"
+              />
               {!isMobile && 'All Filters'}
             </div>
             {/* Search  */}
             <CustomSearch />
             {/* Portfolio for profile 1 and 2 */}
-            {profileType !== 3 &&
+            {profileType !== 3 && (
               <Dropdown
-                onChange={(event) => (event.target.value)}
+                onChange={(event) => event.target.value}
                 appearance={tw`border-[#D8D8D8] rounded-[40px] pl-5 min-w-[160px] h-11 focus:border-[#A2A2A2] text-[#3C3C3C]`}
               >
-                <option value="all">{profileType === 1 ? 'All Portfolios' : 'Category'}</option>
-                {portfolioData.Portfolios.map((portfolio) => <option value={portfolio.name} key={portfolio.name}>{portfolio.name}</option>)}
+                <option value="all">
+                  {profileType === 1 ? 'All Portfolios' : 'Category'}
+                </option>
+                {portfolioData.Portfolios.map((portfolio) => (
+                  <option value={portfolio.name} key={portfolio.name}>
+                    {portfolio.name}
+                  </option>
+                ))}
               </Dropdown>
-            }
+            )}
             {/* Price Sort */}
             <CustomSortBy />
             {/*/!* Grid *!/*/}
@@ -540,8 +567,8 @@ const StorePortFolio = ({
         </div>
 
         {/* <DrawerFilter drawerToggle={drawerToggle} handleCloseFilter={handleCloseFilter}/> */}
-      </div >
-    </InstantSearch >
+      </div>
+    </InstantSearch>
   );
 };
 

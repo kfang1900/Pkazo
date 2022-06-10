@@ -47,11 +47,11 @@ function NavbarIcon(
     disabled?: boolean;
     round?: boolean;
   } & (
-      | {
+    | {
         onClick: () => void;
       }
-      | { href: string | UrlObject }
-    )
+    | { href: string | UrlObject }
+  )
 ) {
   return (
     <div tw={'flex flex-none transform w-8'}>
@@ -115,15 +115,21 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
       )}
       <div tw="px-4 md:px-[60px] py-[18px] sm:py-[10px] h-[68px] flex items-center">
         <Link href="/" passHref>
-          <Image src={Logo} tw="cursor-pointer" width="92px" height="32px" alt="Pkazo" />
+          <Image
+            src={Logo}
+            tw="cursor-pointer"
+            width="92px"
+            height="32px"
+            alt="Pkazo"
+          />
         </Link>
-        {!isMobile &&
+        {!isMobile && (
           <input
             type="text"
             placeholder="Search for anything"
             tw="flex-grow ml-5 mr-10 px-6 h-11 bg-gray-100 border border-[#A3A3A3] focus:border-[#838383] outline-none rounded-full w-auto"
           />
-        }
+        )}
 
         <div tw={'flex-none w-36'}>
           <div tw="flex flex-auto flex-row-reverse w-36 justify-start h-8 gap-3">
@@ -140,11 +146,13 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
                   />
                 </button>
               </div>
-              <NavbarIcon
-                onClick={() => setShowChooseWorkDropdown((s) => !s)}
-                src={PlusLogo}
-                alt="Plus Logo"
-              />
+              {!!user && isArtist && (
+                <NavbarIcon
+                  onClick={() => setShowChooseWorkDropdown((s) => !s)}
+                  src={PlusLogo}
+                  alt="Plus Logo"
+                />
+              )}
               <div>
                 {showChooseWorkDropdown && (
                   <div
@@ -244,25 +252,23 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
           </div>
         </div>
       </div>
-      {
-        showSearch && (
-          <div tw="md:hidden flex flex-row items-center justify-between py-2">
-            <div
-              css={[
-                tw`w-full mx-2 md:mx-4 lg:mx-8`,
-                showSearch ? '' : tw`hidden md:block`,
-              ]}
-            >
-              <input
-                type="text"
-                placeholder="Search"
-                tw="px-4 py-1 bg-gray-100 outline-none rounded-full w-full"
-              />
-            </div>
+      {showSearch && (
+        <div tw="md:hidden flex flex-row items-center justify-between py-2">
+          <div
+            css={[
+              tw`w-full mx-2 md:mx-4 lg:mx-8`,
+              showSearch ? '' : tw`hidden md:block`,
+            ]}
+          >
+            <input
+              type="text"
+              placeholder="Search"
+              tw="px-4 py-1 bg-gray-100 outline-none rounded-full w-full"
+            />
           </div>
-        )
-      }
-    </div >
+        </div>
+      )}
+    </div>
   );
 };
 
