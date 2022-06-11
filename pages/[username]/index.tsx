@@ -74,7 +74,7 @@ const Portfolio: NextPage = () => {
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   // profile types based on figma
   // TODO store as artist data maybe?
-  const [profileType, setProfileType] = useState(3);
+  const [profileType, setProfileType] = useState(1);
   const router = useRouter();
   const { username } = router.query;
   const [page, _setPage] = useState(Page.PORTFOLIO);

@@ -1,16 +1,26 @@
-.my-masonry-grid {
+.masonry {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  margin: auto;
+  margin: auto -18px;
 }
-.my-masonry-grid_column {
+.column {
+  padding: 0 18px;
+  background-clip: padding-box;
+}
+.store-column {
   padding: 0 18px;
   background-clip: padding-box;
 }
 
 @media not screen and (min-width: 768px) {
-  .my-masonry-grid_column {
+  .masonry {
+    margin: auto -2px;
+  }
+  .column {
     padding: 0 2px;
+  }
+  .store-column {
+    padding: 0 6px;
   }
 }

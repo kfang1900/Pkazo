@@ -31,9 +31,9 @@ export default function CustomHits(props: HitsProps<ForSaleWorkRecord>) {
   }, [hits]);
   return (
     <Masonry
-      breakpointCols={{ default: 4, 1024: 3, 640: 2 }}
-      className={styles['my-masonry-grid']}
-      columnClassName={styles['my-masonry-grid_column']}
+      breakpointCols={{ default: 3, 500: 2 }}
+      className={styles['masonry']}
+      columnClassName={styles['store-column']}
     >
       {hits.map((hit) => (
         <Hit key={hit.id} hit={hit} imageURL={memonizedImageURLS[hit.id]} />

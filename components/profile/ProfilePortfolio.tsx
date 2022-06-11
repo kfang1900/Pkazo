@@ -98,12 +98,12 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
       </section>
       {/* Circle Images Section --End-- */}
       {/* Gallery Section --Start-- */}
-      <section css={[isMobile ? tw`mt-[18px]` : tw`mt-12`]}>
+      <section tw='mt-[18px] md:mt-12'>
         <div className="container">
           <Masonry
             breakpointCols={{ default: 3, 500: 2 }}
-            className={styles['my-masonry-grid']}
-            columnClassName={styles['my-masonry-grid_column']}
+            className={styles['masonry']}
+            columnClassName={styles['column']}
           >
             {
               //.Images.slice(0, seeNum)
@@ -114,8 +114,7 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
                     passHref
                     href={'/work/' + curGallery.Data[i].__id}
                   >
-                    <img src={gallery} tw="cursor-pointer w-full h-auto"
-                      css={[isMobile ? tw`my-[5px]` : tw`my-[36px]`]}
+                    <img src={gallery} tw="cursor-pointer w-full h-auto my-[5px] md:my-9"
                       alt="" />
                   </Link>
                 </>
@@ -124,19 +123,20 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
           </Masonry>
         </div>
 
-        <div tw="flex w-full justify-center items-center mt-[30px]"
-          css={[curGallery.Images.length > 9 && tw`mb-[20px]`]}>
+        <div tw="flex w-full justify-center items-center mt-4 md:mt-[30px]"
+          css={[curGallery.Images.length > 9 && tw`mb-1 md:mb-5`]}>
           <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
           {curGallery.Images.length > 9 && (
             <button
-              tw="rounded-full border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB] mr-[-10%] w-[60px] h-[60px] mx-[30px] px-0 text-[#8E8E93] font-bold text-[13px] text-center"
+              tw="rounded-full border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB]"
+              css={[isMobile ? tw`w-[30px] h-[30px] mx-[15px]` : tw`w-[60px] h-[60px] mx-[30px]`]}
               onClick={() => updSeeNum()}
             >
               <img
                 src="/assets/svgs/arrow_down.svg"
                 css={[
-                  tw`m-auto`,
-                  seeNum >= curGallery.Images.length && tw`scale-y-[-1]`,
+                  tw`m-auto scale-50 md:scale-100`,
+                  seeNum >= curGallery.Images.length && tw`scale-y-[-0.5] md:scale-y-[-1]`,
                 ]}
               />
             </button>

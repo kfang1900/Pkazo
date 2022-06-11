@@ -47,11 +47,11 @@ function NavbarIcon(
     disabled?: boolean;
     round?: boolean;
   } & (
-    | {
+      | {
         onClick: () => void;
       }
-    | { href: string | UrlObject }
-  )
+      | { href: string | UrlObject }
+    )
 ) {
   return (
     <div tw={'flex flex-none transform w-8'}>

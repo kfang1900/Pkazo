@@ -460,7 +460,7 @@ const StorePortFolio = ({
           )}
           {/* Heading */}
           <div
-            tw="mb-10 flex items-center gap-x-6"
+            tw="flex items-center gap-x-6"
             css={[
               profileType === 1 && tw`mt-3 md:mt-6`,
               profileType === 2 && tw`mt-4 md:mt-[52px]`,
@@ -510,15 +510,15 @@ const StorePortFolio = ({
             {/*</div>*/}
           </div>
 
-          {/* Portfolio Found */}
-          <div tw="mb-5">
-            <p tw="text-gray-600 text-lg">
-              {works.length} work{works.length !== 1 ? 's' : ''} for sale
-            </p>
-          </div>
+          {/* No Portfolio Found */}
+          {!works.length &&
+            <div tw='text-[#3C3C3C] text-[12px] md:text-[16px] mt-4 md:mt-8'>
+              No works for sale
+            </div>
+          }
 
           {/* Portfolio Gallery */}
-          <div tw="mb-10">
+          <div tw="mb-4 md:mb-[30px]">
             <CustomHits />
           </div>
         </Container>
