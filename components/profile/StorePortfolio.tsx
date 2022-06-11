@@ -411,7 +411,7 @@ const StorePortFolio = ({
     <InstantSearch searchClient={algoliaSearchClient} indexName="pkazo-works">
       <Configure facetFilters={[`artist:${artistId}`, 'forSale:true']} />
       <div>
-        <Container tw="px-4 md:px-0">
+        <Container tw="px-0 md:px-0">
           {profileType === 3 && (
             <div tw="flex justify-center gap-6 md:gap-[140px] mt-4 md:mt-12">
               {portfolioData.Portfolios.map((portfolio, index) => (
@@ -460,7 +460,7 @@ const StorePortFolio = ({
           )}
           {/* Heading */}
           <div
-            tw="flex items-center gap-x-6"
+            tw="flex items-center gap-x-3 md:gap-x-6"
             css={[
               profileType === 1 && tw`mt-3 md:mt-6`,
               profileType === 2 && tw`mt-4 md:mt-[52px]`,
