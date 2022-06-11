@@ -107,7 +107,7 @@ const ArtistProfile = ({
               <button
                 onClick={() => 0}
                 css={buttons.red}
-                tw="text-[13px] ml-[10px] px-3 font-semibold h-7"
+                tw="text-[13px] ml-[10px] px-3 font-semibold w-[107px] h-7"
               >
                 Commission
               </button>

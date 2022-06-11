@@ -32,7 +32,7 @@ export default function CustomHits(props: HitsProps<ForSaleWorkRecord>) {
   return (
     <Masonry
       breakpointCols={{ default: 3, 500: 2 }}
-      className={styles['masonry']}
+      className={styles['masonry-column']}
       columnClassName={styles['store-column']}
     >
       {hits.map((hit) => (

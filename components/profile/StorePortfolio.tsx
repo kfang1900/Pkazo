@@ -482,7 +482,7 @@ const StorePortFolio = ({
             {/* Search  */}
             <CustomSearch />
             {/* Portfolio for profile 1 and 2 */}
-            {profileType !== 3 && (
+            {profileType !== 3 && !isMobile && (
               <Dropdown
                 onChange={(event) => event.target.value}
                 appearance={tw`border-[#D8D8D8] rounded-[40px] pl-5 min-w-[160px] h-11 focus:border-[#A2A2A2] text-[#3C3C3C]`}
