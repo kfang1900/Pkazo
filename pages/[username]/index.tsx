@@ -248,7 +248,7 @@ const Portfolio: NextPage = () => {
                       isMobile
                         ? tw`text-[16px] w-20 py-1 border-b-2 mb-[-2px]`
                         : tw`text-[18px] w-[200px] py-2 border-b-4 mb-[-4px]`,
-                      tw`relative z-10 font-semibold text-gray-600 hover:bg-black/5 duration-150 border-transparent cursor-pointer`,
+                      tw`relative z-10 font-semibold text-gray-600 duration-150 border-transparent cursor-pointer`,
                       page === value &&
                       tw`border-soft-red pointer-events-none hover:bg-transparent`,
                     ]}

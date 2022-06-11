@@ -137,7 +137,7 @@ const ArtistProfile = ({
       <section tw="mt-[48px] mb-[40px]">
         <div tw='flex'>
           <div tw='w-[10%] flex-shrink-[0.2]' />
-          <div tw="grid grid-cols-[200px auto]">
+          <div tw="w-full grid grid-cols-[200px auto]">
             <div tw="w-[200px] h-[200px] my-auto overflow-hidden rounded-full flex items-center">
               {picture && (
                 <Image
@@ -179,7 +179,7 @@ const ArtistProfile = ({
                           }
                           tw="w-5 h-4"
                         />
-                        {numFormatter(artist['Followers'])}
+                        {numFormatter(artist.followers | 3900)}
                       </button>
                       {isFollowing && (
                         <button
@@ -197,7 +197,7 @@ const ArtistProfile = ({
                             });
                           }}
                           css={buttons.white}
-                          tw="ml-5 px-7 py-2 font-semibold"
+                          tw="ml-5 px-7 font-semibold"
                         >
                           Message
                         </button>
