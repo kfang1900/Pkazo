@@ -98,7 +98,7 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
       </section>
       {/* Circle Images Section --End-- */}
       {/* Gallery Section --Start-- */}
-      <section tw='mt-[18px] md:mt-12'>
+      <section tw='mt-3 md:mt-8'>
         <div className="container">
           <Masonry
             breakpointCols={{ default: 3, 500: 2 }}
