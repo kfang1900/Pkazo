@@ -480,7 +480,7 @@ const StorePortFolio = ({
               {!isMobile && 'All Filters'}
             </div>
             {/* Search  */}
-            <CustomSearch />
+            {/* <CustomSearch /> */}
             {/* Portfolio for profile 1 and 2 */}
             {profileType !== 3 && !isMobile && (
               <Dropdown
