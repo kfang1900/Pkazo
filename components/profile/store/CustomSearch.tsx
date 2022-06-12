@@ -29,21 +29,19 @@ export default function CustomSearch(props: UseSearchBoxProps) {
   }, [query]);
 
   return (
-    <div tw='flex-1'>
-      <div
-        tw="relative flex items-center border border-[#D8D8D8] focus-within:border-[#A2A2A2] w-full"
-        css={[isMobile ? tw`px-3 rounded-[24px] h-8` : tw`px-6 rounded-[35px] h-11`]}
-      >
-        <img src='/assets/svgs/search.svg' />
-        <input
-          value={value}
-          ref={inputRef}
-          onChange={(e) => setValue(e.target.value)}
-          type="text"
-          tw="pl-2 md:pl-4 outline-none shadow-none w-full text-[12px] md:text-[16px] "
-          placeholder="Search"
-        />
-      </div>
+    <div
+      tw="flex-1 relative flex items-center border border-[#D8D8D8] focus-within:border-[#A2A2A2]"
+      css={[isMobile ? tw`px-3 rounded-[24px] h-8` : tw`px-6 rounded-[35px] h-11`]}
+    >
+      <img src='/assets/svgs/search.svg' />
+      <input
+        value={value}
+        ref={inputRef}
+        onChange={(e) => setValue(e.target.value)}
+        type="text"
+        tw="pl-2 md:pl-4 outline-none shadow-none w-full text-[12px] md:text-[16px] "
+        placeholder="Search"
+      />
     </div>
   );
 }

@@ -460,7 +460,7 @@ const StorePortFolio = ({
           )}
           {/* Heading */}
           <div
-            tw="flex items-center gap-x-3 md:gap-x-6"
+            tw="flex items-center gap-x-3 md:gap-x-6 w-full"
             css={[
               profileType === 1 && tw`mt-3 md:mt-6`,
               profileType === 2 && tw`mt-4 md:mt-[52px]`,
@@ -480,7 +480,7 @@ const StorePortFolio = ({
               {!isMobile && 'All Filters'}
             </div>
             {/* Search  */}
-            {/* <CustomSearch /> */}
+            <CustomSearch />
             {/* Portfolio for profile 1 and 2 */}
             {profileType !== 3 && !isMobile && (
               <Dropdown
