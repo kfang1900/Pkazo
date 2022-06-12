@@ -498,7 +498,7 @@ const StorePortFolio = ({
               </Dropdown>
             )}
             {/* Price Sort */}
-            <CustomSortBy />
+            {/* <CustomSortBy /> */}
             {/*/!* Grid *!/*/}
             {/*<div tw="flex items-center text-2xl rounded border border-gray-200">*/}
             {/*  <span tw="px-4 py-2 cursor-pointer transition-all duration-300 text-gray-700 hover:text-black border-r border-gray-200">*/}
