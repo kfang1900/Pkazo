@@ -22,6 +22,7 @@ export default function CustomSortBy() {
       <select
         onChange={(event) => refine(event.target.value)}
         tw='appearance-none border border-[#D8D8D8] rounded-full outline-none focus:border-[#A2A2A2] w-8 h-8 pl-2'
+        style={{ direction: 'rtl' }}
       >
         {options.map(({ label, value }) => <option value={value} key={value}>{label}</option>)}
       </select>
