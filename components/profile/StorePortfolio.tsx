@@ -523,49 +523,50 @@ const StorePortFolio = ({
           </div>
         </Container>
 
-        <div>
-          <div
-            css={[
-              tw`fixed top-0 bg-white bottom-0 max-w-full w-[400] 2xl:w-[480px] z-[99] -left-full transition-all duration-300`,
-              open && tw`left-0`,
-            ]}
-          >
-            <span
-              onClick={handleCloseFilter}
-              className="close-icon"
-              tw="before:content-[''] before:w-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full before:h-0 before:absolute before:bg-white/20 before:rounded-full before:z-[-1] absolute text-white cursor-pointer rounded-full flex items-center justify-center text-3xl w-[50px] h-[50px] top-5 right-[-60px]"
+        {!isMobile &&
+          <div>
+            <div
+              css={[
+                tw`fixed top-0 bg-white bottom-0 max-w-full w-[400] 2xl:w-[480px] z-[99] -left-full transition-all duration-300`,
+                open && tw`left-0`,
+              ]}
             >
-              <FiX />
-            </span>
+              <span
+                onClick={handleCloseFilter}
+                className="close-icon"
+                tw="before:content-[''] before:w-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full before:h-0 before:absolute before:bg-white/20 before:rounded-full before:z-[-1] absolute text-white cursor-pointer rounded-full flex items-center justify-center text-3xl w-[50px] h-[50px] top-5 right-[-60px]"
+              >
+                <FiX />
+              </span>
 
-            {/* Filter Box */}
-            <div>
-              <div tw="overflow-auto pr-14 m-6 h-[calc(100vh-120px)]">
-                <h2 tw="text-3xl font-bold mb-4">Filters</h2>
+              {/* Filter Box */}
+              <div>
+                <div tw="overflow-auto pr-14 m-6 h-[calc(100vh-120px)]">
+                  <h2 tw="text-3xl font-bold mb-4">Filters</h2>
 
-                <ul tw={'pl-6'}>
-                  <div>{/* TODO: put the price refinement in here */}</div>
+                  <ul tw={'pl-6'}>
+                    <div>{/* TODO: put the price refinement in here */}</div>
 
-                  <CustomRefinementGroup attribute={'medium'} />
-                  <CustomRefinementGroup attribute={'year'} />
-                  <CustomRefinementGroup
-                    attribute={'sale.color'}
-                    title={'Color'}
-                  />
-                  <CustomRefinementGroup attribute={'dimensions'} />
-                </ul>
+                    <CustomRefinementGroup attribute={'medium'} />
+                    <CustomRefinementGroup attribute={'year'} />
+                    <CustomRefinementGroup
+                      attribute={'sale.color'}
+                      title={'Color'}
+                    />
+                    <CustomRefinementGroup attribute={'dimensions'} />
+                  </ul>
+                </div>
               </div>
             </div>
+            <span
+              onClick={handleCloseFilter}
+              css={[
+                tw`fixed z-[98] left-0 top-0 bottom-0 bg-[rgba(34,34,34,0.65)]`,
+                open && tw`w-full`,
+              ]}
+            ></span>
           </div>
-          <span
-            onClick={handleCloseFilter}
-            css={[
-              tw`fixed z-[98] left-0 top-0 bottom-0 bg-[rgba(34,34,34,0.65)]`,
-              open && tw`w-full`,
-            ]}
-          ></span>
-        </div>
-
+        }
         {/* <DrawerFilter drawerToggle={drawerToggle} handleCloseFilter={handleCloseFilter}/> */}
       </div>
     </InstantSearch>
