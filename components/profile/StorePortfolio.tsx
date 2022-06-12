@@ -518,9 +518,9 @@ const StorePortFolio = ({
           }
 
           {/* Portfolio Gallery */}
-          <div tw="mb-4 md:mb-[30px]">
+          {/* <div tw="mb-4 md:mb-[30px]">
             <CustomHits />
-          </div>
+          </div> */}
         </Container>
 
         {!isMobile &&
