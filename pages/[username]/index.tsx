@@ -204,7 +204,7 @@ const Portfolio: NextPage = () => {
           <h2 tw="text-center text-xl my-10 font-bold">404: User not found</h2>
         </div>
       ) : (
-        <div tw='bg-blue-500'>
+        <div>
           {/* Cover Photo */}
           <div tw="relative w-full h-[180px] lg:h-[300px]">
             {coverImage && (
