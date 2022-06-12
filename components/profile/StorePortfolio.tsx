@@ -470,7 +470,7 @@ const StorePortFolio = ({
             {/* Filter Button */}
             <div
               onClick={handleOpenFilter}
-              tw="cursor-pointer flex items-center border border-[#D8D8D8] focus:border-[#A2A2A2] text-[#65676B] md:flex-shrink-0"
+              tw="cursor-pointer flex items-center border border-[#D8D8D8] focus:border-[#A2A2A2] text-[#65676B]"
               css={[isMobile ? tw`w-[32px] h-[32px] rounded-full justify-center` : tw`gap-[10px] h-11 pl-[22px] pr-6 rounded-[40px]`]}
             >
               <img
