@@ -286,7 +286,7 @@ const IndividualWork: NextPage = () => {
               <div>{workData.medium}</div>
               <div>{workData.height} x {workData.width} inches</div>
             </div>
-            {workData.forSale && 0 ?
+            {workData.forSale ?
               <div tw='mt-5'>
                 <div tw='text-[12px] text-[#333333] cursor-pointer'>
                   Pay as low as $66/ mo. <b>Affirm.</b> See if you&#39;re qualified.

@@ -21,7 +21,7 @@ export interface LoginFormProps {
   defaultSignUp?: boolean;
   notCloseable?: boolean;
 }
-function LoginForm(props: LoginFormProps) {
+export const Login = (props: LoginFormProps) => {
   const styles = {
     label: tw`font-semibold text-[16px] leading-5 text-[#333333] mt-3`,
     input: tw`border border-[#D8D8D8] rounded-[6px] p-[10px] mt-[5px] text-[16px] leading-7 w-full focus:outline-none focus:border-[#888888]`,
@@ -255,85 +255,89 @@ function LoginForm(props: LoginFormProps) {
       </>
     );
   };
+
+  return <div tw="bg-white rounded-[20px] p-4 md:p-8 w-[400px]">
+    {(register ? registerModal : loginModal)()}
+    <div tw="flex mt-3 w-full justify-center items-center">
+      <hr tw="border border-[#F1F2F3] bg-[#F1F2F3] flex-grow" />
+      <div tw="w-4 text-[14px] text-center mx-10 text-[#98989E]">or</div>
+      <hr tw="border border-[#F1F2F3] bg-[#F1F2F3] flex-grow" />
+    </div>
+    <button
+      css={[
+        buttons.white,
+        tw`px-0 text-[16px] font-semibold mt-3 w-full duration-150 h-[52px]`,
+      ]}
+      onClick={() => auth.signInWithGoogle()}
+    >
+      <div tw="flex items-center justify-center">
+        <img
+          src="/assets/svgs/google.svg"
+          tw="h-[50px] mr-[-3px]"
+          alt="google icon"
+        />
+        Continue with Google
+      </div>
+    </button>
+    <button
+      css={[
+        buttons.white,
+        tw`px-0 text-[16px] font-semibold mt-3 w-full duration-150 h-[52px]`,
+      ]}
+      onClick={() => auth.signInWithFacebook()}
+    >
+      <div tw="flex items-center justify-center">
+        <img
+          src="/assets/svgs/facebook.svg"
+          tw="h-[25px] mr-[10px]"
+          alt="facebook icon"
+        />
+        Continue with Facebook
+      </div>
+    </button>
+    <div tw="text-[13px] leading-5 mt-3 text-[#595959]">
+      By clicking Create Account or Continue with Google or Facebook, you
+      agree to Pkazo&#39;s{' '}
+      <Link href="#" passHref>
+        <span tw="underline cursor-pointer">Terms of Use</span>
+      </Link>{' '}
+      and{' '}
+      <Link href="#" passHref>
+        <span tw="underline cursor-pointer">Privacy Policy</span>
+      </Link>
+      . Pkazo may send you communications; you may change your preferences
+      in your account settings.
+    </div>
+
+    {!register && (
+      <div tw="text-[13px] leading-5 mt-3 text-center">
+        New to Pkazo?{' '}
+        <button
+          onClick={() => setRegister(!register)}
+          tw="bg-transparent border-none outline-none text-soft-red font-semibold underline cursor-pointer"
+        >
+          Register here
+        </button>
+      </div>
+    )}
+    {register && (
+      <div tw="text-[13px] leading-5 mt-3 text-center">
+        Already have an account?{' '}
+        <button
+          onClick={() => setRegister(!register)}
+          tw="bg-transparent border-none outline-none text-soft-red font-semibold underline cursor-pointer"
+        >
+          Sign in
+        </button>
+      </div>
+    )}
+  </div>
+}
+function LoginForm(props: LoginFormProps) {
   return (
     <div tw="fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center overflow-auto p-[50px]">
       <div tw="flex m-auto">
-        <div tw="bg-white rounded-[20px] p-8 w-[400px]">
-          {(register ? registerModal : loginModal)()}
-          <div tw="flex mt-3 w-full justify-center items-center">
-            <hr tw="border border-[#F1F2F3] bg-[#F1F2F3] flex-grow" />
-            <div tw="w-4 text-[14px] text-center mx-10 text-[#98989E]">or</div>
-            <hr tw="border border-[#F1F2F3] bg-[#F1F2F3] flex-grow" />
-          </div>
-          <button
-            css={[
-              buttons.white,
-              tw`text-[16px] font-semibold mt-3 w-full duration-150 h-[52px]`,
-            ]}
-            onClick={() => auth.signInWithGoogle()}
-          >
-            <div tw="flex items-center justify-center">
-              <img
-                src="/assets/svgs/google.svg"
-                tw="h-[50px] mr-[-3px]"
-                alt="google icon"
-              />
-              Continue with Google
-            </div>
-          </button>
-          <button
-            css={[
-              buttons.white,
-              tw`text-[16px] font-semibold mt-3 w-full duration-150 h-[52px]`,
-            ]}
-            onClick={() => auth.signInWithFacebook()}
-          >
-            <div tw="flex items-center justify-center">
-              <img
-                src="/assets/svgs/facebook.svg"
-                tw="h-[25px] mr-[10px]"
-                alt="facebook icon"
-              />
-              Continue with Facebook
-            </div>
-          </button>
-          <div tw="text-[13px] leading-5 mt-3 text-[#595959]">
-            By clicking Create Account or Continue with Google or Facebook, you
-            agree to Pkazo&#39;s{' '}
-            <Link href="#" passHref>
-              <span tw="underline cursor-pointer">Terms of Use</span>
-            </Link>{' '}
-            and{' '}
-            <Link href="#" passHref>
-              <span tw="underline cursor-pointer">Privacy Policy</span>
-            </Link>
-            . Pkazo may send you communications; you may change your preferences
-            in your account settings.
-          </div>
-
-          {!register && (
-            <div tw="text-[13px] leading-5 mt-3 text-center">
-              New to Pkazo?{' '}
-              <button
-                onClick={() => setRegister(!register)}
-                tw="bg-transparent border-none outline-none text-soft-red font-semibold underline cursor-pointer"
-              >
-                Register here
-              </button>
-            </div>
-          )}
-          {register && (
-            <div tw="text-[13px] leading-5 mt-3 text-center">
-              Already have an account?{' '}
-              <button
-                onClick={() => setRegister(!register)}
-                tw="bg-transparent border-none outline-none text-soft-red font-semibold underline cursor-pointer"
-              >
-                Sign in
-              </button>
-            </div>
-          )}
-        </div>
+        <Login {...props} />
         {!props.notCloseable && (
           <button
             onClick={props.onClose}
