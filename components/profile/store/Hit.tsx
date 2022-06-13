@@ -21,9 +21,7 @@ export default function Hit({
   return (
     <Link href={'/work/' + work.id} passHref>
       <div tw='cursor-pointer my-4 md:my-10'>
-        <div tw="w-full">
-          {imageURL && <img src={imageURL} alt="Image Alt" />}
-        </div>
+        {imageURL && <img src={imageURL} alt="Image Alt" tw='w-full' />}
         {isMobile ?
           <div tw='mt-2 flex justify-between'>
             <div>

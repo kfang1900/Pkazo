@@ -50,43 +50,48 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
       {/* Circle Images Section --Start-- */}
       <section css={[isMobile ? tw`mt-4` : tw`mt-10`]}>
         <div className="container">
-          <div tw="flex justify-center gap-6 md:gap-[140px] ">
-            {portfolioData.Portfolios.map((portfolio, index) => (
-              <div
-                key={index}
-                tw="cursor-pointer"
-                onClick={() => {
-                  setActiveIndex(activeIndex === index ? null : index);
-                  setCurGallery(
-                    getGalleryData(
-                      portfolioData,
-                      activeIndex === index ? null : index
-                    )
-                  );
-                }}
-              >
+          <div tw='flex justify-center'>
+            <div
+              css={[isMobile && tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`]}
+              tw="md:flex md:justify-between gap-6 md:w-full"
+            >
+              {portfolioData.Portfolios.map((portfolio, index) => (
                 <div
-                  css={[
-                    tw`relative rounded-full overflow-hidden origin-bottom border-transparent`,
-                    activeIndex === index && tw`border-[#C6C5C3]`,
-                    isMobile ? tw`w-[60px] h-[60px] border-2` : tw`w-[128px] h-[128px] border-4`
-                  ]}
+                  key={index}
+                  tw="cursor-pointer"
+                  onClick={() => {
+                    setActiveIndex(activeIndex === index ? null : index);
+                    setCurGallery(
+                      getGalleryData(
+                        portfolioData,
+                        activeIndex === index ? null : index
+                      )
+                    );
+                  }}
                 >
-                  {portfolioData.PortfolioImages[index] && (
-                    <Image
-                      src={portfolioData.PortfolioImages[index]}
-                      alt="Portfolio Image"
-                      layout="fill"
-                    />
-                  )}
-                </div>
+                  <div
+                    css={[
+                      tw`relative rounded-full overflow-hidden origin-bottom border-transparent`,
+                      activeIndex === index && tw`border-[#C6C5C3]`,
+                      isMobile ? tw`w-[60px] h-[60px] border-2` : tw`w-[128px] h-[128px] border-4`
+                    ]}
+                  >
+                    {portfolioData.PortfolioImages[index] && (
+                      <Image
+                        src={portfolioData.PortfolioImages[index]}
+                        alt="Portfolio Image"
+                        layout="fill"
+                      />
+                    )}
+                  </div>
 
-                <div css={[
-                  tw`text-[#3C3C3C] text-center`,
-                  isMobile ? tw`text-[12px] mt-1` : tw`text-[16px] mt-2`
-                ]}>{portfolio.name}</div>
-              </div>
-            ))}
+                  <div css={[
+                    tw`text-[#3C3C3C] text-center`,
+                    isMobile ? tw`text-[12px] mt-1` : tw`text-[16px] mt-2`
+                  ]}>{portfolio.name}</div>
+                </div>
+              ))}
+            </div>
           </div>
 
           <CircleDescriptionBox

@@ -204,7 +204,146 @@ const IndividualWork: NextPage = () => {
         </Head>
         <Header />
         <Container>
-          gfp
+          {workImages[selectedImage] ?
+            <div tw='relative w-full flex items-center'>
+              <img src={workImages[selectedImage]} tw='w-full' />
+              <button
+                tw='bg-white border border-[#E8E8E8] hover:bg-[#F5F5F5] w-9 h-9 rounded-full absolute top-[10px] right-[10px]'
+              >
+                <img src='/assets/svgs/like.svg' tw='m-auto w-[18px]' />
+              </button>
+              <div tw='w-9 h-9 absolute top-[10px] right-[60px]'>
+                <ShareButton
+                  title={`${workData.title} | Pkazo`}
+                  text={`Checkout this work I found on Pkazo: ${workData.title} https://pkazo.com/work/${workId}`}
+                  url={`https://pkazo.com/work/${workId}`}
+                />
+              </div>
+            </div> :
+            <div tw='w-full text-center m-auto py-5'>Unable to load image</div>
+          }
+          <div tw='mx-4 mt-4 mb-4'>
+            <div tw='grid grid-rows-1 grid-flow-col gap-x-3 w-full overflow-auto'>
+              {workImages.map((work, i) => (
+                <button
+                  tw='w-[60px] h-[60px] rounded-[4px] overflow-hidden flex items-center'
+                  css={[selectedImage !== i && tw`opacity-70`]}
+                  key={i}
+                  onClick={() => setSelectedImage(i)}
+                >
+                  <Image
+                    src={work}
+                    width='60px'
+                    height='60px'
+                    objectFit='cover' />
+                </button>
+              ))}
+            </div>
+            <div tw='flex items-center mt-4'>
+              <div tw="w-[55px] h-[55px] overflow-hidden rounded-full flex items-center">
+                <Image
+                  src={artistPicture}
+                  alt="profile_image"
+                  width="55px"
+                  height="55px"
+                  objectFit="cover"
+                />
+              </div>
+              <div tw='ml-[10px]'>
+                <div tw='text-[16px] leading-[19px] font-semibold text-black'>
+                  {artistData.name}
+                </div>
+                <div tw='mt-1 text-[14px] font-medium text-[#727373]'>
+                  {artistData.location}
+                </div>
+              </div>
+            </div>
+            <div tw='mt-4 flex items-center justify-center w-full'>
+              Original,Print
+            </div>
+            <div tw='mt-5 flex items-center justify-between'>
+              <div tw='font-medium italic text-[24px] leading-[1em] text-[#5F5F5F]'>
+                {workData.title}
+              </div>
+              {workData.forSale &&
+                <div tw='font-semibold text-[24px] leading-[1em] text-[#222222]'>
+                  ${workData.sale?.price}
+                </div>
+              }
+            </div>
+            <div tw='flex flex-wrap w-full mt-[10px]'>
+              {[workData.surface].map((tag) => (
+                <div
+                  tw='bg-[#FFE1E1] rounded-[52px] h-6 px-[11px] font-semibold text-[12px] text-[#742F2F] flex items-center'
+                  key={tag}
+                >
+                  {tag}
+                </div>
+              ))}
+            </div>
+            <div tw='font-medium mt-3 text-[14px] text-[#3C3C3C] leading-[1em] flex flex-col justify-between h-[55px]'>
+              <div>{workData.year}</div>
+              <div>{workData.medium}</div>
+              <div>{workData.height} x {workData.width} inches</div>
+            </div>
+            {workData.forSale && 0 ?
+              <div tw='mt-5'>
+                <div tw='text-[12px] text-[#333333] cursor-pointer'>
+                  Pay as low as $66/ mo. <b>Affirm.</b> See if you&#39;re qualified.
+                </div>
+                <button
+                  tw='mt-4'
+                  css={[
+                    buttons.white,
+                    tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`
+                  ]}
+                >
+                  Buy now
+                </button>
+                <button
+                  tw='mt-[14px]'
+                  css={[
+                    buttons.red,
+                    tw`h-12 text-[16px] text-white w-full`
+                  ]}
+                >
+                  Add to cart
+                </button>
+                <div tw='w-full items-center grid grid-cols-[16px auto] gap-x-2 mt-5'>
+                  <img src='/assets/svgs/shieldpay.svg' />
+                  <div tw='text-[12px] text-[#333333] font-semibold'>
+                    Secure payment
+                  </div>
+                  <div />
+                  <div tw='text-[12px] text-black mt-[2px] mb-2'>
+                    Secure transactions by credit card through Stripe.
+                  </div>
+                  <img src='/assets/svgs/check.svg' />
+                  <div tw='text-[12px] text-[#333333] font-semibold'>
+                    Your purchase is protected
+                  </div>
+                  <div />
+                  <div tw='text-[12px] text-black mt-[2px] mb-2'>
+                    Learn more about <b tw='font-semibold'>Pkazo&#39;s buyer protection.</b>
+                  </div>
+                </div>
+              </div> :
+              <div>
+                <button
+                  tw='mt-5'
+                  css={[
+                    buttons.white,
+                    tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`
+                  ]}
+                >
+                  Make offer
+                </button>
+              </div>
+            }
+            <div tw='mt-5 text-[14px] text-[#3C3C3C] leading-[23px]'>
+              {workData.description}
+            </div>
+          </div>
         </Container>
       </>
     )
@@ -276,6 +415,7 @@ const IndividualWork: NextPage = () => {
                   {workImages.map((work, i) => (
                     <button
                       tw='w-[86px] h-[86px] rounded-[8px] overflow-hidden flex items-center'
+                      css={[selectedImage !== i && tw`opacity-70`]}
                       key={i}
                       onClick={() => setSelectedImage(i)}
                     >
@@ -288,10 +428,10 @@ const IndividualWork: NextPage = () => {
                   ))}
                 </div>
               }
-              <div tw='relative h-[608px] max-w-[800px] w-[50vw] bg-[#F9F9F9] flex items-center'>
+              <div tw='relative h-[608px] max-w-[800px] w-[50vw] bg-[#F9F9F9] flex items-center justify-center'>
                 {workImages[selectedImage] ?
                   <img src={workImages[selectedImage]}
-                    tw='max-w-full max-h-full h-auto' /> :
+                    tw='object-contain w-full h-full' /> :
                   <div tw='m-auto'>Unable to load image</div>
                 }
                 <button
@@ -417,9 +557,11 @@ const IndividualWork: NextPage = () => {
               <div tw='italic text-[36px] leading-[1em] text-[#3C3C3C]'>
                 {workData.title}
               </div>
-              <div tw='font-semibold text-[32px] leading-[1em] text-[#242424]'>
-                {workData.forSale ? `\$${workData.sale?.price}` : 'Not for sale'}
-              </div>
+              {workData.forSale &&
+                <div tw='font-semibold text-[32px] leading-[1em] text-[#242424]'>
+                  ${workData.sale?.price}
+                </div>
+              }
             </div>
             <div tw='flex flex-wrap w-full mt-2'>
               {[workData.surface].map((tag) => (
@@ -436,47 +578,61 @@ const IndividualWork: NextPage = () => {
               <div>{workData.medium}</div>
               <div>{workData.height} x {workData.width} inches</div>
             </div>
-            <div tw='mt-6 px-7 flex flex-col items-center border-t-2 border-b-2 border-[#E9E9E9] py-6'>
-              <div tw='text-[14px] text-[#333333] cursor-pointer'>
-                Pay as low as $66/ mo. <b>Affirm.</b> See if you&#39;re qualified.
+
+            {workData.forSale ?
+              <div tw='mt-6 px-7 flex flex-col items-center border-t-2 border-b-2 border-[#E9E9E9] py-6'>
+                <div tw='text-[14px] text-[#333333] cursor-pointer'>
+                  Pay as low as $66/ mo. <b>Affirm.</b> See if you&#39;re qualified.
+                </div>
+                <button
+                  tw='mt-5'
+                  css={[
+                    buttons.white,
+                    tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`
+                  ]}
+                >
+                  Buy now
+                </button>
+                <button
+                  tw='mt-3'
+                  css={[
+                    buttons.red,
+                    tw`h-12 text-[16px] text-white w-full`
+                  ]}
+                >
+                  Add to cart
+                </button>
+                <div tw='w-full items-center grid grid-cols-[16px auto] gap-x-2 mt-5'>
+                  <img src='/assets/svgs/shieldpay.svg' />
+                  <div tw='text-[14px] text-[#333333] font-semibold'>
+                    Secure payment
+                  </div>
+                  <div />
+                  <div tw='text-[14px] text-black mt-[2px] mb-2'>
+                    Secure transactions by credit card through Stripe.
+                  </div>
+                  <img src='/assets/svgs/check.svg' />
+                  <div tw='text-[14px] text-[#333333] font-semibold'>
+                    Your purchase is protected
+                  </div>
+                  <div />
+                  <div tw='text-[14px] text-black mt-[2px] mb-2'>
+                    Learn more about <b tw='font-semibold'>Pkazo&#39;s buyer protection.</b>
+                  </div>
+                </div>
+              </div> :
+              <div>
+                <button
+                  tw='mt-6'
+                  css={[
+                    buttons.white,
+                    tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`
+                  ]}
+                >
+                  Make offer
+                </button>
               </div>
-              <button
-                tw='mt-5'
-                css={[
-                  buttons.white,
-                  tw`border-[1.5px] border-[#3C3C3C] h-12 text-[14px] text-[#3C3C3C] w-full`
-                ]}
-              >
-                Buy now
-              </button>
-              <button
-                tw='mt-3'
-                css={[
-                  buttons.red,
-                  tw`h-12 text-[14px] text-white w-full`
-                ]}
-              >
-                Add to cart
-              </button>
-              <div tw='w-full items-center grid grid-cols-[16px auto] gap-x-2 mt-5'>
-                <img src='/assets/svgs/shieldpay.svg' />
-                <div tw='text-[14px] text-[#333333] font-semibold'>
-                  Secure payment
-                </div>
-                <div />
-                <div tw='text-[14px] text-black mt-[2px] mb-2'>
-                  Secure transactions by credit card through Stripe.
-                </div>
-                <img src='/assets/svgs/check.svg' />
-                <div tw='text-[14px] text-[#333333] font-semibold'>
-                  Your purchase is protected
-                </div>
-                <div />
-                <div tw='text-[14px] text-black mt-[2px] mb-2'>
-                  Learn more about <b tw='font-semibold'>Pkazo&#39;s buyer protection.</b>
-                </div>
-              </div>
-            </div>
+            }
             <div tw='mt-6 px-7'>
               <div tw='grid grid-cols-2 mt-6'>
                 <div tw='text-[16px] leading-[20px] text-[#65676B]'>
@@ -581,7 +737,7 @@ function ShareButton(props: { title: string; text: string; url: string }) {
   }
   return (
     <button
-      tw="bg-white rounded-full w-9 h-9 flex justify-center items-center"
+      tw="bg-white hover:bg-[#F5F5F5] rounded-full w-9 h-9 flex justify-center items-center"
       onClick={() => navigator.share(data)}
     >
       <svg
@@ -593,7 +749,7 @@ function ShareButton(props: { title: string; text: string; url: string }) {
       >
         <path
           d="M12 4L10.58 5.42L8.99 3.83V13H7.01V3.83L5.42 5.42L4 4L8 0L12 4ZM16 9V16.75C16 17.85 15.1 18.75 14 18.75H2C0.89 18.75 0 17.85 0 16.75V9C0 7.89 0.89 7 2 7H5V9H2V16.75H14V9H11V7H14C15.1 7 16 7.89 16 9Z"
-          fill="#222222"
+          fill="#5A5A5A"
         />
       </svg>
     </button>
