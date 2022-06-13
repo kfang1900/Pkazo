@@ -21,10 +21,10 @@
 
 @media not screen and (min-width: 768px) {
   .masonry {
-    margin: auto -2px;
+    margin: auto 0px;
   }
   .column {
-    padding: 0 2px;
+    padding: 0 0px;
   }
   .masonry-column {
     margin: auto -6px;
