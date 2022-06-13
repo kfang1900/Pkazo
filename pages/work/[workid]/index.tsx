@@ -252,19 +252,40 @@ const IndividualWork: NextPage = () => {
         />
       )}
       <Container>
-        <div tw="flex mt-10 w-full">
+        <div tw="flex mt-10 w-full mb-4 md:mb-[30px]">
           <div>
             <div tw='flex gap-x-9'>
-              {workImages.length >= 2 && <div>image sidebar</div>}
-              <div tw='relative h-[608px] max-w-[800px] w-[50vw] bg-[#F4F4F4] flex items-center'>
+              {workImages.length >= 2 &&
+                <div>
+                  {workImages.map((work, i) => (
+                    <button
+                      tw='w-[86px] h-[86px] rounded-[8px] overflow-hidden flex items-center'
+                      key={i}
+                      onClick={() => setSelectedImage(i)}
+                    >
+                      <Image
+                        src={work}
+                        width='86px'
+                        height='86px'
+                        objectFit='cover' />
+                    </button>
+                  ))}
+                </div>
+              }
+              <div tw='relative h-[608px] max-w-[800px] w-[50vw] bg-[#F9F9F9] flex items-center'>
                 {workImages[selectedImage] ?
                   <img src={workImages[selectedImage]}
                     tw='max-w-full max-h-full h-auto' /> :
                   <div tw='m-auto'>Unable to load image</div>
                 }
+                <button
+                  tw='bg-white border border-[#E8E8E8] hover:bg-[#F5F5F5] w-12 h-12 rounded-full absolute top-[10px] right-[10px]'
+                >
+                  <img src='/assets/svgs/like.svg' tw='m-auto w-[18px]' />
+                </button>
                 {workImages.length >= 2 && (
                   <button
-                    tw="w-9 h-9 rounded-full bg-white opacity-30 hover:opacity-50 absolute top-[50%] left-[10px] flex-shrink-0"
+                    tw="w-12 h-12 rounded-full bg-white opacity-30 hover:opacity-50 absolute top-[50%] left-[10px] flex-shrink-0"
                     onClick={
                       () => setSelectedImage((selectedImage - 1 + workImages.length) % workImages.length)
                     }
@@ -274,7 +295,7 @@ const IndividualWork: NextPage = () => {
                 )}
                 {workImages.length >= 2 && (
                   <button
-                    tw="w-9 h-9 rounded-full bg-white opacity-30 hover:opacity-50 absolute top-[50%] right-[10px] flex-shrink-0"
+                    tw="w-12 h-12 rounded-full bg-white opacity-30 hover:opacity-50 absolute top-[50%] right-[10px] flex-shrink-0"
                     onClick={
                       () => setSelectedImage((selectedImage + 1) % workImages.length)
                     }
@@ -399,11 +420,15 @@ const IndividualWork: NextPage = () => {
               <div>{workData.medium}</div>
               <div>{workData.height} x {workData.width} inches</div>
             </div>
-            <div tw='mt-6 px-7 flex flex-col border-t-2 border-b-2 border-[#E9E9E9] py-6'>
+            <div tw='mt-6 px-7 flex flex-col items-center border-t-2 border-b-2 border-[#E9E9E9] py-6'>
+              <div tw='text-[14px] text-[#333333] cursor-pointer'>
+                Pay as low as $66/ mo. <b>Affirm.</b> See if you&#39;re qualified.
+              </div>
               <button
+                tw='mt-5'
                 css={[
                   buttons.white,
-                  tw`border-[1.5px] border-[#3C3C3C] h-12 text-[14px] text-[#3C3C3C]`
+                  tw`border-[1.5px] border-[#3C3C3C] h-12 text-[14px] text-[#3C3C3C] w-full`
                 ]}
               >
                 Buy now
@@ -412,139 +437,115 @@ const IndividualWork: NextPage = () => {
                 tw='mt-3'
                 css={[
                   buttons.red,
-                  tw`h-12 text-[14px] text-white`
+                  tw`h-12 text-[14px] text-white w-full`
                 ]}
               >
                 Add to cart
               </button>
-            </div>
-          </div>
-          <div tw="min-w-[428px] hidden">
-            <div tw="mt-6 border border-gray-100 mx-5"></div>
-            <div tw="mt-9 items-center flex flex-col gap-y-2.5">
-              <button
-                tw="w-[354px] border border-black rounded-full py-4 hover:bg-gray-100"
-                onClick={() => setShowCheckoutModal(true)}
-              >
-                Buy now
-              </button>
-              <button tw="w-[354px] rounded-full py-4 border-soft-red bg-soft-red hover:bg-red-600 hover:border-red-600 text-white">
-                Add to cart
-              </button>
-            </div>
-            <div tw="my-9 border border-gray-100 mx-5"></div>
-            <div tw="ml-14 flex flex-col gap-y-9 text-sm text-gray-500">
-              <div tw="flex">
-                {shippingZip && (
-                  <p tw="flex-auto">
-                    Ship to{' '}
-                    <span tw="text-black font-semibold">
-                      United States, {shippingZip}
-                    </span>
-                  </p>
-                )}
-                <div tw="flex-auto flex flex-row-reverse">
-                  <a
-                    tw="underline"
-                    href="#"
-                    onClick={() => {
-                      setShowShippingEstimateModal(true);
-                      setShippingEstimateModalZip(shippingZip || '');
-                    }}
-                  >
-                    Change Address
-                  </a>
+              <div tw='w-full items-center grid grid-cols-[16px auto] gap-x-2 mt-5'>
+                <img src='/assets/svgs/shieldpay.svg' />
+                <div tw='text-[14px] text-[#333333] font-semibold'>
+                  Secure payment
+                </div>
+                <div />
+                <div tw='text-[14px] text-black mt-[2px] mb-2'>
+                  Secure transactions by credit card through Stripe.
+                </div>
+                <img src='/assets/svgs/check.svg' />
+                <div tw='text-[14px] text-[#333333] font-semibold'>
+                  Your purchase is protected
+                </div>
+                <div />
+                <div tw='text-[14px] text-black mt-[2px] mb-2'>
+                  Learn more about <b tw='font-semibold'>Pkazo&#39;s buyer protection.</b>
                 </div>
               </div>
-              {artistData.shippingProcessingTime && (
-                <div tw="flex flex-col gap-y-2">
-                  <p>Ready to ship</p>
-                  <p tw="text-black text-xl">
-                    {artistData.shippingProcessingTime}
-                  </p>
-                </div>
-              )}
-              <div tw="flex">
-                <div tw="flex-auto flex flex-col gap-y-2">
-                  <p>Cost to ship</p>
-
-                  {shippingEstimateLoading ? (
-                    <a tw="text-gray-500 text-lg">Loading...</a>
-                  ) : shippingCost ? (
-                    <p tw={'text-black text-xl'}>${shippingCost}</p>
-                  ) : (
-                    <a
-                      tw="underline text-gray-500 text-lg cursor-pointer select-none"
-                      onClick={() => {
-                        setShowShippingEstimateModal(true);
-                        setShippingEstimateModalZip(shippingZip || '');
-                      }}
-                    >
-                      Calculate
-                    </a>
-                  )}
-                </div>
-                <div tw="flex-auto flex flex-col gap-y-2">
-                  <p>Returns</p>
-                  <p tw="text-black text-xl">Accepted</p>
-                </div>
-              </div>
-              {artistData.shippingReturnPolicies && (
-                <div>
-                  <a
-                    tw="underline cursor-pointer select-none"
-                    onClick={() => setShowShippingPolicies((p) => !p)}
-                  >
-                    {showShippingPolicies ? 'Hide' : 'Show'} Shipping and Return
-                    Policies
-                  </a>
-
-                  <p css={[!showShippingPolicies ? tw`invisible` : '']}>
-                    {artistData.shippingReturnPolicies}
-                  </p>
-                </div>
-              )}
             </div>
-            <div tw="ml-12 mt-14 flex flex-col gap-y-3 text-gray-500">
-              <p tw="font-bold text-xl mb-3">Frequently Asked Questions</p>
-
-              {(
-                (artistData.faqs || [
-                  {
-                    question: 'How do I get in touch?',
-                    answer: 'Send me a message!',
-                  },
-                ]) as { question: string; answer: string }[]
-              ).map(({ question, answer }, i) => (
-                <button
-                  tw="p-4 border border-gray-500 rounded-[27px] text-left"
-                  key={i}
-                  onClick={() =>
-                    setExpandedFAQ((current) => (current === i ? -1 : i))
-                  }
-                >
-                  <div tw="flex">
-                    {/* flex-grow should just be grow, wait for twin.macro to update */}
-                    <p tw="flex-grow text-sm font-bold">{question}</p>
-                    <div tw="flex items-center">
-                      <svg
-                        width="15"
-                        height="9"
-                        viewBox="0 0 15 9"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        css={expandedFAQ === i ? '' : tw`rotate-[270deg]`}
+            <div tw='mt-6 px-7'>
+              <div tw='grid grid-cols-2 mt-6'>
+                <div tw='text-[16px] leading-[20px] text-[#65676B]'>
+                  Ready to ship
+                </div>
+                <div />
+                <div tw='text-[20px] text-black leading-[28px] mt-1'>
+                  {artistData.shippingProcessingTime}
+                </div>
+                <div />
+                <div tw='text-[16px] leading-[20px] text-[#65676B] mt-6'>
+                  Shipping cost
+                </div>
+                <div tw='text-[16px] leading-[20px] text-[#65676B] mt-6'>
+                  Returns
+                </div>
+                <div tw='text-[20px] text-black leading-[28px] mt-1'>
+                  {shippingEstimateLoading ?
+                    'Loading...' :
+                    (shippingCost ?
+                      `\$${shippingCost}` :
+                      <button
+                        tw="underline text-[#333333]"
+                        onClick={() => {
+                          setShowShippingEstimateModal(true);
+                          setShippingEstimateModalZip(shippingZip || '');
+                        }}
                       >
-                        <path
-                          d="M14.6871 0.273877C14.3219 -0.0912924 13.7298 -0.0912924 13.3646 0.273877L7.48026 6.15828L1.59586 0.273877C1.23071 -0.091293 0.638616 -0.091293 0.273465 0.273876C-0.0916853 0.639055 -0.0916853 1.23111 0.273465 1.59629L6.81906 8.14188C7.18421 8.50703 7.77631 8.50703 8.14146 8.14188L14.6871 1.59629C15.0522 1.23112 15.0522 0.639056 14.6871 0.273877Z"
-                          fill="#8B8B8B"
-                        />
-                      </svg>
+                        Calculate
+                      </button>)}
+                </div>
+                <div tw='text-[20px] text-black leading-[28px] mt-1'>
+                  Accepted
+                </div>
+              </div>
+              {artistData.shippingReturnPolicies &&
+                <div tw='mt-6'>
+                  <button
+                    tw='underline text-[#65676B] text-[16px]'
+                    onClick={() => setShowShippingPolicies(!showShippingPolicies)}
+                  >
+                    {showShippingPolicies && 'Hide '}Shipping and Return Policies
+                  </button>
+                  {showShippingPolicies &&
+                    <div tw='text-[16px] text-black'>
+                      {artistData.shippingReturnPolicies}
+                    </div>}
+                </div>
+              }
+            </div>
+            <div tw='mt-10'>
+              <div tw='ml-3 text-[20px] text-black leading-[27px] font-semibold'>
+                Frequently Asked Questions
+              </div>
+              <div tw='mt-7 pl-7 flex flex-col gap-y-5'>
+                {(
+                  (artistData.faqs || [
+                    {
+                      question: 'How do I get in touch?',
+                      answer: 'Send me a message!',
+                    },
+                  ]) as { question: string; answer: string }[]
+                ).map(({ question, answer }, i) => (
+                  <button
+                    tw='px-6 py-[14px] border-[1.5px] border-[#8B8B8B] rounded-[30px]'
+                    key={i}
+                    onClick={() =>
+                      setExpandedFAQ((current) => (current === i ? -1 : i))
+                    }
+                  >
+                    <div tw='flex w-full items-center justify-between text-[14px] leading-[19px] font-bold text-[#65676B]'>
+                      <div>{question}</div>
+                      <img
+                        src='/assets/svgs/arrow_down.svg'
+                        tw='w-5'
+                        css={[expandedFAQ === i && tw`scale-y-[-1]`]} />
                     </div>
-                  </div>
-                  {expandedFAQ === i && <p tw="mt-3 text-sm">{answer}</p>}
-                </button>
-              ))}
+                    {expandedFAQ === i &&
+                      <div tw='text-left mt-1 text-[14px] text-[#8B8B8B] w-full'>
+                        {answer}
+                      </div>
+                    }
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div >
