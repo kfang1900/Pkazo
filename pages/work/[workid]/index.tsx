@@ -40,6 +40,8 @@ import tw from 'twin.macro';
 import axios from 'axios';
 import Modal from '../../../components/popups/Modal';
 import { getApp } from 'firebase/app';
+import buttons from 'styles/Button';
+import { Container } from 'styles/Container'
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },
@@ -98,8 +100,7 @@ const IndividualWork: NextPage = () => {
       }
       axios
         .get(
-          `/api/shipping/estimated-rates?workId=${workId}${
-            zip ? '&zip=' + zip : ''
+          `/api/shipping/estimated-rates?workId=${workId}${zip ? '&zip=' + zip : ''
           }`
         )
 
@@ -250,329 +251,304 @@ const IndividualWork: NextPage = () => {
           artistData={artistData as ArtistData}
         />
       )}
-      <div tw="flex mt-8">
-        {/* flex-grow should just be grow, wait for twin.macro to update */}
-        <div tw="flex-grow">
-          <div tw="mt-9 ml-[126px] flex">
-            <div tw="flex flex-col gap-y-5">
-              {workImages.map((x, i) => (
-                <button key={i} onClick={() => setSelectedImage(i)}>
-                  <Image
-                    src={x}
-                    width={86}
-                    height={86}
-                    alt="work_image_preview"
-                  />
-                </button>
+      <Container>
+        <div tw="flex mt-10 w-full">
+          <div>
+            <div tw='flex gap-x-9'>
+              {workImages.length >= 2 && <div>image sidebar</div>}
+              <div tw='relative h-[608px] max-w-[800px] w-[50vw] bg-[#F4F4F4] flex items-center'>
+                {workImages[selectedImage] ?
+                  <img src={workImages[selectedImage]}
+                    tw='max-w-full max-h-full h-auto' /> :
+                  <div tw='m-auto'>Unable to load image</div>
+                }
+                {workImages.length >= 2 && (
+                  <button
+                    tw="w-9 h-9 rounded-full bg-white opacity-30 hover:opacity-50 absolute top-[50%] left-[10px] flex-shrink-0"
+                    onClick={
+                      () => setSelectedImage((selectedImage - 1 + workImages.length) % workImages.length)
+                    }
+                  >
+                    <img src='/assets/svgs/arrow_left.svg' tw='m-auto' />
+                  </button>
+                )}
+                {workImages.length >= 2 && (
+                  <button
+                    tw="w-9 h-9 rounded-full bg-white opacity-30 hover:opacity-50 absolute top-[50%] right-[10px] flex-shrink-0"
+                    onClick={
+                      () => setSelectedImage((selectedImage + 1) % workImages.length)
+                    }
+                  >
+                    <img src='/assets/svgs/arrow_right.svg' tw='m-auto' />
+                  </button>
+                )}
+              </div>
+            </div>
+            <div tw='mt-10 text-[18px] text-[#212121] leading-[32px]'>
+              {workData.description}
+            </div>
+            <div tw='mt-7 flex flex-wrap gap-3 w-full'>
+              {['cat', 'meow', 'gfp'].map((tag) => (
+                <div
+                  tw='bg-[#C4C4C4] h-7 px-[15px] rounded-[30px] text-white text-[12px] font-semibold flex items-center'
+                  key={tag}
+                >
+                  {tag}
+                </div>
               ))}
             </div>
-            {/* flex-grow should just be grow, wait for twin.macro to update */}
-            <div tw="mx-10 flex-grow flex gap-x-6 justify-center items-center">
-              <button
-                tw="bg-gray-100 rounded-full w-8 h-8 flex justify-center items-center"
-                onClick={() =>
-                  setSelectedImage(
-                    (selectedImage + workImages.length - 1) % workImages.length
-                  )
-                }
-              >
-                <svg
-                  width="9"
-                  height="16"
-                  viewBox="0 0 9 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M8.29888 15.0384C8.66405 14.6732 8.66405 14.0811 8.29888 13.716L2.41447 7.83158L8.29888 1.94718C8.66405 1.58203 8.66405 0.989934 8.29888 0.624784C7.9337 0.259633 7.34164 0.259633 6.97646 0.624784L0.430875 7.17038C0.0657234 7.53553 0.0657234 8.12762 0.430875 8.49277L6.97646 15.0384C7.34164 15.4035 7.9337 15.4035 8.29888 15.0384Z"
-                    fill="#222222"
-                  />
-                </svg>
-              </button>
-              <div tw="relative">
-                {workImages[selectedImage] ? (
-                  <div tw={'align-middle'}>
-                    <img
-                      src={workImages[selectedImage]}
-                      width={486}
-                      tw={'align-middle'}
-                      alt="work_image"
-                    />
-                  </div>
-                ) : (
-                  <p>Unable to load image</p>
-                )}
-                <div tw={'absolute top-4 right-4 flex flex-row gap-4'}>
-                  <ShareButton
-                    title={`${workData.title} | Pkazo`}
-                    text={`Checkout this work I found on Pkazo: ${workData.title} https://pkazo.com/work/${workId}`}
-                    url={`https://pkazo.com/work/${workId}`}
-                  />
-                  <button tw="bg-white rounded-full w-9 h-9 flex justify-center items-center">
-                    <svg
-                      width="18"
-                      height="16"
-                      viewBox="0 0 18 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M16.1156 1.26059C14.0836 -0.448009 10.9441 -0.191368 9.00001 1.78793C7.05586 -0.191368 3.91641 -0.451525 1.88438 1.26059C-0.759371 3.48598 -0.372652 7.1141 1.51172 9.03715L7.67813 15.3196C8.02969 15.6782 8.50079 15.8786 9.00001 15.8786C9.50274 15.8786 9.97032 15.6817 10.3219 15.3231L16.4883 9.04066C18.3691 7.11762 18.7629 3.48949 16.1156 1.26059ZM15.2859 7.85238L9.11954 14.1348C9.03516 14.2192 8.96485 14.2192 8.88047 14.1348L2.71407 7.85238C1.43086 6.54457 1.17071 4.06957 2.97071 2.55434C4.33829 1.40473 6.44766 1.57699 7.76954 2.92348L9.00001 4.17855L10.2305 2.92348C11.5594 1.56996 13.6688 1.40473 15.0293 2.55082C16.8258 4.06605 16.5586 6.55512 15.2859 7.85238Z"
-                        fill="#222222"
-                      />
-                    </svg>
-                  </button>
+            <div tw='mt-10'>
+              <div tw='flex items-center'>
+                <div tw='text-[20px] text-black'>
+                  {comments.length} store reviews
+                </div>
+                <div tw='ml-[18px] text-[18px] text-black font-semibold'>
+                  {(Math.round(4.98 * 10) / 10).toFixed(1)}
+                </div>
+                <div tw='ml-2 flex gap-x-[5px] h-4'>
+                  <img src='/assets/svgs/orange_star.svg' />
+                  <img src='/assets/svgs/orange_star.svg' />
+                  <img src='/assets/svgs/orange_star.svg' />
+                  <img src='/assets/svgs/orange_star.svg' />
+                  <img src='/assets/svgs/light_gray_star.svg' />
                 </div>
               </div>
-              <button
-                tw="bg-gray-100 rounded-full w-8 h-8 flex justify-center items-center"
-                onClick={() =>
-                  setSelectedImage((selectedImage + 1) % workImages.length)
-                }
-              >
-                <svg
-                  width="9"
-                  height="16"
-                  viewBox="0 0 9 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M0.69917 1.00166C0.334001 1.36684 0.334001 1.9589 0.69917 2.32408L6.58358 8.20846L0.69917 14.0929C0.334001 14.458 0.334001 15.0501 0.69917 15.4153C1.06435 15.7804 1.65641 15.7804 2.02159 15.4153L8.56717 8.86966C8.93232 8.50451 8.93232 7.91242 8.56717 7.54726L2.02159 1.00166C1.65641 0.636491 1.06435 0.636491 0.69917 1.00166Z"
-                    fill="#222222"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <div tw="mt-12 ml-[139px] mr-[53px]">
-            <p tw="text-lg">{workData.description}</p>
-            {/*<p tw="mt-10 text-2xl font-semibold">Progress Posts</p>*/}
-            {/*<div tw="mt-8 flex h-[150px] gap-x-8">*/}
-            {/*  {progressImages.map((x, i) => (*/}
-            {/*    <button key={i} onClick={() => setPopup(true)}>*/}
-            {/*      <Image*/}
-            {/*        src={x.src}*/}
-            {/*        width={150}*/}
-            {/*        height={150}*/}
-            {/*        alt="work_progress_post"*/}
-            {/*      />*/}
-            {/*    </button>*/}
-            {/*  ))}*/}
-            {/*</div>*/}
-            <p tw="my-10 text-2xl font-semibold">Reviews</p>
-            <div tw="flex flex-col gap-y-8">
-              {comments.map((comment, i) => (
-                <div key={i} tw="flex">
-                  <div tw="w-[36px] h-full overflow-hidden rounded-full flex items-center">
-                    <Image
-                      src={comment.imgSrc}
-                      alt="profile_image"
-                      width="36px"
-                      height="36px"
-                      objectFit="cover"
-                    />
-                  </div>
-                  <div tw="ml-[12px]">
-                    <div tw="flex">
-                      <div tw="text-[12px] leading-[18px] font-bold text-black">
-                        {comment.user}
+              <div tw='mt-8 flex flex-col gap-y-9'>
+                {comments.map((comment, i) => (
+                  <div key={i}>
+                    <div tw='flex'>
+                      <div tw="w-9 h-9 overflow-hidden rounded-full flex items-center">
+                        <Image
+                          src={comment.imgSrc}
+                          alt="profile_image"
+                          width="36px"
+                          height="36px"
+                          objectFit="cover"
+                        />
                       </div>
-                      <div tw="text-[12px] leading-[18px] text-[#7F838B] ml-[12px]">
-                        {comment.time}
+                      <div tw="ml-3">
+                        <div tw="flex">
+                          <div tw="text-[12px] leading-[18px] font-semibold text-black">
+                            {comment.user}
+                          </div>
+                          <div tw="text-[12px] leading-[18px] text-[#7F838B] ml-[12px]">
+                            {comment.time}
+                          </div>
+                        </div>
+
+                        <div tw='flex gap-x-1 h-3'>
+                          <img src='/assets/svgs/orange_star.svg' />
+                          <img src='/assets/svgs/orange_star.svg' />
+                          <img src='/assets/svgs/orange_star.svg' />
+                          <img src='/assets/svgs/orange_star.svg' />
+                          <img src='/assets/svgs/light_gray_star.svg' />
+                        </div>
                       </div>
                     </div>
-                    <div tw="text-[12px] leading-[18px] text-black">
+                    <div tw="mt-1 text-[16px] leading-[24px] text-[#3C3C3C]">
                       {comment.comment}
                     </div>
                   </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div tw='ml-16 w-full'>
+            <div tw='flex items-center'>
+              <div tw="w-[60px] h-[60px] overflow-hidden rounded-full flex items-center">
+                <Image
+                  src={artistPicture}
+                  alt="profile_image"
+                  width="60px"
+                  height="60px"
+                  objectFit="cover"
+                />
+              </div>
+              <div tw='ml-5'>
+                <div tw='text-[20px] leading-[1em] font-bold text-[#3C3C3C]'>
+                  {artistData.name}
+                </div>
+                <div tw='text-[16px] leading-[1em] font-semibold text-[#838383]'>
+                  {artistData.location}
+                </div>
+              </div>
+            </div>
+            <div tw='mt-3 flex items-center justify-center w-full'>
+              Original,Print
+            </div>
+            <div tw='mt-5 flex items-center justify-between'>
+              <div tw='italic text-[36px] leading-[1em] text-[#3C3C3C]'>
+                {workData.title}
+              </div>
+              <div tw='font-semibold text-[32px] leading-[1em] text-[#242424]'>
+                {workData.forSale ? `\$${workData.sale?.price}` : 'Not for sale'}
+              </div>
+            </div>
+            <div tw='flex flex-wrap w-full mt-2'>
+              {[workData.surface].map((tag) => (
+                <div
+                  tw='bg-[#FFE1E1] rounded-[22px] h-7 px-4 font-semibold text-[12px] text-[#742F2F] flex items-center'
+                  key={tag}
+                >
+                  {tag}
                 </div>
               ))}
             </div>
+            <div tw='mt-3 text-[20px] text-black leading-[1em] flex flex-col gap-y-3'>
+              <div>{workData.year}</div>
+              <div>{workData.medium}</div>
+              <div>{workData.height} x {workData.width} inches</div>
+            </div>
+            <div tw='mt-6 px-7 flex flex-col border-t-2 border-b-2 border-[#E9E9E9] py-6'>
+              <button
+                css={[
+                  buttons.white,
+                  tw`border-[1.5px] border-[#3C3C3C] h-12 text-[14px] text-[#3C3C3C]`
+                ]}
+              >
+                Buy now
+              </button>
+              <button
+                tw='mt-3'
+                css={[
+                  buttons.red,
+                  tw`h-12 text-[14px] text-white`
+                ]}
+              >
+                Add to cart
+              </button>
+            </div>
           </div>
-        </div>
-        <div tw="min-w-[428px] mr-14">
-          <Link href={'/' + artistData.username}>
-            <>
-              <div tw="flex w-full">
-                <div tw="flex-auto flex">
-                  <div tw="w-14 h-14 overflow-hidden rounded-full flex items-center">
-                    <Image
-                      src={artistPicture}
-                      alt="profile_image"
-                      width="56px"
-                      height="56px"
-                      objectFit="cover"
-                    />
-                  </div>
-                  <div tw="ml-3.5 mt-1.5">
-                    <a href={'/' + artistData.username} tw="text-xl font-bold">
-                      {artistData.name}
-                    </a>
-                    <p tw="mt-1.5 text-xs text-gray-500">
-                      {artistData.location}
-                    </p>
-                  </div>
-                </div>
+          <div tw="min-w-[428px] hidden">
+            <div tw="mt-6 border border-gray-100 mx-5"></div>
+            <div tw="mt-9 items-center flex flex-col gap-y-2.5">
+              <button
+                tw="w-[354px] border border-black rounded-full py-4 hover:bg-gray-100"
+                onClick={() => setShowCheckoutModal(true)}
+              >
+                Buy now
+              </button>
+              <button tw="w-[354px] rounded-full py-4 border-soft-red bg-soft-red hover:bg-red-600 hover:border-red-600 text-white">
+                Add to cart
+              </button>
+            </div>
+            <div tw="my-9 border border-gray-100 mx-5"></div>
+            <div tw="ml-14 flex flex-col gap-y-9 text-sm text-gray-500">
+              <div tw="flex">
+                {shippingZip && (
+                  <p tw="flex-auto">
+                    Ship to{' '}
+                    <span tw="text-black font-semibold">
+                      United States, {shippingZip}
+                    </span>
+                  </p>
+                )}
                 <div tw="flex-auto flex flex-row-reverse">
-                  <button tw="h-[40px] rounded-full font-bold text-base px-9 text-center border-soft-red bg-soft-red hover:bg-red-600 hover:border-red-600 text-white mt-1 mr-2">
-                    Follow
-                  </button>
-                </div>
-              </div>
-            </>
-          </Link>
-          <div tw="mt-3.5 flex">
-            <p tw="flex-auto text-4xl italic ml-3.5">{workData.title}</p>
-            <div tw="flex-auto flex flex-row-reverse">
-              <p tw="font-semibold text-3xl">
-                ${workData.forSale ? workData.sale?.price : 'Not for sale'}
-              </p>
-            </div>
-          </div>
-
-          {/* TODO: width should be based on content */}
-          <div tw="mt-3 ml-2 bg-red-100 rounded-3xl w-[100px] py-2 px-3 text-xs text-red-900 font-semibold text-center">
-            {workData.surface}
-          </div>
-          <div tw="mt-4 ml-3 text-xl">
-            {workData.year}
-            <br />
-            {workData.medium}
-            <br />
-            {workData.height} x {workData.width} inches
-          </div>
-          <div tw="mt-6 border border-gray-100 mx-5"></div>
-          <div tw="mt-9 items-center flex flex-col gap-y-2.5">
-            <button
-              tw="w-[354px] border border-black rounded-full py-4 hover:bg-gray-100"
-              onClick={() => setShowCheckoutModal(true)}
-            >
-              Buy now
-            </button>
-            <button tw="w-[354px] rounded-full py-4 border-soft-red bg-soft-red hover:bg-red-600 hover:border-red-600 text-white">
-              Add to cart
-            </button>
-          </div>
-          <div tw="my-9 border border-gray-100 mx-5"></div>
-          <div tw="ml-14 flex flex-col gap-y-9 text-sm text-gray-500">
-            <div tw="flex">
-              {shippingZip && (
-                <p tw="flex-auto">
-                  Ship to{' '}
-                  <span tw="text-black font-semibold">
-                    United States, {shippingZip}
-                  </span>
-                </p>
-              )}
-              <div tw="flex-auto flex flex-row-reverse">
-                <a
-                  tw="underline"
-                  href="#"
-                  onClick={() => {
-                    setShowShippingEstimateModal(true);
-                    setShippingEstimateModalZip(shippingZip || '');
-                  }}
-                >
-                  Change Address
-                </a>
-              </div>
-            </div>
-            {artistData.shippingProcessingTime && (
-              <div tw="flex flex-col gap-y-2">
-                <p>Ready to ship</p>
-                <p tw="text-black text-xl">
-                  {artistData.shippingProcessingTime}
-                </p>
-              </div>
-            )}
-            <div tw="flex">
-              <div tw="flex-auto flex flex-col gap-y-2">
-                <p>Cost to ship</p>
-
-                {shippingEstimateLoading ? (
-                  <a tw="text-gray-500 text-lg">Loading...</a>
-                ) : shippingCost ? (
-                  <p tw={'text-black text-xl'}>${shippingCost}</p>
-                ) : (
                   <a
-                    tw="underline text-gray-500 text-lg cursor-pointer select-none"
+                    tw="underline"
+                    href="#"
                     onClick={() => {
                       setShowShippingEstimateModal(true);
                       setShippingEstimateModalZip(shippingZip || '');
                     }}
                   >
-                    Calculate
+                    Change Address
                   </a>
-                )}
-              </div>
-              <div tw="flex-auto flex flex-col gap-y-2">
-                <p>Returns</p>
-                <p tw="text-black text-xl">Accepted</p>
-              </div>
-            </div>
-            {artistData.shippingReturnPolicies && (
-              <div>
-                <a
-                  tw="underline cursor-pointer select-none"
-                  onClick={() => setShowShippingPolicies((p) => !p)}
-                >
-                  {showShippingPolicies ? 'Hide' : 'Show'} Shipping and Return
-                  Policies
-                </a>
-
-                <p css={[!showShippingPolicies ? tw`invisible` : '']}>
-                  {artistData.shippingReturnPolicies}
-                </p>
-              </div>
-            )}
-          </div>
-          <div tw="ml-12 mt-14 flex flex-col gap-y-3 text-gray-500">
-            <p tw="font-bold text-xl mb-3">Frequently Asked Questions</p>
-
-            {(
-              (artistData.faqs || [
-                {
-                  question: 'How do I get in touch?',
-                  answer: 'Send me a message!',
-                },
-              ]) as { question: string; answer: string }[]
-            ).map(({ question, answer }, i) => (
-              <button
-                tw="p-4 border border-gray-500 rounded-[27px] text-left"
-                key={i}
-                onClick={() =>
-                  setExpandedFAQ((current) => (current === i ? -1 : i))
-                }
-              >
-                <div tw="flex">
-                  {/* flex-grow should just be grow, wait for twin.macro to update */}
-                  <p tw="flex-grow text-sm font-bold">{question}</p>
-                  <div tw="flex items-center">
-                    <svg
-                      width="15"
-                      height="9"
-                      viewBox="0 0 15 9"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      css={expandedFAQ === i ? '' : tw`rotate-[270deg]`}
-                    >
-                      <path
-                        d="M14.6871 0.273877C14.3219 -0.0912924 13.7298 -0.0912924 13.3646 0.273877L7.48026 6.15828L1.59586 0.273877C1.23071 -0.091293 0.638616 -0.091293 0.273465 0.273876C-0.0916853 0.639055 -0.0916853 1.23111 0.273465 1.59629L6.81906 8.14188C7.18421 8.50703 7.77631 8.50703 8.14146 8.14188L14.6871 1.59629C15.0522 1.23112 15.0522 0.639056 14.6871 0.273877Z"
-                        fill="#8B8B8B"
-                      />
-                    </svg>
-                  </div>
                 </div>
-                {expandedFAQ === i && <p tw="mt-3 text-sm">{answer}</p>}
-              </button>
-            ))}
+              </div>
+              {artistData.shippingProcessingTime && (
+                <div tw="flex flex-col gap-y-2">
+                  <p>Ready to ship</p>
+                  <p tw="text-black text-xl">
+                    {artistData.shippingProcessingTime}
+                  </p>
+                </div>
+              )}
+              <div tw="flex">
+                <div tw="flex-auto flex flex-col gap-y-2">
+                  <p>Cost to ship</p>
+
+                  {shippingEstimateLoading ? (
+                    <a tw="text-gray-500 text-lg">Loading...</a>
+                  ) : shippingCost ? (
+                    <p tw={'text-black text-xl'}>${shippingCost}</p>
+                  ) : (
+                    <a
+                      tw="underline text-gray-500 text-lg cursor-pointer select-none"
+                      onClick={() => {
+                        setShowShippingEstimateModal(true);
+                        setShippingEstimateModalZip(shippingZip || '');
+                      }}
+                    >
+                      Calculate
+                    </a>
+                  )}
+                </div>
+                <div tw="flex-auto flex flex-col gap-y-2">
+                  <p>Returns</p>
+                  <p tw="text-black text-xl">Accepted</p>
+                </div>
+              </div>
+              {artistData.shippingReturnPolicies && (
+                <div>
+                  <a
+                    tw="underline cursor-pointer select-none"
+                    onClick={() => setShowShippingPolicies((p) => !p)}
+                  >
+                    {showShippingPolicies ? 'Hide' : 'Show'} Shipping and Return
+                    Policies
+                  </a>
+
+                  <p css={[!showShippingPolicies ? tw`invisible` : '']}>
+                    {artistData.shippingReturnPolicies}
+                  </p>
+                </div>
+              )}
+            </div>
+            <div tw="ml-12 mt-14 flex flex-col gap-y-3 text-gray-500">
+              <p tw="font-bold text-xl mb-3">Frequently Asked Questions</p>
+
+              {(
+                (artistData.faqs || [
+                  {
+                    question: 'How do I get in touch?',
+                    answer: 'Send me a message!',
+                  },
+                ]) as { question: string; answer: string }[]
+              ).map(({ question, answer }, i) => (
+                <button
+                  tw="p-4 border border-gray-500 rounded-[27px] text-left"
+                  key={i}
+                  onClick={() =>
+                    setExpandedFAQ((current) => (current === i ? -1 : i))
+                  }
+                >
+                  <div tw="flex">
+                    {/* flex-grow should just be grow, wait for twin.macro to update */}
+                    <p tw="flex-grow text-sm font-bold">{question}</p>
+                    <div tw="flex items-center">
+                      <svg
+                        width="15"
+                        height="9"
+                        viewBox="0 0 15 9"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        css={expandedFAQ === i ? '' : tw`rotate-[270deg]`}
+                      >
+                        <path
+                          d="M14.6871 0.273877C14.3219 -0.0912924 13.7298 -0.0912924 13.3646 0.273877L7.48026 6.15828L1.59586 0.273877C1.23071 -0.091293 0.638616 -0.091293 0.273465 0.273876C-0.0916853 0.639055 -0.0916853 1.23111 0.273465 1.59629L6.81906 8.14188C7.18421 8.50703 7.77631 8.50703 8.14146 8.14188L14.6871 1.59629C15.0522 1.23112 15.0522 0.639056 14.6871 0.273877Z"
+                          fill="#8B8B8B"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  {expandedFAQ === i && <p tw="mt-3 text-sm">{answer}</p>}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
-      <br />
-      <br />
-      <br />
+        </div >
+      </Container>
     </>
   );
 };

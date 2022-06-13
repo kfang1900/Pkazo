@@ -68,7 +68,7 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
       <div tw="bg-white h-10 md:h-[60px] px-4 md:px-[60px] flex items-center justify-between">
         <Link href="/" passHref>
           <img
-            src='assets/images/Pkazo.svg'
+            src='/assets/images/Pkazo.svg'
             tw="cursor-pointer w-[57px] h-[20px] md:w-[92px] md:h-[32px]"
             alt="Pkazo"
           />

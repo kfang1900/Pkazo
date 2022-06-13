@@ -23,7 +23,7 @@ import { getPortfolioByRef, loadStorageImage } from 'helpers/FirebaseFunctions';
 import useAuth from '../../utils/auth/useAuth';
 import useRequireOnboarding from '../../utils/hooks/useRequireOnboarding';
 import { useMediaQuery } from 'react-responsive';
-import { Container } from 'styles/Container'
+import { Container } from 'styles/Container';
 
 //import { sample_artist } from 'utils/Sample_Posts_Imports';
 
