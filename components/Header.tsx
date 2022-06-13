@@ -31,7 +31,7 @@ interface StaticRequire {
 }
 type StaticImport = StaticRequire | StaticImageData;
 
-const Header = (props: { isBuyer?: boolean | undefined }) => {
+const Header = (props: { isBuyer?: boolean | undefined, logoOnly?: boolean }) => {
   const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => { if (isMobile !== mediaQuery) setIsMobile(mediaQuery) }, [mediaQuery, isMobile]);
@@ -59,13 +59,26 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
       setPfp(await loadStorageImage(artistData?.profilePicture));
     })();
   }, [artistData]);
+  if (props.logoOnly) {
+    return <div tw='sticky top-0 z-50 w-full'>
+      <div tw="bg-white h-10 md:h-[60px] px-4 md:px-[60px] flex items-center justify-between border-b md:border-0 border-[#D8D8D8]">
+        <Link href="/" passHref>
+          <img
+            src='/assets/images/Pkazo.svg'
+            tw="cursor-pointer w-[57px] h-[20px] md:w-[92px] md:h-[32px]"
+            alt="Pkazo"
+          />
+        </Link>
+      </div>
+    </div>
+  }
   return (
-    <div tw="sticky top-0 z-50 w-full border-b border-[#D8D8D8]">
+    <div tw="sticky top-0 z-50 w-full">
       {showLoginModal && <LoginForm onClose={() => setShowLoginModal(false)} />}
       {showUploadWorkPopup && (
         <UploadWork onClose={() => setShowUploadWorkPopup(false)} />
       )}
-      <div tw="bg-white h-10 md:h-[60px] px-4 md:px-[60px] flex items-center justify-between">
+      <div tw="bg-white h-10 md:h-[60px] px-4 md:px-[60px] flex items-center justify-between border-b border-[#D8D8D8]">
         <Link href="/" passHref>
           <img
             src='/assets/images/Pkazo.svg'

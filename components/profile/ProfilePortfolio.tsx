@@ -48,12 +48,15 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
   return (
     <div>
       {/* Circle Images Section --Start-- */}
-      <section css={[isMobile ? tw`mt-4` : tw`mt-10`]}>
+      <section css={[isMobile ? tw`mt-4` : tw`mt-[52px]`]}>
         <div className="container">
           <div tw='flex justify-center'>
             <div
-              css={[isMobile && tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`]}
+              css={[
+                isMobile && tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`
+              ]}
               tw="md:flex md:justify-between gap-6 md:w-full"
+              style={{ maxWidth: `${268 * portfolioData.Portfolios.length - 140}px` }}
             >
               {portfolioData.Portfolios.map((portfolio, index) => (
                 <div
@@ -73,7 +76,7 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
                     css={[
                       tw`relative rounded-full overflow-hidden origin-bottom border-transparent`,
                       activeIndex === index && tw`border-[#C6C5C3]`,
-                      isMobile ? tw`w-[60px] h-[60px] border-2` : tw`w-[128px] h-[128px] border-4`
+                      isMobile ? tw`w-[64px] h-[64px] border-[4px]` : tw`w-[128px] h-[128px] border-[6px]`
                     ]}
                   >
                     {portfolioData.PortfolioImages[index] && (
@@ -103,7 +106,7 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
       </section>
       {/* Circle Images Section --End-- */}
       {/* Gallery Section --Start-- */}
-      <section tw='mt-3 md:mt-8'>
+      <section tw='mt-3 md:mt-12'>
         <div className="container">
           <Masonry
             breakpointCols={{ default: 3, 500: 2 }}

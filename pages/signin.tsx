@@ -13,7 +13,7 @@ const LoginPage: NextPage = () => {
         <Head>
             <title>Login</title>
         </Head>
-        <Header />
+        <Header logoOnly />
         <div tw='flex justify-center w-full'>
             <Login onClose={() => 0} />
         </div>

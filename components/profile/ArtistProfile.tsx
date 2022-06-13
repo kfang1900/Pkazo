@@ -84,8 +84,8 @@ const ArtistProfile = ({
             )}
           </div>
           <div>
-            <div tw="text-[20px] text-black font-medium">{artist.name}</div>
-            <div tw="text-[14px] mt-1 text-[#727373] font-medium">
+            <div tw="text-[20px] leading-[23px] text-black font-medium">{artist.name}</div>
+            <div tw="text-[14px] leading-[17px] mt-1 text-[#727373] font-medium">
               {artist.location}
             </div>
             <div tw="flex mt-[14px]">
