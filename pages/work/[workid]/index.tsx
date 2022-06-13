@@ -42,6 +42,7 @@ import Modal from '../../../components/popups/Modal';
 import { getApp } from 'firebase/app';
 import buttons from 'styles/Button';
 import { Container } from 'styles/Container'
+import { useMediaQuery } from 'react-responsive';
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },
@@ -70,6 +71,7 @@ const comments = [
 ];
 
 const IndividualWork: NextPage = () => {
+  const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   const [selectedImage, setSelectedImage] = useState(0);
   const [workData, setWorkData] = useState<WorkData | null>(null);
   const [artistData, setArtistData] = useState<Record<string, any>>();
@@ -194,6 +196,20 @@ const IndividualWork: NextPage = () => {
     );
   }
 
+  if (isMobile) {
+    return (
+      <>
+        <Head>
+          <title>{workData.title || 'Artwork'} | Pkazo</title>
+        </Head>
+        <Header />
+        <Container>
+          gfp
+        </Container>
+      </>
+    )
+  }
+
   return (
     <>
       <Head>
@@ -252,7 +268,7 @@ const IndividualWork: NextPage = () => {
         />
       )}
       <Container>
-        <div tw="flex mt-10 w-full mb-4 md:mb-[30px]">
+        <div tw="flex mt-10 w-full mb-[30px]">
           <div>
             <div tw='flex gap-x-9'>
               {workImages.length >= 2 &&
@@ -389,7 +405,7 @@ const IndividualWork: NextPage = () => {
                 <div tw='text-[20px] leading-[1em] font-bold text-[#3C3C3C]'>
                   {artistData.name}
                 </div>
-                <div tw='text-[16px] leading-[1em] font-semibold text-[#838383]'>
+                <div tw='mt-[6px] text-[16px] leading-[1em] font-semibold text-[#838383]'>
                   {artistData.location}
                 </div>
               </div>
