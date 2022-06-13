@@ -109,12 +109,15 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
           }
           {profileType === 1 &&
             <>
-              <button
-                tw='text-[12px] md:text-[14px] text-[#3C3C3C] font-semibold py-1'
-                onClick={() => setShowLoginModal(true)}
-              >
-                Sign in
-              </button>
+
+              <Link href={isMobile ? '/signin' : 'javascript:void(0);'} passHref>
+                <button
+                  tw='text-[12px] md:text-[14px] text-[#3C3C3C] font-semibold py-1'
+                  onClick={() => setShowLoginModal(true)}
+                >
+                  Sign in
+                </button>
+              </Link>
               <button
                 css={[
                   buttons.red,
@@ -137,22 +140,24 @@ const Header = (props: { isBuyer?: boolean | undefined }) => {
           </Link>
         </div>
       </div >
-      {showSearch && (
-        <div tw="md:hidden flex flex-row items-center justify-between py-2">
-          <div
-            css={[
-              tw`w-full mx-2 md:mx-4 lg:mx-8`,
-              showSearch ? '' : tw`hidden md:block`,
-            ]}
-          >
-            <input
-              type="text"
-              placeholder="Search"
-              tw="px-4 py-1 bg-gray-100 outline-none rounded-full w-full"
-            />
+      {
+        showSearch && (
+          <div tw="md:hidden flex flex-row items-center justify-between py-2">
+            <div
+              css={[
+                tw`w-full mx-2 md:mx-4 lg:mx-8`,
+                showSearch ? '' : tw`hidden md:block`,
+              ]}
+            >
+              <input
+                type="text"
+                placeholder="Search"
+                tw="px-4 py-1 bg-gray-100 outline-none rounded-full w-full"
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
     </div >
   );
 };
