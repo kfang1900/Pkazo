@@ -63,16 +63,11 @@ export const Login = (props: LoginFormProps) => {
           }}
           onSubmit={async (values, { setFieldError }) => {
             try {
-              await auth
-                .createUserWithEmailAndPassword(
-                  values.displayName,
-                  values.email,
-                  values.password
-                )
-                .then((userCred) => {
-                  if (!userCred?.user) return;
-                  auth.apiLogin(userCred.user);
-                });
+              await auth.createUserWithEmailAndPassword(
+                values.displayName,
+                values.email,
+                values.password
+              );
               props.onClose();
             } catch (error: any) {
               switch (error.code) {
@@ -175,11 +170,7 @@ export const Login = (props: LoginFormProps) => {
                 .setRememberSession(true)
                 .then(() =>
                   auth.signInWithEmailAndPassword(values.email, values.password)
-                )
-                .then((userCred) => {
-                  if (!userCred?.user) return;
-                  auth.apiLogin(userCred.user);
-                });
+                );
               props.onClose();
             } catch (error: any) {
               switch (error.code) {
@@ -256,83 +247,85 @@ export const Login = (props: LoginFormProps) => {
     );
   };
 
-  return <div tw="bg-white rounded-[20px] p-4 md:p-8 w-[400px]">
-    {(register ? registerModal : loginModal)()}
-    <div tw="flex mt-3 w-full justify-center items-center">
-      <hr tw="border border-[#F1F2F3] bg-[#F1F2F3] flex-grow" />
-      <div tw="w-4 text-[14px] text-center mx-10 text-[#98989E]">or</div>
-      <hr tw="border border-[#F1F2F3] bg-[#F1F2F3] flex-grow" />
-    </div>
-    <button
-      css={[
-        buttons.white,
-        tw`px-0 text-[16px] font-semibold mt-3 w-full duration-150 h-[52px]`,
-      ]}
-      onClick={() => auth.signInWithGoogle()}
-    >
-      <div tw="flex items-center justify-center">
-        <img
-          src="/assets/svgs/google.svg"
-          tw="h-[50px] mr-[-3px]"
-          alt="google icon"
-        />
-        Continue with Google
+  return (
+    <div tw="bg-white rounded-[20px] p-4 md:p-8 w-[400px]">
+      {(register ? registerModal : loginModal)()}
+      <div tw="flex mt-3 w-full justify-center items-center">
+        <hr tw="border border-[#F1F2F3] bg-[#F1F2F3] flex-grow" />
+        <div tw="w-4 text-[14px] text-center mx-10 text-[#98989E]">or</div>
+        <hr tw="border border-[#F1F2F3] bg-[#F1F2F3] flex-grow" />
       </div>
-    </button>
-    <button
-      css={[
-        buttons.white,
-        tw`px-0 text-[16px] font-semibold mt-3 w-full duration-150 h-[52px]`,
-      ]}
-      onClick={() => auth.signInWithFacebook()}
-    >
-      <div tw="flex items-center justify-center">
-        <img
-          src="/assets/svgs/facebook.svg"
-          tw="h-[25px] mr-[10px]"
-          alt="facebook icon"
-        />
-        Continue with Facebook
+      <button
+        css={[
+          buttons.white,
+          tw`px-0 text-[16px] font-semibold mt-3 w-full duration-150 h-[52px]`,
+        ]}
+        onClick={() => auth.signInWithGoogle()}
+      >
+        <div tw="flex items-center justify-center">
+          <img
+            src="/assets/svgs/google.svg"
+            tw="h-[50px] mr-[-3px]"
+            alt="google icon"
+          />
+          Continue with Google
+        </div>
+      </button>
+      <button
+        css={[
+          buttons.white,
+          tw`px-0 text-[16px] font-semibold mt-3 w-full duration-150 h-[52px]`,
+        ]}
+        onClick={() => auth.signInWithFacebook()}
+      >
+        <div tw="flex items-center justify-center">
+          <img
+            src="/assets/svgs/facebook.svg"
+            tw="h-[25px] mr-[10px]"
+            alt="facebook icon"
+          />
+          Continue with Facebook
+        </div>
+      </button>
+      <div tw="text-[13px] leading-5 mt-3 text-[#595959]">
+        By clicking Create Account or Continue with Google or Facebook, you
+        agree to Pkazo&#39;s{' '}
+        <Link href="#" passHref>
+          <span tw="underline cursor-pointer">Terms of Use</span>
+        </Link>{' '}
+        and{' '}
+        <Link href="#" passHref>
+          <span tw="underline cursor-pointer">Privacy Policy</span>
+        </Link>
+        . Pkazo may send you communications; you may change your preferences in
+        your account settings.
       </div>
-    </button>
-    <div tw="text-[13px] leading-5 mt-3 text-[#595959]">
-      By clicking Create Account or Continue with Google or Facebook, you
-      agree to Pkazo&#39;s{' '}
-      <Link href="#" passHref>
-        <span tw="underline cursor-pointer">Terms of Use</span>
-      </Link>{' '}
-      and{' '}
-      <Link href="#" passHref>
-        <span tw="underline cursor-pointer">Privacy Policy</span>
-      </Link>
-      . Pkazo may send you communications; you may change your preferences
-      in your account settings.
-    </div>
 
-    {!register && (
-      <div tw="text-[13px] leading-5 mt-3 text-center">
-        New to Pkazo?{' '}
-        <button
-          onClick={() => setRegister(!register)}
-          tw="bg-transparent border-none outline-none text-soft-red font-semibold underline cursor-pointer"
-        >
-          Register here
-        </button>
-      </div>
-    )}
-    {register && (
-      <div tw="text-[13px] leading-5 mt-3 text-center">
-        Already have an account?{' '}
-        <button
-          onClick={() => setRegister(!register)}
-          tw="bg-transparent border-none outline-none text-soft-red font-semibold underline cursor-pointer"
-        >
-          Sign in
-        </button>
-      </div>
-    )}
-  </div>
-}
+      {!register && (
+        <div tw="text-[13px] leading-5 mt-3 text-center">
+          New to Pkazo?{' '}
+          <button
+            onClick={() => setRegister(!register)}
+            tw="bg-transparent border-none outline-none text-soft-red font-semibold underline cursor-pointer"
+          >
+            Register here
+          </button>
+        </div>
+      )}
+      {register && (
+        <div tw="text-[13px] leading-5 mt-3 text-center">
+          Already have an account?{' '}
+          <button
+            onClick={() => setRegister(!register)}
+            tw="bg-transparent border-none outline-none text-soft-red font-semibold underline cursor-pointer"
+          >
+            Sign in
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
 function LoginForm(props: LoginFormProps) {
   return (
     <div tw="fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center overflow-auto p-[50px]">
