@@ -27,7 +27,7 @@ export default async function handler(
   // }
   console.log(req.body);
   const workData = (
-    await admin.firestore().collection('Works').doc(workId).get()
+    await admin.firestore().collection('works').doc(workId).get()
   ).data();
   if (!workData) {
     res.status(400).json({

@@ -30,6 +30,7 @@ export default async function handler(
   const workId = req.query.workId;
 
   let zip = req.query.zip;
+  let countryCode = 'US';
   const ip = req.headers['x-real-ip'];
 
   if (!workId || typeof workId !== 'string') {
@@ -59,6 +60,7 @@ export default async function handler(
         })
       ).data;
       zip = ipData.zip;
+      countryCode = ipData.countryCode || 'US';
       if (!zip) {
         throw new Error('No zip code');
       }
@@ -76,7 +78,7 @@ export default async function handler(
   const workData = (
     await admin
       .firestore()
-      .collection('Works')
+      .collection('works')
       .doc(workId as string)
       .get()
   ).data();
@@ -101,7 +103,7 @@ export default async function handler(
     // @ts-ignore
     address_to: {
       zip: zip as string,
-      country: 'US',
+      country: countryCode as string,
     },
     parcels: [
       {

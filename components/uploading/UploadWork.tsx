@@ -32,6 +32,7 @@ import {
 } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import { WorkData } from '../../types/dbTypes';
+import axios from 'axios';
 
 export interface UploadWorkProps {
   onClose: () => void;
@@ -307,6 +308,9 @@ function UploadWork(props: UploadWorkProps) {
                 );
                 await updateDoc(doc(db, 'works', workId), {
                   images: imageReferences,
+                });
+                await axios.post('/api/search/update-indexes', {
+                  workIds: [workId],
                 });
                 return router.push(`/work/${workId}`);
               } catch (error: any) {

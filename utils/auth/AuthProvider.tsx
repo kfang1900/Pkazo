@@ -44,36 +44,40 @@ export default function FirebaseProvider({
   const [userData, setUserData] = useState<UserData | null>(null);
   const [artistId, setArtistId] = useState<string | null>(null);
 
-  const apiLogin = useCallback(async (user) => {
-    const res = await fetch('/api/auth/sessionLogin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        idToken: await user.getIdToken(),
-      }),
-    });
-
-    if (res.ok) {
-      setEmail(user.email!);
-      await router.push(router.query.to ? router.query.to.toString() : '/');
-    } else {
-      // TODO fix error here, display to user
-      console.warn(`Error logging in ${res.status} ${res.statusText}`);
-    }
-  }, []);
+  // const apiLogin = useCallback(async (user) => {
+  //   const res = await fetch('/api/auth/sessionLogin', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       idToken: await user.getIdToken(),
+  //     }),
+  //   });
+  //
+  //   if (res.ok) {
+  //     setEmail(user.email!);
+  //     await router.push(router.query.to ? router.query.to.toString() : '/');
+  //   } else {
+  //     // TODO fix error here, display to user
+  //     console.warn(`Error logging in ${res.status} ${res.statusText}`);
+  //   }
+  // }, []);
 
   useEffect(() => {
     getRedirectResult(getAuth())
-      .then(async (result) => {
-        if (!result) return;
-        return apiLogin(result.user);
-      })
+      // .then(async (result) => {
+      //   const user = result?.user;
+      //   if (!result || !user) return;
+      //   // return apiLogin(result.user);
+      //   // setEmail(user.email + '');
+      //   // setUser(user);
+      // })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode + ' ' + errorMessage);
+        // alert("Unable to log in: " + error.message)
       });
   }, []);
 
@@ -147,7 +151,7 @@ export default function FirebaseProvider({
             staySignedIn ? browserSessionPersistence : browserLocalPersistence
           );
         },
-        apiLogin,
+        // apiLogin,
         email,
         user,
         loading,

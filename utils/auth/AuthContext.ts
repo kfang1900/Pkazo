@@ -12,7 +12,7 @@ export type Auth = {
     email: string,
     password: string
   ) => Promise<UserCredential | null>;
-  apiLogin: (user: User) => void;
+  // apiLogin: (user: User) => void;
   signInWithGoogle: () => Promise<void>;
   signInWithFacebook: () => Promise<void>;
   setRememberSession: (staySignedIn: boolean) => Promise<void>;
@@ -33,7 +33,7 @@ const AuthContext = createContext<Auth>({
     email: string,
     password: string
   ) => null,
-  apiLogin: async (user: User) => null,
+  // apiLogin: async (user: User) => null,
   signInWithGoogle: async () => {
     /* noop */
   },

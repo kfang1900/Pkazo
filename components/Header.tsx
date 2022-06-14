@@ -31,14 +31,19 @@ interface StaticRequire {
 }
 type StaticImport = StaticRequire | StaticImageData;
 
-const Header = (props: { isBuyer?: boolean | undefined, logoOnly?: boolean }) => {
+const Header = (props: {
+  isBuyer?: boolean | undefined;
+  logoOnly?: boolean;
+}) => {
   const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
   const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => { if (isMobile !== mediaQuery) setIsMobile(mediaQuery) }, [mediaQuery, isMobile]);
+  useEffect(() => {
+    if (isMobile !== mediaQuery) setIsMobile(mediaQuery);
+  }, [mediaQuery, isMobile]);
   // 0 = artist (signed in)
   // 1 = not signed in
   // 2 = regular user (signed in)
-  const [profileType, setProfileType] = useState(1);
+  // const [profileType, setProfileType] = useState(1);
 
   const { user, signOut, isArtist } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -60,17 +65,19 @@ const Header = (props: { isBuyer?: boolean | undefined, logoOnly?: boolean }) =>
     })();
   }, [artistData]);
   if (props.logoOnly) {
-    return <div tw='sticky top-0 z-50 w-full'>
-      <div tw="bg-white h-10 md:h-[60px] px-4 md:px-[60px] flex items-center justify-between border-b md:border-0 border-[#D8D8D8]">
-        <Link href="/" passHref>
-          <img
-            src='/assets/images/Pkazo.svg'
-            tw="cursor-pointer w-[57px] h-[20px] md:w-[92px] md:h-[32px]"
-            alt="Pkazo"
-          />
-        </Link>
+    return (
+      <div tw="sticky top-0 z-50 w-full">
+        <div tw="bg-white h-10 md:h-[60px] px-4 md:px-[60px] flex items-center justify-between border-b md:border-0 border-[#D8D8D8]">
+          <Link href="/" passHref>
+            <img
+              src="/assets/images/Pkazo.svg"
+              tw="cursor-pointer w-[57px] h-[20px] md:w-[92px] md:h-[32px]"
+              alt="Pkazo"
+            />
+          </Link>
+        </div>
       </div>
-    </div>
+    );
   }
   return (
     <div tw="sticky top-0 z-50 w-full">
@@ -81,51 +88,73 @@ const Header = (props: { isBuyer?: boolean | undefined, logoOnly?: boolean }) =>
       <div tw="bg-white h-10 md:h-[60px] px-4 md:px-[60px] flex items-center justify-between border-b border-[#D8D8D8]">
         <Link href="/" passHref>
           <img
-            src='/assets/images/Pkazo.svg'
+            src="/assets/images/Pkazo.svg"
             tw="cursor-pointer w-[57px] h-[20px] md:w-[92px] md:h-[32px]"
             alt="Pkazo"
           />
         </Link>
-        {!isMobile &&
-          <div tw='flex-grow ml-5 pl-6 pr-5 rounded-[48px] h-10 bg-[#F0F0F0] border border-[#A3A3A3] focus-within:border-[#838383] outline-none flex items-center'>
+        {!isMobile && (
+          <div tw="flex-grow ml-5 pl-6 pr-5 rounded-[48px] h-10 bg-[#F0F0F0] border border-[#A3A3A3] focus-within:border-[#838383] outline-none flex items-center">
             <input
               type="text"
               placeholder="Search for anything"
               tw="w-full bg-transparent outline-none text-[16px]"
             />
-            <img src='/assets/svgs/search.svg' tw='ml-3 w-[18px] h-[18px]' />
+            <img src="/assets/svgs/search.svg" tw="ml-3 w-[18px] h-[18px]" />
           </div>
-        }
-        <div tw='ml-10 flex items-center gap-x-4 md:gap-x-8'>
-          {(profileType === 0 || profileType === 2) &&
+        )}
+        <div tw="ml-10 flex items-center gap-x-4 md:gap-x-8">
+          {!!user && (
             <>
-              <Link href='/favorites' passHref>
-                <img src={`/assets/svgs/${isMobile ? 'mobile/' : ''}like.svg`} tw='cursor-pointer' />
+              <Link href="/favorites" passHref>
+                <img
+                  src={`/assets/svgs/${isMobile ? 'mobile/' : ''}like.svg`}
+                  tw="cursor-pointer"
+                />
               </Link>
-              <Link href='/chats' passHref>
-                <img src={`/assets/svgs/${isMobile ? 'mobile/' : ''}chat.svg`} tw='cursor-pointer' />
+              <Link href="/chats" passHref>
+                <img
+                  src={`/assets/svgs/${isMobile ? 'mobile/' : ''}chat.svg`}
+                  tw="cursor-pointer"
+                />
               </Link>
             </>
-          }
-          {profileType === 0 &&
+          )}
+          {!!user && isArtist && (
             <>
-              <Link href='/shop' passHref>
-                <img src={`/assets/svgs/${isMobile ? 'mobile/' : ''}shop.svg`} tw='cursor-pointer' />
+              <Link href="/shop" passHref>
+                <img
+                  src={`/assets/svgs/${isMobile ? 'mobile/' : ''}shop.svg`}
+                  tw="cursor-pointer"
+                />
               </Link>
-              <Link href='/upload' passHref>
-                <img src={`/assets/svgs/${isMobile ? 'mobile/' : ''}create.svg`} tw='cursor-pointer' />
-              </Link>
+              <button onClick={() => setShowUploadWorkPopup(true)}>
+                <img
+                  src={`/assets/svgs/${isMobile ? 'mobile/' : ''}create.svg`}
+                  tw="cursor-pointer"
+                />
+              </button>
               <div tw="w-4 h-4 md:w-6 md:h-6 my-auto overflow-hidden rounded-full flex items-center">
-                {pfp && <Image src={pfp} alt='profile' width={isMobile ? '16px' : '24px'} height={isMobile ? '16px' : '24px'} objectFit='cover' />}
+                {pfp && (
+                  <Image
+                    src={pfp}
+                    alt="profile"
+                    width={isMobile ? '16px' : '24px'}
+                    height={isMobile ? '16px' : '24px'}
+                    objectFit="cover"
+                  />
+                )}
               </div>
             </>
-          }
-          {profileType === 1 &&
+          )}
+          {!user && (
             <>
-
-              <Link href={isMobile ? '/signin' : 'javascript:void(0);'} passHref>
+              <Link
+                href={isMobile ? '/signin' : 'javascript:void(0);'}
+                passHref
+              >
                 <button
-                  tw='text-[12px] md:text-[14px] text-[#3C3C3C] font-semibold py-1'
+                  tw="text-[12px] md:text-[14px] text-[#3C3C3C] font-semibold py-1"
                   onClick={() => setShowLoginModal(true)}
                 >
                   Sign in
@@ -134,44 +163,47 @@ const Header = (props: { isBuyer?: boolean | undefined, logoOnly?: boolean }) =>
               <button
                 css={[
                   buttons.red,
-                  tw`font-semibold w-[108px] md:w-[121px] h-[32px] md:h-[42px] text-[12px] md:text-[14px] px-0 py-0`
+                  tw`font-semibold w-[108px] md:w-[121px] h-[32px] md:h-[42px] text-[12px] md:text-[14px] px-0 py-0`,
                 ]}
               >
                 Sell on Pkazo
               </button>
             </>
-          }
-          {profileType === 2 &&
+          )}
+          {!!user && !isArtist && (
             <>
               <div>
-                <img src={`/assets/svgs/${isMobile ? 'mobile/' : ''}profile.svg`} />
+                <img
+                  src={`/assets/svgs/${isMobile ? 'mobile/' : ''}profile.svg`}
+                />
               </div>
             </>
-          }
-          <Link href='/cart' passHref>
-            <img src={`/assets/svgs/${isMobile ? 'mobile/' : ''}cart.svg`} tw='cursor-pointer' />
+          )}
+          <Link href="/cart" passHref>
+            <img
+              src={`/assets/svgs/${isMobile ? 'mobile/' : ''}cart.svg`}
+              tw="cursor-pointer"
+            />
           </Link>
         </div>
-      </div >
-      {
-        showSearch && (
-          <div tw="md:hidden flex flex-row items-center justify-between py-2">
-            <div
-              css={[
-                tw`w-full mx-2 md:mx-4 lg:mx-8`,
-                showSearch ? '' : tw`hidden md:block`,
-              ]}
-            >
-              <input
-                type="text"
-                placeholder="Search"
-                tw="px-4 py-1 bg-gray-100 outline-none rounded-full w-full"
-              />
-            </div>
+      </div>
+      {showSearch && (
+        <div tw="md:hidden flex flex-row items-center justify-between py-2">
+          <div
+            css={[
+              tw`w-full mx-2 md:mx-4 lg:mx-8`,
+              showSearch ? '' : tw`hidden md:block`,
+            ]}
+          >
+            <input
+              type="text"
+              placeholder="Search"
+              tw="px-4 py-1 bg-gray-100 outline-none rounded-full w-full"
+            />
           </div>
-        )
-      }
-    </div >
+        </div>
+      )}
+    </div>
   );
 };
 

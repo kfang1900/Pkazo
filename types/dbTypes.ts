@@ -127,5 +127,5 @@ export type WorkData = {
       }
   );
 
-export type WorkRecord = WorkData & { id: string };
+export type WorkRecord = WorkData & { id: string; objectID: string };
 export type ForSaleWorkRecord = WorkRecord & { forSale: true };

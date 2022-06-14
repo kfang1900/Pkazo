@@ -22,6 +22,7 @@ import { useRouter } from 'next/router';
 import { getApp } from 'firebase/app';
 import useAuth from '../../utils/auth/useAuth';
 import { useMediaQuery } from 'react-responsive';
+import { ArtistData } from '../../types/dbTypes';
 
 const numFormatter = (x: number) => {
   if (x > 999 && x < 1000000) {
@@ -46,7 +47,7 @@ const ArtistProfile = ({
 
   const router = useRouter();
 
-  const artist = artistData[0].data();
+  const artist = artistData[0].data() as ArtistData;
 
   useEffect(() => {
     loadStorageImage(artist.profilePicture).then((profilePictureURL) =>
@@ -84,7 +85,9 @@ const ArtistProfile = ({
             )}
           </div>
           <div>
-            <div tw="text-[20px] leading-[23px] text-black font-medium">{artist.name}</div>
+            <div tw="text-[20px] leading-[23px] text-black font-medium">
+              {artist.name}
+            </div>
             <div tw="text-[14px] leading-[17px] mt-1 text-[#727373] font-medium">
               {artist.location}
             </div>
@@ -102,7 +105,7 @@ const ArtistProfile = ({
                   }
                   tw="w-4 h-3"
                 />
-                {numFormatter(artist.followers)}
+                {numFormatter((artist as any)?.followers || 3122)}
               </button>
               <button
                 onClick={() => 0}
@@ -135,8 +138,8 @@ const ArtistProfile = ({
   ) : (
     <>
       <section tw="mt-[48px] mb-[40px]">
-        <div tw='flex'>
-          <div tw='w-[10%] flex-shrink-[0.2]' />
+        <div tw="flex">
+          <div tw="w-[10%] flex-shrink-[0.2]" />
           <div tw="w-full grid grid-cols-[200px auto]">
             <div tw="w-[200px] h-[200px] my-auto overflow-hidden rounded-full flex items-center">
               {picture && (
@@ -149,14 +152,14 @@ const ArtistProfile = ({
                 />
               )}
             </div>
-            <div tw='flex'>
-              <div tw='max-w-[85px] w-[10%] h-full flex-shrink-0' />
+            <div tw="flex">
+              <div tw="max-w-[85px] w-[10%] h-full flex-shrink-0" />
               <div tw="flex flex-col">
                 <div tw="flex items-start justify-start">
                   <h1 tw="text-[32px] leading-[32px] font-semibold text-black">
                     {artist.name}
                   </h1>
-                  <div tw='w-10 flex-shrink h-full' />
+                  <div tw="w-10 flex-shrink h-full" />
                   {isCurrentUserPage ? (
                     <button
                       onClick={() => router.push('/account/edit')}
@@ -179,29 +182,29 @@ const ArtistProfile = ({
                           }
                           tw="w-5 h-4"
                         />
-                        {numFormatter(artist.followers | 3900)}
+                        {numFormatter((artist as any)?.followers | 3900)}
                       </button>
-                      {isFollowing && (
-                        <button
-                          onClick={() => {
-                            if (!user || !artistData[0].id) {
-                              return;
-                            }
-                            const app = getApp();
-                            const db = getFirestore(app);
 
-                            updateDoc(doc(db, 'users', user.uid), {
-                              chats: arrayUnion(artistData[0].id),
-                            }).then(() => {
-                              return router.push(`/chat#${artistData[0].id}`);
-                            });
-                          }}
-                          css={buttons.white}
-                          tw="ml-5 px-7 font-semibold"
-                        >
-                          Message
-                        </button>
-                      )}
+                      <button
+                        onClick={() => {
+                          if (!user || !artistData[0].id) {
+                            return;
+                          }
+                          const app = getApp();
+                          const db = getFirestore(app);
+
+                          updateDoc(doc(db, 'users', user.uid), {
+                            chats: arrayUnion(artistData[0].id),
+                          }).then(() => {
+                            return router.push(`/chat#${artistData[0].id}`);
+                          });
+                        }}
+                        css={buttons.white}
+                        tw="ml-5 px-7 font-semibold"
+                      >
+                        Message
+                      </button>
+
                       <button
                         onClick={() => 0}
                         css={buttons.red}
@@ -212,7 +215,9 @@ const ArtistProfile = ({
                     </>
                   )}
                 </div>
-                <p tw="text-gray-600 text-[20px] mt-1">{artist.location}</p>
+                <p tw="text-gray-600 text-[20px] mt-1">
+                  {artist.location} &bull; {artist.discipline}
+                </p>
                 <ShowMore
                   appearance={tw`mt-3 text-black text-[16px] leading-[24px]`}
                   height={72}
@@ -234,7 +239,7 @@ const ArtistProfile = ({
               </div>
             </div>
           </div>
-          <div tw='w-[10%] flex-shrink-[0.2]' />
+          <div tw="w-[10%] flex-shrink-[0.2]" />
         </div>
       </section>
     </>
