@@ -287,8 +287,8 @@ const StorePortFolio = ({
   portfolioData: PortfolioObject;
 }) => {
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
-  const [open, setOpen] = React.useState(false);
-  const [loadmore, setLoadmore] = React.useState(null);
+  const [filterOpen, setFilterOpen] = React.useState(false);
+  const [loadMore, setLoadMore] = React.useState(null);
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
 
   const [sortDropdown, setSortDropdown] = React.useState(false);
@@ -318,6 +318,7 @@ const StorePortFolio = ({
   const router = useRouter();
   const { username } = router.query;
   const [artistId, setArtistId] = useState('');
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     (async () => {
       const app = getApp();
@@ -357,38 +358,16 @@ const StorePortFolio = ({
         })
       );
       setWorks(newWorks);
+      setLoading(false);
     })();
   }, []);
 
-  const progressRef = React.useRef(null);
-
-  const { initialMin, initialMax, min, max, step } = pricefilter;
-
-  const handleMin = (event: any) => {
-    const a = 69;
-  };
-  const handleMax = (event: any) => {
-    const a = 69;
-  };
-
-  const handleOpenFilter = () => {
-    // drawerToggle.classList.add("open");
-    setOpen(true);
-  };
-  const handleCloseFilter = () => {
-    // drawerToggle.classList.remove("open");
-    setOpen(false);
-  };
-
-  const handleLoadMore = (event: any, getID: any) => {
-    event.preventDefault();
-    setLoadmore(getID);
-  };
   const loadMoreButton = (e: any, button_id: any) => {
-    if (loadmore === button_id) {
+    if (loadMore === button_id) {
       return (
         <button
-          onClick={(e) => handleLoadMore(e, null)}
+          type={'button'}
+          onClick={(e) => setLoadMore(null)}
           tw="-ml-4 py-2 px-5 flex gap-2 transition-all duration-300 relative z-10 rounded-full items-center hover:bg-gray-100 font-semibold"
         >
           {' '}
@@ -398,7 +377,8 @@ const StorePortFolio = ({
     } else {
       return (
         <button
-          onClick={(e) => handleLoadMore(e, button_id)}
+          type={'button'}
+          onClick={(e) => setLoadMore(button_id)}
           tw="-ml-4 py-2 px-5 flex gap-2 transition-all duration-300 relative z-10 rounded-full items-center hover:bg-gray-100 font-semibold"
         >
           {' '}
@@ -407,9 +387,15 @@ const StorePortFolio = ({
       );
     }
   };
+
   return (
     <InstantSearch searchClient={algoliaSearchClient} indexName="pkazo-works">
-      <Configure facetFilters={[`artist:${artistId}`, 'forSale:true']} />
+      <Configure
+        facetFilters={[
+          `artist:${artistId || 'notarealartist'}`,
+          'forSale:true',
+        ]}
+      />
       <div>
         <Container tw="px-4 md:px-0">
           {profileType === 3 && (
@@ -469,9 +455,13 @@ const StorePortFolio = ({
           >
             {/* Filter Button */}
             <div
-              onClick={handleOpenFilter}
+              onClick={() => setFilterOpen(true)}
               tw="cursor-pointer flex items-center border border-[#D8D8D8] focus:border-[#A2A2A2] text-[#65676B]"
-              css={[isMobile ? tw`w-[32px] h-[32px] rounded-full justify-center` : tw`gap-[10px] h-11 pl-[22px] pr-6 rounded-[40px]`]}
+              css={[
+                isMobile
+                  ? tw`w-[32px] h-[32px] rounded-full justify-center`
+                  : tw`gap-[10px] h-11 pl-[22px] pr-6 rounded-[40px]`,
+              ]}
             >
               <img
                 src="/assets/svgs/filter.svg"
@@ -511,28 +501,26 @@ const StorePortFolio = ({
           </div>
 
           {/* No Portfolio Found */}
-          {!works.length &&
-            <div tw='text-[#3C3C3C] text-[12px] md:text-[16px] mt-4 md:mt-8'>
+          {!loading && works.length === 0 && (
+            <div tw="text-[#3C3C3C] text-[12px] md:text-[16px] mt-4 md:mt-8">
               No works for sale
             </div>
-          }
+          )}
 
           {/* Portfolio Gallery */}
-          <div tw="mb-4 md:mb-[30px]">
-            <CustomHits />
-          </div>
+          <div tw="mb-4 md:mb-[30px]">{!loading && <CustomHits />}</div>
         </Container>
 
-        {!isMobile &&
+        {!isMobile && (
           <div>
             <div
               css={[
                 tw`fixed top-0 bg-white bottom-0 max-w-full w-[400] 2xl:w-[480px] z-[99] -left-full transition-all duration-300`,
-                open && tw`left-0`,
+                filterOpen && tw`left-0`,
               ]}
             >
               <span
-                onClick={handleCloseFilter}
+                onClick={() => setFilterOpen(false)}
                 className="close-icon"
                 tw="before:content-[''] before:w-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full before:h-0 before:absolute before:bg-white/20 before:rounded-full before:z-[-1] absolute text-white cursor-pointer rounded-full flex items-center justify-center text-3xl w-[50px] h-[50px] top-5 right-[-60px]"
               >
@@ -559,14 +547,14 @@ const StorePortFolio = ({
               </div>
             </div>
             <span
-              onClick={handleCloseFilter}
+              onClick={() => setFilterOpen(false)}
               css={[
                 tw`fixed z-[98] left-0 top-0 bottom-0 bg-[rgba(34,34,34,0.65)]`,
-                open && tw`w-full`,
+                filterOpen && tw`w-full`,
               ]}
             ></span>
           </div>
-        }
+        )}
         {/* <DrawerFilter drawerToggle={drawerToggle} handleCloseFilter={handleCloseFilter}/> */}
       </div>
     </InstantSearch>
