@@ -259,28 +259,28 @@ function UploadWork(props: UploadWorkProps) {
                   forSale: values.forSale === 'yes',
                   ...(values.forSale === 'yes'
                     ? {
-                        sale: {
-                          price: values.salePrice,
-                          subject: values.saleSubject,
-                          orientation: values.saleOrientation,
-                          color: values.saleColor,
-                          style: values.saleStyle,
-                          framing: values.saleFraming === 'yes',
-                        },
-                      }
+                      sale: {
+                        price: values.salePrice,
+                        subject: values.saleSubject,
+                        orientation: values.saleOrientation,
+                        color: values.saleColor,
+                        style: values.saleStyle,
+                        framing: values.saleFraming === 'yes',
+                      },
+                    }
                     : {}),
                   forPrint: values.forPrint === 'yes',
                   ...(values.forPrint === 'yes'
                     ? {
-                        print: {
-                          price: values.printPrice,
-                          height: parseFloat(values.height),
-                          width: parseFloat(values.width),
-                          units: values.units,
-                          surface: values.printSurface,
-                          framing: values.printFraming,
-                        },
-                      }
+                      print: {
+                        price: values.printPrice,
+                        height: parseFloat(values.height),
+                        width: parseFloat(values.width),
+                        units: values.units,
+                        surface: values.printSurface,
+                        framing: values.printFraming,
+                      },
+                    }
                     : {}),
                   artist: auth.artistId,
                   // serverTimestamp() is not a timestamp, but it will become one on the server.
@@ -427,7 +427,7 @@ function UploadWork(props: UploadWorkProps) {
                           name="description"
                           rows="3"
                           placeholder="Write a description..."
-                          css={[styles.input, tw`mt-3 py-[10px] leading-5`]}
+                          css={[styles.input, tw`mt-3 py-[10px] leading-5 resize-none`]}
                         />
                         <div tw="px-3">
                           <div tw="grid grid-cols-2 gap-x-[25px] gap-y-3 items-center mt-4">

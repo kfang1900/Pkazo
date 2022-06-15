@@ -131,7 +131,7 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
           </Masonry>
         </div>
 
-        <div tw="flex w-full justify-center items-center mt-4 md:mt-[30px]"
+        <div tw="flex justify-center items-center mt-4 md:mt-[30px]"
           css={[curGallery.Images.length > 9 && tw`mb-1 md:mb-5`]}>
           <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
           {curGallery.Images.length > 9 && (

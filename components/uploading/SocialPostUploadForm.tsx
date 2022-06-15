@@ -102,12 +102,12 @@ function SocialPostUploadForm() {
             alt="post-image-1"
           />
         )) || (
-          <div tw="h-full w-full border-2 rounded-2xl border-gray-300 border-dashed mx-auto flex flex-col justify-center">
-            <h1 tw="w-full flex justify-center text-gray-300 text-2xl font-semibold">
-              No Image Selected
-            </h1>
-          </div>
-        )}
+            <div tw="h-full w-full border-2 rounded-2xl border-gray-300 border-dashed mx-auto flex flex-col justify-center">
+              <h1 tw="w-full flex justify-center text-gray-300 text-2xl font-semibold">
+                No Image Selected
+              </h1>
+            </div>
+          )}
       </div>
       <div tw="pl-5 flex-auto flex flex-col pr-3 overflow-auto">
         <div tw="flex items-center space-x-3.5">
@@ -133,7 +133,7 @@ function SocialPostUploadForm() {
         <div tw="my-1.5">
           <textarea
             placeholder="Description"
-            tw="block w-full h-32 rounded-[10px] border border-light-300 py-1 px-4 text-sm text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:py-2 md:text-lg"
+            tw="block w-full h-32 rounded-[10px] border border-light-300 py-1 px-4 text-sm text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:py-2 md:text-lg resize-none"
           />
         </div>
         <div tw="rounded-[10px] border border-light-300 px-4 py-3 my-1.5">

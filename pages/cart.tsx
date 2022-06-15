@@ -129,7 +129,7 @@ const CartPage: NextPage = () => {
                     <textarea
                         rows={3}
                         placeholder={`Add a note to ${'James Jean'} (optional)`}
-                        tw='mt-5 w-full border-[0.5px] border-[#ECECEC] focus:border-[#D8D8D8] outline-none rounded-[7px] p-3 text-[14px] leading-[17px]'
+                        tw='mt-5 w-full border-[0.5px] border-[#ECECEC] focus:border-[#D8D8D8] outline-none rounded-[7px] p-3 text-[14px] leading-[17px] resize-none'
                     />
                     <div tw='mt-3 w-full flex flex-col items-end'>
                         <div tw='text-[13px] text-black'>
@@ -177,8 +177,10 @@ const CartPage: NextPage = () => {
                     ${(Math.round(1828 * 100) / 100).toFixed(2)}
                 </div>
             </div>
-            <div tw='sticky bottom-0 bg-white'>
-                <LineBreak tw='mt-4' />
+        </div>
+        <div tw='sticky bottom-0 bg-white'>
+            <LineBreak tw='mt-4' />
+            <div tw='px-4'>
                 <button
                     tw='w-full h-11 mt-[14px] mb-4 bg-[#2C1D1D] hover:bg-[#3B2727] rounded-[30px] text-center text-white text-[14px] font-bold'
                 >
