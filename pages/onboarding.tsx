@@ -1,6 +1,12 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import Head from 'next/head';
+import Header from 'components/Header';
 import tw, { styled } from 'twin.macro';
+import {
+  ErrorMessage,
+  Formik,
+  FormikErrors,
+} from 'formik';
 
 import LoginForm from '../components/popups/LoginForm';
 import useAuth from '../utils/auth/useAuth';
@@ -22,6 +28,18 @@ import CreatePortfoliosSection from '../components/onboarding/CreatePortfoliosSe
 import SocialPostUploadForm from '../components/uploading/SocialPostUploadForm';
 import Modal from '../components/popups/Modal';
 import { Router, useRouter } from 'next/router';
+import { Container } from 'styles/Container';
+import buttons from 'styles/Button';
+
+export interface OnboardingFormValues {
+  name: string;
+  discipline: string;
+  country: string;
+  city: string;
+  acceptCommissions: 'yes' | 'no' | null;
+  onlySale: 'yes' | 'no' | null;
+  uniqueCollections: 'yes' | 'no' | null;
+}
 
 function Onboarding() {
   const [stage, setStage] = useState(0);
@@ -29,11 +47,15 @@ function Onboarding() {
   // let discipline = '';
 
   const sections = [
-    'Profile details',
-    'Upload works',
-    'Upload portfolios',
-    "How you'll get paid",
+    'Profile Details',
+    'Create Portfolios'
   ];
+  const subtitles = [
+    'Let\'s get started! Tell us a little about you.',
+    'How would you like to categorize your work?'
+  ];
+  const defaultCountry = 'United States';
+
   const [signupFormActive, setSignupFormActive] = useState(false);
   const [artistId, setArtistId] = useState('');
   const { user, loading } = useAuth();
@@ -97,17 +119,84 @@ function Onboarding() {
         />
       )}
 
-      <div>
-        <div tw="mx-10 my-5">
-          <img src="assets/images/Pkazo.svg" alt="Pkazo" />
+      <Header logoOnly />
+
+      <Container tw='mt-5'>
+        <div tw='flex flex-col items-center text-center px-6'>
+          <div tw='font-semibold text-[#333333] text-[24px]'>
+            {sections[stage]}
+          </div>
+          <div tw='mt-[6px] text-[#333333] text-[16px]'>
+            {subtitles[stage]}
+          </div>
         </div>
-        {stage === 0 && (
-          <ProfileDetailsSection
-            user={user}
-            onComplete={() => setStage(1)}
-            setArtistId={setArtistId}
-          />
-        )}
+        <Formik<OnboardingFormValues>
+          initialValues={{
+            name: '',
+            discipline: '',
+            country: defaultCountry,
+            city: '',
+            acceptCommissions: null,
+            onlySale: null,
+            uniqueCollections: null
+          }}
+          validateOnChange={false}
+          validate={(values) => {
+            const errors: FormikErrors<OnboardingFormValues> = {};
+
+            // TODO: more rigorous validation, probably using Yup (integrates well with Formik)
+            if (!values.name) {
+              errors.name = 'Please enter your full name.';
+            }
+
+            if (!values.discipline) {
+              errors.discipline = 'Please enter your art discipline.';
+            }
+
+            return errors;
+          }}
+          onSubmit={() => { 0 }}
+        >
+          {({ values }) =>
+            <>
+              <div tw='pt-5 px-6'>
+                {stage === 0 && (
+                  <ProfileDetailsSection
+                    country={defaultCountry}
+                    values={values}
+                  />
+                )}
+              </div>
+
+              <div tw='mt-6 sticky bottom-0 bg-white pb-4'>
+                <div tw='h-[0.5px] bg-[#E3E3E3]' />
+                <div tw='mt-[14px] grid grid-cols-2 gap-x-6 px-6'>
+                  <button
+                    css={[
+                      buttons.white,
+                      tw`h-12`
+                    ]}
+                    onClick={() => setStage(stage ? stage - 1 : 0)}
+                  >
+                    {stage ? 'Back' : 'Cancel'}
+                  </button>
+                  <button
+                    css={[
+                      buttons.red,
+                      tw`h-12`
+                    ]}
+                    onClick={() => setStage(stage < 1 ? stage + 1 : 1)}
+                  >
+                    {stage < 1 ? 'Next' : 'Submit'}
+                  </button>
+                </div>
+              </div>
+            </>
+          }
+        </Formik>
+      </Container>
+
+      <div tw='bg-red-500 hidden'>
         {stage === 1 && (
           <CreatePortfoliosSection
             user={user}

@@ -20,9 +20,9 @@ export default function ShopSettingsPage() {
   useRequireOnboarding();
   const [data, setData] = useState<
     | (ArtistData & {
-        profilePictureURL: string;
-        coverImageURL: string;
-      })
+      profilePictureURL: string;
+      coverImageURL: string;
+    })
     | undefined
   >();
   const [artistId, setArtistId] = useState('');
@@ -153,7 +153,7 @@ export default function ShopSettingsPage() {
                 disabled={savingShipping}
                 rows={3}
                 name="bio"
-                css={[styles.input, tw`w-[710px] h-[90px] py-2`]}
+                css={[styles.input, tw`w-[710px] h-[90px] py-2 resize-none`]}
                 value={shippingReturnPolicies}
                 onChange={(e) => setShippingReturnPolicies(e.target.value)}
               />
@@ -161,47 +161,47 @@ export default function ShopSettingsPage() {
             {(firebaseShippingData.shippingReturnPolicies !==
               shippingReturnPolicies ||
               firebaseShippingData.shippingProcessingTime !==
-                processingTime) && (
-              <div>
-                <input
-                  disabled={savingShipping}
-                  onClick={async () => {
-                    setSavingShipping(true);
-                    if (!artistId) return;
-                    const app = getApp();
-                    const db = getFirestore(app);
-                    await updateDoc(doc(db, 'artists', artistId), {
-                      shippingReturnPolicies,
-                      shippingProcessingTime: processingTime,
-                    } as Partial<ArtistData>);
-                    setFirebaseShippingData({
-                      shippingReturnPolicies,
-                      shippingProcessingTime: processingTime,
-                    });
-                    setSavingShipping(false);
-                  }}
-                  type="button"
-                  value={savingShipping ? 'Saving...' : 'Save'}
-                  tw="inline-block h-[40px] relative text-white bg-theme-red rounded-[6px] px-4 py-1 cursor-pointer hover:bg-[#be4040]"
-                />
-                <button
-                  disabled={savingShipping}
-                  onClick={() => {
-                    {
-                      setShippingReturnPolicies(
-                        firebaseShippingData.shippingReturnPolicies
-                      );
-                      setProcessingTime(
-                        firebaseShippingData.shippingProcessingTime
-                      );
-                    }
-                  }}
-                  tw="inline-block h-[40px] w-40 border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] ml-4 items-center hover:bg-[#F5F5F5]"
-                >
-                  Discard Changes
-                </button>
-              </div>
-            )}
+              processingTime) && (
+                <div>
+                  <input
+                    disabled={savingShipping}
+                    onClick={async () => {
+                      setSavingShipping(true);
+                      if (!artistId) return;
+                      const app = getApp();
+                      const db = getFirestore(app);
+                      await updateDoc(doc(db, 'artists', artistId), {
+                        shippingReturnPolicies,
+                        shippingProcessingTime: processingTime,
+                      } as Partial<ArtistData>);
+                      setFirebaseShippingData({
+                        shippingReturnPolicies,
+                        shippingProcessingTime: processingTime,
+                      });
+                      setSavingShipping(false);
+                    }}
+                    type="button"
+                    value={savingShipping ? 'Saving...' : 'Save'}
+                    tw="inline-block h-[40px] relative text-white bg-theme-red rounded-[6px] px-4 py-1 cursor-pointer hover:bg-[#be4040]"
+                  />
+                  <button
+                    disabled={savingShipping}
+                    onClick={() => {
+                      {
+                        setShippingReturnPolicies(
+                          firebaseShippingData.shippingReturnPolicies
+                        );
+                        setProcessingTime(
+                          firebaseShippingData.shippingProcessingTime
+                        );
+                      }
+                    }}
+                    tw="inline-block h-[40px] w-40 border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] ml-4 items-center hover:bg-[#F5F5F5]"
+                  >
+                    Discard Changes
+                  </button>
+                </div>
+              )}
           </div>
           <div tw="font-semibold mt-12 text-[20px]">
             Frequently Asked Questions
@@ -330,51 +330,51 @@ export default function ShopSettingsPage() {
                   question === firebaseFAQs[i].question &&
                   answer === firebaseFAQs[i].answer
               )) && (
-              <>
-                <div />
-                <div>
-                  <input
-                    disabled={savingFAQs}
-                    onClick={async () => {
-                      setSavingFAQs(true);
-                      const app = getApp();
-                      const db = getFirestore(app);
-                      await updateDoc(doc(db, 'artists', artistId), {
-                        faqs: inputFAQs
-                          .filter((item) => item.question || item.answer)
-                          .map((item) => ({
-                            question: item.question,
-                            answer: item.answer,
-                            // strip key
-                          })),
-                      });
-                      setInputFAQs((s) =>
-                        s.filter((item) => item.question || item.answer)
-                      );
-                      setFirebaseFAQs(
-                        inputFAQs.filter((item) => item.question || item.answer)
-                      );
-                      setSavingFAQs(false);
-                    }}
-                    type="button"
-                    value={savingFAQs ? 'Saving...' : 'Save'}
-                    tw="inline-block h-[40px] relative text-white bg-theme-red rounded-[6px] px-4 py-1 cursor-pointer hover:bg-[#be4040]"
-                  />
-                  <button
-                    disabled={savingFAQs}
-                    onClick={() => {
-                      {
-                        setInputFAQs(firebaseFAQs);
-                        setKeyCounter((s) => s + 1);
-                      }
-                    }}
-                    tw="inline-block h-[40px] w-40 border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] ml-4 items-center hover:bg-[#F5F5F5]"
-                  >
-                    Discard Changes
-                  </button>
-                </div>
-              </>
-            )}
+                <>
+                  <div />
+                  <div>
+                    <input
+                      disabled={savingFAQs}
+                      onClick={async () => {
+                        setSavingFAQs(true);
+                        const app = getApp();
+                        const db = getFirestore(app);
+                        await updateDoc(doc(db, 'artists', artistId), {
+                          faqs: inputFAQs
+                            .filter((item) => item.question || item.answer)
+                            .map((item) => ({
+                              question: item.question,
+                              answer: item.answer,
+                              // strip key
+                            })),
+                        });
+                        setInputFAQs((s) =>
+                          s.filter((item) => item.question || item.answer)
+                        );
+                        setFirebaseFAQs(
+                          inputFAQs.filter((item) => item.question || item.answer)
+                        );
+                        setSavingFAQs(false);
+                      }}
+                      type="button"
+                      value={savingFAQs ? 'Saving...' : 'Save'}
+                      tw="inline-block h-[40px] relative text-white bg-theme-red rounded-[6px] px-4 py-1 cursor-pointer hover:bg-[#be4040]"
+                    />
+                    <button
+                      disabled={savingFAQs}
+                      onClick={() => {
+                        {
+                          setInputFAQs(firebaseFAQs);
+                          setKeyCounter((s) => s + 1);
+                        }
+                      }}
+                      tw="inline-block h-[40px] w-40 border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] ml-4 items-center hover:bg-[#F5F5F5]"
+                    >
+                      Discard Changes
+                    </button>
+                  </div>
+                </>
+              )}
           </div>
         </>
       )}

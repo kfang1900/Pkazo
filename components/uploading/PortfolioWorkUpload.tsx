@@ -158,7 +158,7 @@ export default function PortfolioWorkUpload({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Optional: write a description..."
-              tw="block w-full h-32 rounded-[10px] border border-light-300 py-1 px-4 text-sm text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:py-2 md:text-lg"
+              tw="block w-full h-32 rounded-[10px] border border-light-300 py-1 px-4 text-sm text-black text-opacity-50 focus:caret-theme-red focus:outline-theme-red md:py-2 md:text-lg resize-none"
             />
           </div>
         </div>
