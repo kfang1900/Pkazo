@@ -1,5 +1,6 @@
 import { GeoPoint, Timestamp } from 'firebase/firestore';
 import { DocumentData } from 'firebase/firestore';
+import { Cart } from '../utils/hooks/useCart';
 
 type ArtistType =
   | 'hobbyist'
@@ -55,6 +56,7 @@ export interface UserData {
   dob: Timestamp;
   username: string;
   chats?: string[];
+  cart?: Cart;
 }
 
 export interface PortfolioData {

@@ -41,8 +41,9 @@ import axios from 'axios';
 import Modal from '../../../components/popups/Modal';
 import { getApp } from 'firebase/app';
 import buttons from 'styles/Button';
-import { Container } from 'styles/Container'
+import { Container } from 'styles/Container';
 import { useMediaQuery } from 'react-responsive';
+import useCart from '../../../utils/hooks/useCart';
 
 const workImages = [
   { small: smallpic1, big: bigpic1 },
@@ -92,7 +93,11 @@ const IndividualWork: NextPage = () => {
   const [showShippingPolicies, setShowShippingPolicies] = useState(false);
   const router = useRouter();
   const { workid: workId } = router.query;
-
+  const { cartLoading, addCartItem, cart } = useCart();
+  const inCart = useMemo(
+    () => workId && cart.some((i) => i.id === workId),
+    [cart, workId]
+  );
   const calculateZip = useCallback(
     (zip?: string) => {
       console.log('CALLED', zip);
@@ -102,7 +107,8 @@ const IndividualWork: NextPage = () => {
       }
       axios
         .get(
-          `/api/shipping/estimated-rates?workId=${workId}${zip ? '&zip=' + zip : ''
+          `/api/shipping/estimated-rates?workId=${workId}${
+            zip ? '&zip=' + zip : ''
           }`
         )
 
@@ -181,7 +187,22 @@ const IndividualWork: NextPage = () => {
       })();
     }
   }, [router.isReady, workData, workId]);
+
+  const addToCart = () => {
+    if (!cartLoading) {
+      addCartItem({
+        id: workId + '',
+        quantity: 1,
+        type: 'original',
+      });
+      return router.push('/cart');
+    } else {
+      alert('Loading cart... Please try again in 5 seconds.');
+    }
+  };
+
   const [expandedFAQ, setExpandedFAQ] = useState(-1);
+
   if (!workData || loading || !artistData) {
     return (
       <>
@@ -204,42 +225,42 @@ const IndividualWork: NextPage = () => {
         </Head>
         <Header />
         <Container>
-          {workImages[selectedImage] ?
-            <div tw='relative w-full flex items-center'>
-              <img src={workImages[selectedImage]} tw='w-full' />
-              <button
-                tw='bg-white border border-[#E8E8E8] hover:bg-[#F5F5F5] w-9 h-9 rounded-full absolute top-[10px] right-[10px]'
-              >
-                <img src='/assets/svgs/like.svg' tw='m-auto w-[18px]' />
+          {workImages[selectedImage] ? (
+            <div tw="relative w-full flex items-center">
+              <img src={workImages[selectedImage]} tw="w-full" />
+              <button tw="bg-white border border-[#E8E8E8] hover:bg-[#F5F5F5] w-9 h-9 rounded-full absolute top-[10px] right-[10px]">
+                <img src="/assets/svgs/like.svg" tw="m-auto w-[18px]" />
               </button>
-              <div tw='w-9 h-9 absolute top-[10px] right-[60px]'>
+              <div tw="w-9 h-9 absolute top-[10px] right-[60px]">
                 <ShareButton
                   title={`${workData.title} | Pkazo`}
                   text={`Checkout this work I found on Pkazo: ${workData.title} https://pkazo.com/work/${workId}`}
                   url={`https://pkazo.com/work/${workId}`}
                 />
               </div>
-            </div> :
-            <div tw='w-full text-center m-auto py-5'>Unable to load image</div>
-          }
-          <div tw='mx-4 mt-4 mb-4'>
-            <div tw='grid grid-rows-1 grid-flow-col gap-x-3 w-full overflow-auto'>
+            </div>
+          ) : (
+            <div tw="w-full text-center m-auto py-5">Unable to load image</div>
+          )}
+          <div tw="mx-4 mt-4 mb-4">
+            <div tw="grid grid-rows-1 grid-flow-col gap-x-3 w-full overflow-auto">
               {workImages.map((work, i) => (
                 <button
-                  tw='w-[60px] h-[60px] rounded-[4px] overflow-hidden flex items-center'
+                  tw="w-[60px] h-[60px] rounded-[4px] overflow-hidden flex items-center"
                   css={[selectedImage !== i && tw`opacity-70`]}
                   key={i}
                   onClick={() => setSelectedImage(i)}
                 >
                   <Image
                     src={work}
-                    width='60px'
-                    height='60px'
-                    objectFit='cover' />
+                    width="60px"
+                    height="60px"
+                    objectFit="cover"
+                  />
                 </button>
               ))}
             </div>
-            <div tw='flex items-center mt-4'>
+            <div tw="flex items-center mt-4">
               <div tw="w-[55px] h-[55px] overflow-hidden rounded-full flex items-center">
                 <Image
                   src={artistPicture}
@@ -249,104 +270,107 @@ const IndividualWork: NextPage = () => {
                   objectFit="cover"
                 />
               </div>
-              <div tw='ml-[10px]'>
-                <div tw='text-[16px] leading-[19px] font-semibold text-black'>
+              <div tw="ml-[10px]">
+                <div tw="text-[16px] leading-[19px] font-semibold text-black">
                   {artistData.name}
                 </div>
-                <div tw='mt-1 text-[14px] font-medium text-[#727373]'>
+                <div tw="mt-1 text-[14px] font-medium text-[#727373]">
                   {artistData.location}
                 </div>
               </div>
             </div>
-            <div tw='mt-4 flex items-center justify-center w-full'>
+            <div tw="mt-4 flex items-center justify-center w-full">
               Original,Print
             </div>
-            <div tw='mt-5 flex items-center justify-between'>
-              <div tw='font-medium italic text-[24px] leading-[1em] text-[#5F5F5F]'>
+            <div tw="mt-5 flex items-center justify-between">
+              <div tw="font-medium italic text-[24px] leading-[1em] text-[#5F5F5F]">
                 {workData.title}
               </div>
-              {workData.forSale &&
-                <div tw='font-semibold text-[24px] leading-[1em] text-[#222222]'>
+              {workData.forSale && (
+                <div tw="font-semibold text-[24px] leading-[1em] text-[#222222]">
                   ${workData.sale?.price}
                 </div>
-              }
+              )}
             </div>
-            <div tw='flex flex-wrap w-full mt-[10px]'>
+            <div tw="flex flex-wrap w-full mt-[10px]">
               {[workData.surface].map((tag) => (
                 <div
-                  tw='bg-[#FFE1E1] rounded-[52px] h-6 px-[11px] font-semibold text-[12px] text-[#742F2F] flex items-center'
+                  tw="bg-[#FFE1E1] rounded-[52px] h-6 px-[11px] font-semibold text-[12px] text-[#742F2F] flex items-center"
                   key={tag}
                 >
                   {tag}
                 </div>
               ))}
             </div>
-            <div tw='font-medium mt-3 text-[14px] text-[#3C3C3C] leading-[1em] flex flex-col justify-between h-[55px]'>
+            <div tw="font-medium mt-3 text-[14px] text-[#3C3C3C] leading-[1em] flex flex-col justify-between h-[55px]">
               <div>{workData.year}</div>
               <div>{workData.medium}</div>
-              <div>{workData.height} x {workData.width} inches</div>
+              <div>
+                {workData.height} x {workData.width} inches
+              </div>
             </div>
-            {workData.forSale ?
-              <div tw='mt-5'>
-                <div tw='text-[12px] text-[#333333] cursor-pointer'>
-                  Pay as low as $66/ mo. <b>Affirm.</b> See if you&#39;re qualified.
+            {workData.forSale ? (
+              <div tw="mt-5">
+                <div tw="text-[12px] text-[#333333] cursor-pointer">
+                  Pay as low as $66/ mo. <b>Affirm.</b> See if you&#39;re
+                  qualified.
                 </div>
                 <button
-                  tw='mt-4'
+                  tw="mt-4"
                   css={[
                     buttons.white,
-                    tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`
+                    tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`,
                   ]}
                 >
                   Buy now
                 </button>
                 <button
-                  tw='mt-[14px]'
-                  css={[
-                    buttons.red,
-                    tw`h-12 text-[16px] text-white w-full`
-                  ]}
+                  tw="mt-[14px]"
+                  css={[buttons.red, tw`h-12 text-[16px] text-white w-full`]}
+                  onClick={() => addToCart()}
                 >
-                  Add to cart
+                  {inCart ? 'In your cart' : 'Add to cart'}
                 </button>
-                <div tw='w-full items-center grid grid-cols-[16px auto] gap-x-2 mt-5'>
-                  <img src='/assets/svgs/shieldpay.svg' />
-                  <div tw='text-[12px] text-[#333333] font-semibold'>
+                <div tw="w-full items-center grid grid-cols-[16px auto] gap-x-2 mt-5">
+                  <img src="/assets/svgs/shieldpay.svg" />
+                  <div tw="text-[12px] text-[#333333] font-semibold">
                     Secure payment
                   </div>
                   <div />
-                  <div tw='text-[12px] text-black mt-[2px] mb-2'>
+                  <div tw="text-[12px] text-black mt-[2px] mb-2">
                     Secure transactions by credit card through Stripe.
                   </div>
-                  <img src='/assets/svgs/check.svg' />
-                  <div tw='text-[12px] text-[#333333] font-semibold'>
+                  <img src="/assets/svgs/check.svg" />
+                  <div tw="text-[12px] text-[#333333] font-semibold">
                     Your purchase is protected
                   </div>
                   <div />
-                  <div tw='text-[12px] text-black mt-[2px] mb-2'>
-                    Learn more about <b tw='font-semibold'>Pkazo&#39;s buyer protection.</b>
+                  <div tw="text-[12px] text-black mt-[2px] mb-2">
+                    Learn more about{' '}
+                    <b tw="font-semibold">Pkazo&#39;s buyer protection.</b>
                   </div>
                 </div>
-              </div> :
+              </div>
+            ) : (
               <div>
                 <button
-                  tw='mt-5'
+                  tw="mt-5"
                   css={[
                     buttons.white,
-                    tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`
+                    tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`,
                   ]}
                 >
                   Make offer
                 </button>
               </div>
-            }
-            <div tw='mt-5 text-[14px] text-[#3C3C3C] leading-[23px]'>
+            )}
+            <div tw="mt-5 text-[14px] text-[#3C3C3C] leading-[23px]">
               {workData.description}
             </div>
           </div>
         </Container>
       </>
-    )
+    );
   }
 
   return (
@@ -409,91 +433,96 @@ const IndividualWork: NextPage = () => {
       <Container>
         <div tw="flex mt-10 w-full mb-[30px]">
           <div>
-            <div tw='flex gap-x-9'>
-              {workImages.length >= 2 &&
+            <div tw="flex gap-x-9">
+              {workImages.length >= 2 && (
                 <div>
                   {workImages.map((work, i) => (
                     <button
-                      tw='w-[86px] h-[86px] rounded-[8px] overflow-hidden flex items-center'
+                      tw="w-[86px] h-[86px] rounded-[8px] overflow-hidden flex items-center"
                       css={[selectedImage !== i && tw`opacity-70`]}
                       key={i}
                       onClick={() => setSelectedImage(i)}
                     >
                       <Image
                         src={work}
-                        width='86px'
-                        height='86px'
-                        objectFit='cover' />
+                        width="86px"
+                        height="86px"
+                        objectFit="cover"
+                      />
                     </button>
                   ))}
                 </div>
-              }
-              <div tw='relative h-[608px] max-w-[800px] w-[50vw] bg-[#F9F9F9] flex items-center justify-center'>
-                {workImages[selectedImage] ?
-                  <img src={workImages[selectedImage]}
-                    tw='object-contain w-full h-full' /> :
-                  <div tw='m-auto'>Unable to load image</div>
-                }
-                <button
-                  tw='bg-white border border-[#E8E8E8] hover:bg-[#F5F5F5] w-12 h-12 rounded-full absolute top-[10px] right-[10px]'
-                >
-                  <img src='/assets/svgs/like.svg' tw='m-auto w-[18px]' />
+              )}
+              <div tw="relative h-[608px] max-w-[800px] w-[50vw] bg-[#F9F9F9] flex items-center justify-center">
+                {workImages[selectedImage] ? (
+                  <img
+                    src={workImages[selectedImage]}
+                    tw="object-contain w-full h-full"
+                  />
+                ) : (
+                  <div tw="m-auto">Unable to load image</div>
+                )}
+                <button tw="bg-white border border-[#E8E8E8] hover:bg-[#F5F5F5] w-12 h-12 rounded-full absolute top-[10px] right-[10px]">
+                  <img src="/assets/svgs/like.svg" tw="m-auto w-[18px]" />
                 </button>
                 {workImages.length >= 2 && (
                   <button
                     tw="w-12 h-12 rounded-full bg-white opacity-30 hover:opacity-50 absolute top-[50%] left-[10px] flex-shrink-0"
-                    onClick={
-                      () => setSelectedImage((selectedImage - 1 + workImages.length) % workImages.length)
+                    onClick={() =>
+                      setSelectedImage(
+                        (selectedImage - 1 + workImages.length) %
+                          workImages.length
+                      )
                     }
                   >
-                    <img src='/assets/svgs/arrow_left.svg' tw='m-auto' />
+                    <img src="/assets/svgs/arrow_left.svg" tw="m-auto" />
                   </button>
                 )}
                 {workImages.length >= 2 && (
                   <button
                     tw="w-12 h-12 rounded-full bg-white opacity-30 hover:opacity-50 absolute top-[50%] right-[10px] flex-shrink-0"
-                    onClick={
-                      () => setSelectedImage((selectedImage + 1) % workImages.length)
+                    onClick={() =>
+                      setSelectedImage((selectedImage + 1) % workImages.length)
                     }
                   >
-                    <img src='/assets/svgs/arrow_right.svg' tw='m-auto' />
+                    <img src="/assets/svgs/arrow_right.svg" tw="m-auto" />
                   </button>
                 )}
               </div>
             </div>
-            <div tw='mt-10 text-[18px] text-[#212121] leading-[32px]'>
+            <div tw="mt-10 text-[18px] text-[#212121] leading-[32px]">
               {workData.description}
             </div>
-            <div tw='mt-7 flex flex-wrap gap-3 w-full'>
+            <div tw="mt-7 flex flex-wrap gap-3 w-full">
               {['cat', 'meow', 'gfp'].map((tag) => (
                 <div
-                  tw='bg-[#C4C4C4] h-7 px-[15px] rounded-[30px] text-white text-[12px] font-semibold flex items-center'
+                  tw="bg-[#C4C4C4] h-7 px-[15px] rounded-[30px] text-white text-[12px] font-semibold flex items-center"
                   key={tag}
                 >
                   {tag}
                 </div>
               ))}
             </div>
-            <div tw='mt-10'>
-              <div tw='flex items-center'>
-                <div tw='text-[20px] text-black'>
+            <div tw="mt-10">
+              <div tw="flex items-center">
+                <div tw="text-[20px] text-black">
                   {comments.length} store reviews
                 </div>
-                <div tw='ml-[18px] text-[18px] text-black font-semibold'>
+                <div tw="ml-[18px] text-[18px] text-black font-semibold">
                   {(Math.round(4.98 * 10) / 10).toFixed(1)}
                 </div>
-                <div tw='ml-2 flex gap-x-[5px] h-4'>
-                  <img src='/assets/svgs/orange_star.svg' />
-                  <img src='/assets/svgs/orange_star.svg' />
-                  <img src='/assets/svgs/orange_star.svg' />
-                  <img src='/assets/svgs/orange_star.svg' />
-                  <img src='/assets/svgs/light_gray_star.svg' />
+                <div tw="ml-2 flex gap-x-[5px] h-4">
+                  <img src="/assets/svgs/orange_star.svg" />
+                  <img src="/assets/svgs/orange_star.svg" />
+                  <img src="/assets/svgs/orange_star.svg" />
+                  <img src="/assets/svgs/orange_star.svg" />
+                  <img src="/assets/svgs/light_gray_star.svg" />
                 </div>
               </div>
-              <div tw='mt-8 flex flex-col gap-y-9'>
+              <div tw="mt-8 flex flex-col gap-y-9">
                 {comments.map((comment, i) => (
                   <div key={i}>
-                    <div tw='flex'>
+                    <div tw="flex">
                       <div tw="w-9 h-9 overflow-hidden rounded-full flex items-center">
                         <Image
                           src={comment.imgSrc}
@@ -513,12 +542,12 @@ const IndividualWork: NextPage = () => {
                           </div>
                         </div>
 
-                        <div tw='flex gap-x-1 h-3'>
-                          <img src='/assets/svgs/orange_star.svg' />
-                          <img src='/assets/svgs/orange_star.svg' />
-                          <img src='/assets/svgs/orange_star.svg' />
-                          <img src='/assets/svgs/orange_star.svg' />
-                          <img src='/assets/svgs/light_gray_star.svg' />
+                        <div tw="flex gap-x-1 h-3">
+                          <img src="/assets/svgs/orange_star.svg" />
+                          <img src="/assets/svgs/orange_star.svg" />
+                          <img src="/assets/svgs/orange_star.svg" />
+                          <img src="/assets/svgs/orange_star.svg" />
+                          <img src="/assets/svgs/light_gray_star.svg" />
                         </div>
                       </div>
                     </div>
@@ -530,8 +559,8 @@ const IndividualWork: NextPage = () => {
               </div>
             </div>
           </div>
-          <div tw='ml-16 w-full'>
-            <div tw='flex items-center'>
+          <div tw="ml-16 w-full">
+            <div tw="flex items-center">
               <div tw="w-[60px] h-[60px] overflow-hidden rounded-full flex items-center">
                 <Image
                   src={artistPicture}
@@ -541,153 +570,162 @@ const IndividualWork: NextPage = () => {
                   objectFit="cover"
                 />
               </div>
-              <div tw='ml-5'>
-                <div tw='text-[20px] leading-[1em] font-bold text-[#3C3C3C]'>
+              <div tw="ml-5">
+                <div tw="text-[20px] leading-[1em] font-bold text-[#3C3C3C]">
                   {artistData.name}
                 </div>
-                <div tw='mt-[6px] text-[16px] leading-[1em] font-semibold text-[#838383]'>
+                <div tw="mt-[6px] text-[16px] leading-[1em] font-semibold text-[#838383]">
                   {artistData.location}
                 </div>
               </div>
             </div>
-            <div tw='mt-3 flex items-center justify-center w-full'>
+            <div tw="mt-3 flex items-center justify-center w-full">
               Original,Print
             </div>
-            <div tw='mt-5 flex items-center justify-between'>
-              <div tw='italic text-[36px] leading-[1em] text-[#3C3C3C]'>
+            <div tw="mt-5 flex items-center justify-between">
+              <div tw="italic text-[36px] leading-[1em] text-[#3C3C3C]">
                 {workData.title}
               </div>
-              {workData.forSale &&
-                <div tw='font-semibold text-[32px] leading-[1em] text-[#242424]'>
+              {workData.forSale && (
+                <div tw="font-semibold text-[32px] leading-[1em] text-[#242424]">
                   ${workData.sale?.price}
                 </div>
-              }
+              )}
             </div>
-            <div tw='flex flex-wrap w-full mt-2'>
+            <div tw="flex flex-wrap w-full mt-2">
               {[workData.surface].map((tag) => (
                 <div
-                  tw='bg-[#FFE1E1] rounded-[22px] h-7 px-4 font-semibold text-[12px] text-[#742F2F] flex items-center'
+                  tw="bg-[#FFE1E1] rounded-[22px] h-7 px-4 font-semibold text-[12px] text-[#742F2F] flex items-center"
                   key={tag}
                 >
                   {tag}
                 </div>
               ))}
             </div>
-            <div tw='mt-3 text-[20px] text-black leading-[1em] flex flex-col gap-y-3'>
+            <div tw="mt-3 text-[20px] text-black leading-[1em] flex flex-col gap-y-3">
               <div>{workData.year}</div>
               <div>{workData.medium}</div>
-              <div>{workData.height} x {workData.width} inches</div>
+              <div>
+                {workData.height} x {workData.width} inches
+              </div>
             </div>
 
-            {workData.forSale ?
-              <div tw='mt-6 px-7 flex flex-col items-center border-t-2 border-b-2 border-[#E9E9E9] py-6'>
-                <div tw='text-[14px] text-[#333333] cursor-pointer'>
-                  Pay as low as $66/ mo. <b>Affirm.</b> See if you&#39;re qualified.
+            {workData.forSale ? (
+              <div tw="mt-6 px-7 flex flex-col items-center border-t-2 border-b-2 border-[#E9E9E9] py-6">
+                <div tw="text-[14px] text-[#333333] cursor-pointer">
+                  Pay as low as $66/ mo. <b>Affirm.</b> See if you&#39;re
+                  qualified.
                 </div>
                 <button
-                  tw='mt-5'
+                  tw="mt-5"
                   css={[
                     buttons.white,
-                    tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`
+                    tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`,
                   ]}
                 >
                   Buy now
                 </button>
                 <button
-                  tw='mt-3'
-                  css={[
-                    buttons.red,
-                    tw`h-12 text-[16px] text-white w-full`
-                  ]}
+                  tw="mt-3"
+                  css={[buttons.red, tw`h-12 text-[16px] text-white w-full`]}
+                  onClick={() => addToCart()}
                 >
-                  Add to cart
+                  {inCart ? 'In your cart' : 'Add to cart'}
                 </button>
-                <div tw='w-full items-center grid grid-cols-[16px auto] gap-x-2 mt-5'>
-                  <img src='/assets/svgs/shieldpay.svg' />
-                  <div tw='text-[14px] text-[#333333] font-semibold'>
+                <div tw="w-full items-center grid grid-cols-[16px auto] gap-x-2 mt-5">
+                  <img src="/assets/svgs/shieldpay.svg" />
+                  <div tw="text-[14px] text-[#333333] font-semibold">
                     Secure payment
                   </div>
                   <div />
-                  <div tw='text-[14px] text-black mt-[2px] mb-2'>
+                  <div tw="text-[14px] text-black mt-[2px] mb-2">
                     Secure transactions by credit card through Stripe.
                   </div>
-                  <img src='/assets/svgs/check.svg' />
-                  <div tw='text-[14px] text-[#333333] font-semibold'>
+                  <img src="/assets/svgs/check.svg" />
+                  <div tw="text-[14px] text-[#333333] font-semibold">
                     Your purchase is protected
                   </div>
                   <div />
-                  <div tw='text-[14px] text-black mt-[2px] mb-2'>
-                    Learn more about <b tw='font-semibold'>Pkazo&#39;s buyer protection.</b>
+                  <div tw="text-[14px] text-black mt-[2px] mb-2">
+                    Learn more about{' '}
+                    <b tw="font-semibold">Pkazo&#39;s buyer protection.</b>
                   </div>
                 </div>
-              </div> :
+              </div>
+            ) : (
               <div>
                 <button
-                  tw='mt-6'
+                  tw="mt-6"
                   css={[
                     buttons.white,
-                    tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`
+                    tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`,
                   ]}
                 >
                   Make offer
                 </button>
               </div>
-            }
-            <div tw='mt-6 px-7'>
-              <div tw='grid grid-cols-2 mt-6'>
-                <div tw='text-[16px] leading-[20px] text-[#65676B]'>
+            )}
+            <div tw="mt-6 px-7">
+              <div tw="grid grid-cols-2 mt-6">
+                <div tw="text-[16px] leading-[20px] text-[#65676B]">
                   Ready to ship
                 </div>
                 <div />
-                <div tw='text-[20px] text-black leading-[28px] mt-1'>
+                <div tw="text-[20px] text-black leading-[28px] mt-1">
                   {artistData.shippingProcessingTime}
                 </div>
                 <div />
-                <div tw='text-[16px] leading-[20px] text-[#65676B] mt-6'>
+                <div tw="text-[16px] leading-[20px] text-[#65676B] mt-6">
                   Shipping cost
                 </div>
-                <div tw='text-[16px] leading-[20px] text-[#65676B] mt-6'>
+                <div tw="text-[16px] leading-[20px] text-[#65676B] mt-6">
                   Returns
                 </div>
-                <div tw='text-[20px] text-black leading-[28px] mt-1'>
-                  {shippingEstimateLoading ?
-                    'Loading...' :
-                    (shippingCost ?
-                      `\$${shippingCost}` :
-                      <button
-                        tw="underline text-[#333333]"
-                        onClick={() => {
-                          setShowShippingEstimateModal(true);
-                          setShippingEstimateModalZip(shippingZip || '');
-                        }}
-                      >
-                        Calculate
-                      </button>)}
+                <div tw="text-[20px] text-black leading-[28px] mt-1">
+                  {shippingEstimateLoading ? (
+                    'Loading...'
+                  ) : shippingCost ? (
+                    `\$${shippingCost}`
+                  ) : (
+                    <button
+                      tw="underline text-[#333333]"
+                      onClick={() => {
+                        setShowShippingEstimateModal(true);
+                        setShippingEstimateModalZip(shippingZip || '');
+                      }}
+                    >
+                      Calculate
+                    </button>
+                  )}
                 </div>
-                <div tw='text-[20px] text-black leading-[28px] mt-1'>
+                <div tw="text-[20px] text-black leading-[28px] mt-1">
                   Accepted
                 </div>
               </div>
-              {artistData.shippingReturnPolicies &&
-                <div tw='mt-6'>
+              {artistData.shippingReturnPolicies && (
+                <div tw="mt-6">
                   <button
-                    tw='underline text-[#65676B] text-[16px]'
-                    onClick={() => setShowShippingPolicies(!showShippingPolicies)}
+                    tw="underline text-[#65676B] text-[16px]"
+                    onClick={() =>
+                      setShowShippingPolicies(!showShippingPolicies)
+                    }
                   >
-                    {showShippingPolicies && 'Hide '}Shipping and Return Policies
+                    {showShippingPolicies && 'Hide '}Shipping and Return
+                    Policies
                   </button>
-                  {showShippingPolicies &&
-                    <div tw='text-[16px] text-black'>
+                  {showShippingPolicies && (
+                    <div tw="text-[16px] text-black">
                       {artistData.shippingReturnPolicies}
-                    </div>}
+                    </div>
+                  )}
                 </div>
-              }
+              )}
             </div>
-            <div tw='mt-10'>
-              <div tw='ml-3 text-[20px] text-black leading-[27px] font-semibold'>
+            <div tw="mt-10">
+              <div tw="ml-3 text-[20px] text-black leading-[27px] font-semibold">
                 Frequently Asked Questions
               </div>
-              <div tw='mt-7 pl-7 flex flex-col gap-y-5'>
+              <div tw="mt-7 pl-7 flex flex-col gap-y-5">
                 {(
                   (artistData.faqs || [
                     {
@@ -697,30 +735,31 @@ const IndividualWork: NextPage = () => {
                   ]) as { question: string; answer: string }[]
                 ).map(({ question, answer }, i) => (
                   <button
-                    tw='px-6 py-[14px] border-[1.5px] border-[#8B8B8B] rounded-[30px]'
+                    tw="px-6 py-[14px] border-[1.5px] border-[#8B8B8B] rounded-[30px]"
                     key={i}
                     onClick={() =>
                       setExpandedFAQ((current) => (current === i ? -1 : i))
                     }
                   >
-                    <div tw='flex w-full items-center justify-between text-[14px] leading-[19px] font-bold text-[#65676B]'>
+                    <div tw="flex w-full items-center justify-between text-[14px] leading-[19px] font-bold text-[#65676B]">
                       <div>{question}</div>
                       <img
-                        src='/assets/svgs/arrow_down.svg'
-                        tw='w-5'
-                        css={[expandedFAQ === i && tw`scale-y-[-1]`]} />
+                        src="/assets/svgs/arrow_down.svg"
+                        tw="w-5"
+                        css={[expandedFAQ === i && tw`scale-y-[-1]`]}
+                      />
                     </div>
-                    {expandedFAQ === i &&
-                      <div tw='text-left mt-1 text-[14px] text-[#8B8B8B] w-full'>
+                    {expandedFAQ === i && (
+                      <div tw="text-left mt-1 text-[14px] text-[#8B8B8B] w-full">
                         {answer}
                       </div>
-                    }
+                    )}
                   </button>
                 ))}
               </div>
             </div>
           </div>
-        </div >
+        </div>
       </Container>
     </>
   );
