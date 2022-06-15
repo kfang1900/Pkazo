@@ -131,28 +131,28 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
             }
           </Masonry>
         </div>
-
-        <div tw="flex justify-center items-center mt-4 md:mt-[30px]"
-          css={[curGallery.Images.length > 9 && tw`mb-1 md:mb-5`]}>
-          <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
-          {curGallery.Images.length > 9 && (
-            <button
-              tw="rounded-full border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB]"
-              css={[isMobile ? tw`w-[30px] h-[30px] mx-[15px]` : tw`w-[60px] h-[60px] mx-[30px]`]}
-              onClick={() => updSeeNum()}
-            >
-              <img
-                src="/assets/svgs/arrow_down.svg"
-                css={[
-                  tw`m-auto scale-50 md:scale-100`,
-                  seeNum >= curGallery.Images.length && tw`scale-y-[-0.5] md:scale-y-[-1]`,
-                ]}
-              />
-            </button>
-          )}
-          <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
-        </div>
       </section>
+
+      <div tw="flex justify-center items-center mt-4 md:mt-[30px]"
+        css={[curGallery.Images.length > 9 && tw`mb-1 md:mb-5`]}>
+        <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
+        {curGallery.Images.length > 9 && (
+          <button
+            tw="rounded-full border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB]"
+            css={[isMobile ? tw`w-[30px] h-[30px] mx-[15px]` : tw`w-[60px] h-[60px] mx-[30px]`]}
+            onClick={() => updSeeNum()}
+          >
+            <img
+              src="/assets/svgs/arrow_down.svg"
+              css={[
+                tw`m-auto scale-50 md:scale-100`,
+                seeNum >= curGallery.Images.length && tw`scale-y-[-0.5] md:scale-y-[-1]`,
+              ]}
+            />
+          </button>
+        )}
+        <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
+      </div>
       {/* Gallery Section --End-- */}
       {/*
       <div tw="mt-7">
