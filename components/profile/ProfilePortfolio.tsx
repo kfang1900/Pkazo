@@ -84,6 +84,7 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
                         src={portfolioData.PortfolioImages[index]}
                         alt="Portfolio Image"
                         layout="fill"
+                        objectFit='cover'
                       />
                     )}
                   </div>
@@ -233,6 +234,7 @@ const CircleDescriptionBox = ({
             src={portfolioData.PortfolioImages[activeIndex]}
             alt="Portfolio Image"
             layout="fill"
+            objectFit='cover'
           />
         )}
       </div>
