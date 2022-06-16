@@ -66,12 +66,12 @@ const Header = (props: {
   }, [artistData]);
   if (props.logoOnly) {
     return (
-      <div tw="sticky top-0 z-50 w-full">
-        <div tw="bg-white h-10 md:h-[60px] px-4 md:px-[60px] flex items-center justify-between border-b md:border-0 border-[#D8D8D8]">
+      <div tw='top-0 z-50 w-full'>
+        <div tw="bg-white h-[56px] md:h-[60px] px-5 md:px-[60px] flex items-center justify-between border-b md:border-0 border-[#D8D8D8]">
           <Link href="/" passHref>
             <img
-              src="/assets/images/Pkazo.svg"
-              tw="cursor-pointer w-[57px] h-[20px] md:w-[92px] md:h-[32px]"
+              src='/assets/images/Pkazo.svg'
+              tw="cursor-pointer w-[69px] h-[24px] md:w-[92px] md:h-[32px]"
               alt="Pkazo"
             />
           </Link>

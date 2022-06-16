@@ -21,9 +21,9 @@ import { ArtistData } from '../../types/dbTypes';
 export default function EditProfilePage() {
   const [data, setData] = useState<
     | (ArtistData & {
-        profilePictureURL: string;
-        coverImageURL: string;
-      })
+      profilePictureURL: string;
+      coverImageURL: string;
+    })
     | undefined
   >();
   const [artistId, setArtistId] = useState('');
@@ -173,7 +173,7 @@ export default function EditProfilePage() {
                   component="textarea"
                   rows="8"
                   name="bio"
-                  css={[styles.input, tw`w-[710px] h-[160px] py-2`]}
+                  css={[styles.input, tw`w-[710px] h-[160px] py-2 resize-none`]}
                 />
                 <div />
                 {isDataModified(values) && (

@@ -84,6 +84,7 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
                         src={portfolioData.PortfolioImages[index]}
                         alt="Portfolio Image"
                         layout="fill"
+                        objectFit='cover'
                       />
                     )}
                   </div>
@@ -107,7 +108,7 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
       {/* Circle Images Section --End-- */}
       {/* Gallery Section --Start-- */}
       <section tw='mt-3 md:mt-12'>
-        <div className="container">
+        <div className="container" tw='overflow-x-hidden'>
           <Masonry
             breakpointCols={{ default: 3, 500: 2 }}
             className={styles['masonry']}
@@ -130,28 +131,28 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
             }
           </Masonry>
         </div>
-
-        <div tw="flex w-full justify-center items-center mt-4 md:mt-[30px]"
-          css={[curGallery.Images.length > 9 && tw`mb-1 md:mb-5`]}>
-          <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
-          {curGallery.Images.length > 9 && (
-            <button
-              tw="rounded-full border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB]"
-              css={[isMobile ? tw`w-[30px] h-[30px] mx-[15px]` : tw`w-[60px] h-[60px] mx-[30px]`]}
-              onClick={() => updSeeNum()}
-            >
-              <img
-                src="/assets/svgs/arrow_down.svg"
-                css={[
-                  tw`m-auto scale-50 md:scale-100`,
-                  seeNum >= curGallery.Images.length && tw`scale-y-[-0.5] md:scale-y-[-1]`,
-                ]}
-              />
-            </button>
-          )}
-          <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
-        </div>
       </section>
+
+      <div tw="flex justify-center items-center mt-4 md:mt-[30px]"
+        css={[curGallery.Images.length > 9 && tw`mb-1 md:mb-5`]}>
+        <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
+        {curGallery.Images.length > 9 && (
+          <button
+            tw="rounded-full border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB]"
+            css={[isMobile ? tw`w-[30px] h-[30px] mx-[15px]` : tw`w-[60px] h-[60px] mx-[30px]`]}
+            onClick={() => updSeeNum()}
+          >
+            <img
+              src="/assets/svgs/arrow_down.svg"
+              css={[
+                tw`m-auto scale-50 md:scale-100`,
+                seeNum >= curGallery.Images.length && tw`scale-y-[-0.5] md:scale-y-[-1]`,
+              ]}
+            />
+          </button>
+        )}
+        <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
+      </div>
       {/* Gallery Section --End-- */}
       {/*
       <div tw="mt-7">
@@ -233,6 +234,7 @@ const CircleDescriptionBox = ({
             src={portfolioData.PortfolioImages[activeIndex]}
             alt="Portfolio Image"
             layout="fill"
+            objectFit='cover'
           />
         )}
       </div>
