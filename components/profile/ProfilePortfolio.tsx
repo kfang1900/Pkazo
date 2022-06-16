@@ -154,8 +154,8 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
         <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
       </div>
       {/* Gallery Section --End-- */}
-      {/*
-      <div tw="mt-7">
+
+      {/* <div tw="mt-7">
         <div tw="flex items-end">
           <div tw="text-black text-[30px] font-semibold leading-[30px]">
             Works for Sale
@@ -166,7 +166,7 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
             </div>
           </Link>
         </div>
-      </div>*/}
+      </div> */}
       {/* 
       <div tw="mt-[100px]">
         <div tw="flex items-end">

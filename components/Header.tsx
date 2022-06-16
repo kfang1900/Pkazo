@@ -154,7 +154,7 @@ const Header = (props: {
                 passHref
               >
                 <button
-                  tw="text-[12px] md:text-[14px] text-[#3C3C3C] font-semibold py-1"
+                  tw="text-[12px] md:text-[14px] text-[#3C3C3C] font-semibold py-1 flex-shrink-0"
                   onClick={() => setShowLoginModal(true)}
                 >
                   Sign in
@@ -163,7 +163,7 @@ const Header = (props: {
               <button
                 css={[
                   buttons.red,
-                  tw`font-semibold w-[108px] md:w-[121px] h-[32px] md:h-[42px] text-[12px] md:text-[14px] px-0 py-0`,
+                  tw`font-semibold w-[108px] md:w-[121px] h-[32px] md:h-[42px] text-[12px] md:text-[14px] px-0 py-0 flex-shrink-0`,
                 ]}
               >
                 Sell on Pkazo

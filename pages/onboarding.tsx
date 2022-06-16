@@ -30,6 +30,7 @@ import Modal from '../components/popups/Modal';
 import { Router, useRouter } from 'next/router';
 import { Container } from 'styles/Container';
 import buttons from 'styles/Button';
+import { useMediaQuery } from 'react-responsive';
 
 export interface OnboardingFormValues {
   name: string;
@@ -42,6 +43,12 @@ export interface OnboardingFormValues {
 }
 
 function Onboarding() {
+  const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    if (isMobile !== mediaQuery) setIsMobile(mediaQuery);
+  }, [mediaQuery, isMobile]);
+
   const [stage, setStage] = useState(0);
   // let artistName = '';
   // let discipline = '';
@@ -159,7 +166,7 @@ function Onboarding() {
         >
           {({ values }) =>
             <>
-              <div tw='pt-5 px-6'>
+              <div tw='pt-5 md:pt-12 px-6'>
                 {stage === 0 && (
                   <ProfileDetailsSection
                     country={defaultCountry}
@@ -168,9 +175,17 @@ function Onboarding() {
                 )}
               </div>
 
-              <div tw='mt-6 sticky bottom-0 bg-white pb-4'>
-                <div tw='h-[0.5px] bg-[#E3E3E3]' />
-                <div tw='mt-[14px] grid grid-cols-2 gap-x-6 px-6'>
+              <div
+                tw='mt-6 md:w-[700px] md:mx-auto md:pb-[30px]'
+                css={[isMobile && tw`sticky bottom-0 bg-white pb-4`]}
+              >
+                {isMobile && <div tw='h-[0.5px] bg-[#E3E3E3]' />}
+                <div
+                  css={[isMobile ?
+                    tw`mt-[14px] grid grid-cols-2 gap-x-6 px-6` :
+                    tw`w-full grid grid-cols-[repeat(2, 160px)] justify-between`
+                  ]}
+                >
                   <button
                     css={[
                       buttons.white,
