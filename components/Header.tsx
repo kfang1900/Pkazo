@@ -15,7 +15,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { ArtistData } from '../types/dbTypes';
-import LoginForm from './popups/LoginForm';
+import LoginForm, { Login } from './popups/LoginForm';
 import { useRouter } from 'next/router';
 import {
   loadStorageImage,
@@ -94,75 +94,149 @@ const Header = (props: {
       </div>
     );
   }
+  if (isMobile && showLoginModal) {
+    return (
+      <div tw="sticky top-0 z-50 w-full h-screen overscroll-contain overflow-hidden flex justify-center">
+        <Login onClose={() => setShowLoginModal(false)} />
+      </div>
+    );
+  }
+
   return (
     <div tw="sticky top-0 z-50 w-full">
-      {showLoginModal && <LoginForm onClose={() => setShowLoginModal(false)} />}
-      {showUploadWorkPopup && (
-        <UploadWork onClose={() => setShowUploadWorkPopup(false)} />
+      {!isMobile && showLoginModal && (
+        <LoginForm onClose={() => setShowLoginModal(false)} />
       )}
-      <div tw="bg-white h-10 md:h-[60px] px-4 md:px-[60px] flex items-center justify-between border-b border-[#D8D8D8]">
-        <Link href="/" passHref>
-          <img
-            src="/assets/images/Pkazo.svg"
-            tw="cursor-pointer w-[57px] h-[20px] md:w-[92px] md:h-[32px]"
-            alt="Pkazo"
-          />
-        </Link>
-        {!isMobile && (
-          <div tw="flex-grow ml-5 pl-6 pr-5 rounded-[48px] h-10 bg-[#F0F0F0] border border-[#A3A3A3] focus-within:border-[#838383] outline-none flex items-center">
-            <input
-              type="text"
-              placeholder="Search for anything"
-              tw="w-full bg-transparent outline-none text-[16px]"
-            />
-            <img src="/assets/svgs/search.svg" tw="ml-3 w-[18px] h-[18px]" />
-          </div>
+
+      <>
+        {showUploadWorkPopup && (
+          <UploadWork onClose={() => setShowUploadWorkPopup(false)} />
         )}
-        <div tw="ml-10 flex items-center gap-x-4 md:gap-x-8">
-          {!!user && (
-            <>
-              <Link href="/favorites" passHref>
-                <img
-                  src={`/assets/svgs/${isMobile ? 'mobile/' : ''}like.svg`}
-                  tw="cursor-pointer"
-                />
-              </Link>
-              <Link href="/chats" passHref>
-                <img
-                  src={`/assets/svgs/${isMobile ? 'mobile/' : ''}chat.svg`}
-                  tw="cursor-pointer"
-                />
-              </Link>
-            </>
+        <div tw="bg-white h-10 md:h-[60px] px-4 md:px-[60px] flex items-center justify-between border-b border-[#D8D8D8]">
+          <Link href="/" passHref>
+            <img
+              src="/assets/images/Pkazo.svg"
+              tw="cursor-pointer w-[57px] h-[20px] md:w-[92px] md:h-[32px]"
+              alt="Pkazo"
+            />
+          </Link>
+          {!isMobile && (
+            <div tw="flex-grow ml-5 pl-6 pr-5 rounded-[48px] h-10 bg-[#F0F0F0] border border-[#A3A3A3] focus-within:border-[#838383] outline-none flex items-center">
+              <input
+                type="text"
+                placeholder="Search for anything"
+                tw="w-full bg-transparent outline-none text-[16px]"
+              />
+              <img src="/assets/svgs/search.svg" tw="ml-3 w-[18px] h-[18px]" />
+            </div>
           )}
-          {!!user && isArtist && (
-            <>
-              <Link href={`/${username}`} passHref>
-                <a>
+          <div tw="ml-10 flex items-center gap-x-4 md:gap-x-8">
+            {!!user && (
+              <>
+                <Link href="/favorites" passHref>
                   <img
-                    src={`/assets/svgs/${isMobile ? 'mobile/' : ''}shop.svg`}
+                    src={`/assets/svgs/${isMobile ? 'mobile/' : ''}like.svg`}
                     tw="cursor-pointer"
                   />
-                </a>
-              </Link>
-              <button onClick={() => setShowUploadWorkPopup(true)}>
-                <img
-                  src={`/assets/svgs/${isMobile ? 'mobile/' : ''}create.svg`}
-                  tw="cursor-pointer"
-                />
-              </button>
-              {pfp && (
+                </Link>
+                <Link href="/chats" passHref>
+                  <img
+                    src={`/assets/svgs/${isMobile ? 'mobile/' : ''}chat.svg`}
+                    tw="cursor-pointer"
+                  />
+                </Link>
+              </>
+            )}
+            {!!user && isArtist && (
+              <>
+                <Link href={`/${username}`} passHref>
+                  <a>
+                    <img
+                      src={`/assets/svgs/${isMobile ? 'mobile/' : ''}shop.svg`}
+                      tw="cursor-pointer"
+                    />
+                  </a>
+                </Link>
+                <button onClick={() => setShowUploadWorkPopup(true)}>
+                  <img
+                    src={`/assets/svgs/${isMobile ? 'mobile/' : ''}create.svg`}
+                    tw="cursor-pointer"
+                  />
+                </button>
+                {pfp && (
+                  <div className="ml-3 relative">
+                    <button
+                      tw="w-4 h-4 md:w-6 md:h-6 my-auto overflow-hidden rounded-full flex items-center"
+                      ref={profileButtonRef}
+                    >
+                      <Image
+                        src={pfp}
+                        alt="profile"
+                        width={isMobile ? '16px' : '24px'}
+                        height={isMobile ? '16px' : '24px'}
+                        objectFit="cover"
+                      />
+                    </button>
+
+                    {showProfileDropdown && (
+                      <div
+                        tw="origin-top-right absolute right-2 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        role="menu"
+                        aria-orientation="vertical"
+                        aria-labelledby="user-menu-button"
+                        tabIndex={-1}
+                      >
+                        <Link href={`/account/edit`} passHref>
+                          <a
+                            tw="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
+                            tabIndex={-1}
+                          >
+                            Acconut Settings
+                          </a>
+                        </Link>
+                        <a
+                          tw="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
+                          tabIndex={-1}
+                          onClick={() => signOut()}
+                        >
+                          Sign out
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+            {!user && (
+              <>
+                <button
+                  tw="text-[12px] md:text-[14px] text-[#3C3C3C] font-semibold py-1 flex-shrink-0"
+                  onClick={() => setShowLoginModal(true)}
+                >
+                  Sign in
+                </button>
+
+                <button
+                  css={[
+                    buttons.red,
+                    tw`font-semibold w-[108px] md:w-[121px] h-[32px] md:h-[42px] text-[12px] md:text-[14px] px-0 py-0 flex-shrink-0`,
+                  ]}
+                >
+                  Sell on Pkazo
+                </button>
+              </>
+            )}
+            {!!user && !isArtist && (
+              <>
                 <div className="ml-3 relative">
                   <button
                     tw="w-4 h-4 md:w-6 md:h-6 my-auto overflow-hidden rounded-full flex items-center"
                     ref={profileButtonRef}
                   >
-                    <Image
-                      src={pfp}
-                      alt="profile"
-                      width={isMobile ? '16px' : '24px'}
-                      height={isMobile ? '16px' : '24px'}
-                      objectFit="cover"
+                    <img
+                      src={`/assets/svgs/${
+                        isMobile ? 'mobile/' : ''
+                      }profile.svg`}
                     />
                   </button>
 
@@ -192,65 +266,33 @@ const Header = (props: {
                     </div>
                   )}
                 </div>
-              )}
-            </>
-          )}
-          {!user && (
-            <>
-              <Link
-                href={isMobile ? '/signin' : 'javascript:void(0);'}
-                passHref
-              >
-                <button
-                  tw="text-[12px] md:text-[14px] text-[#3C3C3C] font-semibold py-1 flex-shrink-0"
-                  onClick={() => setShowLoginModal(true)}
-                >
-                  Sign in
-                </button>
-              </Link>
-              <button
-                css={[
-                  buttons.red,
-                  tw`font-semibold w-[108px] md:w-[121px] h-[32px] md:h-[42px] text-[12px] md:text-[14px] px-0 py-0 flex-shrink-0`,
-                ]}
-              >
-                Sell on Pkazo
-              </button>
-            </>
-          )}
-          {!!user && !isArtist && (
-            <>
-              <div>
-                <img
-                  src={`/assets/svgs/${isMobile ? 'mobile/' : ''}profile.svg`}
-                />
-              </div>
-            </>
-          )}
-          <Link href="/cart" passHref>
-            <img
-              src={`/assets/svgs/${isMobile ? 'mobile/' : ''}cart.svg`}
-              tw="cursor-pointer"
-            />
-          </Link>
-        </div>
-      </div>
-      {showSearch && (
-        <div tw="md:hidden flex flex-row items-center justify-between py-2">
-          <div
-            css={[
-              tw`w-full mx-2 md:mx-4 lg:mx-8`,
-              showSearch ? '' : tw`hidden md:block`,
-            ]}
-          >
-            <input
-              type="text"
-              placeholder="Search"
-              tw="px-4 py-1 bg-gray-100 outline-none rounded-full w-full"
-            />
+              </>
+            )}
+            <Link href="/cart" passHref>
+              <img
+                src={`/assets/svgs/${isMobile ? 'mobile/' : ''}cart.svg`}
+                tw="cursor-pointer"
+              />
+            </Link>
           </div>
         </div>
-      )}
+        {showSearch && (
+          <div tw="md:hidden flex flex-row items-center justify-between py-2">
+            <div
+              css={[
+                tw`w-full mx-2 md:mx-4 lg:mx-8`,
+                showSearch ? '' : tw`hidden md:block`,
+              ]}
+            >
+              <input
+                type="text"
+                placeholder="Search"
+                tw="px-4 py-1 bg-gray-100 outline-none rounded-full w-full"
+              />
+            </div>
+          </div>
+        )}
+      </>
     </div>
   );
 };
