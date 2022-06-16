@@ -24,6 +24,7 @@ import useAuth from '../../utils/auth/useAuth';
 import useRequireOnboarding from '../../utils/hooks/useRequireOnboarding';
 import { useMediaQuery } from 'react-responsive';
 import { Container } from 'styles/Container';
+import { ArtistData } from '../../types/dbTypes';
 
 //import { sample_artist } from 'utils/Sample_Posts_Imports';
 
@@ -125,8 +126,8 @@ const Portfolio: NextPage = () => {
   const { artistData: currentUserArtistData } = useAuth();
   useRequireOnboarding(
     artistData.length > 0 &&
-    artistData[0].data() &&
-    artistData[0].data().username === username
+      artistData[0].data() &&
+      artistData[0].data().username === username
   );
 
   const isCurrentUserPage =
@@ -182,7 +183,26 @@ const Portfolio: NextPage = () => {
     setLoadingPortfolio,
     username,
   ]);
+  // todo: eventually refactor fetchArtist into individual states for each thing
+  // for now, this artist data 2 should have the same data as the above one, but
+  // the code behind it is more solid.
+  const [artistData2, setArtistData2] = useState<ArtistData | null>(null);
+  useEffect(() => {
+    if (!username) return;
+    (async () => {
+      const app = getApp();
+      const db = getFirestore(app);
 
+      const artistsSnapshot = await getDocs(
+        query(collection(db, 'artists'), where('username', '==', username))
+      );
+      artistsSnapshot.forEach((snapshot) => {
+        // this assumes that there will only be one result
+        setArtistData2(snapshot.data() as ArtistData);
+        console.log(snapshot.data());
+      });
+    })();
+  }, [username, setArtistData2]);
   return (
     <>
       <Head>
@@ -190,8 +210,8 @@ const Portfolio: NextPage = () => {
           {loading
             ? 'Loading...'
             : artistData.length === 0
-              ? 'User not found'
-              : artistData[0].data().name}
+            ? 'User not found'
+            : artistData[0].data().name}
         </title>
       </Head>
       <Header />
@@ -250,7 +270,7 @@ const Portfolio: NextPage = () => {
                         : tw`text-[18px] w-[200px] py-2 border-b-4 mb-[-4px]`,
                       tw`relative z-10 font-semibold text-gray-600 duration-150 border-transparent cursor-pointer`,
                       page === value &&
-                      tw`border-soft-red pointer-events-none hover:bg-transparent`,
+                        tw`border-soft-red pointer-events-none hover:bg-transparent`,
                     ]}
                     type={'button'}
                   >
@@ -266,14 +286,20 @@ const Portfolio: NextPage = () => {
             <Container>
               {page === Page.PORTFOLIO && profileType === 1 && (
                 <>
-                  <Gallery portfolioData={portfolioData} />
+                  <Gallery
+                    portfolioData={portfolioData}
+                    artistData={artistData2}
+                  />
                   {/*<Resume {...artistData} />*/}
                   {/*  TODO fix resume section */}
                 </>
               )}
-              {(page === Page.STORE || profileType !== 1) &&
-                <StorePortfolio profileType={profileType} portfolioData={portfolioData} />
-              }
+              {(page === Page.STORE || profileType !== 1) && (
+                <StorePortfolio
+                  profileType={profileType}
+                  portfolioData={portfolioData}
+                />
+              )}
             </Container>
           )}
         </div>

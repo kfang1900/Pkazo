@@ -5,7 +5,7 @@ import buttons from 'styles/Button';
 import { UrlObject } from 'url';
 import useAuth from '../utils/auth/useAuth';
 import tw, { TwStyle } from 'twin.macro';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getApp } from 'firebase/app';
 import {
   collection,
@@ -64,13 +64,28 @@ const Header = (props: {
       setPfp(await loadStorageImage(artistData?.profilePicture));
     })();
   }, [artistData]);
+  const profileButtonRef = useRef<HTMLButtonElement | null>(null);
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (
+        profileButtonRef.current &&
+        profileButtonRef.current.contains(e.target as any)
+      ) {
+        setShowProfileDropdown((o) => !o);
+      } else {
+        setShowProfileDropdown(false);
+      }
+    };
+    window.addEventListener('click', handler);
+    return () => window.removeEventListener('click', handler);
+  });
   if (props.logoOnly) {
     return (
-      <div tw='top-0 z-50 w-full'>
+      <div tw="top-0 z-50 w-full">
         <div tw="bg-white h-[56px] md:h-[60px] px-5 md:px-[60px] flex items-center justify-between border-b md:border-0 border-[#D8D8D8]">
           <Link href="/" passHref>
             <img
-              src='/assets/images/Pkazo.svg'
+              src="/assets/images/Pkazo.svg"
               tw="cursor-pointer w-[69px] h-[24px] md:w-[92px] md:h-[32px]"
               alt="Pkazo"
             />
@@ -122,11 +137,13 @@ const Header = (props: {
           )}
           {!!user && isArtist && (
             <>
-              <Link href="/shop" passHref>
-                <img
-                  src={`/assets/svgs/${isMobile ? 'mobile/' : ''}shop.svg`}
-                  tw="cursor-pointer"
-                />
+              <Link href={`/${username}`} passHref>
+                <a>
+                  <img
+                    src={`/assets/svgs/${isMobile ? 'mobile/' : ''}shop.svg`}
+                    tw="cursor-pointer"
+                  />
+                </a>
               </Link>
               <button onClick={() => setShowUploadWorkPopup(true)}>
                 <img
@@ -134,9 +151,12 @@ const Header = (props: {
                   tw="cursor-pointer"
                 />
               </button>
-              <div className="ml-3 relative">
-                <div tw="w-4 h-4 md:w-6 md:h-6 my-auto overflow-hidden rounded-full flex items-center">
-                  {pfp && (
+              {pfp && (
+                <div className="ml-3 relative">
+                  <button
+                    tw="w-4 h-4 md:w-6 md:h-6 my-auto overflow-hidden rounded-full flex items-center"
+                    ref={profileButtonRef}
+                  >
                     <Image
                       src={pfp}
                       alt="profile"
@@ -144,33 +164,35 @@ const Header = (props: {
                       height={isMobile ? '16px' : '24px'}
                       objectFit="cover"
                     />
-                  )}
-                </div>
+                  </button>
 
-                <div
-                  tw="origin-top-right absolute right-2 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="user-menu-button"
-                  tabIndex={-1}
-                >
-                  <Link href={`/account/edit`} passHref>
-                    <a
-                      tw="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
+                  {showProfileDropdown && (
+                    <div
+                      tw="origin-top-right absolute right-2 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                      role="menu"
+                      aria-orientation="vertical"
+                      aria-labelledby="user-menu-button"
                       tabIndex={-1}
                     >
-                      Acconut Settings
-                    </a>
-                  </Link>
-                  <a
-                    tw="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
-                    tabIndex={-1}
-                    onClick={() => signOut()}
-                  >
-                    Sign out
-                  </a>
+                      <Link href={`/account/edit`} passHref>
+                        <a
+                          tw="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
+                          tabIndex={-1}
+                        >
+                          Acconut Settings
+                        </a>
+                      </Link>
+                      <a
+                        tw="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
+                        tabIndex={-1}
+                        onClick={() => signOut()}
+                      >
+                        Sign out
+                      </a>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
             </>
           )}
           {!user && (
