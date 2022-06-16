@@ -155,6 +155,52 @@ function GallerySection({ portfolioData }: { portfolioData: PortfolioObject }) {
       </div>
       {/* Gallery Section --End-- */}
 
+      {/* education, experience, exhibitions */}
+      <div tw="grid grid-cols-3 gap-16 mt-7 w-full">
+        <div tw="flex-grow">
+          <div tw="text-black text-[20px] leading-[27px] mb-2 font-semibold">
+            Education
+          </div>
+          {[] // education array
+            .sort((a, b) => 0) // b.end - a.end, sorted by end year
+            .map((x, i) => (
+              <div key={i} tw="mt-4">
+                {/* 
+                needs school, optional field, start and end year
+                 */}
+              </div>
+            ))}
+        </div>
+        <div tw="flex-grow">
+          <div tw="text-black text-[20px] leading-[27px] font-semibold">
+            Experience
+          </div>
+          {[] //experience array
+            .sort((a, b) => 0) // b.end - a.end, sorted by end year
+            .map((x, i) => (
+              <div key={i} tw="mt-4">
+                {/*
+                needs company, optional role, start and end year
+                */}
+              </div>
+            ))}
+        </div>
+        <div tw="flex-grow">
+          <div tw="text-black text-[20px] leading-[27px] font-semibold">
+            Exhibitions
+          </div>
+          {[] // exhibition array
+            .sort((a, b) => 0) // b.end - a.end, sorted by end year
+            .map((x, i) => (
+              <div key={i} tw="mt-4">
+                {/*
+                needs exhibition location, start and end year
+                */}
+              </div>
+            ))}
+        </div>
+      </div>
+
       {/* <div tw="mt-7">
         <div tw="flex items-end">
           <div tw="text-black text-[30px] font-semibold leading-[30px]">
