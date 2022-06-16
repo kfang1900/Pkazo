@@ -177,19 +177,17 @@ function GallerySection({
             {
               //.Images.slice(0, seeNum)
               curGallery.Images?.slice(0, seeNum).map((gallery: string, i) => (
-                <>
-                  <Link
-                    key={i}
-                    passHref
-                    href={'/work/' + curGallery.Data[i].__id}
-                  >
-                    <img
-                      src={gallery}
-                      tw="cursor-pointer w-full h-auto my-[5px] md:my-9"
-                      alt=""
-                    />
-                  </Link>
-                </>
+                <Link
+                  key={i}
+                  passHref
+                  href={'/work/' + curGallery.Data[i].__id}
+                >
+                  <img
+                    src={gallery}
+                    tw="cursor-pointer w-full h-auto my-[5px] md:my-9"
+                    alt=""
+                  />
+                </Link>
               ))
             }
           </Masonry>

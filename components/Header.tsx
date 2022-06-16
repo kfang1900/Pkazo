@@ -24,6 +24,7 @@ import {
 import UploadWork from './uploading/UploadWork';
 import { useMediaQuery } from 'react-responsive';
 import SearchBar from './SearchBar';
+import SearchHeader from './search/SearchHeader';
 
 /* Copied from image.tsx source */
 interface StaticRequire {
@@ -64,6 +65,8 @@ const Header = (props: {
       setPfp(await loadStorageImage(artistData?.profilePicture));
     })();
   }, [artistData]);
+
+  const [onSearch, setOnSearch] = useState(false);
   const profileButtonRef = useRef<HTMLButtonElement | null>(null);
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -78,7 +81,7 @@ const Header = (props: {
     };
     window.addEventListener('click', handler);
     return () => window.removeEventListener('click', handler);
-  });
+  })
   if (props.logoOnly) {
     return (
       <div tw="top-0 z-50 w-full">
@@ -107,6 +110,7 @@ const Header = (props: {
       {!isMobile && showLoginModal && (
         <LoginForm onClose={() => setShowLoginModal(false)} />
       )}
+      {isMobile && onSearch && <SearchHeader onClose={() => setOnSearch(false)} />}
 
       <>
         {showUploadWorkPopup && (
@@ -121,16 +125,30 @@ const Header = (props: {
             />
           </Link>
           {!isMobile && (
-            <div tw="flex-grow ml-5 pl-6 pr-5 rounded-[48px] h-10 bg-[#F0F0F0] border border-[#A3A3A3] focus-within:border-[#838383] outline-none flex items-center">
-              <input
-                type="text"
-                placeholder="Search for anything"
-                tw="w-full bg-transparent outline-none text-[16px]"
-              />
-              <img src="/assets/svgs/search.svg" tw="ml-3 w-[18px] h-[18px]" />
+            <div tw='relative flex-grow ml-5'>
+              <div tw="pl-6 pr-5 rounded-[48px] h-10 bg-[#F5F5F5] border border-[#A3A3A3] focus-within:border-[#838383] focus-within:bg-white outline-none flex items-center">
+                <input
+                  onFocus={() => setOnSearch(true)}
+                  onBlur={() => setOnSearch(false)}
+                  type="text"
+                  placeholder="Search for anything"
+                  tw="w-full bg-transparent outline-none text-[16px]"
+                />
+                <img src="/assets/svgs/search.svg" tw="ml-3 w-[18px] h-[18px]" />
+              </div>
+              {onSearch &&
+                <SearchHeader />
+              }
             </div>
           )}
           <div tw="ml-10 flex items-center gap-x-4 md:gap-x-8">
+            {isMobile &&
+              <button
+                onClick={() => setOnSearch(true)}
+              >
+                <img src='/assets/svgs/mobile/search.svg' />
+              </button>
+            }
             {!!user && (
               <>
                 <Link href="/favorites" passHref>
@@ -234,9 +252,8 @@ const Header = (props: {
                     ref={profileButtonRef}
                   >
                     <img
-                      src={`/assets/svgs/${
-                        isMobile ? 'mobile/' : ''
-                      }profile.svg`}
+                      src={`/assets/svgs/${isMobile ? 'mobile/' : ''
+                        }profile.svg`}
                     />
                   </button>
 
