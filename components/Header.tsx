@@ -134,16 +134,42 @@ const Header = (props: {
                   tw="cursor-pointer"
                 />
               </button>
-              <div tw="w-4 h-4 md:w-6 md:h-6 my-auto overflow-hidden rounded-full flex items-center">
-                {pfp && (
-                  <Image
-                    src={pfp}
-                    alt="profile"
-                    width={isMobile ? '16px' : '24px'}
-                    height={isMobile ? '16px' : '24px'}
-                    objectFit="cover"
-                  />
-                )}
+              <div className="ml-3 relative">
+                <div tw="w-4 h-4 md:w-6 md:h-6 my-auto overflow-hidden rounded-full flex items-center">
+                  {pfp && (
+                    <Image
+                      src={pfp}
+                      alt="profile"
+                      width={isMobile ? '16px' : '24px'}
+                      height={isMobile ? '16px' : '24px'}
+                      objectFit="cover"
+                    />
+                  )}
+                </div>
+
+                <div
+                  tw="origin-top-right absolute right-2 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="user-menu-button"
+                  tabIndex={-1}
+                >
+                  <Link href={`/account/edit`} passHref>
+                    <a
+                      tw="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
+                      tabIndex={-1}
+                    >
+                      Acconut Settings
+                    </a>
+                  </Link>
+                  <a
+                    tw="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
+                    tabIndex={-1}
+                    onClick={() => signOut()}
+                  >
+                    Sign out
+                  </a>
+                </div>
               </div>
             </>
           )}
