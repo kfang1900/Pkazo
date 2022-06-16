@@ -12,6 +12,8 @@ import { ArtistData } from '../../types/dbTypes';
 import exp from 'constants';
 import { useFavicon } from 'react-use';
 import { doc, getFirestore, updateDoc } from 'firebase/firestore';
+import { showEdu, showExp, showExh } from './ArtistInfoHelper';
+
 interface PortfolioObject {
   Portfolios: Record<string, any>[];
   Works: Record<string, any>[][];
@@ -103,7 +105,7 @@ function GallerySection({
             <div
               css={[
                 isMobile &&
-                  tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`,
+                tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`,
               ]}
               tw="md:flex md:justify-between gap-6 md:w-full"
               style={{
@@ -214,7 +216,7 @@ function GallerySection({
               css={[
                 tw`m-auto scale-50 md:scale-100`,
                 seeNum >= curGallery.Images.length &&
-                  tw`scale-y-[-0.5] md:scale-y-[-1]`,
+                tw`scale-y-[-0.5] md:scale-y-[-1]`,
               ]}
             />
           </button>
@@ -225,59 +227,74 @@ function GallerySection({
 
       {/* education, experience, exhibitions */}
       {artistData && (
-        <div tw="grid grid-cols-3 gap-16 mt-7 w-full">
-          <div tw="flex-grow">
-            <div tw="text-black text-[20px] leading-[27px] mb-2 font-semibold">
-              Education
-            </div>
-            {artistData.education // education array
-              .sort((a, b) => (b.end || b.start) - (a.end || a.start)) // b.end - a.end, sorted by end year
-              .map((education, i) => (
-                <div key={i} tw="mt-4">
-                  {/* 
+        <div
+          tw="w-full mb-4 md:mb-[30px]"
+          css={[isMobile ? tw`flex flex-col mt-7 gap-6 px-4` : tw`grid grid-cols-3 gap-16 mt-7`]}
+        >
+          <div tw='flex gap-x-3'>
+            {!isMobile && <div tw='w-1 h-11 rounded-[8px] bg-[#CBCBCB]' />}
+            <div>
+              <div tw="text-black text-[18px] md:text-[20px] md:mb-5 font-semibold">
+                Education
+              </div>
+              {artistData.education // education array
+                .sort((a, b) => (b.end || b.start) - (a.end || a.start)) // b.end - a.end, sorted by end year
+                .map((education, i) => (
+                  <div key={i} tw="mt-2 md:mt-4">
+                    {showEdu(education)}
+                    {/* 
                 needs school, optional field, start and end year
                  */}
-                  {education.school}
+                    {/* {education.school}
                   {education.start}
                   {education.end}
-                  {education.field}
-                </div>
-              ))}
-          </div>
-          <div tw="flex-grow">
-            <div tw="text-black text-[20px] leading-[27px] font-semibold">
-              Experience
+                  {education.field} */}
+                  </div>
+                ))}
             </div>
-            {artistData.experience //experience array
-              .sort((a, b) => (b.end || b.start) - (a.end || a.start)) // b.end - a.end, sorted by end year
-              .map((experience, i) => (
-                <div key={i} tw="mt-4">
-                  {/*
+          </div>
+          <div tw='flex gap-x-3'>
+            {!isMobile && <div tw='w-1 h-11 rounded-[8px] bg-[#CBCBCB]' />}
+            <div>
+              <div tw="text-black text-[18px] md:text-[20px] md:mb-5 font-semibold">
+                Experience
+              </div>
+              {artistData.experience //experience array
+                .sort((a, b) => (b.end || b.start) - (a.end || a.start)) // b.end - a.end, sorted by end year
+                .map((experience, i) => (
+                  <div key={i} tw="mt-2 md:mt-4">
+                    {showExp(experience)}
+                    {/*
                 needs company, optional role, start and end year
                 */}
-                  {experience.company}
+                    {/* {experience.company}
                   {experience.position}
                   {experience.start}
-                  {experience.end}
-                </div>
-              ))}
-          </div>
-          <div tw="flex-grow">
-            <div tw="text-black text-[20px] leading-[27px] font-semibold">
-              Exhibitions
+                  {experience.end} */}
+                  </div>
+                ))}
             </div>
-            {artistData.exhibitions // exhibition array
-              .sort((a, b) => b.year - a.year) // b.end - a.end, sorted by end year
-              .map((exhibition, i) => (
-                <div key={i} tw="mt-4">
-                  {/*
+          </div>
+          <div tw='flex gap-x-3'>
+            {!isMobile && <div tw='w-1 h-11 rounded-[8px] bg-[#CBCBCB]' />}
+            <div>
+              <div tw="text-black text-[18px] md:text-[20px] md:mb-5 font-semibold">
+                Exhibitions
+              </div>
+              {artistData.exhibitions // exhibition array
+                .sort((a, b) => b.year - a.year) // b.end - a.end, sorted by end year
+                .map((exhibition, i) => (
+                  <div key={i} tw="mt-2 md:mt-4">
+                    {showExh(exhibition)}
+                    {/*
                 needs exhibition location, start and end year
                 */}
-                  {/* Jeffrey: exhibitions only have one year according to Kevin */}
-                  {exhibition.year}
-                  {exhibition.gallery}
-                </div>
-              ))}
+                    {/* Jeffrey: exhibitions only have one year according to Kevin */}
+                    {/* {exhibition.year}
+                  {exhibition.gallery} */}
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
       )}
@@ -357,7 +374,7 @@ const CircleDescriptionBox = ({
 
   return (
     <div tw="mt-12 flex rounded-3xl border-2 border-[#D8D8D8] max-w-[1000px] mx-auto pr-[60px] py-9">
-      <div tw="w-[120px] h-[120px] relative rounded-full overflow-hidden duration-200 origin-bottom ml-[52px] mr-[44px] my-auto flex-shrink-0">
+      <div tw="w-[120px] h-[120px] relative rounded-full overflow-hidden duration-200 ml-[52px] mr-[44px] my-auto flex-shrink-0">
         {portfolioData.PortfolioImages[activeIndex] && (
           <Image
             src={portfolioData.PortfolioImages[activeIndex]}
