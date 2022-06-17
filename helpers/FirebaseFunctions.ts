@@ -17,21 +17,10 @@ function defaultString<T>(arg: (param: string) => string) {
 }
 
 //Returns the Image URL as a string
-const loadStorageImage = async (photoURL: string) => {
+const loadStorageImage = async (url: string) => {
   const app = getApp();
   const storage = getStorage(app);
-  try {
-    console.log(photoURL);
-    //Create reference to the user's profile picture
-    const reference = ref(storage, photoURL);
-
-    const url = (await getDownloadURL(reference)) + '';
-    //console.log("Photo url is ", url)
-    return url;
-  } catch (error) {
-    console.log('ProfPic Error: ' + error);
-    return '';
-  }
+  return await getDownloadURL(ref(storage, url));
 };
 
 const loadStorageImages = async (photoURLs: string[]) =>
@@ -54,8 +43,12 @@ const fetchWorkByID = async (workref: string) => {
   const docSnap = await getDoc(docRef);
   return docSnap;
 };
-
+/**
+ * @deprecated
+ */
 const getPortfolioHelper = async (docRef: QuerySnapshot<DocumentData>) => {
+  console.warn('Deprecated function used: getPortfolioHelper');
+
   let Portfolios: DocumentData[] = [];
   let Works: DocumentData[][] = [];
   let PortfolioImages: string[] = [];
@@ -111,7 +104,12 @@ const getPortfolioHelper = async (docRef: QuerySnapshot<DocumentData>) => {
 };
 //Returns a Portfolio Preview Object of a specific portfolio
 //{PortfolioName: Paintings, Works:[WorkPreviewObject1, WorkPreviewObject2...WorkPreviewObject8]}
+/**
+ * @deprecated
+ */
 const getPortfolioByRef = async (artistref: string) => {
+  console.warn('Deprecated function used: getPortfolioByRef');
+
   let app = getApp();
   let db = getFirestore(app);
   const q = await query(collection(db, 'artists', artistref, 'portfolios'));
@@ -123,7 +121,11 @@ const getPortfolioByRef = async (artistref: string) => {
 };
 
 //Get only the Portfolio Titles and Title Images
+/**
+ * @deprecated
+ */
 const getPortfolioImagesOnlyByRef = async (artistref: string) => {
+  console.warn('Deprecated function used: getPortfolioImagesOnlyByRef');
   let app = getApp();
   let db = getFirestore(app);
   const q = await query(collection(db, 'artists', artistref, 'portfolios'));
@@ -137,28 +139,7 @@ const getPortfolioImagesOnlyByRef = async (artistref: string) => {
   return [arr, arr2];
 };
 
-//Returns a Work Preview Object of a specific piece of work
-//{WorkName: The Maiden with the hair, Image: url.url.com}
-const getWorkPreview = async (workRef: string) => {
-  const app = getApp();
-  let db = getFirestore(app);
-
-  const docRef = doc(db, 'Works', workRef);
-  const ref = await (await getDoc(docRef)).data();
-  let ret: { WorkName: string; DisplayImage: string } = {
-    WorkName: '',
-    DisplayImage: '',
-  };
-  if (ref != null) {
-    const pic = await loadStorageImage(ref['MainImage']);
-    let ret = { WorkName: ref['Name'], DisplayImage: pic };
-    return ret;
-  }
-  return ret;
-};
-
 export {
-  getWorkPreview,
   getPortfolioByRef,
   fetchWorkByID,
   loadStorageImage,

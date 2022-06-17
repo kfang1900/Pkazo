@@ -1,6 +1,6 @@
 import tw, { css } from 'twin.macro';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,12 +14,15 @@ import useAuth from '../../utils/auth/useAuth';
 import { getApp } from 'firebase/app';
 import {
   addDoc,
+  arrayRemove,
   arrayUnion,
   collection,
   doc,
+  getDoc,
   getDocs,
   getFirestore,
   serverTimestamp,
+  setDoc,
   Timestamp,
   updateDoc,
 } from 'firebase/firestore';
@@ -33,9 +36,13 @@ import {
 import { useRouter } from 'next/router';
 import { WorkData } from '../../types/dbTypes';
 import axios from 'axios';
+import { loadStorageImage } from '../../helpers/FirebaseFunctions';
 
 export interface UploadWorkProps {
   onClose: () => void;
+
+  // If provided, the popup will be in 'edit mode'.
+  workId?: string;
 }
 
 /* copied from image.tsx */
@@ -120,7 +127,11 @@ async function uploadImage(
 ): Promise<string> {
   try {
     const uploadRef = await uploadBytesResumable(
-      ref(storage, pathPrefix + file.name),
+      ref(
+        storage,
+        // prefix the file name with the current time (precise to the seconds), to avoid duplicates
+        pathPrefix + Math.floor(new Date().getTime() * 1000) + file.name
+      ),
       file
     );
     return uploadRef.ref.toString();
@@ -147,7 +158,9 @@ function DropdownButton() {
     </button>
   );
 }
-function UploadWork(props: UploadWorkProps) {
+function UploadWork({ onClose, workId }: UploadWorkProps) {
+  // just to be explicit
+  const editMode = !!workId;
   const saleOrientations = ['Horizontal', 'Vertical', 'Square'];
   const printSurfaces = ['Fine Art Paper', 'Canvas'];
   const styles = {
@@ -158,10 +171,15 @@ function UploadWork(props: UploadWorkProps) {
 
   const [selected, setSelected] = useState(0);
   const [uploadedImages, setUploadedImages] = useState<
-    {
-      file: File;
+    ({
       url: string;
-    }[]
+    } & (
+      | {
+          isLocal: true;
+          file: File;
+        }
+      | { isLocal: false; ref: string }
+    ))[]
   >([]);
   const [uploadPage, setUploadPage] = useState(0);
   const [portfolios, setPortfolios] = useState<{ name: string; id: string }[]>(
@@ -185,176 +203,344 @@ function UploadWork(props: UploadWorkProps) {
       }
     );
   }, [auth]);
-
+  const [editData, setEditData] = useState<WorkData | null>(null);
+  useEffect(() => {
+    (async () => {
+      if (!editMode) return;
+      const db = getFirestore();
+      const snapshot = await getDoc(doc(db, 'works', workId + ''));
+      const data = snapshot.data() as WorkData;
+      setEditData(data);
+      const _uploadedImages = await Promise.all(
+        data.images.map((image) =>
+          loadStorageImage(image).then(
+            (url) =>
+              ({
+                isLocal: false,
+                ref: image,
+                url: url,
+              } as {
+                isLocal: false;
+                ref: string;
+                url: string;
+              })
+          )
+        )
+      );
+      setUploadedImages(_uploadedImages);
+    })();
+  }, [editMode, workId]);
+  const initialFormValues = useMemo(() => {
+    if (!editMode) {
+      return {
+        title: '',
+        description: '',
+        portfolio: '',
+        year: new Date().getFullYear(),
+        medium: '',
+        surface: '',
+        height: '',
+        width: '',
+        units: 'in',
+        forSale: 'yes',
+        salePrice: '',
+        saleSubject: '',
+        saleStyle: '',
+        saleOrientation: '',
+        saleColor: '',
+        saleFraming: 'no',
+        forPrint: 'no',
+        printPrice: '',
+        printHeight: '',
+        printWidth: '',
+        printUnits: 'in',
+        printSurface: '',
+        printFraming: 'no',
+      };
+    }
+    if (!editData) return null;
+    return {
+      title: editData.title,
+      description: editData.description,
+      portfolio: editData.portfolio,
+      year: editData.year,
+      medium: editData.medium,
+      surface: editData.surface,
+      height: editData.height,
+      width: editData.width,
+      units: editData.units,
+      forSale: editData.forSale ? 'yes' : 'no',
+      salePrice: editData.forSale ? editData.sale.price : '',
+      saleSubject: editData.forSale ? editData.sale.subject : '',
+      saleStyle: editData.forSale ? editData.sale.style : '',
+      saleOrientation: editData.forSale ? editData.sale.orientation : '',
+      saleColor: editData.forSale ? editData.sale.color : '',
+      saleFraming: editData.forSale
+        ? editData.sale.framing
+          ? 'yes'
+          : 'no'
+        : '',
+      forPrint: editData.forPrint ? 'yes' : 'no',
+      printPrice: editData.forPrint ? editData.print.price : '',
+      printHeight: editData.forPrint ? editData.print.height : '',
+      printWidth: editData.forPrint ? editData.print.width : '',
+      printUnits: editData.forPrint ? editData.print.units : '',
+      printSurface: editData.forPrint ? editData.print.surface : '',
+      printFraming: editData.forPrint
+        ? editData.print.framing
+          ? 'yes'
+          : 'no'
+        : '',
+    };
+  }, [editMode, editData]);
   return (
     <div tw="fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center overflow-auto p-[50px]">
       <div tw="flex m-auto">
         <div tw="bg-white rounded-[20px] z-20 p-[52px] w-[1171px] h-[746px]">
-          <Formik
-            initialValues={{
-              title: '',
-              description: '',
-              portfolio: '',
-              year: 2022,
-              medium: '',
-              surface: '',
-              height: '',
-              width: '',
-              units: 'in',
-              forSale: 'yes',
-              salePrice: '',
-              saleSubject: '',
-              saleStyle: '',
-              saleOrientation: '',
-              saleColor: '',
-              saleFraming: 'no',
-              forPrint: 'no',
-              printPrice: '',
-              printHeight: '',
-              printWidth: '',
-              printUnits: 'in',
-              printSurface: '',
-              printFraming: 'no',
-            }}
-            onSubmit={async (values, { setFieldError }) => {
-              try {
-                if (!auth.artistId) return;
+          {initialFormValues && (
+            <Formik
+              initialValues={initialFormValues}
+              onSubmit={async (values, { setFieldError }) => {
+                try {
+                  if (!auth.artistId) return;
 
-                console.log(values);
+                  console.log(values);
 
-                if (!values.title) {
-                  alert('Title is required.');
-                  return;
-                }
-                if (!values.description) {
-                  alert('Description is required.');
-                  return;
-                }
-                if (!values.salePrice) {
-                  alert('Price is required.');
-                  return;
-                }
-                if (!values.portfolio) {
-                  alert('You must select a portfolio to place this image in.');
-                  return;
-                }
-                if (uploadedImages.length === 0) {
-                  alert('Please select at least one image for this work.');
-                  return;
-                }
-
-                const app = getApp();
-                const db = getFirestore(app);
-                const storage = getStorage(app);
-
-                const workRef = await addDoc(collection(db, 'works'), {
-                  title: values.title,
-                  description: values.description,
-                  portfolio: values.portfolio,
-                  year: values.year,
-                  medium: values.medium,
-                  surface: values.surface,
-                  height: parseFloat(values.height),
-                  width: parseFloat(values.width),
-                  units: values.units,
-                  forSale: values.forSale === 'yes',
-                  ...(values.forSale === 'yes'
-                    ? {
-                      sale: {
-                        price: values.salePrice,
-                        subject: values.saleSubject,
-                        orientation: values.saleOrientation,
-                        color: values.saleColor,
-                        style: values.saleStyle,
-                        framing: values.saleFraming === 'yes',
-                      },
-                    }
-                    : {}),
-                  forPrint: values.forPrint === 'yes',
-                  ...(values.forPrint === 'yes'
-                    ? {
-                      print: {
-                        price: values.printPrice,
-                        height: parseFloat(values.height),
-                        width: parseFloat(values.width),
-                        units: values.units,
-                        surface: values.printSurface,
-                        framing: values.printFraming,
-                      },
-                    }
-                    : {}),
-                  artist: auth.artistId,
-                  // serverTimestamp() is not a timestamp, but it will become one on the server.
-                  timestamp: serverTimestamp() as Timestamp,
-                  images: [],
-                } as WorkData);
-                const workId = workRef.id;
-                await updateDoc(
-                  doc(
-                    db,
-                    'artists',
-                    auth.artistId || '',
-                    'portfolios',
-                    values.portfolio
-                  ),
-                  {
-                    works: arrayUnion(workId),
+                  if (!values.title) {
+                    alert('Title is required.');
+                    return;
                   }
-                );
-                const imageReferences = await Promise.all(
-                  uploadedImages.map(({ file, url }) =>
-                    uploadImage(storage, file, `/Works/${workId}/`)
-                  )
-                );
-                await updateDoc(doc(db, 'works', workId), {
-                  images: imageReferences,
-                });
-                await axios.post('/api/search/update-indexes', {
-                  workIds: [workId],
-                });
-                return router.push(`/work/${workId}`);
-              } catch (error: any) {
-                alert('An error occurred ' + error?.message);
-              }
-            }}
-          >
-            {({ values, isSubmitting, setFieldValue, setFieldTouched }) => (
-              <Form>
-                {uploadPage === 0 && (
-                  <div tw="flex">
-                    {/* image */}
-                    <div tw="w-[550px] h-[642px]">
-                      {uploadedImages.length > 0 && (
-                        <div>
-                          <div tw="h-[570px] transform overflow-hidden">
-                            <Image
-                              src={uploadedImages[selected].url}
-                              alt="selected image"
-                              layout="fill"
-                              objectFit="contain"
-                            />
-                          </div>
-                          <div tw="flex overflow-x-auto gap-x-3 mt-3">
-                            {uploadedImages.map((image, index) => (
-                              <div
-                                key={index}
-                                css={[
-                                  tw`w-[60px] rounded-[5px] overflow-hidden cursor-pointer flex-shrink-0`,
-                                  index !== selected && tw`opacity-30`,
-                                  { aspectRatio: '1/1' },
-                                ]}
-                                onClick={() => setSelected(index)}
+                  if (!values.description) {
+                    alert('Description is required.');
+                    return;
+                  }
+                  if (!values.salePrice) {
+                    alert('Price is required.');
+                    return;
+                  }
+                  if (!values.portfolio) {
+                    alert(
+                      'You must select a portfolio to place this image in.'
+                    );
+                    return;
+                  }
+                  if (uploadedImages.length === 0) {
+                    alert('Please select at least one image for this work.');
+                    return;
+                  }
+
+                  const app = getApp();
+                  const db = getFirestore(app);
+                  const storage = getStorage(app);
+                  // TODO: make this atomic with transactions
+                  const dataToUpload = {
+                    title: values.title,
+                    description: values.description,
+                    portfolio: values.portfolio,
+                    year: values.year,
+                    medium: values.medium,
+                    surface: values.surface,
+                    height: parseFloat(values.height + ''),
+                    width: parseFloat(values.width + ''),
+                    units: values.units,
+                    forSale: values.forSale === 'yes',
+                    ...(values.forSale === 'yes'
+                      ? {
+                          sale: {
+                            price: values.salePrice,
+                            subject: values.saleSubject,
+                            orientation: values.saleOrientation,
+                            color: values.saleColor,
+                            style: values.saleStyle,
+                            framing: values.saleFraming === 'yes',
+                          },
+                        }
+                      : {}),
+                    forPrint: values.forPrint === 'yes',
+                    ...(values.forPrint === 'yes'
+                      ? {
+                          print: {
+                            price: values.printPrice,
+                            height: parseFloat(values.height + ''),
+                            width: parseFloat(values.width + ''),
+                            units: values.units,
+                            surface: values.printSurface,
+                            framing: values.printFraming,
+                          },
+                        }
+                      : {}),
+                    artist: auth.artistId,
+                    // serverTimestamp() is not technically a Timestamp, but it will become one on the server.
+                    timestamp:
+                      editMode && editData
+                        ? editData.timestamp
+                        : (serverTimestamp() as Timestamp),
+                    editTimestamps:
+                      editMode && editData
+                        ? arrayUnion(Timestamp.fromDate(new Date()))
+                        : [],
+                    images:
+                      editMode && editData
+                        ? uploadedImages
+                            .filter((i) => !i.isLocal)
+                            .map((i) =>
+                              !i.isLocal
+                                ? i.ref
+                                : 'this value should be unreachable 1'
+                            )
+                        : [],
+                  } as WorkData;
+                  let workRef;
+
+                  if (!editMode) {
+                    workRef = await addDoc(
+                      collection(db, 'works'),
+                      dataToUpload
+                    );
+                    workId = workRef.id;
+                  } else {
+                    workRef = await updateDoc(
+                      doc(db, 'works', workId + ''),
+                      dataToUpload
+                    );
+                    if (editData && editData.portfolio !== values.portfolio) {
+                      await updateDoc(
+                        doc(
+                          db,
+                          'artists',
+                          auth.artistId || '',
+                          'portfolios',
+                          editData.portfolio
+                        ),
+                        {
+                          works: arrayRemove(workId),
+                        }
+                      );
+                    }
+                  }
+                  await updateDoc(
+                    doc(
+                      db,
+                      'artists',
+                      auth.artistId || '',
+                      'portfolios',
+                      values.portfolio
+                    ),
+                    {
+                      works: arrayUnion(workId),
+                    }
+                  );
+                  const imageReferences = await Promise.all(
+                    uploadedImages
+                      .filter((i) => i.isLocal)
+                      .map((image) =>
+                        image.isLocal
+                          ? uploadImage(
+                              storage,
+                              image.file,
+                              `/Works/${workId}/`
+                            )
+                          : 'this value should be unreachable 2'
+                      )
+                  );
+                  await updateDoc(doc(db, 'works', workId + ''), {
+                    images: arrayUnion(...imageReferences),
+                  });
+                  await axios.post('/api/search/update-indexes', {
+                    workIds: [workId],
+                  });
+                  if (!editMode) {
+                    return router.push(`/work/${workId}`);
+                  } else {
+                    onClose();
+                  }
+                } catch (error: any) {
+                  console.log(error);
+                  throw error;
+                  alert('An error occurred ' + error?.message);
+                }
+              }}
+            >
+              {({ values, isSubmitting, setFieldValue, setFieldTouched }) => (
+                <Form>
+                  {uploadPage === 0 && (
+                    <div tw="flex">
+                      {/* image */}
+                      <div tw="w-[550px] h-[642px]">
+                        {uploadedImages.length > 0 && (
+                          <div>
+                            <div tw="h-[570px] transform overflow-hidden">
+                              <Image
+                                src={uploadedImages[selected].url}
+                                alt="selected image"
+                                layout="fill"
+                                objectFit="contain"
+                              />
+                            </div>
+                            <div tw="flex overflow-x-auto gap-x-3 mt-3">
+                              {uploadedImages.map((image, index) => (
+                                <div
+                                  key={index}
+                                  css={[
+                                    tw`w-[60px] rounded-[5px] overflow-hidden cursor-pointer flex-shrink-0`,
+                                    index !== selected && tw`opacity-30`,
+                                    { aspectRatio: '1/1' },
+                                  ]}
+                                  onClick={() => setSelected(index)}
+                                >
+                                  <div tw="transform w-full h-full">
+                                    <Image
+                                      src={image.url}
+                                      alt="Uploaded Image"
+                                      layout="fill"
+                                      objectFit="cover"
+                                    />
+                                  </div>
+                                </div>
+                              ))}
+                              <FileUploader
+                                multiple={true}
+                                name="upload-work-image"
+                                types={['PNG', 'JPG', 'JPEG']}
+                                handleChange={(files: File[]) => {
+                                  setUploadedImages((state) => [
+                                    ...state,
+                                    ...Array.from(files)
+                                      .flat()
+                                      .map(
+                                        (file: File) =>
+                                          ({
+                                            file,
+                                            url: URL.createObjectURL(file),
+                                            isLocal: true,
+                                          } as {
+                                            file: File;
+                                            url: string;
+                                            isLocal: true;
+                                          })
+                                      ),
+                                  ]);
+                                }}
                               >
-                                <div tw="transform w-full h-full">
-                                  <Image
-                                    src={image.url}
-                                    alt="Uploaded Image"
-                                    layout="fill"
-                                    objectFit="cover"
+                                <div
+                                  tw="w-[60px] h-[60px] rounded-[5px] transform overflow-hidden bg-[#F3F3F3] cursor-pointer"
+                                  css={{ 'aspect-ratio': '1/1' }}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={solid('plus')}
+                                    tw="text-2xl text-[#C4C4C4] absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
                                   />
                                 </div>
-                              </div>
-                            ))}
+                              </FileUploader>
+                            </div>
+                          </div>
+                        )}
+                        {uploadedImages.length === 0 && (
+                          <div tw="h-full flex flex-col items-center justify-center pb-[30px]">
+                            <img
+                              src="/assets/svgs/upload_work.svg"
+                              tw="mb-20"
+                            />
                             <FileUploader
                               multiple={true}
                               name="upload-work-image"
@@ -364,447 +550,125 @@ function UploadWork(props: UploadWorkProps) {
                                   ...state,
                                   ...Array.from(files)
                                     .flat()
-                                    .map((file: File) => ({
-                                      file,
-                                      url: URL.createObjectURL(file),
-                                    })),
+                                    .map(
+                                      (file: File) =>
+                                        ({
+                                          file,
+                                          url: URL.createObjectURL(file),
+                                          isLocal: true,
+                                        } as {
+                                          file: File;
+                                          url: string;
+                                          isLocal: true;
+                                        })
+                                    ),
                                 ]);
                               }}
                             >
-                              <div
-                                tw="w-[60px] h-[60px] rounded-[5px] transform overflow-hidden bg-[#F3F3F3] cursor-pointer"
-                                css={{ 'aspect-ratio': '1/1' }}
+                              <button
+                                type={'button'}
+                                css={[buttons.red, tw`text-[16px] h-11 px-8`]}
                               >
-                                <FontAwesomeIcon
-                                  icon={solid('plus')}
-                                  tw="text-2xl text-[#C4C4C4] absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
-                                />
-                              </div>
+                                Select from computer
+                              </button>
                             </FileUploader>
                           </div>
-                        </div>
-                      )}
-                      {uploadedImages.length === 0 && (
-                        <div tw="h-full flex flex-col items-center justify-center pb-[30px]">
-                          <img src="/assets/svgs/upload_work.svg" tw="mb-20" />
-                          <FileUploader
-                            multiple={true}
-                            name="upload-work-image"
-                            types={['PNG', 'JPG', 'JPEG']}
-                            handleChange={(files: File[]) => {
-                              setUploadedImages((state) => [
-                                ...state,
-                                ...Array.from(files)
-                                  .flat()
-                                  .map((file: File) => ({
-                                    file,
-                                    url: URL.createObjectURL(file),
-                                  })),
-                              ]);
-                            }}
-                          >
-                            <button
-                              type={'button'}
-                              css={[buttons.red, tw`text-[16px] h-11 px-8`]}
-                            >
-                              Select from computer
-                            </button>
-                          </FileUploader>
-                        </div>
-                      )}
-                    </div>
-                    {/* contents */}
-                    <div tw="flex flex-col items-end w-[465px] ml-[52px]">
-                      <div
-                        tw="h-[600px]overflow-y-auto"
-                        className={extraStyle['workInfo']}
-                      >
-                        <Field
-                          type="text"
-                          name="title"
-                          placeholder="Title"
-                          css={[styles.input, tw`h-[34px] leading-[14px]`]}
-                        />
-                        <Field
-                          type="text"
-                          component="textarea"
-                          name="description"
-                          rows="3"
-                          placeholder="Write a description..."
-                          css={[styles.input, tw`mt-3 py-[10px] leading-5 resize-none`]}
-                        />
-                        <div tw="px-3">
-                          <div tw="grid grid-cols-2 gap-x-[25px] gap-y-3 items-center mt-4">
-                            <div tw="flex items-center">
-                              <div css={[styles.label, tw`w-[76px]`]}>
-                                Portfolio
-                              </div>
-                              <div tw="relative">
-                                <select
-                                  name="portfolio"
-                                  css={styles.dropdown}
-                                  onChange={(e) =>
-                                    setFieldValue('portfolio', e.target.value)
-                                  }
-                                  onBlur={() => setFieldTouched('portfolio')}
-                                  value={values.portfolio}
-                                >
-                                  <option value="" disabled />
-                                  {portfolios.map((portfolio) => (
-                                    <option
-                                      value={portfolio.id}
-                                      key={portfolio.id}
-                                    >
-                                      {portfolio.name}
-                                    </option>
-                                  ))}
-                                </select>
-                                <DropdownButton />
-                              </div>
-                            </div>
-                            <div tw="flex items-center">
-                              <div css={[styles.label, tw`w-[76px]`]}>Year</div>
-                              <div tw="relative">
-                                <select
-                                  name="year"
-                                  css={styles.dropdown}
-                                  onChange={(e) =>
-                                    setFieldValue(
-                                      'year',
-                                      parseInt(e.target.value)
-                                    )
-                                  }
-                                  onBlur={() => setFieldTouched('year')}
-                                  value={values.year}
-                                >
-                                  {Array(...Array(100)).map((value, key) => (
-                                    <option key={key} value={2022 - key}>
-                                      {2022 - key}
-                                    </option>
-                                  ))}
-                                </select>
-                                <DropdownButton />
-                              </div>
-                            </div>
-                            <div tw="flex items-center">
-                              <div css={[styles.label, tw`w-[76px]`]}>
-                                Medium
-                              </div>
-                              <div tw="relative">
-                                <select
-                                  onChange={(e) =>
-                                    setFieldValue('medium', e.target.value)
-                                  }
-                                  onBlur={() => setFieldTouched('medium')}
-                                  value={values.medium}
-                                  name="medium"
-                                  css={styles.dropdown}
-                                >
-                                  <option value="" disabled />
-                                  {mediums.map((value, i) => (
-                                    <option key={i} value={value}>
-                                      {value}
-                                    </option>
-                                  ))}
-                                </select>
-                                <DropdownButton />
-                              </div>
-                            </div>
-                            <div tw="flex items-center">
-                              <div css={[styles.label, tw`w-[76px]`]}>
-                                Surface
-                              </div>
-                              <div tw="relative">
-                                <select
-                                  onChange={(e) =>
-                                    setFieldValue('surface', e.target.value)
-                                  }
-                                  onBlur={() => setFieldTouched('surface')}
-                                  value={values.surface}
-                                  name="surface"
-                                  css={[
-                                    styles.dropdown,
-                                    tw`pr-6 overflow-ellipsis`,
-                                  ]}
-                                >
-                                  <option value="" disabled />
-                                  {surfaces.map((value, i) => (
-                                    <option key={i} value={value}>
-                                      {value}
-                                    </option>
-                                  ))}
-                                </select>
-                                <DropdownButton />
-                              </div>
-                            </div>
-                          </div>
-                          <div tw="flex items-center mt-3">
-                            <div css={[styles.label, tw`w-[60px]`]}>Size</div>
-                            <div tw="text-[14px] text-[#838383]">H:</div>
-                            <Field
-                              type="number"
-                              name="height"
-                              css={[
-                                styles.dropdown,
-                                tw`w-[52px] pl-3 pr-0 ml-1`,
-                              ]}
-                              min="0"
-                            />
-                            <div tw="text-[14px] text-[#838383] ml-2">W:</div>
-                            <Field
-                              type="number"
-                              name="width"
-                              css={[
-                                styles.dropdown,
-                                tw`w-[52px] pl-3 pr-0 mx-1`,
-                              ]}
-                              min="0"
-                            />
-                            <div tw="relative ml-3">
-                              <select
-                                onChange={(e) =>
-                                  setFieldValue('units', e.target.value)
-                                }
-                                onBlur={() => setFieldTouched('units')}
-                                value={values.units}
-                                name="units"
-                                css={[styles.dropdown, tw`w-[60px] pl-3`]}
-                              >
-                                {units.map((value, i) => (
-                                  <option key={i} value={value}>
-                                    {value}
-                                  </option>
-                                ))}
-                              </select>
-                              <DropdownButton />
-                            </div>
-                          </div>
-                        </div>
-                        <div tw="w-full border border-[#D8D8D8] mt-4 rounded-[5px] p-4">
-                          <div tw="flex text-[14px] text-[#3C3C3C] justify-between">
-                            Work for Sale?
-                            <div tw="flex items-center text-[14px] text-[#838383]">
-                              <Field
-                                type="radio"
-                                name="forSale"
-                                value="yes"
-                                id="yesForSale"
-                                tw="w-[14px] h-[14px] mr-3"
-                                css={{ 'accent-color': '#E24E4D' }}
-                              />
-                              <label htmlFor="yesForSale">Yes</label>
-                              <Field
-                                type="radio"
-                                name="forSale"
-                                value="no"
-                                id="noForSale"
-                                tw="w-[14px] h-[14px] mr-3 ml-7"
-                                css={{ 'accent-color': '#E24E4D' }}
-                              />
-                              <label htmlFor="noForSale">No</label>
-                            </div>
-                          </div>
-                          {values.forSale === 'yes' && (
-                            <div tw="mx-5 mt-3 grid grid-cols-2 justify-between items-center gap-y-3">
-                              <div css={styles.label}>Price</div>
-                              <div tw="relative ml-auto">
-                                <Field
-                                  type="number"
-                                  name="salePrice"
-                                  css={[styles.dropdown, tw`pl-[30px]`]}
-                                  min="0"
-                                  max="9999"
-                                />
-                                <div tw="text-[16px] text-[#838383] absolute left-4 top-[3px]">
-                                  $
+                        )}
+                      </div>
+                      {/* contents */}
+                      <div tw="flex flex-col items-end w-[465px] ml-[52px]">
+                        <div
+                          tw="h-[600px]overflow-y-auto"
+                          className={extraStyle['workInfo']}
+                        >
+                          <Field
+                            type="text"
+                            name="title"
+                            placeholder="Title"
+                            css={[styles.input, tw`h-[34px] leading-[14px]`]}
+                          />
+                          <Field
+                            type="text"
+                            component="textarea"
+                            name="description"
+                            rows="3"
+                            placeholder="Write a description..."
+                            css={[
+                              styles.input,
+                              tw`mt-3 py-[10px] leading-5 resize-none`,
+                            ]}
+                          />
+                          <div tw="px-3">
+                            <div tw="grid grid-cols-2 gap-x-[25px] gap-y-3 items-center mt-4">
+                              <div tw="flex items-center">
+                                <div css={[styles.label, tw`w-[76px]`]}>
+                                  Portfolio
                                 </div>
-                              </div>
-                              <div css={styles.label}>Subject</div>
-                              <div tw="relative ml-auto">
-                                <select
-                                  onChange={(e) =>
-                                    setFieldValue('saleSubject', e.target.value)
-                                  }
-                                  onBlur={() => setFieldTouched('saleSubject')}
-                                  value={values.saleSubject}
-                                  name="saleSubject"
-                                  css={styles.dropdown}
-                                >
-                                  <option value="" disabled />
-                                  {saleSubjects.map((value, i) => (
-                                    <option key={i} value={value}>
-                                      {value}
-                                    </option>
-                                  ))}
-                                </select>
-                                <DropdownButton />
-                              </div>
-                              <div css={styles.label}>Style</div>
-                              <div tw="relative ml-auto">
-                                <select
-                                  onChange={(e) =>
-                                    setFieldValue('saleStyle', e.target.value)
-                                  }
-                                  onBlur={() => setFieldTouched('saleStyle')}
-                                  value={values.saleStyle}
-                                  name="saleStyle"
-                                  css={styles.dropdown}
-                                >
-                                  <option value="" disabled />
-                                  {saleStyles.map((value, i) => (
-                                    <option key={i} value={value}>
-                                      {value}
-                                    </option>
-                                  ))}
-                                </select>
-                                <DropdownButton />
-                              </div>
-                              <div css={styles.label}>Orientation</div>
-                              <div tw="relative ml-auto">
-                                <select
-                                  onChange={(e) =>
-                                    setFieldValue(
-                                      'saleOrientation',
-                                      e.target.value
-                                    )
-                                  }
-                                  onBlur={() =>
-                                    setFieldTouched('saleOrientation')
-                                  }
-                                  value={values.saleOrientation}
-                                  name="saleOrientation"
-                                  css={styles.dropdown}
-                                >
-                                  <option value="" disabled />
-                                  {saleOrientations.map((value, i) => (
-                                    <option key={i} value={value}>
-                                      {value}
-                                    </option>
-                                  ))}
-                                </select>
-                                <DropdownButton />
-                              </div>
-                              <div css={styles.label}>Main Color</div>
-                              <div tw="relative ml-auto">
-                                <select
-                                  onChange={(e) =>
-                                    setFieldValue('saleColor', e.target.value)
-                                  }
-                                  onBlur={() => setFieldTouched('saleColor')}
-                                  value={values.saleColor}
-                                  name="saleColor"
-                                  css={[styles.dropdown, tw`w-[73px]`]}
-                                >
-                                  <option value="" disabled />
-                                  {saleColors.map((value, i) => (
-                                    <option key={i} value={saleColorStrings[i]}>
-                                      {value}
-                                    </option>
-                                  ))}
-                                </select>
-                                <DropdownButton />
-                              </div>
-                              <div css={styles.label}>Framing</div>
-                              <div tw="flex items-center text-[14px] text-[#838383] ml-auto">
-                                <Field
-                                  type="radio"
-                                  name="saleFraming"
-                                  value="yes"
-                                  id="yesSaleFraming"
-                                  tw="w-[14px] h-[14px] mr-3"
-                                  css={{ 'accent-color': '#6C6C6C' }}
-                                />
-                                <label htmlFor="yesSaleFraming">Framed</label>
-                                <Field
-                                  type="radio"
-                                  name="saleFraming"
-                                  value="no"
-                                  id="noSaleFraming"
-                                  tw="w-[14px] h-[14px] mr-3 ml-7"
-                                  css={{ 'accent-color': '#6C6C6C' }}
-                                />
-                                <label htmlFor="noSaleFraming">Unframed</label>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        <div tw="w-full border border-[#D8D8D8] mt-4 rounded-[5px] p-4">
-                          <div tw="flex text-[14px] text-[#3C3C3C] justify-between">
-                            Prints Available?
-                            <div tw="flex items-center text-[14px] text-[#838383]">
-                              <Field
-                                type="radio"
-                                name="forPrint"
-                                value="yes"
-                                id="yesForPrint"
-                                tw="w-[14px] h-[14px] mr-3"
-                                css={{ 'accent-color': '#E24E4D' }}
-                              />
-                              <label htmlFor="yesForPrint">Yes</label>
-                              <Field
-                                type="radio"
-                                name="forPrint"
-                                value="no"
-                                id="noForPrint"
-                                tw="w-[14px] h-[14px] mr-3 ml-7"
-                                css={{ 'accent-color': '#E24E4D' }}
-                              />
-                              <label htmlFor="noForPrint">No</label>
-                            </div>
-                          </div>
-                          {values.forPrint === 'yes' && (
-                            <div tw="mx-5 mt-3 grid grid-cols-[150px auto] justify-between items-center gap-y-3">
-                              <div css={styles.label}>Price</div>
-                              <div tw="relative ml-auto">
-                                <Field
-                                  type="number"
-                                  name="printPrice"
-                                  css={[styles.dropdown, tw`pl-[30px]`]}
-                                  min="0"
-                                  max="9999"
-                                />
-                                <div tw="text-[16px] text-[#838383] absolute left-4 top-[3px]">
-                                  $
-                                </div>
-                              </div>
-                              <div css={styles.label}>Size</div>
-                              <div tw="ml-auto flex items-center">
-                                <div tw="text-[14px] text-[#838383]">H:</div>
-                                <Field
-                                  type="number"
-                                  name="printHeight"
-                                  css={[
-                                    styles.dropdown,
-                                    tw`w-[52px] pl-3 pr-0 ml-1`,
-                                  ]}
-                                  min="0"
-                                />
-                                <div tw="text-[14px] text-[#838383] ml-2">
-                                  W:
-                                </div>
-                                <Field
-                                  type="number"
-                                  name="printWidth"
-                                  css={[
-                                    styles.dropdown,
-                                    tw`w-[52px] pl-3 pr-0 mx-1`,
-                                  ]}
-                                  min="0"
-                                />
-                                <div tw="relative ml-3">
+                                <div tw="relative">
                                   <select
+                                    name="portfolio"
+                                    css={styles.dropdown}
+                                    onChange={(e) =>
+                                      setFieldValue('portfolio', e.target.value)
+                                    }
+                                    onBlur={() => setFieldTouched('portfolio')}
+                                    value={values.portfolio}
+                                  >
+                                    <option value="" disabled />
+                                    {portfolios.map((portfolio) => (
+                                      <option
+                                        value={portfolio.id}
+                                        key={portfolio.id}
+                                      >
+                                        {portfolio.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <DropdownButton />
+                                </div>
+                              </div>
+                              <div tw="flex items-center">
+                                <div css={[styles.label, tw`w-[76px]`]}>
+                                  Year
+                                </div>
+                                <div tw="relative">
+                                  <select
+                                    name="year"
+                                    css={styles.dropdown}
                                     onChange={(e) =>
                                       setFieldValue(
-                                        'printUnits',
-                                        e.target.value
+                                        'year',
+                                        parseInt(e.target.value)
                                       )
                                     }
-                                    onBlur={() => setFieldTouched('printUnits')}
-                                    value={values.printUnits}
-                                    name="printUnits"
-                                    css={[styles.dropdown, tw`w-[60px] pl-3`]}
+                                    onBlur={() => setFieldTouched('year')}
+                                    value={values.year}
                                   >
-                                    {units.map((value, i) => (
+                                    {Array(...Array(100)).map((value, key) => (
+                                      <option key={key} value={2022 - key}>
+                                        {2022 - key}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <DropdownButton />
+                                </div>
+                              </div>
+                              <div tw="flex items-center">
+                                <div css={[styles.label, tw`w-[76px]`]}>
+                                  Medium
+                                </div>
+                                <div tw="relative">
+                                  <select
+                                    onChange={(e) =>
+                                      setFieldValue('medium', e.target.value)
+                                    }
+                                    onBlur={() => setFieldTouched('medium')}
+                                    value={values.medium}
+                                    name="medium"
+                                    css={styles.dropdown}
+                                  >
+                                    <option value="" disabled />
+                                    {mediums.map((value, i) => (
                                       <option key={i} value={value}>
                                         {value}
                                       </option>
@@ -813,26 +677,67 @@ function UploadWork(props: UploadWorkProps) {
                                   <DropdownButton />
                                 </div>
                               </div>
-
-                              <div css={styles.label}>Surface</div>
-                              <div tw="relative ml-auto">
+                              <div tw="flex items-center">
+                                <div css={[styles.label, tw`w-[76px]`]}>
+                                  Surface
+                                </div>
+                                <div tw="relative">
+                                  <select
+                                    onChange={(e) =>
+                                      setFieldValue('surface', e.target.value)
+                                    }
+                                    onBlur={() => setFieldTouched('surface')}
+                                    value={values.surface}
+                                    name="surface"
+                                    css={[
+                                      styles.dropdown,
+                                      tw`pr-6 overflow-ellipsis`,
+                                    ]}
+                                  >
+                                    <option value="" disabled />
+                                    {surfaces.map((value, i) => (
+                                      <option key={i} value={value}>
+                                        {value}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <DropdownButton />
+                                </div>
+                              </div>
+                            </div>
+                            <div tw="flex items-center mt-3">
+                              <div css={[styles.label, tw`w-[60px]`]}>Size</div>
+                              <div tw="text-[14px] text-[#838383]">H:</div>
+                              <Field
+                                type="number"
+                                name="height"
+                                css={[
+                                  styles.dropdown,
+                                  tw`w-[52px] pl-3 pr-0 ml-1`,
+                                ]}
+                                min="0"
+                              />
+                              <div tw="text-[14px] text-[#838383] ml-2">W:</div>
+                              <Field
+                                type="number"
+                                name="width"
+                                css={[
+                                  styles.dropdown,
+                                  tw`w-[52px] pl-3 pr-0 mx-1`,
+                                ]}
+                                min="0"
+                              />
+                              <div tw="relative ml-3">
                                 <select
                                   onChange={(e) =>
-                                    setFieldValue(
-                                      'printSurface',
-                                      e.target.value
-                                    )
+                                    setFieldValue('units', e.target.value)
                                   }
-                                  onBlur={() => setFieldTouched('printSurface')}
-                                  value={values.printSurface}
-                                  name="printSurface"
-                                  css={[
-                                    styles.dropdown,
-                                    tw`pr-6 overflow-ellipsis`,
-                                  ]}
+                                  onBlur={() => setFieldTouched('units')}
+                                  value={values.units}
+                                  name="units"
+                                  css={[styles.dropdown, tw`w-[60px] pl-3`]}
                                 >
-                                  <option value="" disabled />
-                                  {printSurfaces.map((value, i) => (
+                                  {units.map((value, i) => (
                                     <option key={i} value={value}>
                                       {value}
                                     </option>
@@ -840,98 +745,385 @@ function UploadWork(props: UploadWorkProps) {
                                 </select>
                                 <DropdownButton />
                               </div>
-                              <div css={styles.label}>Framing</div>
-                              <div tw="flex items-center text-[14px] text-[#838383] ml-auto">
+                            </div>
+                          </div>
+                          <div tw="w-full border border-[#D8D8D8] mt-4 rounded-[5px] p-4">
+                            <div tw="flex text-[14px] text-[#3C3C3C] justify-between">
+                              Work for Sale?
+                              <div tw="flex items-center text-[14px] text-[#838383]">
                                 <Field
                                   type="radio"
-                                  name="printFraming"
+                                  name="forSale"
                                   value="yes"
-                                  id="yesPrintFraming"
+                                  id="yesForSale"
                                   tw="w-[14px] h-[14px] mr-3"
-                                  css={{ 'accent-color': '#6C6C6C' }}
+                                  css={{ 'accent-color': '#E24E4D' }}
                                 />
-                                <label htmlFor="yesPrintFraming">Framed</label>
+                                <label htmlFor="yesForSale">Yes</label>
                                 <Field
                                   type="radio"
-                                  name="printFraming"
+                                  name="forSale"
                                   value="no"
-                                  id="noPrintFraming"
+                                  id="noForSale"
                                   tw="w-[14px] h-[14px] mr-3 ml-7"
-                                  css={{ 'accent-color': '#6C6C6C' }}
+                                  css={{ 'accent-color': '#E24E4D' }}
                                 />
-                                <label htmlFor="noPrintFraming">Unframed</label>
+                                <label htmlFor="noForSale">No</label>
                               </div>
                             </div>
-                          )}
+                            {values.forSale === 'yes' && (
+                              <div tw="mx-5 mt-3 grid grid-cols-2 justify-between items-center gap-y-3">
+                                <div css={styles.label}>Price</div>
+                                <div tw="relative ml-auto">
+                                  <Field
+                                    type="number"
+                                    name="salePrice"
+                                    css={[styles.dropdown, tw`pl-[30px]`]}
+                                    min="0"
+                                    max="9999"
+                                  />
+                                  <div tw="text-[16px] text-[#838383] absolute left-4 top-[3px]">
+                                    $
+                                  </div>
+                                </div>
+                                <div css={styles.label}>Subject</div>
+                                <div tw="relative ml-auto">
+                                  <select
+                                    onChange={(e) =>
+                                      setFieldValue(
+                                        'saleSubject',
+                                        e.target.value
+                                      )
+                                    }
+                                    onBlur={() =>
+                                      setFieldTouched('saleSubject')
+                                    }
+                                    value={values.saleSubject}
+                                    name="saleSubject"
+                                    css={styles.dropdown}
+                                  >
+                                    <option value="" disabled />
+                                    {saleSubjects.map((value, i) => (
+                                      <option key={i} value={value}>
+                                        {value}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <DropdownButton />
+                                </div>
+                                <div css={styles.label}>Style</div>
+                                <div tw="relative ml-auto">
+                                  <select
+                                    onChange={(e) =>
+                                      setFieldValue('saleStyle', e.target.value)
+                                    }
+                                    onBlur={() => setFieldTouched('saleStyle')}
+                                    value={values.saleStyle}
+                                    name="saleStyle"
+                                    css={styles.dropdown}
+                                  >
+                                    <option value="" disabled />
+                                    {saleStyles.map((value, i) => (
+                                      <option key={i} value={value}>
+                                        {value}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <DropdownButton />
+                                </div>
+                                <div css={styles.label}>Orientation</div>
+                                <div tw="relative ml-auto">
+                                  <select
+                                    onChange={(e) =>
+                                      setFieldValue(
+                                        'saleOrientation',
+                                        e.target.value
+                                      )
+                                    }
+                                    onBlur={() =>
+                                      setFieldTouched('saleOrientation')
+                                    }
+                                    value={values.saleOrientation}
+                                    name="saleOrientation"
+                                    css={styles.dropdown}
+                                  >
+                                    <option value="" disabled />
+                                    {saleOrientations.map((value, i) => (
+                                      <option key={i} value={value}>
+                                        {value}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <DropdownButton />
+                                </div>
+                                <div css={styles.label}>Main Color</div>
+                                <div tw="relative ml-auto">
+                                  <select
+                                    onChange={(e) =>
+                                      setFieldValue('saleColor', e.target.value)
+                                    }
+                                    onBlur={() => setFieldTouched('saleColor')}
+                                    value={values.saleColor}
+                                    name="saleColor"
+                                    css={[styles.dropdown, tw`w-[73px]`]}
+                                  >
+                                    <option value="" disabled />
+                                    {saleColors.map((value, i) => (
+                                      <option
+                                        key={i}
+                                        value={saleColorStrings[i]}
+                                      >
+                                        {value}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <DropdownButton />
+                                </div>
+                                <div css={styles.label}>Framing</div>
+                                <div tw="flex items-center text-[14px] text-[#838383] ml-auto">
+                                  <Field
+                                    type="radio"
+                                    name="saleFraming"
+                                    value="yes"
+                                    id="yesSaleFraming"
+                                    tw="w-[14px] h-[14px] mr-3"
+                                    css={{ 'accent-color': '#6C6C6C' }}
+                                  />
+                                  <label htmlFor="yesSaleFraming">Framed</label>
+                                  <Field
+                                    type="radio"
+                                    name="saleFraming"
+                                    value="no"
+                                    id="noSaleFraming"
+                                    tw="w-[14px] h-[14px] mr-3 ml-7"
+                                    css={{ 'accent-color': '#6C6C6C' }}
+                                  />
+                                  <label htmlFor="noSaleFraming">
+                                    Unframed
+                                  </label>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          <div tw="w-full border border-[#D8D8D8] mt-4 rounded-[5px] p-4">
+                            <div tw="flex text-[14px] text-[#3C3C3C] justify-between">
+                              Prints Available?
+                              <div tw="flex items-center text-[14px] text-[#838383]">
+                                <Field
+                                  type="radio"
+                                  name="forPrint"
+                                  value="yes"
+                                  id="yesForPrint"
+                                  tw="w-[14px] h-[14px] mr-3"
+                                  css={{ 'accent-color': '#E24E4D' }}
+                                />
+                                <label htmlFor="yesForPrint">Yes</label>
+                                <Field
+                                  type="radio"
+                                  name="forPrint"
+                                  value="no"
+                                  id="noForPrint"
+                                  tw="w-[14px] h-[14px] mr-3 ml-7"
+                                  css={{ 'accent-color': '#E24E4D' }}
+                                />
+                                <label htmlFor="noForPrint">No</label>
+                              </div>
+                            </div>
+                            {values.forPrint === 'yes' && (
+                              <div tw="mx-5 mt-3 grid grid-cols-[150px auto] justify-between items-center gap-y-3">
+                                <div css={styles.label}>Price</div>
+                                <div tw="relative ml-auto">
+                                  <Field
+                                    type="number"
+                                    name="printPrice"
+                                    css={[styles.dropdown, tw`pl-[30px]`]}
+                                    min="0"
+                                    max="9999"
+                                  />
+                                  <div tw="text-[16px] text-[#838383] absolute left-4 top-[3px]">
+                                    $
+                                  </div>
+                                </div>
+                                <div css={styles.label}>Size</div>
+                                <div tw="ml-auto flex items-center">
+                                  <div tw="text-[14px] text-[#838383]">H:</div>
+                                  <Field
+                                    type="number"
+                                    name="printHeight"
+                                    css={[
+                                      styles.dropdown,
+                                      tw`w-[52px] pl-3 pr-0 ml-1`,
+                                    ]}
+                                    min="0"
+                                  />
+                                  <div tw="text-[14px] text-[#838383] ml-2">
+                                    W:
+                                  </div>
+                                  <Field
+                                    type="number"
+                                    name="printWidth"
+                                    css={[
+                                      styles.dropdown,
+                                      tw`w-[52px] pl-3 pr-0 mx-1`,
+                                    ]}
+                                    min="0"
+                                  />
+                                  <div tw="relative ml-3">
+                                    <select
+                                      onChange={(e) =>
+                                        setFieldValue(
+                                          'printUnits',
+                                          e.target.value
+                                        )
+                                      }
+                                      onBlur={() =>
+                                        setFieldTouched('printUnits')
+                                      }
+                                      value={values.printUnits}
+                                      name="printUnits"
+                                      css={[styles.dropdown, tw`w-[60px] pl-3`]}
+                                    >
+                                      {units.map((value, i) => (
+                                        <option key={i} value={value}>
+                                          {value}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    <DropdownButton />
+                                  </div>
+                                </div>
+
+                                <div css={styles.label}>Surface</div>
+                                <div tw="relative ml-auto">
+                                  <select
+                                    onChange={(e) =>
+                                      setFieldValue(
+                                        'printSurface',
+                                        e.target.value
+                                      )
+                                    }
+                                    onBlur={() =>
+                                      setFieldTouched('printSurface')
+                                    }
+                                    value={values.printSurface}
+                                    name="printSurface"
+                                    css={[
+                                      styles.dropdown,
+                                      tw`pr-6 overflow-ellipsis`,
+                                    ]}
+                                  >
+                                    <option value="" disabled />
+                                    {printSurfaces.map((value, i) => (
+                                      <option key={i} value={value}>
+                                        {value}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <DropdownButton />
+                                </div>
+                                <div css={styles.label}>Framing</div>
+                                <div tw="flex items-center text-[14px] text-[#838383] ml-auto">
+                                  <Field
+                                    type="radio"
+                                    name="printFraming"
+                                    value="yes"
+                                    id="yesPrintFraming"
+                                    tw="w-[14px] h-[14px] mr-3"
+                                    css={{ 'accent-color': '#6C6C6C' }}
+                                  />
+                                  <label htmlFor="yesPrintFraming">
+                                    Framed
+                                  </label>
+                                  <Field
+                                    type="radio"
+                                    name="printFraming"
+                                    value="no"
+                                    id="noPrintFraming"
+                                    tw="w-[14px] h-[14px] mr-3 ml-7"
+                                    css={{ 'accent-color': '#6C6C6C' }}
+                                  />
+                                  <label htmlFor="noPrintFraming">
+                                    Unframed
+                                  </label>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
+                        <button
+                          css={[buttons.red, tw`ml-auto mt-[24px]`]}
+                          // onClick={() => setUploadPage(1)}
+                          type={'submit'}
+                          disabled={isSubmitting}
+                        >
+                          {editMode
+                            ? isSubmitting
+                              ? 'Saving Changes...'
+                              : 'Save Changes'
+                            : isSubmitting
+                            ? 'Creating Work...'
+                            : 'Create Work'}
+                        </button>
                       </div>
-                      <button
-                        css={[buttons.red, tw`ml-auto mt-[24px]`]}
-                        // onClick={() => setUploadPage(1)}
-                        type={'submit'}
-                        disabled={isSubmitting}
-                      >
-                        Post
-                      </button>
                     </div>
-                  </div>
-                )}
-                {/*{uploadPage === 1 && (*/}
-                {/*  <div tw="w-full">*/}
-                {/*    <div tw="text-[22px] text-[#3C3C3C] font-semibold text-center">*/}
-                {/*      Attach in progress posts of the same work to this*/}
-                {/*      completed work.*/}
-                {/*    </div>*/}
-                {/*    <div tw="text-[22px] text-[#3C3C3C] text-center">*/}
-                {/*      (select a maximum of 8 posts)*/}
-                {/*    </div>*/}
-                {/*    <div tw="text-[22px] text-[#838383] mt-5">*/}
-                {/*      Select from Existing Posts*/}
-                {/*    </div>*/}
-                {/*    <div tw="overflow-y-auto h-[330px] mt-[30px] mb-4">*/}
-                {/*      <div tw="grid grid-cols-6 gap-8">*/}
-                {/*        {wipImages.map((value, index) => (*/}
-                {/*          <DisplayWip src={value} key={index} />*/}
-                {/*        ))}*/}
-                {/*      </div>*/}
-                {/*    </div>*/}
-                {/*    <FileUploader*/}
-                {/*      multiple={true}*/}
-                {/*      name="file"*/}
-                {/*      types={['JPG', 'PNG', 'SVG']}*/}
-                {/*      handleChange={(files: File[]) => {*/}
-                {/*        setWipImages((state: string[]) => {*/}
-                {/*          return state.concat(*/}
-                {/*            Array(...files).map(URL.createObjectURL)*/}
-                {/*          );*/}
-                {/*        });*/}
-                {/*      }}*/}
-                {/*    >*/}
-                {/*      <div tw="text-lg text-[#65676B] border-[#D8D8D8] border-[3px] border-dashed cursor-pointer px-16 py-8 rounded-[7px] w-[680px] mx-auto">*/}
-                {/*        <span tw="font-bold">Upload</span> in progress photos or*/}
-                {/*        videos from your computer*/}
-                {/*      </div>*/}
-                {/*    </FileUploader>*/}
-                {/*    <div tw="flex justify-between mt-5 px-9">*/}
-                {/*      <button*/}
-                {/*        type={"button"}*/}
-                {/*        css={buttons.white}*/}
-                {/*        onClick={() => setUploadPage(0)}*/}
-                {/*      >*/}
-                {/*        Back*/}
-                {/*      </button>*/}
-                {/*      <button css={buttons.red} type="submit">*/}
-                {/*        Post*/}
-                {/*      </button>*/}
-                {/*    </div>*/}
-                {/*  </div>*/}
-                {/*)}*/}
-              </Form>
-            )}
-          </Formik>
+                  )}
+                  {/*{uploadPage === 1 && (*/}
+                  {/*  <div tw="w-full">*/}
+                  {/*    <div tw="text-[22px] text-[#3C3C3C] font-semibold text-center">*/}
+                  {/*      Attach in progress posts of the same work to this*/}
+                  {/*      completed work.*/}
+                  {/*    </div>*/}
+                  {/*    <div tw="text-[22px] text-[#3C3C3C] text-center">*/}
+                  {/*      (select a maximum of 8 posts)*/}
+                  {/*    </div>*/}
+                  {/*    <div tw="text-[22px] text-[#838383] mt-5">*/}
+                  {/*      Select from Existing Posts*/}
+                  {/*    </div>*/}
+                  {/*    <div tw="overflow-y-auto h-[330px] mt-[30px] mb-4">*/}
+                  {/*      <div tw="grid grid-cols-6 gap-8">*/}
+                  {/*        {wipImages.map((value, index) => (*/}
+                  {/*          <DisplayWip src={value} key={index} />*/}
+                  {/*        ))}*/}
+                  {/*      </div>*/}
+                  {/*    </div>*/}
+                  {/*    <FileUploader*/}
+                  {/*      multiple={true}*/}
+                  {/*      name="file"*/}
+                  {/*      types={['JPG', 'PNG', 'SVG']}*/}
+                  {/*      handleChange={(files: File[]) => {*/}
+                  {/*        setWipImages((state: string[]) => {*/}
+                  {/*          return state.concat(*/}
+                  {/*            Array(...files).map(URL.createObjectURL)*/}
+                  {/*          );*/}
+                  {/*        });*/}
+                  {/*      }}*/}
+                  {/*    >*/}
+                  {/*      <div tw="text-lg text-[#65676B] border-[#D8D8D8] border-[3px] border-dashed cursor-pointer px-16 py-8 rounded-[7px] w-[680px] mx-auto">*/}
+                  {/*        <span tw="font-bold">Upload</span> in progress photos or*/}
+                  {/*        videos from your computer*/}
+                  {/*      </div>*/}
+                  {/*    </FileUploader>*/}
+                  {/*    <div tw="flex justify-between mt-5 px-9">*/}
+                  {/*      <button*/}
+                  {/*        type={"button"}*/}
+                  {/*        css={buttons.white}*/}
+                  {/*        onClick={() => setUploadPage(0)}*/}
+                  {/*      >*/}
+                  {/*        Back*/}
+                  {/*      </button>*/}
+                  {/*      <button css={buttons.red} type="submit">*/}
+                  {/*        Post*/}
+                  {/*      </button>*/}
+                  {/*    </div>*/}
+                  {/*  </div>*/}
+                  {/*)}*/}
+                </Form>
+              )}
+            </Formik>
+          )}
         </div>
         <button
-          onClick={props.onClose}
+          onClick={() => onClose()}
           tw="ml-5 w-12 h-12 border-0 outline-none bg-none hover:bg-[rgba(255,255,255,0.08)] rounded-full"
         >
           <img

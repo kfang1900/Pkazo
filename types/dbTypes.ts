@@ -68,6 +68,7 @@ export interface PortfolioData {
 type DimensionUnits = 'in' | 'cm' | 'ft';
 export type WorkData = {
   timestamp: Timestamp;
+  editTimestamps?: Timestamp[];
   artist: string;
 
   title: string;
@@ -120,12 +121,15 @@ export type WorkData = {
         forPrint: false;
       }
     | {
-        price: number;
-        height: number;
-        width: number;
-        units: DimensionUnits;
-        printSurface: string;
-        printFraming: boolean;
+        forPrint: true;
+        print: {
+          price: number;
+          height: number;
+          width: number;
+          units: DimensionUnits;
+          surface: string;
+          framing: boolean;
+        };
       }
   );
 

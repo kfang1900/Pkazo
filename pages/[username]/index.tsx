@@ -203,6 +203,7 @@ const Portfolio: NextPage = () => {
       });
     })();
   }, [username, setArtistData2]);
+  // TODO: fix the scroll position reset when going from store tab to gallery tab (doesn't work in the other direction)
   return (
     <>
       <Head>
