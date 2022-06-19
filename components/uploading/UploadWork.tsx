@@ -37,6 +37,7 @@ import { useRouter } from 'next/router';
 import { WorkData } from '../../types/dbTypes';
 import axios from 'axios';
 import { loadStorageImage } from '../../helpers/FirebaseFunctions';
+import { updateWorksIndex } from '../../utils/indexes/updateIndexes';
 
 export interface UploadWorkProps {
   onClose: () => void;
@@ -446,9 +447,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                   await updateDoc(doc(db, 'works', workId + ''), {
                     images: arrayUnion(...imageReferences),
                   });
-                  await axios.post('/api/search/update-indexes', {
-                    workIds: [workId],
-                  });
+                  await updateWorksIndex(workId + '');
                   if (!editMode) {
                     return router.push(`/work/${workId}`);
                   } else {

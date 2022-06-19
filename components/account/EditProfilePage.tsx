@@ -17,13 +17,15 @@ import React, { useCallback, useEffect, useState } from 'react';
 import useAuth from '../../utils/auth/useAuth';
 import useRequireOnboarding from '../../utils/hooks/useRequireOnboarding';
 import { ArtistData } from '../../types/dbTypes';
+import axios from 'axios';
+import { updateArtistsIndex } from '../../utils/indexes/updateIndexes';
 
 export default function EditProfilePage() {
   const [data, setData] = useState<
     | (ArtistData & {
-      profilePictureURL: string;
-      coverImageURL: string;
-    })
+        profilePictureURL: string;
+        coverImageURL: string;
+      })
     | undefined
   >();
   const [artistId, setArtistId] = useState('');
@@ -104,7 +106,7 @@ export default function EditProfilePage() {
               </div>
               <ImageUploadButton
                 offset={0}
-                uploadLocation={'Artists/VWOgAFjhL0BlFlbDTJZF/Profile_Photo'}
+                uploadLocation={`Artists/${artistId}/Profile_Photo`}
                 onError={(error) => {
                   console.log(error);
                 }}
@@ -116,7 +118,7 @@ export default function EditProfilePage() {
                   await updateDoc(doc(db, 'artists', artistId), {
                     profilePicture: gsURL,
                   } as Partial<ArtistData>);
-
+                  await updateArtistsIndex(artistId);
                   const pfpURL = await loadStorageImage(gsURL);
 
                   setData((oldData) => {
@@ -154,6 +156,7 @@ export default function EditProfilePage() {
                 numPosts: 0,
                 numWorks: 3, //TODO make this do something better
               } as Partial<ArtistData>);
+              await updateArtistsIndex(artistId);
               setData((oldData) => {
                 return Object.assign({}, oldData, values);
               });
@@ -216,7 +219,7 @@ export default function EditProfilePage() {
 
             <div className="right-3 bottom-3">
               <ImageUploadButton
-                uploadLocation={'Artists/VWOgAFjhL0BlFlbDTJZF/Cover_Photo'}
+                uploadLocation={`Artists/${artistId}/Cover_Photo`}
                 onError={(error) => {
                   console.log(error);
                 }}
@@ -228,7 +231,7 @@ export default function EditProfilePage() {
                   await updateDoc(doc(db, 'artists', artistId), {
                     coverImage: gsURL,
                   } as Partial<ArtistData>);
-
+                  await updateArtistsIndex(artistId);
                   const coverImageURL = await loadStorageImage(gsURL);
 
                   setData((oldData) => {

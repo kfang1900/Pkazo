@@ -25,6 +25,7 @@ import UploadWork from './uploading/UploadWork';
 import { useMediaQuery } from 'react-responsive';
 import SearchBar from './SearchBar';
 import SearchHeader from './search/SearchHeader';
+import SearchBox from './search/SearchBox';
 
 /* Copied from image.tsx source */
 interface StaticRequire {
@@ -126,16 +127,8 @@ const Header = (props: {
           </Link>
           {!isMobile && (
             <div tw='relative flex-grow ml-5'>
-              <div tw="pl-6 pr-5 rounded-[48px] h-10 bg-[#F5F5F5] border border-[#A3A3A3] focus-within:border-[#838383] focus-within:bg-white outline-none flex items-center">
-                <input
-                  onFocus={() => setOnSearch(true)}
-                  onBlur={() => setOnSearch(false)}
-                  type="text"
-                  placeholder="Search for anything"
-                  tw="w-full bg-transparent outline-none text-[16px]"
-                />
-                <img src="/assets/svgs/search.svg" tw="ml-3 w-[18px] h-[18px]" />
-              </div>
+              <SearchBox/>
+
               {onSearch &&
                 <SearchHeader />
               }

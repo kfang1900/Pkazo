@@ -6,7 +6,7 @@ type ArtistType =
   | 'hobbyist'
   | 'hobbyist-desiring-professional'
   | 'professional';
-export interface ArtistData {
+export type ArtistData = {
   name: string;
   artistName: string;
   artistType: ArtistType;
@@ -50,7 +50,7 @@ export interface ArtistData {
   }[];
 
   username: string;
-}
+};
 
 export interface UserData {
   dob: Timestamp;
@@ -134,4 +134,5 @@ export type WorkData = {
   );
 
 export type WorkRecord = WorkData & { id: string; objectID: string };
+export type ArtistRecord = ArtistData & { id: string; objectID: string };
 export type ForSaleWorkRecord = WorkRecord & { forSale: true };

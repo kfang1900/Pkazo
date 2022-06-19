@@ -4,6 +4,7 @@ import Image from 'next/image';
 import useAuth from '../../utils/auth/useAuth';
 import { getApp } from 'firebase/app';
 import {
+  addDoc,
   collection,
   doc,
   DocumentData,
@@ -19,6 +20,7 @@ import { ArtistData, PortfolioData, WorkData } from '../../types/dbTypes';
 import { loadStorageImage } from '../../helpers/FirebaseFunctions';
 import { getDownloadURL, getStorage, ref } from 'firebase/storage';
 import UploadWork from '../uploading/UploadWork';
+import ImageUploadButton from '../account/ImageUploadButton';
 
 export default function EditProfilePage() {
   const styles = {
@@ -107,7 +109,7 @@ export default function EditProfilePage() {
     [name, description, activePortfolio, portfolios]
   );
   const [showUploadEditWorkModal, setShowUploadEditWorkModal] = useState(false);
-
+  const [createNewPortfolioMode, setCreateNewPortfolioMode] = useState(false);
   // if empty, then the modal will be on create mode
   const [currentlyEditingWork, setCurrentlyEditingWork] = useState('');
   return (
@@ -132,6 +134,7 @@ export default function EditProfilePage() {
               setActivePortfolioID(activePortfolioID === id ? '' : id);
               setName(portfolioData.name);
               setDescription(portfolioData.description);
+              setCreateNewPortfolioMode(false);
             }}
           >
             <div
@@ -151,7 +154,14 @@ export default function EditProfilePage() {
           </button>
         ))}
         {portfolios.length < 5 && (
-          <button tw="w-[116px] h-[116px] bg-[#F3F3F3] hover:bg-[#E8E8E8] rounded-full flex items-center justify-center">
+          <button
+            onClick={() => {
+              setName('');
+              setDescription('');
+              setCreateNewPortfolioMode(true);
+            }}
+            tw="w-[116px] h-[116px] bg-[#F3F3F3] hover:bg-[#E8E8E8] rounded-full flex items-center justify-center"
+          >
             <svg
               width="37"
               height="38"
@@ -186,14 +196,56 @@ export default function EditProfilePage() {
         </p>
       )}
       {/* current portfolio */}
-      {activePortfolio && (
+      {(createNewPortfolioMode || activePortfolio) && (
         <div tw="w-full flex flex-col items-center mt-[52px] gap-y-10">
-          <div tw="relative rounded-full overflow-hidden w-[100px] h-[100px]">
-            <Image
-              src={activePortfolio.imageURL}
-              alt="current portfolio"
-              layout="fill"
-              objectFit="cover"
+          {/*<div tw="relative rounded-full overflow-hidden w-[100px] h-[100px]">*/}
+          {/*  <Image*/}
+          {/*    src={*/}
+          {/*      createNewPortfolioMode*/}
+          {/*        ? 'http://s'*/}
+          {/*        : activePortfolio?.imageURL || 'http://s'*/}
+          {/*    }*/}
+          {/*    alt="current portfolio"*/}
+          {/*    layout="fill"*/}
+          {/*    objectFit="cover"*/}
+          {/*  />*/}
+          {/*</div>*/}
+          <div tw="w-[132px] h-[132px] relative">
+            <div tw="overflow-hidden rounded-full flex items-center ">
+              {activePortfolio?.imageURL ? (
+                <Image
+                  src={activePortfolio.imageURL}
+                  alt="current portfolio"
+                  layout="fill"
+                  objectFit="cover"
+                />
+              ) : (
+                <div tw={'bg-gray-200 w-[132px] h-[132px]'} />
+              )}
+            </div>
+            <ImageUploadButton
+              offset={0}
+              uploadLocation={'Artists/VWOgAFjhL0BlFlbDTJZF/Profile_Photo'}
+              onError={(error) => {
+                console.log(error);
+              }}
+              onUploadComplete={async (uploadRef) => {
+                const app = getApp();
+                const db = getFirestore(app);
+                const gsURL = uploadRef.toString();
+
+                await updateDoc(doc(db, 'artists', artistId + ''), {
+                  profilePicture: gsURL,
+                } as Partial<ArtistData>);
+
+                const pfpURL = await loadStorageImage(gsURL);
+
+                // setData((oldData) => {
+                //   return Object.assign({}, oldData, {
+                //     profilePictureURL: pfpURL,
+                //   });
+                // });
+              }}
             />
           </div>
           <div tw="flex items-center gap-x-7">
@@ -213,40 +265,56 @@ export default function EditProfilePage() {
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
-          {titleDescriptionHasChanges && (
+          {(createNewPortfolioMode || titleDescriptionHasChanges) && (
             <div>
               <input
                 onClick={() => {
                   (async () => {
                     setSaving(true);
                     const db = getFirestore();
-                    await updateDoc(
-                      doc(
-                        db,
-                        'artists',
-                        artistId + '',
-                        'portfolios',
-                        activePortfolio.id + ''
-                      ),
-                      {
-                        name: name,
-                        description: description,
+                    if (createNewPortfolioMode) {
+                      await addDoc(
+                        collection(db, 'artists', artistId + '', 'portfolios'),
+                        {
+                          name: name,
+                          description: description,
+                          works: [],
+                          picture: '',
+                        } as PortfolioData
+                      );
+                    } else {
+                      if (!activePortfolio) {
+                        throw new Error('active portfolio is undefined');
                       }
-                    );
-                    setPortfolios((p) =>
-                      p.map((p) =>
-                        p.id !== activePortfolioID
-                          ? p
-                          : {
-                              ...p,
-                              portfolioData: {
-                                ...p.portfolioData,
-                                name: name,
-                                description: description,
-                              },
-                            }
-                      )
-                    );
+                      await updateDoc(
+                        doc(
+                          db,
+                          'artists',
+                          artistId + '',
+                          'portfolios',
+                          activePortfolio.id + ''
+                        ),
+                        {
+                          name: name,
+                          description: description,
+                        }
+                      );
+                      setPortfolios((p) =>
+                        p.map((p) =>
+                          p.id !== activePortfolioID
+                            ? p
+                            : {
+                                ...p,
+                                portfolioData: {
+                                  ...p.portfolioData,
+                                  name: name,
+                                  description: description,
+                                },
+                              }
+                        )
+                      );
+                    }
+
                     console.log('SAVED', name, description);
                     setSaving(false);
                   })();
@@ -263,60 +331,72 @@ export default function EditProfilePage() {
                 tw="ml-5 h-9 w-24 border border-[#D8D8D8] rounded-[6px] px-4 text-[#3C3C3C] text-[16px] hover:bg-[#F5F5F5]"
                 disabled={saving}
                 onClick={() => {
-                  setName(activePortfolio.portfolioData.name);
-                  setDescription(activePortfolio.portfolioData.description);
+                  if (activePortfolio) {
+                    setName(activePortfolio.portfolioData.name);
+                    setDescription(activePortfolio.portfolioData.description);
+                  } else {
+                    setCurrentlyEditingWork('');
+                  }
                 }}
               >
                 Cancel
               </button>
             </div>
           )}
-          <div tw="grid grid-cols-[repeat(6,124px)] gap-9 mb-10">
-            {activePortfolio.workData.map((work) => (
+          {activePortfolio && (
+            <div tw="grid grid-cols-[repeat(6,124px)] gap-9 mb-10">
+              {activePortfolio.workData.map((work) => (
+                <button
+                  key={work.id}
+                  onClick={() => {
+                    setCurrentlyEditingWork(work.id);
+                    setShowUploadEditWorkModal(true);
+                  }}
+                  tw="cursor-pointer w-full h-[124px] rounded-[5px] relative overflow-hidden"
+                >
+                  <Image
+                    src={work.imageURL}
+                    alt="work"
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </button>
+              ))}
               <button
-                key={work.id}
+                tw="w-[124px] h-[124px] bg-[#F3F3F3] hover:bg-[#E8E8E8] rounded-[5px] flex items-center justify-center"
                 onClick={() => {
-                  setCurrentlyEditingWork(work.id);
+                  setCurrentlyEditingWork('');
                   setShowUploadEditWorkModal(true);
                 }}
-                tw="cursor-pointer w-full h-[124px] rounded-[5px] relative overflow-hidden"
               >
-                <Image
-                  src={work.imageURL}
-                  alt="work"
-                  layout="fill"
-                  objectFit="cover"
-                />
+                <svg
+                  width="37"
+                  height="38"
+                  viewBox="0 0 37 38"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="15.9736"
+                    y="0.656006"
+                    width="5.77619"
+                    height="36.6864"
+                    rx="2.8881"
+                    fill="#C4C4C4"
+                  />
+                  <rect
+                    x="0.811523"
+                    y="22.2336"
+                    width="5.86982"
+                    height="36.1012"
+                    rx="2.93491"
+                    transform="rotate(-90 0.811523 22.2336)"
+                    fill="#C4C4C4"
+                  />
+                </svg>
               </button>
-            ))}
-            <button tw="w-[124px] h-[124px] bg-[#F3F3F3] hover:bg-[#E8E8E8] rounded-[5px] flex items-center justify-center">
-              <svg
-                width="37"
-                height="38"
-                viewBox="0 0 37 38"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect
-                  x="15.9736"
-                  y="0.656006"
-                  width="5.77619"
-                  height="36.6864"
-                  rx="2.8881"
-                  fill="#C4C4C4"
-                />
-                <rect
-                  x="0.811523"
-                  y="22.2336"
-                  width="5.86982"
-                  height="36.1012"
-                  rx="2.93491"
-                  transform="rotate(-90 0.811523 22.2336)"
-                  fill="#C4C4C4"
-                />
-              </svg>
-            </button>
-          </div>
+            </div>
+          )}
         </div>
       )}
     </div>

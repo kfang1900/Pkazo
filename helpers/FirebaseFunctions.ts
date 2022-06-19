@@ -18,9 +18,13 @@ function defaultString<T>(arg: (param: string) => string) {
 
 //Returns the Image URL as a string
 const loadStorageImage = async (url: string) => {
-  const app = getApp();
-  const storage = getStorage(app);
-  return await getDownloadURL(ref(storage, url));
+  try {
+    const app = getApp();
+    const storage = getStorage(app);
+    return await getDownloadURL(ref(storage, url));
+  } catch (e) {
+    throw e;
+  }
 };
 
 const loadStorageImages = async (photoURLs: string[]) =>
