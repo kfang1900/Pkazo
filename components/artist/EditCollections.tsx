@@ -23,7 +23,51 @@ import { getDownloadURL, getStorage, ref } from 'firebase/storage';
 import UploadWork from '../uploading/UploadWork';
 import ImageUploadButton from '../account/ImageUploadButton';
 import uploadImage from '../../utils/firebase/uploadImage';
+import PortfolioWorkUpload from '../uploading/PortfolioWorkUpload';
+import Modal from '../popups/Modal';
+async function loadPortfolios(artistId: string) {
+  const app = getApp();
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+  const portfoliosSnapshot = await getDocs(
+    collection(db, 'artists', artistId + '', 'portfolios')
+  );
+  return Promise.all(
+    portfoliosSnapshot.docs.map((portfolioSnapshot) =>
+      (async () => {
+        const data = portfolioSnapshot.data() as PortfolioData;
+        const imageURL = await getDownloadURL(ref(storage, data.picture));
+        const workData = await Promise.all(
+          data.works.map((workId) =>
+            getDoc(doc(db, 'works', workId)).then((workSnapshot) => {
+              if (!workSnapshot.data()) {
+                throw new Error('Unable to load data for work: ' + workId);
+              }
+              const workData = workSnapshot.data() as WorkData;
+              return (async () => {
+                return {
+                  ...workData,
+                  id: workSnapshot.id,
+                  imageURL:
+                    workData.images && workData.images.length > 0
+                      ? await getDownloadURL(ref(storage, workData.images[0]))
+                      : '/unable to load image url',
+                };
+              })();
+            })
+          )
+        );
 
+        return {
+          id: portfolioSnapshot.id,
+          portfolioData: data,
+          imageURL,
+          workData,
+        };
+      })()
+    )
+  );
+}
 export default function EditProfilePage() {
   const styles = {
     label: tw`text-[16px] text-[#8B8B8B] text-right mt-[10px]`,
@@ -42,51 +86,7 @@ export default function EditProfilePage() {
   useEffect(() => {
     if (!artistId) return;
     (async () => {
-      //
-      const app = getApp();
-      const db = getFirestore(app);
-      const storage = getStorage(app);
-      const portfoliosSnapshot = await getDocs(
-        collection(db, 'artists', artistId + '', 'portfolios')
-      );
-      const _portfolios = await Promise.all(
-        portfoliosSnapshot.docs.map((portfolioSnapshot) =>
-          (async () => {
-            const data = portfolioSnapshot.data() as PortfolioData;
-            const imageURL = await getDownloadURL(ref(storage, data.picture));
-            const workData = await Promise.all(
-              data.works.map((workId) =>
-                getDoc(doc(db, 'works', workId)).then((workSnapshot) => {
-                  if (!workSnapshot.data()) {
-                    throw new Error('Unable to load data for work: ' + workId);
-                  }
-                  const workData = workSnapshot.data() as WorkData;
-                  return (async () => {
-                    return {
-                      ...workData,
-                      id: workSnapshot.id,
-                      imageURL:
-                        workData.images && workData.images.length > 0
-                          ? await getDownloadURL(
-                              ref(storage, workData.images[0])
-                            )
-                          : '/unable to load image url',
-                    };
-                  })();
-                })
-              )
-            );
-
-            return {
-              id: portfolioSnapshot.id,
-              portfolioData: data,
-              imageURL,
-              workData,
-            };
-          })()
-        )
-      );
-      setPortfolios(_portfolios);
+      setPortfolios(await loadPortfolios(artistId));
     })();
   }, [artistId]);
   const activePortfolio = useMemo(
@@ -121,6 +121,18 @@ export default function EditProfilePage() {
 
   return (
     <div tw="w-full">
+      {createNewPortfolioMode && (
+        <Modal open onClose={() => setCreateNewPortfolioMode(false)}>
+          <PortfolioWorkUpload
+            artistId={artistId}
+            userId={user?.uid}
+            onClose={async (newPortfolio: { image: string; name: string }) => {
+              await loadPortfolios(artistId);
+              setCreateNewPortfolioMode(false);
+            }}
+          />
+        </Modal>
+      )}
       {showUploadEditWorkModal && (
         <UploadWork
           onClose={() => setShowUploadEditWorkModal(false)}
@@ -203,7 +215,7 @@ export default function EditProfilePage() {
         </p>
       )}
       {/* current portfolio */}
-      {(createNewPortfolioMode || activePortfolio) && (
+      {activePortfolio && (
         <div tw="w-full flex flex-col items-center mt-[52px] gap-y-10">
           {/*<div tw="relative rounded-full overflow-hidden w-[100px] h-[100px]">*/}
           {/*  <Image*/}
@@ -254,7 +266,7 @@ export default function EditProfilePage() {
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
-          {(createNewPortfolioMode || titleDescriptionHasChanges) && (
+          {titleDescriptionHasChanges && (
             <div>
               <input
                 onClick={() => {
@@ -262,59 +274,37 @@ export default function EditProfilePage() {
                     setSaving(true);
                     const db = getFirestore();
                     const storage = getStorage();
-                    if (createNewPortfolioMode) {
-                      const newPortfolioId = (
-                        await addDoc(
-                          collection(
-                            db,
-                            'artists',
-                            artistId + '',
-                            'portfolios'
-                          ),
-                          {
-                            name: name,
-                            description: description,
-                            works: [],
-                          } as Partial<PortfolioData>
-                        )
-                      ).id;
-                      // await uploadImage(
-                      //   storage,
-                      //   image.file,
-                      //   `/Artists/${newPortfolioId}/`
-                      // );
-                    } else {
-                      if (!activePortfolio) {
-                        throw new Error('active portfolio is undefined');
-                      }
-                      await updateDoc(
-                        doc(
-                          db,
-                          'artists',
-                          artistId + '',
-                          'portfolios',
-                          activePortfolio.id + ''
-                        ),
-                        {
-                          name: name,
-                          description: description,
-                        }
-                      );
-                      setPortfolios((p) =>
-                        p.map((p) =>
-                          p.id !== activePortfolioID
-                            ? p
-                            : {
-                                ...p,
-                                portfolioData: {
-                                  ...p.portfolioData,
-                                  name: name,
-                                  description: description,
-                                },
-                              }
-                        )
-                      );
+
+                    if (!activePortfolio) {
+                      throw new Error('active portfolio is undefined');
                     }
+                    await updateDoc(
+                      doc(
+                        db,
+                        'artists',
+                        artistId + '',
+                        'portfolios',
+                        activePortfolio.id + ''
+                      ),
+                      {
+                        name: name,
+                        description: description,
+                      }
+                    );
+                    setPortfolios((p) =>
+                      p.map((p) =>
+                        p.id !== activePortfolioID
+                          ? p
+                          : {
+                              ...p,
+                              portfolioData: {
+                                ...p.portfolioData,
+                                name: name,
+                                description: description,
+                              },
+                            }
+                      )
+                    );
 
                     console.log('SAVED', name, description);
                     setSaving(false);

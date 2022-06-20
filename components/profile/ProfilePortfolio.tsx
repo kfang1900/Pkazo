@@ -13,6 +13,7 @@ import exp from 'constants';
 import { useFavicon } from 'react-use';
 import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { showEdu, showExp, showExh } from './ArtistInfoHelper';
+import UploadWork from '../uploading/UploadWork';
 
 interface PortfolioObject {
   Portfolios: Record<string, any>[];
@@ -95,9 +96,15 @@ function GallerySection({
   //     ],
   //   });
   // }, []);
-
+  const [activeEditingWork, setActiveEditingWork] = useState('');
   return (
     <div>
+      {activeEditingWork && (
+        <UploadWork
+          workId={activeEditingWork}
+          onClose={() => setActiveEditingWork('')}
+        />
+      )}
       {/* Circle Images Section --Start-- */}
       <section css={[isMobile ? tw`mt-4` : tw`mt-[52px]`]}>
         <div className="container">
@@ -105,7 +112,7 @@ function GallerySection({
             <div
               css={[
                 isMobile &&
-                tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`,
+                  tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`,
               ]}
               tw="md:flex md:justify-between gap-6 md:w-full"
               style={{
@@ -177,17 +184,28 @@ function GallerySection({
             {
               //.Images.slice(0, seeNum)
               curGallery.Images?.slice(0, seeNum).map((gallery: string, i) => (
-                <Link
-                  key={i}
-                  passHref
-                  href={'/work/' + curGallery.Data[i].__id}
-                >
-                  <img
-                    src={gallery}
-                    tw="cursor-pointer w-full h-auto my-[5px] md:my-9"
-                    alt=""
-                  />
-                </Link>
+                <div tw={'relative'}>
+                  <button
+                    tw={'absolute right-2 top-4 underline'}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveEditingWork(curGallery.Data[i].__id)
+                    }}
+                  >
+                    edit
+                  </button>
+                  <Link
+                    key={i}
+                    passHref
+                    href={'/work/' + curGallery.Data[i].__id}
+                  >
+                    <img
+                      src={gallery}
+                      tw="cursor-pointer w-full h-auto my-[5px] md:my-9"
+                      alt=""
+                    />
+                  </Link>
+                </div>
               ))
             }
           </Masonry>
@@ -214,7 +232,7 @@ function GallerySection({
               css={[
                 tw`m-auto scale-50 md:scale-100`,
                 seeNum >= curGallery.Images.length &&
-                tw`scale-y-[-0.5] md:scale-y-[-1]`,
+                  tw`scale-y-[-0.5] md:scale-y-[-1]`,
               ]}
             />
           </button>
@@ -227,10 +245,14 @@ function GallerySection({
       {artistData && (
         <div
           tw="w-full mb-4 md:mb-[30px]"
-          css={[isMobile ? tw`flex flex-col mt-7 gap-6 px-4` : tw`grid grid-cols-3 gap-16 mt-7`]}
+          css={[
+            isMobile
+              ? tw`flex flex-col mt-7 gap-6 px-4`
+              : tw`grid grid-cols-3 gap-16 mt-7`,
+          ]}
         >
-          <div tw='flex gap-x-3'>
-            {!isMobile && <div tw='w-1 h-11 rounded-[8px] bg-[#CBCBCB]' />}
+          <div tw="flex gap-x-3">
+            {!isMobile && <div tw="w-1 h-11 rounded-[8px] bg-[#CBCBCB]" />}
             <div>
               <div tw="text-black text-[18px] md:text-[20px] md:mb-5 font-semibold">
                 Education
@@ -251,8 +273,8 @@ function GallerySection({
                 ))}
             </div>
           </div>
-          <div tw='flex gap-x-3'>
-            {!isMobile && <div tw='w-1 h-11 rounded-[8px] bg-[#CBCBCB]' />}
+          <div tw="flex gap-x-3">
+            {!isMobile && <div tw="w-1 h-11 rounded-[8px] bg-[#CBCBCB]" />}
             <div>
               <div tw="text-black text-[18px] md:text-[20px] md:mb-5 font-semibold">
                 Experience
@@ -273,8 +295,8 @@ function GallerySection({
                 ))}
             </div>
           </div>
-          <div tw='flex gap-x-3'>
-            {!isMobile && <div tw='w-1 h-11 rounded-[8px] bg-[#CBCBCB]' />}
+          <div tw="flex gap-x-3">
+            {!isMobile && <div tw="w-1 h-11 rounded-[8px] bg-[#CBCBCB]" />}
             <div>
               <div tw="text-black text-[18px] md:text-[20px] md:mb-5 font-semibold">
                 Exhibitions
