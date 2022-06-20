@@ -2,13 +2,12 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import algoliasearch from 'algoliasearch';
 import admin from 'firebase-admin';
-import { WorkData, WorkRecord } from '../../../types/dbTypes';
+import { ArtistRecord, WorkData, WorkRecord } from '../../../types/dbTypes';
 
 const client = algoliasearch(
   'C7MS0BD8WG',
   process.env.ALGOLIA_INDEXONLY_KEY + ''
 );
-const index = client.initIndex('pkazo-works');
 
 if (admin.apps.length === 0) {
   const parsedKey = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY || '');
@@ -25,31 +24,41 @@ export default async function handler(
   res: NextApiResponse
 ) {
   console.log(req.body);
+  if (!req.body.index || ['artists', 'works'].indexOf(req.body.index) === -1) {
+    res.status(400).json({
+      success: false,
+      code: 'INVALID_INDEX',
+      message:
+        'The provided index to update was invalid. It must be one of: artists, works.',
+    });
+  }
+
+  const index = client.initIndex(`pkazo-${req.body.index}`);
+
   if (
-    !req.body.workIds ||
-    !Array.isArray(req.body.workIds) ||
-    req.body.workIds.length === 0
+    !req.body.ids ||
+    !Array.isArray(req.body.ids) ||
+    req.body.ids.length === 0
   ) {
     res.status(400).json({
       success: false,
       code: 'INVALID_IDS',
-      message: 'An array of one or more workIds must be provided.',
+      message: 'An array of one or more ids must be provided.',
     });
   }
-  const workIds: string[] = req.body.workIds;
-  const workData = (
+  const ids: string[] = req.body.ids;
+  const data = (
     await Promise.all(
-      workIds.map((id) =>
+      ids.map((id) =>
         admin
           .firestore()
-          .collection('works')
+          .collection(req.body.index)
           .doc(id)
           .get()
           .then((snapshot) => {
             if (!snapshot.exists || !snapshot.data()) {
               return null;
             }
-            const data = snapshot.data() as WorkData;
             return {
               ...snapshot.data(),
               id: snapshot.id,
@@ -58,8 +67,8 @@ export default async function handler(
           })
       )
     )
-  ).filter((w) => w !== null) as WorkRecord[];
-  await index.saveObjects(workData);
+  ).filter((w) => w !== null) as (WorkRecord | ArtistRecord)[];
+  await index.saveObjects(data);
   res.status(200).json({
     success: true,
   });

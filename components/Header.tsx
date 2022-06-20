@@ -25,6 +25,7 @@ import UploadWork from './uploading/UploadWork';
 import { useMediaQuery } from 'react-responsive';
 import SearchBar from './SearchBar';
 import SearchHeader from './search/SearchHeader';
+import SearchBox from './search/SearchBox';
 
 /* Copied from image.tsx source */
 interface StaticRequire {

@@ -6,7 +6,7 @@ type ArtistType =
   | 'hobbyist'
   | 'hobbyist-desiring-professional'
   | 'professional';
-export interface ArtistData {
+export type ArtistData = {
   name: string;
   artistName: string;
   artistType: ArtistType;
@@ -50,7 +50,7 @@ export interface ArtistData {
   }[];
 
   username: string;
-}
+};
 
 export interface UserData {
   dob: Timestamp;
@@ -68,6 +68,7 @@ export interface PortfolioData {
 type DimensionUnits = 'in' | 'cm' | 'ft';
 export type WorkData = {
   timestamp: Timestamp;
+  editTimestamps?: Timestamp[];
   artist: string;
 
   title: string;
@@ -120,14 +121,18 @@ export type WorkData = {
         forPrint: false;
       }
     | {
-        price: number;
-        height: number;
-        width: number;
-        units: DimensionUnits;
-        printSurface: string;
-        printFraming: boolean;
+        forPrint: true;
+        print: {
+          price: number;
+          height: number;
+          width: number;
+          units: DimensionUnits;
+          surface: string;
+          framing: boolean;
+        };
       }
   );
 
 export type WorkRecord = WorkData & { id: string; objectID: string };
+export type ArtistRecord = ArtistData & { id: string; objectID: string };
 export type ForSaleWorkRecord = WorkRecord & { forSale: true };
