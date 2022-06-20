@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import tw from 'twin.macro';
+import tw, { css } from 'twin.macro';
 
 import Image from 'next/image';
 import { FileUploader } from 'react-drag-drop-files';
@@ -21,6 +21,8 @@ import {
 } from 'firebase/storage';
 import { loadStorageImage } from '../../helpers/FirebaseFunctions';
 import { PortfolioData, WorkData } from '../../types/dbTypes';
+import { FiChevronLeft } from 'react-icons/all';
+import { FiX } from 'react-icons/fi';
 function uploadFile(pathPrefix: string, file: File): Promise<StorageReference> {
   return new Promise((res, rej) => {
     const storage = getStorage();
@@ -49,7 +51,7 @@ export default function PortfolioWorkUpload({
 }: {
   artistId: string;
   userId?: string;
-  onClose: (portfolio: { name: string; image: string }) => void;
+  onClose: (portfolio: PortfolioData) => void;
 }) {
   const [uploadedImages, setUploadedImages] = useState<
     { file: File; url: string }[]
@@ -286,6 +288,8 @@ export default function PortfolioWorkUpload({
               onClose({
                 name: title,
                 image: loadedPortfolioImage,
+                works: uploadedWorkIds,
+                picture: portfolioImageRef.toString(),
               });
             }}
             css={[

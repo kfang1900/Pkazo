@@ -8,7 +8,7 @@ import {
 } from '../../../types/dbTypes';
 import { loadStorageImage } from '../../../helpers/FirebaseFunctions';
 import { useMediaQuery } from 'react-responsive';
-
+import UploadWork from '../../uploading/UploadWork';
 
 export default function Hit({
   hit: work,
@@ -18,39 +18,55 @@ export default function Hit({
   imageURL: string;
 }) {
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
+  const [editing, setEditing] = useState(false);
   return (
-    <Link href={'/work/' + work.id} passHref>
-      <div tw='cursor-pointer my-4 md:my-10'>
-        {imageURL && <img src={imageURL} alt="Image Alt" tw='w-full' />}
-        {isMobile ?
-          <div tw='mt-2 flex justify-between'>
-            <div>
-              <div tw='text-[#65676B] text-[12px] leading-[1em] font-semibold'>
-                {work.title}
+    <>
+      {editing && (
+        <UploadWork onClose={() => setEditing(false)} workId={work.id} />
+      )}
+      <Link href={'/work/' + work.id} passHref>
+        <div tw="cursor-pointer my-4 md:my-10">
+          {imageURL && <img src={imageURL} alt="Image Alt" tw="w-full" />}
+          {isMobile ? (
+            <div tw="mt-2 flex justify-between">
+              <div>
+                <div tw="text-[#65676B] text-[12px] leading-[1em] font-semibold">
+                  {work.title}
+                </div>
+                <div tw="text-[#838383] text-[9px] leading-[1em] italic mt-[6px]">
+                  {work.medium}
+                </div>
               </div>
-              <div tw="text-[#838383] text-[9px] leading-[1em] italic mt-[6px]">
-                {work.medium}
-              </div>
-            </div>
-            <div tw='text-black text-[14px] leading-[1em] font-bold'>
-              ${work.sale ? work.sale.price : 'NFS!!'}
-            </div>
-          </div> :
-          <div tw='mt-4'>
-            <div tw='text-[#3C3C3C] text-[20px] leading-[1em] font-semibold'>
-              {work.title}
-            </div>
-            <div tw="flex justify-between mt-2">
-              <div tw="text-[#838383] text-[18px] leading-[1em] italic">
-                {work.medium}
-              </div>
-              <div tw='text-black text-[24px] leading-[1em] font-bold'>
+              <div tw="text-black text-[14px] leading-[1em] font-bold">
                 ${work.sale ? work.sale.price : 'NFS!!'}
               </div>
             </div>
-          </div>
-        }
-      </div>
-    </Link>
+          ) : (
+            <div tw="mt-4">
+              <div tw="text-[#3C3C3C] text-[20px] leading-[1em] font-semibold">
+                {work.title}{' '}
+                <button
+                  tw={'underline italic ml-8'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setEditing(true);
+                  }}
+                >
+                  Edit
+                </button>
+              </div>
+              <div tw="flex justify-between mt-2">
+                <div tw="text-[#838383] text-[18px] leading-[1em] italic">
+                  {work.medium}
+                </div>
+                <div tw="text-black text-[24px] leading-[1em] font-bold">
+                  ${work.sale ? work.sale.price : 'NFS!!'}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </Link>
+    </>
   );
 }
