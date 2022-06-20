@@ -124,10 +124,10 @@ export default function EditProfilePage() {
       {createNewPortfolioMode && (
         <Modal open onClose={() => setCreateNewPortfolioMode(false)}>
           <PortfolioWorkUpload
-            artistId={artistId}
+            artistId={artistId + ''}
             userId={user?.uid}
             onClose={async (newPortfolio: { image: string; name: string }) => {
-              await loadPortfolios(artistId);
+              await loadPortfolios(artistId + '');
               setCreateNewPortfolioMode(false);
             }}
           />

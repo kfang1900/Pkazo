@@ -51,7 +51,12 @@ export default function PortfolioWorkUpload({
 }: {
   artistId: string;
   userId?: string;
-  onClose: (portfolio: PortfolioData) => void;
+  onClose: (portfolio: {
+    name: string;
+    image: string;
+    works: string[];
+    picture: string;
+  }) => void;
 }) {
   const [uploadedImages, setUploadedImages] = useState<
     { file: File; url: string }[]
