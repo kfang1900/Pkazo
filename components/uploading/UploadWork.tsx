@@ -38,6 +38,7 @@ import { WorkData } from '../../types/dbTypes';
 import axios from 'axios';
 import { loadStorageImage } from '../../helpers/FirebaseFunctions';
 import { updateWorksIndex } from '../../utils/indexes/updateIndexes';
+import uploadImage from '../../utils/firebase/uploadImage';
 
 export interface UploadWorkProps {
   onClose: () => void;
@@ -114,33 +115,6 @@ const saleColorStrings = [
   'white',
 ];
 
-/**
- * Uploads an image to firebase.
- * @param storage - FirebaseStorage object, from getFirebase(app)
- * @param file - The `File` to upload.
- * @param pathPrefix - The location to upload the file in. Include a trailing slash. The file will be uploaded to `${pathPrefix}${file.name}`
- * @returns fileRef - A string representing the firebase storage reference to the file (gs://...)
- */
-async function uploadImage(
-  storage: FirebaseStorage,
-  file: File,
-  pathPrefix: string
-): Promise<string> {
-  try {
-    const uploadRef = await uploadBytesResumable(
-      ref(
-        storage,
-        // prefix the file name with the current time (precise to the seconds), to avoid duplicates
-        pathPrefix + Math.floor(new Date().getTime() * 1000) + file.name
-      ),
-      file
-    );
-    return uploadRef.ref.toString();
-  } catch (error) {
-    alert('An error occurred: ' + (error as StorageError).message);
-    throw new Error();
-  }
-}
 function DropdownButton() {
   return (
     <button tw="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 transform">

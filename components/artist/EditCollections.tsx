@@ -6,6 +6,7 @@ import { getApp } from 'firebase/app';
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   DocumentData,
   DocumentSnapshot,
@@ -21,6 +22,7 @@ import { loadStorageImage } from '../../helpers/FirebaseFunctions';
 import { getDownloadURL, getStorage, ref } from 'firebase/storage';
 import UploadWork from '../uploading/UploadWork';
 import ImageUploadButton from '../account/ImageUploadButton';
+import uploadImage from '../../utils/firebase/uploadImage';
 
 export default function EditProfilePage() {
   const styles = {
@@ -109,9 +111,14 @@ export default function EditProfilePage() {
     [name, description, activePortfolio, portfolios]
   );
   const [showUploadEditWorkModal, setShowUploadEditWorkModal] = useState(false);
+  const [newPortfolioImageFile, setNewPortfolioImageFile] =
+    useState<File | null>(null);
+
   const [createNewPortfolioMode, setCreateNewPortfolioMode] = useState(false);
+  const [newPortfolioLoading, setNewPortfolioLoading] = useState(false);
   // if empty, then the modal will be on create mode
   const [currentlyEditingWork, setCurrentlyEditingWork] = useState('');
+
   return (
     <div tw="w-full">
       {showUploadEditWorkModal && (
@@ -225,27 +232,9 @@ export default function EditProfilePage() {
             </div>
             <ImageUploadButton
               offset={0}
-              uploadLocation={'Artists/VWOgAFjhL0BlFlbDTJZF/Profile_Photo'}
-              onError={(error) => {
-                console.log(error);
-              }}
-              onUploadComplete={async (uploadRef) => {
-                const app = getApp();
-                const db = getFirestore(app);
-                const gsURL = uploadRef.toString();
-
-                await updateDoc(doc(db, 'artists', artistId + ''), {
-                  profilePicture: gsURL,
-                } as Partial<ArtistData>);
-
-                const pfpURL = await loadStorageImage(gsURL);
-
-                // setData((oldData) => {
-                //   return Object.assign({}, oldData, {
-                //     profilePictureURL: pfpURL,
-                //   });
-                // });
-              }}
+              localOnly
+              onChange={(f) => setNewPortfolioImageFile(f)}
+              loading={newPortfolioLoading}
             />
           </div>
           <div tw="flex items-center gap-x-7">
@@ -272,16 +261,28 @@ export default function EditProfilePage() {
                   (async () => {
                     setSaving(true);
                     const db = getFirestore();
+                    const storage = getStorage();
                     if (createNewPortfolioMode) {
-                      await addDoc(
-                        collection(db, 'artists', artistId + '', 'portfolios'),
-                        {
-                          name: name,
-                          description: description,
-                          works: [],
-                          picture: '',
-                        } as PortfolioData
-                      );
+                      const newPortfolioId = (
+                        await addDoc(
+                          collection(
+                            db,
+                            'artists',
+                            artistId + '',
+                            'portfolios'
+                          ),
+                          {
+                            name: name,
+                            description: description,
+                            works: [],
+                          } as Partial<PortfolioData>
+                        )
+                      ).id;
+                      // await uploadImage(
+                      //   storage,
+                      //   image.file,
+                      //   `/Artists/${newPortfolioId}/`
+                      // );
                     } else {
                       if (!activePortfolio) {
                         throw new Error('active portfolio is undefined');
