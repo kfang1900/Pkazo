@@ -184,12 +184,12 @@ function GallerySection({
             {
               //.Images.slice(0, seeNum)
               curGallery.Images?.slice(0, seeNum).map((gallery: string, i) => (
-                <div tw={'relative'}>
+                <div tw={'relative'} key={i}>
                   <button
                     tw={'absolute right-2 top-4 underline'}
                     onClick={(e) => {
                       e.preventDefault();
-                      setActiveEditingWork(curGallery.Data[i].__id)
+                      setActiveEditingWork(curGallery.Data[i].__id);
                     }}
                   >
                     edit
