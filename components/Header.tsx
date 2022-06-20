@@ -52,7 +52,13 @@ const Header = (props: {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showChooseWorkDropdown, setShowChooseWorkDropdown] = useState(false);
   const [showUploadWorkPopup, setShowUploadWorkPopup] = useState(false);
+
+  // search states
   const [showSearch, setShowSearch] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const updateSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => { setSearchValue(event.target.value) }
+
+
   const router = useRouter();
   const { artistData } = useAuth();
   const username = artistData?.username;
@@ -110,7 +116,13 @@ const Header = (props: {
       {!isMobile && showLoginModal && (
         <LoginForm onClose={() => setShowLoginModal(false)} />
       )}
-      {isMobile && onSearch && <SearchHeader onClose={() => setOnSearch(false)} />}
+      {isMobile && onSearch &&
+        <SearchHeader
+          onClose={() => setOnSearch(false)}
+          searchValue={searchValue}
+          updateSearchValue={updateSearchValue}
+        />
+      }
 
       <>
         {showUploadWorkPopup && (
@@ -130,6 +142,7 @@ const Header = (props: {
                 <input
                   onFocus={() => setOnSearch(true)}
                   onBlur={() => setOnSearch(false)}
+                  onChange={updateSearchValue}
                   type="text"
                   placeholder="Search for anything"
                   tw="w-full bg-transparent outline-none text-[16px]"
@@ -137,11 +150,11 @@ const Header = (props: {
                 <img src="/assets/svgs/search.svg" tw="ml-3 w-[18px] h-[18px]" />
               </div>
               {onSearch &&
-                <SearchHeader />
+                <SearchHeader searchValue={searchValue} updateSearchValue={updateSearchValue} />
               }
             </div>
           )}
-          <div tw="ml-10 flex items-center gap-x-4 md:gap-x-8">
+          <div tw="md:ml-10 flex items-center gap-x-4 md:gap-x-8">
             {isMobile &&
               <button
                 onClick={() => setOnSearch(true)}

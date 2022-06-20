@@ -6,7 +6,11 @@ const LineBreak = styled.div`
   ${tw`h-[0.5px] bg-[#E3E3E3]`}
 `;
 
-const SearchHeader = (props: { onClose?: () => void }) => {
+const SearchHeader = (props: {
+    onClose?: () => void,
+    searchValue: string,
+    updateSearchValue?: (e: React.ChangeEvent<HTMLInputElement>) => void
+}) => {
 
     if (props.onClose) {
         return <div tw='absolute z-50 left-0 top-0 w-full h-[100vh] bg-white'>
@@ -16,6 +20,7 @@ const SearchHeader = (props: { onClose?: () => void }) => {
                         type="text"
                         placeholder="Search for anything"
                         tw="w-full bg-transparent outline-none text-[14px]"
+                        onChange={props.updateSearchValue}
                     />
                     <img src="/assets/svgs/mobile/search.svg" tw="ml-2 w-4 h-4" />
                 </div>
@@ -25,98 +30,104 @@ const SearchHeader = (props: { onClose?: () => void }) => {
                     </svg>
                 </button>
             </div>
-            <div tw='w-full mt-4'>
-                <button tw='px-4 w-full flex items-center justify-between'>
-                    <div tw='font-semibold text-[14px] text-[#363636]'>Browse by discipline</div>
-                    <svg width="6" height="11" viewBox="0 0 6 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5.74891 4.63747L1.33435 0.23071C1.26184 0.157606 1.17557 0.0995817 1.08053 0.0599843C0.985484 0.0203869 0.883539 0 0.780576 0C0.677612 0 0.575667 0.0203869 0.480622 0.0599843C0.385577 0.0995817 0.299313 0.157606 0.226806 0.23071C0.081538 0.376845 0 0.574527 0 0.78058C0 0.986634 0.081538 1.18432 0.226806 1.33045L4.0876 5.23024L0.226806 9.09103C0.081538 9.23716 0 9.43485 0 9.6409C0 9.84695 0.081538 10.0446 0.226806 10.1908C0.299041 10.2645 0.385184 10.3231 0.480241 10.3633C0.575299 10.4034 0.677382 10.4243 0.780576 10.4248C0.88377 10.4243 0.985853 10.4034 1.08091 10.3633C1.17597 10.3231 1.26211 10.2645 1.33435 10.1908L5.74891 5.78401C5.82808 5.71097 5.89126 5.62233 5.93447 5.52366C5.97769 5.425 6 5.31845 6 5.21074C6 5.10303 5.97769 4.99648 5.93447 4.89782C5.89126 4.79915 5.82808 4.71051 5.74891 4.63747V4.63747Z" fill="#363636" />
-                    </svg>
-                </button>
-                <LineBreak tw='px-3 mt-3' />
-                <div tw='px-4 mt-3 mb-2 text-[14px] text-[#363636] font-semibold'>Recent</div>
-                {
-                    ['cat collar', 'cat painting', 'cat bowl'].map((result, i) => (
-                        <div
-                            key={i}
-                            tw='px-4 py-2 text-[14px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer'
-                        >
-                            {result}
-                        </div>
-                    ))
-                }
-                <LineBreak tw='px-3 mt-2' />
-                <div tw='px-4 mt-3 mb-2 text-[14px] text-[#363636] font-semibold'>Trending Searches</div>
-                {
-                    ['cat collar', 'cat painting', 'cat bowl'].map((result, i) => (
-                        <div
-                            key={i}
-                            tw='px-4 py-2 text-[14px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer'
-                        >
-                            {result}
-                        </div>
-                    ))
-                }
-                <LineBreak tw='px-3 mt-2' />
-                <div tw='px-4 mt-3 mb-2 text-[14px] text-[#363636] font-semibold'>Featured Artists</div>
-                <div tw='px-4 mt-4 grid grid-rows-1 grid-flow-col gap-x-6 overflow-auto'>
-                    {[...Array(10)].map((v, i) => (
-                        <div
-                            key={i}
-                        >
-                            <div tw='w-[64px] h-[64px] rounded-full overflow-hidden relative'>
-                                <Image src='/assets/images/kevin.png' layout='fill' objectFit='cover' />
+            {!props.searchValue &&
+                <div tw='w-full mt-4'>
+                    <button tw='px-4 w-full flex items-center justify-between'>
+                        <div tw='font-semibold text-[14px] text-[#363636]'>Browse by discipline</div>
+                        <svg width="6" height="11" viewBox="0 0 6 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5.74891 4.63747L1.33435 0.23071C1.26184 0.157606 1.17557 0.0995817 1.08053 0.0599843C0.985484 0.0203869 0.883539 0 0.780576 0C0.677612 0 0.575667 0.0203869 0.480622 0.0599843C0.385577 0.0995817 0.299313 0.157606 0.226806 0.23071C0.081538 0.376845 0 0.574527 0 0.78058C0 0.986634 0.081538 1.18432 0.226806 1.33045L4.0876 5.23024L0.226806 9.09103C0.081538 9.23716 0 9.43485 0 9.6409C0 9.84695 0.081538 10.0446 0.226806 10.1908C0.299041 10.2645 0.385184 10.3231 0.480241 10.3633C0.575299 10.4034 0.677382 10.4243 0.780576 10.4248C0.88377 10.4243 0.985853 10.4034 1.08091 10.3633C1.17597 10.3231 1.26211 10.2645 1.33435 10.1908L5.74891 5.78401C5.82808 5.71097 5.89126 5.62233 5.93447 5.52366C5.97769 5.425 6 5.31845 6 5.21074C6 5.10303 5.97769 4.99648 5.93447 4.89782C5.89126 4.79915 5.82808 4.71051 5.74891 4.63747V4.63747Z" fill="#363636" />
+                        </svg>
+                    </button>
+                    <LineBreak tw='px-3 mt-3' />
+                    <div tw='px-4 mt-3 mb-2 text-[14px] text-[#363636] font-semibold'>Recent</div>
+                    {
+                        ['cat collar', 'cat painting', 'cat bowl'].map((result, i) => (
+                            <div
+                                key={i}
+                                tw='px-4 py-2 text-[14px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer'
+                            >
+                                {result}
                             </div>
-                            <div tw='mt-2 text-[12px] text-black'>Kevin Fang</div>
-                        </div>
-                    ))}
+                        ))
+                    }
+                    <LineBreak tw='px-3 mt-2' />
+                    <div tw='px-4 mt-3 mb-2 text-[14px] text-[#363636] font-semibold'>Trending Searches</div>
+                    {
+                        ['cat collar', 'cat painting', 'cat bowl'].map((result, i) => (
+                            <div
+                                key={i}
+                                tw='px-4 py-2 text-[14px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer'
+                            >
+                                {result}
+                            </div>
+                        ))
+                    }
+                    <LineBreak tw='px-3 mt-2' />
+                    <div tw='px-4 mt-3 mb-2 text-[14px] text-[#363636] font-semibold'>Featured Artists</div>
+                    <div tw='px-4 mt-4 grid grid-rows-1 grid-flow-col gap-x-6 overflow-auto'>
+                        {[...Array(10)].map((v, i) => (
+                            <div
+                                key={i}
+                            >
+                                <div tw='w-[64px] h-[64px] rounded-full overflow-hidden relative'>
+                                    <Image src='/assets/images/kevin.png' layout='fill' objectFit='cover' />
+                                </div>
+                                <div tw='mt-2 text-[12px] text-black'>Kevin Fang</div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     }
 
     return <div tw='absolute w-full bg-white rounded-[8px] pt-6 pb-4 shadow-md'>
-        <div tw='font-semibold text-[16px] text-[#363636] px-6 mb-2'>Recent</div>
-        {
-            ['cat collar', 'cat painting', 'cat bowl'].map((result, i) => (
-                <div
-                    key={i}
-                    tw='px-6 py-2 text-[16px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer'
-                >
-                    {result}
-                </div>
-            ))
-        }
-        <div tw='font-semibold text-[16px] text-[#363636] px-6 mt-4 mb-2'>Trending Searches</div>
-        {
-            ['cat collar', 'cat painting', 'cat bowl'].map((result, i) => (
-                <div
-                    key={i}
-                    tw='px-6 py-2 text-[16px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer'
-                >
-                    {result}
-                </div>
-            ))
-        }
-        <div tw='font-semibold text-[16px] text-[#363636] px-6 mt-4 mb-2'>Artists</div>
-        {
-            [...Array(2)].map((v, i) => (
-                <div
-                    key={i}
-                    tw='flex items-center gap-x-3 px-6 py-2 bg-white hover:bg-[#F5F5F5] cursor-pointer'
-                >
-                    <div tw='w-10 h-10 relative overflow-hidden'>
-                        <Image
-                            src='/assets/images/kevin.png'
-                            layout='fill'
-                            objectFit='cover'
-                        />
-                    </div>
-                    <div>
-                        <div tw='text-[16px] leading-[19px] text-black'>Kevin Fang</div>
-                        <div tw='mt-[2px] text-[14px] leading-[17px] text-[#727373]'>Los Angeles, CA</div>
-                    </div>
-                </div>
-            ))
+        {!props.searchValue &&
+            <>
+                <div tw='font-semibold text-[16px] text-[#363636] px-6 mb-2'>Recent</div>
+                {
+                    ['cat collar', 'cat painting', 'cat bowl'].map((result, i) => (
+                        <div
+                            key={i}
+                            tw='px-6 py-2 text-[16px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer'
+                        >
+                            {result}
+                        </div>
+                    ))
+                }
+                <div tw='font-semibold text-[16px] text-[#363636] px-6 mt-4 mb-2'>Trending Searches</div>
+                {
+                    ['cat collar', 'cat painting', 'cat bowl'].map((result, i) => (
+                        <div
+                            key={i}
+                            tw='px-6 py-2 text-[16px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer'
+                        >
+                            {result}
+                        </div>
+                    ))
+                }
+                <div tw='font-semibold text-[16px] text-[#363636] px-6 mt-4 mb-2'>Featured Artists</div>
+                {
+                    [...Array(2)].map((v, i) => (
+                        <div
+                            key={i}
+                            tw='flex items-center gap-x-3 px-6 py-2 bg-white hover:bg-[#F5F5F5] cursor-pointer'
+                        >
+                            <div tw='w-10 h-10 relative overflow-hidden'>
+                                <Image
+                                    src='/assets/images/kevin.png'
+                                    layout='fill'
+                                    objectFit='cover'
+                                />
+                            </div>
+                            <div>
+                                <div tw='text-[16px] leading-[19px] text-black'>Kevin Fang</div>
+                                <div tw='mt-[2px] text-[14px] leading-[17px] text-[#727373]'>Los Angeles, CA</div>
+                            </div>
+                        </div>
+                    ))
+                }
+            </>
         }
     </div>
 }
