@@ -25,6 +25,7 @@ import {
 } from 'firebase/firestore';
 import ProfileDetailsSection from '../components/onboarding/ProfileDetailsSection';
 import CreatePortfoliosSection from '../components/onboarding/CreatePortfoliosSection';
+import PortfolioSection from '../components/onboarding/PortfolioSection';
 import SocialPostUploadForm from '../components/uploading/SocialPostUploadForm';
 import Modal from '../components/popups/Modal';
 import { Router, useRouter } from 'next/router';
@@ -40,6 +41,13 @@ export interface OnboardingFormValues {
   acceptCommissions: 'yes' | 'no' | null;
   onlySale: 'yes' | 'no' | null;
   uniqueCollections: 'yes' | 'no' | null;
+  portfolios: PortfolioValues[];
+}
+export interface PortfolioValues {
+  img: string;
+  title: string;
+  desc?: string;
+  works: string[];
 }
 
 function Onboarding() {
@@ -145,7 +153,8 @@ function Onboarding() {
             city: '',
             acceptCommissions: null,
             onlySale: null,
-            uniqueCollections: null
+            uniqueCollections: null,
+            portfolios: []
           }}
           validateOnChange={false}
           validate={(values) => {
@@ -164,7 +173,7 @@ function Onboarding() {
           }}
           onSubmit={() => { 0 }}
         >
-          {({ values }) =>
+          {({ values, setFieldValue }) =>
             <>
               <div tw='pt-5 md:pt-12 px-6'>
                 {stage === 0 && (
@@ -173,10 +182,13 @@ function Onboarding() {
                     values={values}
                   />
                 )}
+                {stage === 1 && (
+                  <PortfolioSection values={values} />
+                )}
               </div>
 
               <div
-                tw='mt-6 md:w-[700px] md:mx-auto md:pb-[30px]'
+                tw='mt-10 md:mt-[60px] md:w-[700px] md:mx-auto md:pb-[30px]'
                 css={[isMobile && tw`sticky bottom-0 bg-white pb-4`]}
               >
                 {isMobile && <div tw='h-[0.5px] bg-[#E3E3E3]' />}

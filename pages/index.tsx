@@ -11,7 +11,7 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Header />
+      <Header isHome />
       <div className={styles.container}>
         <Head>
           <title>Pkazo</title>

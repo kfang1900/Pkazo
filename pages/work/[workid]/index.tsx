@@ -73,6 +73,7 @@ const comments = [
 
 const IndividualWork: NextPage = () => {
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
+  const [isOriginal, setIsOriginal] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
   const [workData, setWorkData] = useState<WorkData | null>(null);
   const [artistData, setArtistData] = useState<Record<string, any>>();
@@ -107,8 +108,7 @@ const IndividualWork: NextPage = () => {
       }
       axios
         .get(
-          `/api/shipping/estimated-rates?workId=${workId}${
-            zip ? '&zip=' + zip : ''
+          `/api/shipping/estimated-rates?workId=${workId}${zip ? '&zip=' + zip : ''
           }`
         )
 
@@ -243,23 +243,25 @@ const IndividualWork: NextPage = () => {
             <div tw="w-full text-center m-auto py-5">Unable to load image</div>
           )}
           <div tw="mx-4 mt-4 mb-4">
-            <div tw="grid grid-rows-1 grid-flow-col gap-x-3 w-full overflow-auto">
-              {workImages.map((work, i) => (
-                <button
-                  tw="w-[60px] h-[60px] rounded-[4px] overflow-hidden flex items-center"
-                  css={[selectedImage !== i && tw`opacity-70`]}
-                  key={i}
-                  onClick={() => setSelectedImage(i)}
-                >
-                  <Image
-                    src={work}
-                    width="60px"
-                    height="60px"
-                    objectFit="cover"
-                  />
-                </button>
-              ))}
-            </div>
+            {workImages.length >= 2 &&
+              <div tw="grid grid-rows-1 grid-flow-col gap-x-3 w-full overflow-auto">
+                {workImages.map((work, i) => (
+                  <button
+                    tw="w-[60px] h-[60px] rounded-[4px] overflow-hidden flex items-center"
+                    css={[selectedImage !== i && tw`opacity-70`]}
+                    key={i}
+                    onClick={() => setSelectedImage(i)}
+                  >
+                    <Image
+                      src={work}
+                      width="60px"
+                      height="60px"
+                      objectFit="cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            }
             <div tw="flex items-center mt-4">
               <div tw="w-[55px] h-[55px] overflow-hidden rounded-full flex items-center">
                 <Image
@@ -279,8 +281,18 @@ const IndividualWork: NextPage = () => {
                 </div>
               </div>
             </div>
-            <div tw="mt-4 flex items-center justify-center w-full">
-              Original,Print
+            <div tw="mt-4 grid grid-cols-[68px 68px] justify-center w-full gap-x-[24px] text-[16px] font-semibold">
+              {['Original', 'Print'].map((type, i) => (
+                <div key={i} onClick={() => setIsOriginal(i)}>
+                  <div
+                    css={[isOriginal === i ? tw`text-[#3C3C3C]` : tw`text-[#838383]`]}
+                    tw='cursor-pointer w-full text-center'
+                  >
+                    {type}
+                  </div>
+                  {isOriginal === i && <div tw='h-[2px] bg-[#E44C4D] rounded-full' />}
+                </div>
+              ))}
             </div>
             <div tw="mt-5 flex items-center justify-between">
               <div tw="font-medium italic text-[24px] leading-[1em] text-[#5F5F5F]">
@@ -471,7 +483,7 @@ const IndividualWork: NextPage = () => {
                     onClick={() =>
                       setSelectedImage(
                         (selectedImage - 1 + workImages.length) %
-                          workImages.length
+                        workImages.length
                       )
                     }
                   >
@@ -579,8 +591,18 @@ const IndividualWork: NextPage = () => {
                 </div>
               </div>
             </div>
-            <div tw="mt-3 flex items-center justify-center w-full">
-              Original,Print
+            <div tw="mt-3 grid grid-cols-[94px 94px] justify-center w-full gap-x-10 text-[22px] font-semibold">
+              {['Original', 'Print'].map((type, i) => (
+                <div key={i} onClick={() => setIsOriginal(i)}>
+                  <div
+                    css={[isOriginal === i ? tw`text-[#3C3C3C]` : tw`text-[#838383]`]}
+                    tw='cursor-pointer w-full text-center'
+                  >
+                    {type}
+                  </div>
+                  {isOriginal === i && <div tw='h-[3px] bg-[#E44C4D] rounded-full' />}
+                </div>
+              ))}
             </div>
             <div tw="mt-5 flex items-center justify-between">
               <div tw="italic text-[36px] leading-[1em] text-[#3C3C3C]">
@@ -735,7 +757,7 @@ const IndividualWork: NextPage = () => {
                   ]) as { question: string; answer: string }[]
                 ).map(({ question, answer }, i) => (
                   <button
-                    tw="px-6 py-[14px] border-[1.5px] border-[#8B8B8B] rounded-[30px]"
+                    tw="px-6 py-[14px] border-[1.5px] border-[#8B8B8B] rounded-[16px]"
                     key={i}
                     onClick={() =>
                       setExpandedFAQ((current) => (current === i ? -1 : i))
@@ -745,12 +767,12 @@ const IndividualWork: NextPage = () => {
                       <div>{question}</div>
                       <img
                         src="/assets/svgs/arrow_down.svg"
-                        tw="w-5"
+                        tw="w-4"
                         css={[expandedFAQ === i && tw`scale-y-[-1]`]}
                       />
                     </div>
                     {expandedFAQ === i && (
-                      <div tw="text-left mt-1 text-[14px] text-[#8B8B8B] w-full">
+                      <div tw="text-left mt-1 text-[14px] text-[#8B8B8B] w-full pr-5">
                         {answer}
                       </div>
                     )}

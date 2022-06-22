@@ -36,6 +36,7 @@ type StaticImport = StaticRequire | StaticImageData;
 const Header = (props: {
   isBuyer?: boolean | undefined;
   logoOnly?: boolean;
+  isHome?: boolean;
 }) => {
   const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
   const [isMobile, setIsMobile] = useState(false);
@@ -104,16 +105,17 @@ const Header = (props: {
       </div>
     );
   }
+  const navStyle = [tw`top-0 z-50 w-full`, props.isHome && tw`sticky`]
   if (isMobile && showLoginModal) {
     return (
-      <div tw="sticky top-0 z-50 w-full h-screen overscroll-contain overflow-hidden flex justify-center">
+      <div css={navStyle} tw="h-screen overscroll-contain overflow-hidden flex justify-center">
         <Login onClose={() => setShowLoginModal(false)} />
       </div>
     );
   }
 
   return (
-    <div tw="sticky top-0 z-50 w-full">
+    <div css={navStyle}>
       {!isMobile && showLoginModal && (
         <LoginForm onClose={() => setShowLoginModal(false)} />
       )}
