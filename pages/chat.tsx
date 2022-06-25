@@ -12,6 +12,21 @@ import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
 import { timeElapsed } from 'components/popups/ShowComment'
 import { number } from 'yup/lib/locale';
+
+export const parseDate = (timestamp: number) => {
+  const diff = (Date.now() - timestamp) / 1000; // seconds elapsed
+  const d = new Date(timestamp);
+  const curdate = new Date();
+  let dayString = '';
+  if (diff <= 60 * 60 * 24 && d.getDate() === curdate.getDate()) {
+    dayString = '';
+  } else if (diff <= 60 * 60 * 24 * 7 && d.getDay() !== curdate.getDay()) {
+    dayString = d.toLocaleDateString('en-US', { weekday: 'short' }) + ', ';
+  } else {
+    dayString = d.toLocaleDateString('en-US') + ', ';
+  }
+  return `${dayString}${d.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`
+}
 const Home: NextPage = () => {
   const { userData, loading: authLoading } = useAuth();
   const [selectedChat, setSelectedChat] = useState('');
@@ -60,7 +75,7 @@ const Home: NextPage = () => {
         ...Array(10).fill(
           {
             content: 'I LOOOOVE GFP',
-            time: 1656105358000,
+            time: 1656106550000,
             me: false
           })
       ],
@@ -82,9 +97,16 @@ const Home: NextPage = () => {
   const [selected, setSelected] = useState(0);
   // to reset scroll on different user click
   const scrollRef = useRef<HTMLDivElement>(null);
+  // to reset message on different user click
+  const msgRef = useRef<HTMLInputElement>(null);
   const handleOpenChat = (i: number) => {
-    if (scrollRef.current && i !== selected) {
-      scrollRef.current.scrollTop = 0;
+    if (i !== selected) {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = 0;
+      }
+      if (msgRef.current) {
+        msgRef.current.value = '';
+      }
     }
     setSelected(i);
     if (!tempChats[i].read) {
@@ -93,8 +115,17 @@ const Home: NextPage = () => {
       setTempChats(temp);
     }
   }
+  const handleNewMessage = (msg: string) => {
+    if (msg === '') return;
+    const temp = [...tempChats];
+    temp[selected] = {
+      ...temp[selected],
+      msgs: [...temp[selected].msgs, { content: msg, time: Date.now(), me: true }]
+    }
+    setTempChats(temp);
+  }
   const getLatestChat = (msgs: ChatMessage[]) => {
-    return msgs.at(-1) ?? { content: '', time: 0, me: false };
+    return msgs[msgs.length - 1] ?? { content: '', time: 0, me: false };
   }
   const [chats, setChats] = useState<
     {
@@ -202,7 +233,7 @@ const Home: NextPage = () => {
               </div>
             </div>
             <div tw='w-[1px] h-full bg-[#D8D8D8] flex-shrink-0' />
-            <div tw='flex-grow-[2] px-7 flex flex-col'>
+            <div tw='flex-grow-[2] px-7 flex flex-col relative'>
               <div tw='pt-7 pb-5 border-b border-b-[#D8D8D8] flex items-center'>
                 <div tw='ml-2 w-[52px] h-[52px] relative overflow-hidden rounded-full'>
                   <Image
@@ -219,40 +250,66 @@ const Home: NextPage = () => {
               </div>
               <div tw='flex flex-col-reverse overflow-auto pr-1' ref={scrollRef}>
                 <div>
-                  {tempChats[selected].msgs.map((msg, i, msgs) => (
-                    <div
-                      key={i}
-                      tw='flex items-end'
-                      css={[
-                        msg.me ? tw`justify-end` : tw`justify-start`,
-                        i > 0 && (msg.me === msgs[i - 1].me) ? tw`mt-[2px]` : tw`mt-4`
-                      ]}
-                    >
-                      {!msg.me && (i + 1 >= msgs.length || msgs[i + 1].me) ?
-                        <div tw='w-9 h-9 mr-3 rounded-full relative overflow-hidden'>
-                          <Image
-                            src={tempChats[selected].pfp}
-                            alt='other pfp'
-                            layout='fill'
-                            objectFit='cover'
-                          />
-                        </div> :
-                        <div tw='w-12' />
+                  {tempChats[selected].msgs.map((msg, i, msgs) => {
+                    const showTime = (!i || msg.time - msgs[i - 1].time > 1000 * 60 * 15);
+                    return <div key={i}>
+                      {showTime &&
+                        <div tw='flex justify-center mt-4 text-[12px] text-[#838383]'>
+                          {parseDate(msg.time)}
+                        </div>
                       }
                       <div
-                        tw='max-w-[75%] py-2 px-4 rounded-[20px]'
+                        tw='flex items-end'
                         css={[
-                          msg.me ? tw`bg-[#F4F4F4]` : tw`border border-[#D8D8D8] bg-white`,
-                          (i > 0 && msg.me && msgs[i - 1].me) && tw`rounded-tr-[6px]`,
-                          (i > 0 && !msg.me && !msgs[i - 1].me) && tw`rounded-tl-[6px]`,
-                          (i + 1 < msgs.length && msg.me && msgs[i + 1].me) && tw`rounded-br-[6px]`,
-                          (i + 1 < msgs.length && !msg.me && !msgs[i + 1].me) && tw`rounded-bl-[6px]`,
+                          msg.me ? tw`justify-end` : tw`justify-start`,
+                          i > 0 && (msg.me === msgs[i - 1].me) && !showTime ? tw`mt-[2px]` : tw`mt-4`
                         ]}
                       >
-                        {msg.content}
+                        {!msg.me && (i + 1 >= msgs.length || msgs[i + 1].me) ?
+                          <div tw='w-9 h-9 mr-3 rounded-full relative overflow-hidden'>
+                            <Image
+                              src={tempChats[selected].pfp}
+                              alt='other pfp'
+                              layout='fill'
+                              objectFit='cover'
+                            />
+                          </div> :
+                          <div tw='w-12' />
+                        }
+                        <div
+                          tw='max-w-[75%] py-2 px-4 rounded-[20px]'
+                          css={[
+                            msg.me ? tw`bg-[#F4F4F4]` : tw`border border-[#D8D8D8] bg-white`,
+                            (i > 0 && msg.me && msgs[i - 1].me) && tw`rounded-tr-[6px]`,
+                            (i > 0 && !msg.me && !msgs[i - 1].me) && tw`rounded-tl-[6px]`,
+                            (i + 1 < msgs.length && msg.me && msgs[i + 1].me) && tw`rounded-br-[6px]`,
+                            (i + 1 < msgs.length && !msg.me && !msgs[i + 1].me) && tw`rounded-bl-[6px]`,
+                          ]}
+                        >
+                          {msg.content}
+                        </div>
                       </div>
                     </div>
-                  ))}
+                  })}
+                </div>
+              </div>
+              <div tw='mt-auto py-4 bg-white'>
+                <div tw='flex items-center rounded-[25px] bg-[#F4F4F4] h-11 px-6'>
+                  <input
+                    ref={msgRef}
+                    tw='w-full bg-transparent outline-none text-[14px]'
+                    placeholder='Message...'
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        handleNewMessage(e.currentTarget.value);
+                        e.currentTarget.value = ''
+                      }
+                    }}
+                  />
+                  {/* upload file */}
+                  <button tw='flex items-center' onClick={() => 0}>
+                    <Image src='/assets/images/kevin.png' width='18px' height='18px' />
+                  </button>
                 </div>
               </div>
             </div>
