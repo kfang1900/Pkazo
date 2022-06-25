@@ -81,7 +81,7 @@ const SearchHeader = (props: {
         </div>
     }
 
-    return <div tw='absolute w-full bg-white rounded-[8px] pt-6 pb-4 shadow-md'>
+    return <div tw='absolute z-50 w-full bg-white rounded-[8px] pt-6 pb-4 shadow-md'>
         {!props.searchValue &&
             <>
                 <div tw='font-semibold text-[16px] text-[#363636] px-6 mb-2'>Recent</div>

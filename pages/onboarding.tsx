@@ -32,6 +32,7 @@ import { Router, useRouter } from 'next/router';
 import { Container } from 'styles/Container';
 import buttons from 'styles/Button';
 import { useMediaQuery } from 'react-responsive';
+import { PortfolioData } from 'types/dbTypes';
 
 export interface OnboardingFormValues {
   name: string;
@@ -41,13 +42,7 @@ export interface OnboardingFormValues {
   acceptCommissions: 'yes' | 'no' | null;
   onlySale: 'yes' | 'no' | null;
   uniqueCollections: 'yes' | 'no' | null;
-  portfolios: PortfolioValues[];
-}
-export interface PortfolioValues {
-  img: string;
-  title: string;
-  desc?: string;
-  works: string[];
+  portfolios: PortfolioData[];
 }
 
 function Onboarding() {

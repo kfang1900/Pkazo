@@ -126,8 +126,8 @@ const Portfolio: NextPage = () => {
   const { artistData: currentUserArtistData } = useAuth();
   useRequireOnboarding(
     artistData.length > 0 &&
-      artistData[0].data() &&
-      artistData[0].data().username === username
+    artistData[0].data() &&
+    artistData[0].data().username === username
   );
 
   const isCurrentUserPage =
@@ -211,8 +211,8 @@ const Portfolio: NextPage = () => {
           {loading
             ? 'Loading...'
             : artistData.length === 0
-            ? 'User not found'
-            : artistData[0].data().name}
+              ? 'User not found'
+              : artistData[0].data().name}
         </title>
       </Head>
       <Header />
@@ -269,9 +269,9 @@ const Portfolio: NextPage = () => {
                       isMobile
                         ? tw`text-[16px] w-20 py-1 border-b-2 mb-[-2px]`
                         : tw`text-[18px] w-[200px] py-2 border-b-4 mb-[-4px]`,
-                      tw`relative z-10 font-semibold text-gray-600 duration-150 border-transparent cursor-pointer`,
+                      tw`relative z-10 font-semibold text-gray-600 duration-150 border-transparent cursor-pointer bg-none`,
                       page === value &&
-                        tw`border-soft-red pointer-events-none hover:bg-transparent`,
+                      tw`border-soft-red pointer-events-none`,
                     ]}
                     type={'button'}
                   >

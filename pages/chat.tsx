@@ -3,16 +3,99 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import useAuth from 'utils/auth/useAuth';
-import styles from '../styles/Home.module.css';
 import Header from '../components/Header';
-import 'twin.macro';
+import tw from 'twin.macro';
+import { Container } from 'styles/Container';
 import Chat from '../components/chat/Chat';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
+import { timeElapsed } from 'components/popups/ShowComment'
+import { number } from 'yup/lib/locale';
 const Home: NextPage = () => {
   const { userData, loading: authLoading } = useAuth();
   const [selectedChat, setSelectedChat] = useState('');
+  interface ChatMessage {
+    content: string;
+    time: number;
+    me: boolean;
+  }
+  const [tempChats, setTempChats] = useState<
+    {
+      pfp: string,  // changes these
+      name: string, // to user data type
+      msgs: ChatMessage[] // maybe 'me' can be user id or something so don't need to store chat twice
+      read: boolean
+    }[]
+  >([...Array(8).fill([
+    {
+      pfp: '/assets/images/kevin.png',
+      name: 'Kevin Fang',
+      msgs: [
+        {
+          content: 'i',
+          time: 1656105336000,
+          me: false
+        },
+        {
+          content: 'love',
+          time: 1656105337000,
+          me: false
+        },
+        {
+          content: 'gfp',
+          time: 1656105339000,
+          me: false
+        },
+        {
+          content: 'ew u weirdo',
+          time: 1656105346000,
+          me: true
+        },
+        {
+          content: 'get away from me',
+          time: 1656105350000,
+          me: true
+        },
+        ...Array(10).fill(
+          {
+            content: 'I LOOOOVE GFP',
+            time: 1656105358000,
+            me: false
+          })
+      ],
+      read: false
+    }
+  ][0]),
+  {
+    pfp: '/assets/images/ayu.png',
+    name: 'Alice Yu',
+    msgs: [
+      {
+        content: 'waaaaaaaaaah',
+        time: 1656129793000,
+        me: false
+      }
+    ],
+    read: false
+  }])
+  const [selected, setSelected] = useState(0);
+  // to reset scroll on different user click
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const handleOpenChat = (i: number) => {
+    if (scrollRef.current && i !== selected) {
+      scrollRef.current.scrollTop = 0;
+    }
+    setSelected(i);
+    if (!tempChats[i].read) {
+      const temp = [...tempChats];
+      temp[i] = { ...temp[i], read: true };
+      setTempChats(temp);
+    }
+  }
+  const getLatestChat = (msgs: ChatMessage[]) => {
+    return msgs.at(-1) ?? { content: '', time: 0, me: false };
+  }
   const [chats, setChats] = useState<
     {
       id: string;
@@ -62,39 +145,120 @@ const Home: NextPage = () => {
   }, [selectedChat]);
   return (
     <>
-      <Header />
-      <div className={styles.container}>
-        <Head>
-          <title>Pkazo</title>
-          <meta name="description" content="" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-
-        <div tw={'w-full flex pt-5'}>
-          <div tw={'flex-initial px-20'}>
-            <h1 tw={'w-20 text-3xl mt-8 font-bold'}>Chats</h1>
-            {chats.map((chat) =>
-              chat.id === selectedChat ? (
-                <p key={chat.id}>
-                  <b>{chat.name}</b>
-                </p>
-              ) : (
-                <p key={chat.id}>
-                  <a
-                    onClick={() => setSelectedChat(chat.id)}
-                    tw={'cursor-pointer underline text-blue-500'}
-                  >
-                    {chat.name}
-                  </a>
-                </p>
-              )
-            )}
-
-            {/*<a tw={'text-blue-500 hover:underline'}>Start a new chat (WIP)</a>*/}
+      <Head>
+        <title>Pkazo</title>
+        <meta name="description" content="" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <div tw='absolute top-0 bottom-0 left-0 right-0 flex flex-col'>
+        <Header />
+        <Container tw='w-full max-h-full flex overflow-hidden'>
+          <div tw='w-full flex border-[1px] border-[#D8D8D8] mb-12 mt-3 rounded-[6px]'>
+            <div tw='flex-grow-[1] px-7 overflow-auto'>
+              <div tw='pt-7 sticky top-0 bg-white text-[28px] text-black font-bold z-50'>Messages</div>
+              <div tw='mt-2'>
+                {tempChats.
+                  sort((a, b) => getLatestChat(b.msgs).time - getLatestChat(a.msgs).time).
+                  map((chat, i) => (
+                    <div
+                      key={i}
+                      tw='border-t border-t-[#D8D8D8] pt-4 pb-5 flex items-center justify-between cursor-pointer hover:bg-[#FAFAFA]'
+                      onClick={() => {
+                        handleOpenChat(i);
+                      }}
+                    >
+                      <div tw='flex'>
+                        <div tw='relative w-[50px] h-[50px] overflow-hidden rounded-full'>
+                          <Image
+                            src={chat.pfp}
+                            alt='pfp'
+                            layout='fill'
+                            objectFit='cover'
+                          />
+                        </div>
+                        <div tw='ml-4'>
+                          <div
+                            tw='text-[20px] text-black leading-[1em]'
+                            css={[chat.read ? tw`font-semibold` : tw`font-bold`]}
+                          >{chat.name}</div>
+                          <div tw='text-[14px] leading-[1em] mt-2'>
+                            <span
+                              tw='text-[#3C3C3C] overflow-ellipsis overflow-hidden whitespace-nowrap'
+                              css={[!chat.read && tw`font-semibold`]}
+                            >{getLatestChat(chat.msgs).content}</span>
+                            <span tw='text-[#838383]'> · {timeElapsed(getLatestChat(chat.msgs).time)}</span>
+                          </div>
+                        </div>
+                      </div>
+                      {!chat.read &&
+                        <div tw='px-3 flex items-center justify-center'>
+                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="5" cy="5" r="5" fill="#E44C4D" />
+                          </svg>
+                        </div>
+                      }
+                    </div>
+                  ))}
+              </div>
+            </div>
+            <div tw='w-[1px] h-full bg-[#D8D8D8] flex-shrink-0' />
+            <div tw='flex-grow-[2] px-7 flex flex-col'>
+              <div tw='pt-7 pb-5 border-b border-b-[#D8D8D8] flex items-center'>
+                <div tw='ml-2 w-[52px] h-[52px] relative overflow-hidden rounded-full'>
+                  <Image
+                    src={tempChats[selected].pfp}
+                    alt='pfp'
+                    layout='fill'
+                    objectFit='cover'
+                  />
+                </div>
+                <div tw='ml-4'>
+                  <div tw='text-[20px] font-semibold text-black leading-[1em]'>{tempChats[selected].name}</div>
+                  <div tw='text-[14px] text-[#838383] leading-[1em] mt-2'>Online</div>
+                </div>
+              </div>
+              <div tw='flex flex-col-reverse overflow-auto pr-1' ref={scrollRef}>
+                <div>
+                  {tempChats[selected].msgs.map((msg, i, msgs) => (
+                    <div
+                      key={i}
+                      tw='flex items-end'
+                      css={[
+                        msg.me ? tw`justify-end` : tw`justify-start`,
+                        i > 0 && (msg.me === msgs[i - 1].me) ? tw`mt-[2px]` : tw`mt-4`
+                      ]}
+                    >
+                      {!msg.me && (i + 1 >= msgs.length || msgs[i + 1].me) ?
+                        <div tw='w-9 h-9 mr-3 rounded-full relative overflow-hidden'>
+                          <Image
+                            src={tempChats[selected].pfp}
+                            alt='other pfp'
+                            layout='fill'
+                            objectFit='cover'
+                          />
+                        </div> :
+                        <div tw='w-12' />
+                      }
+                      <div
+                        tw='max-w-[75%] py-2 px-4 rounded-[20px]'
+                        css={[
+                          msg.me ? tw`bg-[#F4F4F4]` : tw`border border-[#D8D8D8] bg-white`,
+                          (i > 0 && msg.me && msgs[i - 1].me) && tw`rounded-tr-[6px]`,
+                          (i > 0 && !msg.me && !msgs[i - 1].me) && tw`rounded-tl-[6px]`,
+                          (i + 1 < msgs.length && msg.me && msgs[i + 1].me) && tw`rounded-br-[6px]`,
+                          (i + 1 < msgs.length && !msg.me && !msgs[i + 1].me) && tw`rounded-bl-[6px]`,
+                        ]}
+                      >
+                        {msg.content}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-          <Chat partnerId={selectedChat} />
-        </div>
-      </div>
+        </Container>
+      </div >
     </>
   );
 };

@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import tw from 'twin.macro';
 import { Form } from 'formik';
-import { OnboardingFormValues, PortfolioValues } from 'pages/onboarding'
+import { OnboardingFormValues } from 'pages/onboarding';
+import { PortfolioData } from 'types/dbTypes';
 import { useMediaQuery } from 'react-responsive';
 import Image from 'next/image';
 import buttons from 'styles/Button'
 import { FileUploader } from 'react-drag-drop-files';
 
-const PortfolioPopup = (
+export const PortfolioPopup = (
     { portfolio, setPortfolio, onSave, onCancel, isMobile }: {
-        portfolio: PortfolioValues;
-        setPortfolio: (p: PortfolioValues) => void;
+        portfolio: PortfolioData;
+        setPortfolio: (p: PortfolioData) => void;
         onSave: () => void;
         onCancel: () => void;
         isMobile: boolean;
@@ -31,7 +32,7 @@ const PortfolioPopup = (
                                 </svg>
                             </button>
                             <div tw='w-full text-center text-[16px] leading-[1em] text-[#3C3C3C] font-semibold overflow-ellipsis overflow-hidden whitespace-nowrap'>
-                                {portfolio.title}
+                                {portfolio.name}
                             </div>
                             <button onClick={onSave} tw='text-[16px] leading-[1em] text-[#3C3C3C] font-semibold'>
                                 Save
@@ -46,7 +47,7 @@ const PortfolioPopup = (
                             <div tw='relative'>
                                 <div tw='relative w-[100px] h-[100px] md:w-[180px] md:h-[180px] rounded-full overflow-hidden flex items-center'>
                                     <Image
-                                        src={portfolio.img}
+                                        src={portfolio.picture}
                                         layout='fill'
                                         objectFit='cover'
                                         alt='portfolio image'
@@ -58,7 +59,7 @@ const PortfolioPopup = (
                                         handleChange={(file: File) => {
                                             setPortfolio({
                                                 ...portfolio,
-                                                img: URL.createObjectURL(file)
+                                                picture: URL.createObjectURL(file)
                                             })
                                         }}
                                     >
@@ -77,20 +78,20 @@ const PortfolioPopup = (
                                 <input
                                     tw='border border-[#D8D8D8] rounded-[6px] outline-none focus:border-[#888888] h-9 px-3'
                                     placeholder='Title'
-                                    defaultValue={portfolio.title}
+                                    defaultValue={portfolio.name}
                                     onChange={(e) => {
                                         setPortfolio({
                                             ...portfolio,
-                                            title: e.target.value
+                                            name: e.target.value
                                         })
                                     }}
                                 />
                                 <textarea
                                     tw='border border-[#D8D8D8] rounded-[6px] outline-none focus:border-[#888888] p-3 leading-[22px] resize-none'
                                     placeholder='(Optional) Write a description...'
-                                    defaultValue={portfolio.desc}
+                                    defaultValue={portfolio.description}
                                     rows={4}
-                                    onChange={(e) => { portfolio.desc = e.target.value }}
+                                    onChange={(e) => { portfolio.description = e.target.value }}
                                 />
                             </div>
                         </div>
@@ -185,13 +186,13 @@ const PortfolioSection = (
     }, [mediaQuery, isMobile]);
 
     const [popupIndex, setPopupIndex] = useState(-1);
-    const newPortfolio: PortfolioValues = {
-        img: '/assets/images/kevin_fang.jpg',
-        title: '',
-        desc: '',
+    const newPortfolio: PortfolioData = {
+        picture: '/assets/images/kevin_fang.jpg',
+        name: '',
+        description: '',
         works: []
     }
-    const [curPortfolio, setCurPortfolio] = useState<PortfolioValues>({ ...newPortfolio });
+    const [curPortfolio, setCurPortfolio] = useState<PortfolioData>({ ...newPortfolio });
     return (
         <Form>
             {popupIndex >= 0 &&
@@ -230,7 +231,7 @@ const PortfolioSection = (
                             >
                                 {i < values.portfolios.length &&
                                     <Image
-                                        src={values.portfolios[i].img}
+                                        src={values.portfolios[i].picture}
                                         layout='fill'
                                         objectFit='cover'
                                         alt='portfolio image'
@@ -249,7 +250,7 @@ const PortfolioSection = (
                             </div>
                             {i < values.portfolios.length &&
                                 <div tw='mt-2 md:mt-3 text-[16px] md:text-[20px] text-[#3C3C3C] font-semibold w-full text-center'>
-                                    {values.portfolios[i].title}
+                                    {values.portfolios[i].name}
                                 </div>
                             }
                         </div>

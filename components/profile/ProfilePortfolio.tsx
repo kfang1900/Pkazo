@@ -112,7 +112,7 @@ function GallerySection({
             <div
               css={[
                 isMobile &&
-                  tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`,
+                tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`,
               ]}
               tw="md:flex md:justify-between gap-6 md:w-full"
               style={{
@@ -232,7 +232,7 @@ function GallerySection({
               css={[
                 tw`m-auto scale-50 md:scale-100`,
                 seeNum >= curGallery.Images.length &&
-                  tw`scale-y-[-0.5] md:scale-y-[-1]`,
+                tw`scale-y-[-0.5] md:scale-y-[-1]`,
               ]}
             />
           </button>
@@ -262,13 +262,6 @@ function GallerySection({
                 .map((education, i) => (
                   <div key={i} tw="mt-2 md:mt-4">
                     {showEdu(education)}
-                    {/* 
-                needs school, optional field, start and end year
-                 */}
-                    {/* {education.school}
-                  {education.start}
-                  {education.end}
-                  {education.field} */}
                   </div>
                 ))}
             </div>
@@ -284,13 +277,6 @@ function GallerySection({
                 .map((experience, i) => (
                   <div key={i} tw="mt-2 md:mt-4">
                     {showExp(experience)}
-                    {/*
-                needs company, optional role, start and end year
-                */}
-                    {/* {experience.company}
-                  {experience.position}
-                  {experience.start}
-                  {experience.end} */}
                   </div>
                 ))}
             </div>
@@ -306,12 +292,6 @@ function GallerySection({
                 .map((exhibition, i) => (
                   <div key={i} tw="mt-2 md:mt-4">
                     {showExh(exhibition)}
-                    {/*
-                needs exhibition location, start and end year
-                */}
-                    {/* Jeffrey: exhibitions only have one year according to Kevin */}
-                    {/* {exhibition.year}
-                  {exhibition.gallery} */}
                   </div>
                 ))}
             </div>
