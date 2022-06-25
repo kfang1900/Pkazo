@@ -1,22 +1,22 @@
-import { createGlobalStyle } from 'styled-components';
 import { GlobalStyles as BaseStyles } from 'twin.macro';
 
-const CustomStyles = createGlobalStyle`
-  body {
-    font-family: Open Sans
-  }
-  @media not screen and (min-width: 768px) {
-    body {
-      font-family: font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-      Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-    }
-  }
-`;
 
 const GlobalStyles = () => (
   <>
     <BaseStyles />
-    <CustomStyles />
+    <style>
+      {
+        `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        body {
+          font-family: Inter
+        }
+        @media (min-width: 768px) {
+          body {
+            font-family: Open Sans
+          }
+        }`
+      }
+    </style>
   </>
 );
 
