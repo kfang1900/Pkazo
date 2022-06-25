@@ -2,14 +2,14 @@ import axios from 'axios';
 
 export async function updateArtistsIndex(...artistIds: string[]) {
   return axios.post('/api/search/update-indexes', {
-    target: 'artists',
+    index: 'artists',
     ids: artistIds,
   });
 }
 
 export async function updateWorksIndex(...workIds: string[]) {
   return axios.post('/api/search/update-indexes', {
-    target: 'works',
+    index: 'works',
     ids: workIds,
   });
 }

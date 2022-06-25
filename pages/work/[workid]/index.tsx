@@ -73,7 +73,7 @@ const comments = [
 
 const IndividualWork: NextPage = () => {
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
-  const [isOriginal, setIsOriginal] = useState(0);
+  const [isOriginal, setIsOriginal] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [workData, setWorkData] = useState<WorkData | null>(null);
   const [artistData, setArtistData] = useState<Record<string, any>>();
@@ -108,7 +108,8 @@ const IndividualWork: NextPage = () => {
       }
       axios
         .get(
-          `/api/shipping/estimated-rates?workId=${workId}${zip ? '&zip=' + zip : ''
+          `/api/shipping/estimated-rates?workId=${workId}${
+            zip ? '&zip=' + zip : ''
           }`
         )
 
@@ -243,7 +244,7 @@ const IndividualWork: NextPage = () => {
             <div tw="w-full text-center m-auto py-5">Unable to load image</div>
           )}
           <div tw="mx-4 mt-4 mb-4">
-            {workImages.length >= 2 &&
+            {workImages.length >= 2 && (
               <div tw="grid grid-rows-1 grid-flow-col gap-x-3 w-full overflow-auto">
                 {workImages.map((work, i) => (
                   <button
@@ -261,7 +262,7 @@ const IndividualWork: NextPage = () => {
                   </button>
                 ))}
               </div>
-            }
+            )}
             <div tw="flex items-center mt-4">
               <div tw="w-[55px] h-[55px] overflow-hidden rounded-full flex items-center">
                 <Image
@@ -282,15 +283,24 @@ const IndividualWork: NextPage = () => {
               </div>
             </div>
             <div tw="mt-4 grid grid-cols-[68px 68px] justify-center w-full gap-x-[24px] text-[16px] font-semibold">
-              {['Original', 'Print'].map((type, i) => (
-                <div key={i} onClick={() => setIsOriginal(i)}>
+              {['Original', 'Print'].map((type) => (
+                <div
+                  key={type}
+                  onClick={() => setIsOriginal(type === 'Original')}
+                >
                   <div
-                    css={[isOriginal === i ? tw`text-[#3C3C3C]` : tw`text-[#838383]`]}
-                    tw='cursor-pointer w-full text-center'
+                    css={[
+                      isOriginal === (type === 'Original')
+                        ? tw`text-[#3C3C3C]`
+                        : tw`text-[#838383]`,
+                    ]}
+                    tw="cursor-pointer w-full text-center"
                   >
                     {type}
                   </div>
-                  {isOriginal === i && <div tw='h-[2px] bg-[#E44C4D] rounded-full' />}
+                  {isOriginal === (type === 'Original') && (
+                    <div tw="h-[2px] bg-[#E44C4D] rounded-full" />
+                  )}
                 </div>
               ))}
             </div>
@@ -483,7 +493,7 @@ const IndividualWork: NextPage = () => {
                     onClick={() =>
                       setSelectedImage(
                         (selectedImage - 1 + workImages.length) %
-                        workImages.length
+                          workImages.length
                       )
                     }
                   >
@@ -591,26 +601,42 @@ const IndividualWork: NextPage = () => {
                 </div>
               </div>
             </div>
-            <div tw="mt-3 grid grid-cols-[94px 94px] justify-center w-full gap-x-10 text-[22px] font-semibold">
-              {['Original', 'Print'].map((type, i) => (
-                <div key={i} onClick={() => setIsOriginal(i)}>
+            {workData.forPrint && (
+              <div tw="mt-3 grid grid-cols-[94px 94px] justify-center w-full gap-x-10 text-[22px] font-semibold">
+                {['Original', 'Print'].map((type, i) => (
                   <div
-                    css={[isOriginal === i ? tw`text-[#3C3C3C]` : tw`text-[#838383]`]}
-                    tw='cursor-pointer w-full text-center'
+                    key={i}
+                    onClick={() => setIsOriginal(type === 'Original')}
                   >
-                    {type}
+                    <div
+                      css={[
+                        isOriginal === (type === 'Original')
+                          ? tw`text-[#3C3C3C]`
+                          : tw`text-[#838383]`,
+                      ]}
+                      tw="cursor-pointer w-full text-center"
+                    >
+                      {type}
+                    </div>
+                    {isOriginal === (type === 'Original') && (
+                      <div tw="h-[3px] bg-[#E44C4D] rounded-full" />
+                    )}
                   </div>
-                  {isOriginal === i && <div tw='h-[3px] bg-[#E44C4D] rounded-full' />}
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
             <div tw="mt-5 flex items-center justify-between">
               <div tw="italic text-[36px] leading-[1em] text-[#3C3C3C]">
                 {workData.title}
               </div>
-              {workData.forSale && (
+              {isOriginal && workData.forSale && (
                 <div tw="font-semibold text-[32px] leading-[1em] text-[#242424]">
-                  ${workData.sale?.price}
+                  ${workData.sale.price}
+                </div>
+              )}
+              {!isOriginal && workData.forPrint && (
+                <div tw="font-semibold text-[32px] leading-[1em] text-[#242424]">
+                  ${workData.print.price}
                 </div>
               )}
             </div>
@@ -627,9 +653,17 @@ const IndividualWork: NextPage = () => {
             <div tw="mt-3 text-[20px] text-black leading-[1em] flex flex-col gap-y-3">
               <div>{workData.year}</div>
               <div>{workData.medium}</div>
-              <div>
-                {workData.height} x {workData.width} inches
-              </div>
+              {isOriginal && (
+                <div>
+                  {workData.height} x {workData.width} inches
+                </div>
+              )}
+              {!isOriginal && workData.forPrint && (
+                <div>
+                  {workData.print.surface}, {workData.print.height} x{' '}
+                  {workData.print.width} inches
+                </div>
+              )}
             </div>
 
             {workData.forSale ? (

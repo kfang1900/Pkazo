@@ -1,5 +1,5 @@
 import tw, { css } from 'twin.macro';
-
+import * as Yup from 'yup';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import Image from 'next/image';
@@ -133,6 +133,107 @@ function DropdownButton() {
     </button>
   );
 }
+
+const validationSchema = Yup.object().shape({
+  title: Yup.string().max(100, 'Too Long!').required('This value is required.'),
+  description: Yup.string().required('This value is required.'),
+  portfolio: Yup.string().required('You must select a portfolio.'),
+  year: Yup.string(),
+  medium: Yup.string().required('You must select a medium.'),
+  surface: Yup.string().required('You must select a surface type.'),
+  height: Yup.string().required('This value is required.'),
+  width: Yup.string().required('This value is required.'),
+  units: Yup.string().required('This value is required.'),
+  forSale: Yup.string().required('This value is required.'),
+  salePrice: Yup.string().when('forSale', {
+    is: 'yes',
+    then: Yup.string()
+      .required('This value is required.')
+      .test('is-number', 'The price must be at least $1', (value) => {
+        try {
+          parseFloat(value + '');
+          return true;
+        } catch (e) {
+          return false;
+        }
+      })
+      .test(
+        'min-price',
+        'The price must be at least $1',
+        (value) => parseFloat(value + '') >= 1
+      )
+      .test(
+        'max-price',
+        'To set a price higher than $1,000,000, please contact us.',
+        (value) => parseFloat(value + '') <= 1000000
+      ),
+  }),
+  saleSubject: Yup.string().when('forSale', {
+    is: 'yes',
+    then: Yup.string().required('This value is required.'),
+  }),
+  saleStyle: Yup.string().when('forSale', {
+    is: 'yes',
+    then: Yup.string().required('This value is required.'),
+  }),
+  saleOrientation: Yup.string().when('forSale', {
+    is: 'yes',
+    then: Yup.string().required('This value is required.'),
+  }),
+  saleColor: Yup.string().when('forSale', {
+    is: 'yes',
+    then: Yup.string().required('This value is required.'),
+  }),
+  saleFraming: Yup.string().when('forSale', {
+    is: 'yes',
+    then: Yup.string().required('This value is required.'),
+  }),
+  forPrint: Yup.string().required('This value is required.'),
+  printPrice: Yup.string().when('forPrint', {
+    is: 'yes',
+    then: Yup.string()
+      .required('This value is required.')
+      .test('is-number', 'The price must be at least $1', (value) => {
+        try {
+          parseFloat(value + '');
+          return true;
+        } catch (e) {
+          return false;
+        }
+      })
+      .test(
+        'min-price',
+        'The price must be at least $1',
+        (value) => parseFloat(value + '') >= 1
+      )
+      .test(
+        'max-price',
+        'To set a price higher than $1,000,000, please contact us.',
+        (value) => parseFloat(value + '') <= 1000000
+      ),
+  }),
+  printHeight: Yup.string().when('forPrint', {
+    is: 'yes',
+    then: Yup.string().required('This value is required.'),
+  }),
+  printWidth: Yup.string().when('forPrint', {
+    is: 'yes',
+    then: Yup.string().required('This value is required.'),
+  }),
+  printUnits: Yup.string().when('forPrint', {
+    is: 'yes',
+    then: Yup.string().required('This value is required.'),
+  }),
+  printSurface: Yup.string().when('forPrint', {
+    is: 'yes',
+    then: Yup.string().required('This value is required.'),
+  }),
+  printFraming: Yup.string().when('forPrint', {
+    is: 'yes',
+    then: Yup.string().required('This value is required.'),
+  }),
+});
+
 function UploadWork({ onClose, workId }: UploadWorkProps) {
   // just to be explicit
   const editMode = !!workId;
@@ -140,8 +241,8 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
   const printSurfaces = ['Fine Art Paper', 'Canvas'];
   const styles = {
     label: tw`text-[14px] leading-5 text-[#3C3C3C]`,
-    input: tw`border border-[#D8D8D8] rounded-[6px] px-3 text-[14px] w-full focus:outline-none focus:border-[#888888]`,
-    dropdown: tw`w-[132px] h-[30px] rounded-[20px] border border-[#D8D8D8] pl-4 appearance-none focus:outline-none focus:border-[#888888] text-[14px] text-[#838383]`,
+    input: tw`border rounded-[6px] px-3 text-[14px] w-full focus:outline-none`,
+    dropdown: tw`w-[132px] h-[30px] rounded-[20px] border pl-4 appearance-none focus:outline-none text-[14px] text-[#838383]`,
   };
 
   const [selected, setSelected] = useState(0);
@@ -275,30 +376,13 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
           {initialFormValues && (
             <Formik
               initialValues={initialFormValues}
+              validationSchema={validationSchema}
               onSubmit={async (values, { setFieldError }) => {
                 try {
                   if (!auth.artistId) return;
 
                   console.log(values);
 
-                  if (!values.title) {
-                    alert('Title is required.');
-                    return;
-                  }
-                  if (!values.description) {
-                    alert('Description is required.');
-                    return;
-                  }
-                  if (!values.salePrice) {
-                    alert('Price is required.');
-                    return;
-                  }
-                  if (!values.portfolio) {
-                    alert(
-                      'You must select a portfolio to place this image in.'
-                    );
-                    return;
-                  }
                   if (uploadedImages.length === 0) {
                     alert('Please select at least one image for this work.');
                     return;
@@ -434,7 +518,14 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                 }
               }}
             >
-              {({ values, isSubmitting, setFieldValue, setFieldTouched }) => (
+              {({
+                values,
+                errors,
+                isSubmitting,
+                setFieldValue,
+                setFieldTouched,
+                touched,
+              }) => (
                 <Form>
                   {uploadPage === 0 && (
                     <div tw="flex">
@@ -558,8 +649,19 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                             type="text"
                             name="title"
                             placeholder="Title"
-                            css={[styles.input, tw`h-[34px] leading-[14px]`]}
+                            css={[
+                              styles.input,
+                              tw`h-[34px] leading-[14px]`,
+                              touched.title && errors.title
+                                ? tw`border-red-600 focus:border-red-800`
+                                : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                            ]}
                           />
+                          {touched.title && errors.title && (
+                            <p tw={'text-red-800 text-xs mt-1'}>
+                              {errors.title}
+                            </p>
+                          )}
                           <Field
                             type="text"
                             component="textarea"
@@ -569,8 +671,16 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                             css={[
                               styles.input,
                               tw`mt-3 py-[10px] leading-5 resize-none`,
+                              touched.description && errors.description
+                                ? tw`border-red-600 focus:border-red-800`
+                                : tw`border-[#D8D8D8] focus:border-[#888888]`,
                             ]}
                           />
+                          {touched.description && errors.description && (
+                            <p tw={'text-red-800 text-xs mt-1'}>
+                              {errors.description}
+                            </p>
+                          )}
                           <div tw="px-3">
                             <div tw="grid grid-cols-2 gap-x-[25px] gap-y-3 items-center mt-4">
                               <div tw="flex items-center">
@@ -580,7 +690,12 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                 <div tw="relative">
                                   <select
                                     name="portfolio"
-                                    css={styles.dropdown}
+                                    css={[
+                                      styles.dropdown,
+                                      touched.portfolio && errors.portfolio
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                    ]}
                                     onChange={(e) =>
                                       setFieldValue('portfolio', e.target.value)
                                     }
@@ -600,6 +715,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                   <DropdownButton />
                                 </div>
                               </div>
+
                               <div tw="flex items-center">
                                 <div css={[styles.label, tw`w-[76px]`]}>
                                   Year
@@ -607,7 +723,12 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                 <div tw="relative">
                                   <select
                                     name="year"
-                                    css={styles.dropdown}
+                                    css={[
+                                      styles.dropdown,
+                                      touched.year && errors.year
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                    ]}
                                     onChange={(e) =>
                                       setFieldValue(
                                         'year',
@@ -638,7 +759,12 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     onBlur={() => setFieldTouched('medium')}
                                     value={values.medium}
                                     name="medium"
-                                    css={styles.dropdown}
+                                    css={[
+                                      styles.dropdown,
+                                      touched.medium && errors.medium
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                    ]}
                                   >
                                     <option value="" disabled />
                                     {mediums.map((value, i) => (
@@ -665,6 +791,9 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     css={[
                                       styles.dropdown,
                                       tw`pr-6 overflow-ellipsis`,
+                                      touched.surface && errors.surface
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
                                     ]}
                                   >
                                     <option value="" disabled />
@@ -687,6 +816,9 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                 css={[
                                   styles.dropdown,
                                   tw`w-[52px] pl-3 pr-0 ml-1`,
+                                  touched.height && errors.height
+                                    ? tw`border-red-600 focus:border-red-800`
+                                    : tw`border-[#D8D8D8] focus:border-[#888888]`,
                                 ]}
                                 min="0"
                               />
@@ -697,6 +829,9 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                 css={[
                                   styles.dropdown,
                                   tw`w-[52px] pl-3 pr-0 mx-1`,
+                                  touched.width && errors.width
+                                    ? tw`border-red-600 focus:border-red-800`
+                                    : tw`border-[#D8D8D8] focus:border-[#888888]`,
                                 ]}
                                 min="0"
                               />
@@ -708,7 +843,13 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                   onBlur={() => setFieldTouched('units')}
                                   value={values.units}
                                   name="units"
-                                  css={[styles.dropdown, tw`w-[60px] pl-3`]}
+                                  css={[
+                                    styles.dropdown,
+                                    tw`w-[60px] pl-3`,
+                                    touched.units && errors.units
+                                      ? tw`border-red-600 focus:border-red-800`
+                                      : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                  ]}
                                 >
                                   {units.map((value, i) => (
                                     <option key={i} value={value}>
@@ -751,14 +892,26 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                   <Field
                                     type="number"
                                     name="salePrice"
-                                    css={[styles.dropdown, tw`pl-[30px]`]}
-                                    min="0"
-                                    max="9999"
+                                    css={[
+                                      styles.dropdown,
+                                      tw`pl-[30px]`,
+                                      touched.salePrice && errors.salePrice
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                    ]}
+                                    min="1"
+                                    max="1000000"
                                   />
                                   <div tw="text-[16px] text-[#838383] absolute left-4 top-[3px]">
                                     $
                                   </div>
+                                  {touched.salePrice && errors.salePrice && (
+                                    <p tw={'text-red-800 text-xs mt-1'}>
+                                      {errors.salePrice}
+                                    </p>
+                                  )}
                                 </div>
+
                                 <div css={styles.label}>Subject</div>
                                 <div tw="relative ml-auto">
                                   <select
@@ -773,7 +926,12 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     }
                                     value={values.saleSubject}
                                     name="saleSubject"
-                                    css={styles.dropdown}
+                                    css={[
+                                      styles.dropdown,
+                                      touched.saleSubject && errors.saleSubject
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                    ]}
                                   >
                                     <option value="" disabled />
                                     {saleSubjects.map((value, i) => (
@@ -793,7 +951,12 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     onBlur={() => setFieldTouched('saleStyle')}
                                     value={values.saleStyle}
                                     name="saleStyle"
-                                    css={styles.dropdown}
+                                    css={[
+                                      styles.dropdown,
+                                      touched.saleStyle && errors.saleStyle
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                    ]}
                                   >
                                     <option value="" disabled />
                                     {saleStyles.map((value, i) => (
@@ -818,7 +981,13 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     }
                                     value={values.saleOrientation}
                                     name="saleOrientation"
-                                    css={styles.dropdown}
+                                    css={[
+                                      styles.dropdown,
+                                      touched.saleOrientation &&
+                                      errors.saleOrientation
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                    ]}
                                   >
                                     <option value="" disabled />
                                     {saleOrientations.map((value, i) => (
@@ -838,7 +1007,13 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     onBlur={() => setFieldTouched('saleColor')}
                                     value={values.saleColor}
                                     name="saleColor"
-                                    css={[styles.dropdown, tw`w-[73px]`]}
+                                    css={[
+                                      styles.dropdown,
+                                      tw`w-[73px]`,
+                                      touched.saleColor && errors.saleColor
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                    ]}
                                   >
                                     <option value="" disabled />
                                     {saleColors.map((value, i) => (
@@ -860,7 +1035,12 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     value="yes"
                                     id="yesSaleFraming"
                                     tw="w-[14px] h-[14px] mr-3"
-                                    css={{ 'accent-color': '#6C6C6C' }}
+                                    css={[
+                                      { 'accent-color': '#6C6C6C' },
+                                      touched.saleFraming && errors.saleFraming
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                    ]}
                                   />
                                   <label htmlFor="yesSaleFraming">Framed</label>
                                   <Field
@@ -869,7 +1049,12 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     value="no"
                                     id="noSaleFraming"
                                     tw="w-[14px] h-[14px] mr-3 ml-7"
-                                    css={{ 'accent-color': '#6C6C6C' }}
+                                    css={[
+                                      { 'accent-color': '#6C6C6C' },
+                                      touched.saleFraming && errors.saleFraming
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                    ]}
                                   />
                                   <label htmlFor="noSaleFraming">
                                     Unframed
@@ -888,7 +1073,12 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                   value="yes"
                                   id="yesForPrint"
                                   tw="w-[14px] h-[14px] mr-3"
-                                  css={{ 'accent-color': '#E24E4D' }}
+                                  css={[
+                                    { 'accent-color': '#E24E4D' },
+                                    touched.forPrint && errors.forPrint
+                                      ? tw`border-red-600 focus:border-red-800`
+                                      : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                  ]}
                                 />
                                 <label htmlFor="yesForPrint">Yes</label>
                                 <Field
@@ -897,7 +1087,12 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                   value="no"
                                   id="noForPrint"
                                   tw="w-[14px] h-[14px] mr-3 ml-7"
-                                  css={{ 'accent-color': '#E24E4D' }}
+                                  css={[
+                                    { 'accent-color': '#E24E4D' },
+                                    touched.forPrint && errors.forPrint
+                                      ? tw`border-red-600 focus:border-red-800`
+                                      : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                  ]}
                                 />
                                 <label htmlFor="noForPrint">No</label>
                               </div>
@@ -909,13 +1104,24 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                   <Field
                                     type="number"
                                     name="printPrice"
-                                    css={[styles.dropdown, tw`pl-[30px]`]}
-                                    min="0"
-                                    max="9999"
+                                    css={[
+                                      styles.dropdown,
+                                      tw`pl-[30px]`,
+                                      touched.printPrice && errors.printPrice
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                    ]}
+                                    min="1"
+                                    max="1000000"
                                   />
                                   <div tw="text-[16px] text-[#838383] absolute left-4 top-[3px]">
                                     $
                                   </div>
+                                  {touched.printPrice && errors.printPrice && (
+                                    <p tw={'text-red-800 text-xs mt-1'}>
+                                      {errors.printPrice}
+                                    </p>
+                                  )}
                                 </div>
                                 <div css={styles.label}>Size</div>
                                 <div tw="ml-auto flex items-center">
@@ -926,6 +1132,9 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     css={[
                                       styles.dropdown,
                                       tw`w-[52px] pl-3 pr-0 ml-1`,
+                                      touched.printHeight && errors.printHeight
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
                                     ]}
                                     min="0"
                                   />
@@ -938,6 +1147,9 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     css={[
                                       styles.dropdown,
                                       tw`w-[52px] pl-3 pr-0 mx-1`,
+                                      touched.printWidth && errors.printWidth
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
                                     ]}
                                     min="0"
                                   />
@@ -954,7 +1166,13 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                       }
                                       value={values.printUnits}
                                       name="printUnits"
-                                      css={[styles.dropdown, tw`w-[60px] pl-3`]}
+                                      css={[
+                                        styles.dropdown,
+                                        tw`w-[60px] pl-3`,
+                                        touched.printUnits && errors.printUnits
+                                          ? tw`border-red-600 focus:border-red-800`
+                                          : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                      ]}
                                     >
                                       {units.map((value, i) => (
                                         <option key={i} value={value}>
@@ -983,6 +1201,10 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     css={[
                                       styles.dropdown,
                                       tw`pr-6 overflow-ellipsis`,
+                                      touched.printSurface &&
+                                      errors.printSurface
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
                                     ]}
                                   >
                                     <option value="" disabled />
@@ -1002,7 +1224,13 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     value="yes"
                                     id="yesPrintFraming"
                                     tw="w-[14px] h-[14px] mr-3"
-                                    css={{ 'accent-color': '#6C6C6C' }}
+                                    css={[
+                                      { 'accent-color': '#6C6C6C' },
+                                      touched.printFraming &&
+                                      errors.printFraming
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                    ]}
                                   />
                                   <label htmlFor="yesPrintFraming">
                                     Framed
@@ -1013,7 +1241,13 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     value="no"
                                     id="noPrintFraming"
                                     tw="w-[14px] h-[14px] mr-3 ml-7"
-                                    css={{ 'accent-color': '#6C6C6C' }}
+                                    css={[
+                                      { 'accent-color': '#6C6C6C' },
+                                      touched.printFraming &&
+                                      errors.printFraming
+                                        ? tw`border-red-600 focus:border-red-800`
+                                        : tw`border-[#D8D8D8] focus:border-[#888888]`,
+                                    ]}
                                   />
                                   <label htmlFor="noPrintFraming">
                                     Unframed
