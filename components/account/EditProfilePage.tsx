@@ -21,6 +21,7 @@ import axios from 'axios';
 import { updateArtistsIndex } from '../../utils/indexes/updateIndexes';
 import { useMediaQuery } from 'react-responsive';
 import { showEdu, showExp, showExh } from '../profile/ArtistInfoHelper';
+import EditProfilePopups from './EditProfilePopups';
 
 export default function EditProfilePage() {
   const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
@@ -123,6 +124,7 @@ export default function EditProfilePage() {
     [data]
   );
 
+  const [showPopup, setShowPopup] = useState(-1);
 
   const styles = {
     label: isMobile ?
@@ -134,6 +136,13 @@ export default function EditProfilePage() {
   };
   return (
     <div css={[isMobile ? tw`mb-8` : tw`ml-[76px] mt-9 mb-[100px]`]} >
+      {showPopup >= 0 &&
+        <EditProfilePopups
+          onSave={() => 0}
+          onClose={() => setShowPopup(-1)}
+          type={showPopup}
+        />
+      }
       {!data && <p>Loading...</p>}
       {data && (
         <>
@@ -326,7 +335,7 @@ export default function EditProfilePage() {
           >
             <div css={styles.label}>Education</div>
             <div>
-              <button css={styles.button}>
+              <button css={styles.button} onClick={() => setShowPopup(0)}>
                 <Image
                   src="/assets/svgs/plus.svg"
                   alt="add education"
@@ -347,7 +356,7 @@ export default function EditProfilePage() {
             </div>
             <div css={[styles.label, isMobile && tw`mt-3`]}>Experience</div>
             <div>
-              <button css={styles.button}>
+              <button css={styles.button} onClick={() => setShowPopup(1)}>
                 <Image
                   src="/assets/svgs/plus.svg"
                   alt="add education"
@@ -368,7 +377,7 @@ export default function EditProfilePage() {
             </div>
             <div css={[styles.label, isMobile && tw`mt-3`]}>Exhibitions</div>
             <div>
-              <button css={styles.button}>
+              <button css={styles.button} onClick={() => setShowPopup(2)}>
                 <Image
                   src="/assets/svgs/plus.svg"
                   alt="add education"
