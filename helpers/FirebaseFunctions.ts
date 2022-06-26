@@ -18,6 +18,10 @@ function defaultString<T>(arg: (param: string) => string) {
 
 //Returns the Image URL as a string
 const loadStorageImage = async (url: string) => {
+  if (!url) {
+    console.log(url)
+    throw new Error("Didn't receive a valid URL");
+  }
   try {
     const app = getApp();
     const storage = getStorage(app);

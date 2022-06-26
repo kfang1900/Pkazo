@@ -53,7 +53,9 @@ const fetchArtist = async (
     setLoadingPortfolio(false);
     return;
   }
-  const coverImageURL = await loadStorageImage(result[0]?.data()?.coverImage);
+  const coverImageURL = result[0]?.data()?.coverImage
+    ? await loadStorageImage(result[0].data().coverImage)
+    : '/doesnotexist';
   setCover(coverImageURL);
   console.log('loaded cover image: ', coverImageURL);
   const portfolioCollection = await getPortfolioByRef(result[0]?.id);
@@ -126,8 +128,8 @@ const Portfolio: NextPage = () => {
   const { artistData: currentUserArtistData } = useAuth();
   useRequireOnboarding(
     artistData.length > 0 &&
-    artistData[0].data() &&
-    artistData[0].data().username === username
+      artistData[0].data() &&
+      artistData[0].data().username === username
   );
 
   const isCurrentUserPage =
@@ -211,8 +213,8 @@ const Portfolio: NextPage = () => {
           {loading
             ? 'Loading...'
             : artistData.length === 0
-              ? 'User not found'
-              : artistData[0].data().name}
+            ? 'User not found'
+            : artistData[0].data().name}
         </title>
       </Head>
       <Header />
@@ -270,8 +272,7 @@ const Portfolio: NextPage = () => {
                         ? tw`text-[16px] w-20 py-1 border-b-2 mb-[-2px]`
                         : tw`text-[18px] w-[200px] py-2 border-b-4 mb-[-4px]`,
                       tw`relative z-10 font-semibold text-gray-600 duration-150 border-transparent cursor-pointer bg-none`,
-                      page === value &&
-                      tw`border-soft-red pointer-events-none`,
+                      page === value && tw`border-soft-red pointer-events-none`,
                     ]}
                     type={'button'}
                   >

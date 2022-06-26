@@ -23,6 +23,26 @@ const searchClient = algoliasearch(
   '6a66c7b3a0c0cf3d52edb60146226383'
 );
 
+/**
+ * Returns the index of the last character in the longest prefix that is the same for both strings.
+ * @param a
+ * @param b
+ */
+function getMatchingPrefixIndex(aa: string, bb: string): number {
+  const a = aa.toLowerCase();
+  const b = bb.toLowerCase();
+
+  if (a.charAt(0) !== b.charAt(0)) {
+    return -1;
+  }
+  let i = 0;
+  while (i < a.length && i < b.length && a.charAt(i) === b.charAt(i)) {
+    i++;
+  }
+  console.log(i);
+  return i;
+}
+
 export default function SearchBox() {
   // (1) Create a React state.
   const [autocompleteState, setAutocompleteState] = React.useState<
@@ -145,36 +165,54 @@ export default function SearchBox() {
         {...autocomplete.getPanelProps({})}
       >
         {autocompleteState.isOpen && (
-          <div tw="absolute w-full left-0 top-14 bg-white rounded-[8px] pt-6 pb-4 shadow-md">
+          <div tw="absolute w-full left-0 top-14 bg-white rounded-[8px] pt-6 pb-4 shadow-md z-50">
             {autocompleteState.collections.map((collection, index) => {
               const { source, items } = collection;
               return (
                 <React.Fragment key={`source-${index}`}>
-                  <div tw="font-semibold text-[16px] text-[#363636] px-6 mb-2">
-                    {source.sourceId}
-                  </div>
+                  {source.sourceId === 'Artists' && items.length > 0 && (
+                    <div tw="font-semibold text-[16px] text-[#363636] px-6 mb-2">
+                      Artists
+                    </div>
+                  )}
                   <ul className="aa-List" {...autocomplete.getListProps()}>
                     {source.sourceId === 'Works'
                       ? items.map((item) => (
-                          <Link
-                            href={`/work/${item.id}`}
-                            key={item.objectID}
-                            passHref
-                          >
-                            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                            {/*
-                            // @ts-ignore */}
-                            <li
-                              tw="px-6 py-2 text-[16px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer"
-                              className="aa-Item"
-                              {...autocomplete.getItemProps({
-                                item,
-                                source,
-                              })}
+                          <>
+                            <Link
+                              href={`/work/${item.id}`}
+                              key={item.objectID}
+                              passHref
                             >
-                              {(item as WorkRecord).title}
-                            </li>
-                          </Link>
+                              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                              {/*
+                            // @ts-ignore */}
+                              <li
+                                tw="px-6 py-2 text-[16px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer"
+                                className="aa-Item"
+                                {...autocomplete.getItemProps({
+                                  item,
+                                  source,
+                                })}
+                              >
+                                {autocompleteState.query.substring(
+                                  0,
+                                  getMatchingPrefixIndex(
+                                    autocompleteState.query,
+                                    (item as WorkRecord).title
+                                  ) + 1
+                                )}
+                                <b>
+                                  {(item as WorkRecord).title.substring(
+                                    getMatchingPrefixIndex(
+                                      autocompleteState.query,
+                                      (item as WorkRecord).title
+                                    )
+                                  )}
+                                </b>
+                              </li>
+                            </Link>
+                          </>
                         ))
                       : source.sourceId === 'Artists'
                       ? items.map((item) => (
@@ -200,7 +238,7 @@ export default function SearchBox() {
                             </li>
                           </Link>
                         ))
-                      : 'ERROR'}
+                      : 'ERROR'}{' '}
                   </ul>
                 </React.Fragment>
               );
@@ -225,29 +263,33 @@ export default function SearchBox() {
               //   </div>
               // );
             })}
-            <div tw="font-semibold text-[16px] text-[#363636] px-6 mb-2">
-              Recent
-            </div>
-            {['cat collar', 'cat painting', 'cat bowl'].map((result, i) => (
-              <div
-                key={i}
-                tw="px-6 py-2 text-[16px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer"
-              >
-                {result}
-              </div>
-            ))}
+            {autocompleteState.query === '' && (
+              <>
+                {/*<div tw="font-semibold text-[16px] text-[#363636] px-6 mb-2">*/}
+                {/*  Recent*/}
+                {/*</div>*/}
+                {/*{['cat collar', 'cat painting', 'cat bowl'].map((result, i) => (*/}
+                {/*  <div*/}
+                {/*    key={i}*/}
+                {/*    tw="px-6 py-2 text-[16px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer"*/}
+                {/*  >*/}
+                {/*    {result}*/}
+                {/*  </div>*/}
+                {/*))}*/}
 
-            <div tw="font-semibold text-[16px] text-[#363636] px-6 mt-4 mb-2">
-              Trending Searches
-            </div>
-            {['cat collar', 'cat painting', 'cat bowl'].map((result, i) => (
-              <div
-                key={i}
-                tw="px-6 py-2 text-[16px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer"
-              >
-                {result}
-              </div>
-            ))}
+                <div tw="font-semibold text-[16px] text-[#363636] px-6 mt-4 mb-2">
+                  Trending Searches
+                </div>
+                {['cat collar', 'cat painting', 'cat bowl'].map((result, i) => (
+                  <div
+                    key={i}
+                    tw="px-6 py-2 text-[16px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer"
+                  >
+                    {result}
+                  </div>
+                ))}
+              </>
+            )}
             {/*<div tw="font-semibold text-[16px] text-[#363636] px-6 mt-4 mb-2">*/}
             {/*  Artists*/}
             {/*</div>*/}

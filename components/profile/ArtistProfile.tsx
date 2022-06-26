@@ -50,9 +50,13 @@ const ArtistProfile = ({
   const artist = artistData[0].data() as ArtistData;
 
   useEffect(() => {
-    loadStorageImage(artist.profilePicture).then((profilePictureURL) =>
-      setPicture(profilePictureURL)
-    );
+    if (!artist.profilePicture) {
+      setPicture('/images/default-profile-picture.png');
+    } else {
+      loadStorageImage(artist.profilePicture).then((profilePictureURL) =>
+        setPicture(profilePictureURL)
+      );
+    }
   }, [artist]);
 
   const bioRef = useRef<HTMLDivElement>(null);
