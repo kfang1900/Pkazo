@@ -7,11 +7,15 @@ import Header from '../components/Header';
 import tw from 'twin.macro';
 import { Container } from 'styles/Container';
 import Chat from '../components/chat/Chat';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
-import { timeElapsed } from 'components/popups/ShowComment'
+import { timeElapsed } from 'components/popups/ShowComment';
 import { number } from 'yup/lib/locale';
+import ChatSidebarItem from '../components/chat/ChatSidebarItem';
+import { loadStorageImage } from '../helpers/FirebaseFunctions';
+import { ArtistData } from '../types/dbTypes';
+import { getDatabase, onChildAdded, ref } from '@firebase/database';
 
 export const parseDate = (timestamp: number) => {
   const diff = (Date.now() - timestamp) / 1000; // seconds elapsed
@@ -25,112 +29,38 @@ export const parseDate = (timestamp: number) => {
   } else {
     dayString = d.toLocaleDateString('en-US') + ', ';
   }
-  return `${dayString}${d.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`
-}
-const Home: NextPage = () => {
-  const { userData, loading: authLoading } = useAuth();
+  return `${dayString}${d.toLocaleString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  })}`;
+};
+export type ChatMessage = {
+  author: string;
+  text: string;
+  timestamp: number;
+  version: 1;
+  id: string;
+};
+const ChatPage: NextPage = () => {
+  const { userData, loading: authLoading, user } = useAuth();
   const [selectedChat, setSelectedChat] = useState('');
-  interface ChatMessage {
-    content: string;
-    time: number;
-    me: boolean;
-  }
-  const [tempChats, setTempChats] = useState<
-    {
-      pfp: string,  // changes these
-      name: string, // to user data type
-      msgs: ChatMessage[] // maybe 'me' can be user id or something so don't need to store chat twice
-      read: boolean
-    }[]
-  >([...Array(8).fill([
-    {
-      pfp: '/assets/images/kevin.png',
-      name: 'Kevin Fang',
-      msgs: [
-        {
-          content: 'i',
-          time: 1656105336000,
-          me: false
-        },
-        {
-          content: 'love',
-          time: 1656105337000,
-          me: false
-        },
-        {
-          content: 'gfp',
-          time: 1656105339000,
-          me: false
-        },
-        {
-          content: 'ew u weirdo',
-          time: 1656105346000,
-          me: true
-        },
-        {
-          content: 'get away from me',
-          time: 1656105350000,
-          me: true
-        },
-        ...Array(10).fill(
-          {
-            content: 'I LOOOOVE GFP',
-            time: 1656106550000,
-            me: false
-          })
-      ],
-      read: false
-    }
-  ][0]),
-  {
-    pfp: '/assets/images/ayu.png',
-    name: 'Alice Yu',
-    msgs: [
-      {
-        content: 'waaaaaaaaaah',
-        time: 1656129793000,
-        me: false
-      }
-    ],
-    read: false
-  }])
+
   const [selected, setSelected] = useState(0);
   // to reset scroll on different user click
   const scrollRef = useRef<HTMLDivElement>(null);
   // to reset message on different user click
   const msgRef = useRef<HTMLInputElement>(null);
-  const handleOpenChat = (i: number) => {
-    if (i !== selected) {
-      if (scrollRef.current) {
-        scrollRef.current.scrollTop = 0;
-      }
-      if (msgRef.current) {
-        msgRef.current.value = '';
-      }
-    }
-    setSelected(i);
-    if (!tempChats[i].read) {
-      const temp = [...tempChats];
-      temp[i] = { ...temp[i], read: true };
-      setTempChats(temp);
-    }
-  }
-  const handleNewMessage = (msg: string) => {
-    if (msg === '') return;
-    const temp = [...tempChats];
-    temp[selected] = {
-      ...temp[selected],
-      msgs: [...temp[selected].msgs, { content: msg, time: Date.now(), me: true }]
-    }
-    setTempChats(temp);
-  }
+
   const getLatestChat = (msgs: ChatMessage[]) => {
     return msgs[msgs.length - 1] ?? { content: '', time: 0, me: false };
-  }
+  };
   const [chats, setChats] = useState<
     {
       id: string;
       name: string;
+      pfp: string;
+      messages: ChatMessage[];
     }[]
   >([]);
   const [loading, setLoading] = useState(true);
@@ -140,24 +70,65 @@ const Home: NextPage = () => {
       setLoading(false);
       return;
     }
+
+    const unsubFunctions: (() => void)[] = [];
+
     const app = getApp();
     const db = getFirestore(app);
+    const rtdb = getDatabase(app);
+
     Promise.all(
       userData.chats.map(async (id) => {
         const snapshot = await getDoc(doc(db, 'artists', id));
-        return {
+        if (!snapshot.data()) {
+          throw new Error('Unable to load artist data.');
+        }
+        const data = {
           id,
-          name: snapshot.data()?.name || id,
+          name: (snapshot.data() as ArtistData).name || id,
+          pfp: await loadStorageImage(
+            (snapshot.data() as ArtistData).profilePicture
+          ),
+          messages: [],
         };
+        setChats((oldChats) => [...oldChats, data]);
+        const unsub = onChildAdded(
+          ref(rtdb, 'chats/' + [user?.uid, id].sort().join('--') + '/messages'),
+          (snapshot) => {
+            const data = snapshot.val();
+            setChats((oldChats) => {
+              const oldThisChat = oldChats.find((c) => c.id === id) || {
+                id: id,
+                name: 'ERROR',
+                pfp: '/doesnotexist',
+                messages: [],
+              };
+              return [
+                ...oldChats.filter((c) => c.id !== id),
+                {
+                  id: oldThisChat.id,
+                  name: oldThisChat.name,
+                  pfp: oldThisChat.pfp,
+                  messages: [...oldThisChat.messages, data],
+                },
+              ];
+            });
+          }
+        );
+        unsubFunctions.push(unsub);
+        return data;
       })
     ).then((data) => {
-      setChats(data);
       if (!selectedChat && data.length > 0) {
         window.location.hash = data[0].id;
         setSelectedChat(data[0].id);
       }
     });
-  }, [authLoading, userData]);
+
+    return () => {
+      unsubFunctions.forEach((unsub) => unsub());
+    };
+  }, [authLoading, userData, setChats, setSelectedChat, user]);
   useEffect(() => {
     const handler = () => {
       if (window.location.hash && window.location.hash.length > 1) {
@@ -174,6 +145,10 @@ const Home: NextPage = () => {
       window.location.hash = selectedChat;
     }
   }, [selectedChat]);
+  const selectedChatData = useMemo(
+    () => chats.find((c) => c.id === selectedChat),
+    [selectedChat, chats]
+  );
   return (
     <>
       <Head>
@@ -181,143 +156,53 @@ const Home: NextPage = () => {
         <meta name="description" content="" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div tw='absolute top-0 bottom-0 left-0 right-0 flex flex-col'>
+      <div tw="absolute top-0 bottom-0 left-0 right-0 flex flex-col">
         <Header />
-        <Container tw='w-full max-h-full flex overflow-hidden'>
-          <div tw='w-full flex border-[1px] border-[#D8D8D8] mb-12 mt-3 rounded-[6px]'>
-            <div tw='flex-grow-[1] px-7 overflow-auto'>
-              <div tw='pt-7 sticky top-0 bg-white text-[28px] text-black font-bold z-50'>Messages</div>
-              <div tw='mt-2'>
-                {tempChats.
-                  sort((a, b) => getLatestChat(b.msgs).time - getLatestChat(a.msgs).time).
-                  map((chat, i) => (
-                    <div
-                      key={i}
-                      tw='border-t border-t-[#D8D8D8] pt-4 pb-5 flex items-center justify-between cursor-pointer hover:bg-[#FAFAFA]'
-                      onClick={() => {
-                        handleOpenChat(i);
-                      }}
-                    >
-                      <div tw='flex'>
-                        <div tw='relative w-[50px] h-[50px] overflow-hidden rounded-full'>
-                          <Image
-                            src={chat.pfp}
-                            alt='pfp'
-                            layout='fill'
-                            objectFit='cover'
-                          />
-                        </div>
-                        <div tw='ml-4'>
-                          <div
-                            tw='text-[20px] text-black leading-[1em]'
-                            css={[chat.read ? tw`font-semibold` : tw`font-bold`]}
-                          >{chat.name}</div>
-                          <div tw='text-[14px] leading-[1em] mt-2'>
-                            <span
-                              tw='text-[#3C3C3C] overflow-ellipsis overflow-hidden whitespace-nowrap'
-                              css={[!chat.read && tw`font-semibold`]}
-                            >{getLatestChat(chat.msgs).content}</span>
-                            <span tw='text-[#838383]'> · {timeElapsed(getLatestChat(chat.msgs).time)}</span>
-                          </div>
-                        </div>
-                      </div>
-                      {!chat.read &&
-                        <div tw='px-3 flex items-center justify-center'>
-                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="5" cy="5" r="5" fill="#E44C4D" />
-                          </svg>
-                        </div>
+        <Container tw="w-full max-h-full flex overflow-hidden">
+          <div tw="w-full flex border-[1px] border-[#D8D8D8] mb-12 mt-3 rounded-[6px]">
+            <div tw="flex-grow-[1] px-7 overflow-auto">
+              <div tw="pt-7 sticky top-0 bg-white text-[28px] text-black font-bold z-30">
+                Messages
+              </div>
+              <div tw="mt-2">
+                {chats
+                  .sort(
+                    (a, b) =>
+                      (getLatestChat(b.messages).timestamp || -1) -
+                      (getLatestChat(a.messages).timestamp || -1)
+                  )
+                  .map((chat, i) => (
+                    <ChatSidebarItem
+                      key={chat.id}
+                      onSelect={() => setSelectedChat(chat.id)}
+                      selected={selectedChat === chat.id}
+                      pfp={chat.pfp}
+                      name={chat.name}
+                      latestMessage={
+                        chat.messages.length > 0
+                          ? getLatestChat(chat.messages)
+                          : null
                       }
-                    </div>
+                    />
                   ))}
               </div>
             </div>
-            <div tw='w-[1px] h-full bg-[#D8D8D8] flex-shrink-0' />
-            <div tw='flex-grow-[2] px-7 flex flex-col relative'>
-              <div tw='pt-7 pb-5 border-b border-b-[#D8D8D8] flex items-center'>
-                <div tw='ml-2 w-[52px] h-[52px] relative overflow-hidden rounded-full'>
-                  <Image
-                    src={tempChats[selected].pfp}
-                    alt='pfp'
-                    layout='fill'
-                    objectFit='cover'
-                  />
-                </div>
-                <div tw='ml-4'>
-                  <div tw='text-[20px] font-semibold text-black leading-[1em]'>{tempChats[selected].name}</div>
-                  <div tw='text-[14px] text-[#838383] leading-[1em] mt-2'>Online</div>
-                </div>
-              </div>
-              <div tw='flex flex-col-reverse overflow-auto pr-1' ref={scrollRef}>
-                <div>
-                  {tempChats[selected].msgs.map((msg, i, msgs) => {
-                    const showTime = (!i || msg.time - msgs[i - 1].time > 1000 * 60 * 15);
-                    return <div key={i}>
-                      {showTime &&
-                        <div tw='flex justify-center mt-4 text-[12px] text-[#838383]'>
-                          {parseDate(msg.time)}
-                        </div>
-                      }
-                      <div
-                        tw='flex items-end'
-                        css={[
-                          msg.me ? tw`justify-end` : tw`justify-start`,
-                          i > 0 && (msg.me === msgs[i - 1].me) && !showTime ? tw`mt-[2px]` : tw`mt-4`
-                        ]}
-                      >
-                        {!msg.me && (i + 1 >= msgs.length || msgs[i + 1].me) ?
-                          <div tw='w-9 h-9 mr-3 rounded-full relative overflow-hidden'>
-                            <Image
-                              src={tempChats[selected].pfp}
-                              alt='other pfp'
-                              layout='fill'
-                              objectFit='cover'
-                            />
-                          </div> :
-                          <div tw='w-12' />
-                        }
-                        <div
-                          tw='max-w-[75%] py-2 px-4 rounded-[20px]'
-                          css={[
-                            msg.me ? tw`bg-[#F4F4F4]` : tw`border border-[#D8D8D8] bg-white`,
-                            (i > 0 && msg.me && msgs[i - 1].me) && tw`rounded-tr-[6px]`,
-                            (i > 0 && !msg.me && !msgs[i - 1].me) && tw`rounded-tl-[6px]`,
-                            (i + 1 < msgs.length && msg.me && msgs[i + 1].me) && tw`rounded-br-[6px]`,
-                            (i + 1 < msgs.length && !msg.me && !msgs[i + 1].me) && tw`rounded-bl-[6px]`,
-                          ]}
-                        >
-                          {msg.content}
-                        </div>
-                      </div>
-                    </div>
-                  })}
-                </div>
-              </div>
-              <div tw='mt-auto py-4 bg-white'>
-                <div tw='flex items-center rounded-[25px] bg-[#F4F4F4] h-11 px-6'>
-                  <input
-                    ref={msgRef}
-                    tw='w-full bg-transparent outline-none text-[14px]'
-                    placeholder='Message...'
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        handleNewMessage(e.currentTarget.value);
-                        e.currentTarget.value = ''
-                      }
-                    }}
-                  />
-                  {/* upload file */}
-                  <button tw='flex items-center' onClick={() => 0}>
-                    <Image src='/assets/images/kevin.png' width='18px' height='18px' />
-                  </button>
-                </div>
-              </div>
-            </div>
+            <div tw="w-[1px] h-full bg-[#D8D8D8] flex-shrink-0" />
+            {chats.length > 0 && (
+              <Chat
+                partnerId={selectedChatData?.id || chats[0].id}
+                pfp={selectedChatData?.pfp || '/doesnotexist'}
+                name={selectedChatData?.name || ''}
+                scrollRef={scrollRef}
+                messageRef={msgRef}
+                messages={selectedChatData?.messages || []}
+              />
+            )}
           </div>
         </Container>
-      </div >
+      </div>
     </>
   );
 };
 
-export default Home;
+export default ChatPage;

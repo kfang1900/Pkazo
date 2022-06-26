@@ -2,19 +2,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import buttons from 'styles/Button';
-import { UrlObject } from 'url';
 import useAuth from '../utils/auth/useAuth';
 import tw, { TwStyle } from 'twin.macro';
 import React, { useEffect, useRef, useState } from 'react';
-import { getApp } from 'firebase/app';
-import {
-  collection,
-  getDocs,
-  getFirestore,
-  query,
-  where,
-} from 'firebase/firestore';
-import { ArtistData } from '../types/dbTypes';
 import LoginForm, { Login } from './popups/LoginForm';
 import { useRouter } from 'next/router';
 import {
@@ -23,7 +13,6 @@ import {
 } from '../helpers/FirebaseFunctions';
 import UploadWork from './uploading/UploadWork';
 import { useMediaQuery } from 'react-responsive';
-import SearchBar from './SearchBar';
 import SearchHeader from './search/SearchHeader';
 import SearchBox from './search/SearchBox';
 
@@ -58,8 +47,9 @@ const Header = (props: {
   // search states
   const [showSearch, setShowSearch] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const updateSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => { setSearchValue(event.target.value) }
-
+  const updateSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
+  };
 
   const router = useRouter();
   const { artistData } = useAuth();
@@ -89,7 +79,7 @@ const Header = (props: {
     };
     window.addEventListener('click', handler);
     return () => window.removeEventListener('click', handler);
-  })
+  });
   if (props.logoOnly) {
     return (
       <div tw="top-0 z-50 w-full">
@@ -105,10 +95,13 @@ const Header = (props: {
       </div>
     );
   }
-  const navStyle = [tw`top-0 z-50 w-full`, props.isHome && tw`sticky`]
+  const navStyle = [tw`top-0 z-50 w-full`, props.isHome && tw`sticky`];
   if (isMobile && showLoginModal) {
     return (
-      <div css={navStyle} tw="h-screen overscroll-contain overflow-hidden flex justify-center">
+      <div
+        css={navStyle}
+        tw="h-screen overscroll-contain overflow-hidden flex justify-center"
+      >
         <Login onClose={() => setShowLoginModal(false)} />
       </div>
     );
@@ -119,13 +112,7 @@ const Header = (props: {
       {!isMobile && showLoginModal && (
         <LoginForm onClose={() => setShowLoginModal(false)} />
       )}
-      {isMobile && onSearch &&
-        <SearchHeader
-          onClose={() => setOnSearch(false)}
-          searchValue={searchValue}
-          updateSearchValue={updateSearchValue}
-        />
-      }
+      {isMobile && onSearch && <SearchBox />}
 
       <>
         {showUploadWorkPopup && (
@@ -140,31 +127,16 @@ const Header = (props: {
             />
           </Link>
           {!isMobile && (
-            <div tw='relative flex-grow ml-5'>
-              <div tw="pl-6 pr-5 rounded-[48px] h-10 bg-[#F5F5F5] border border-[#A3A3A3] focus-within:border-[#838383] focus-within:bg-white outline-none flex items-center">
-                <input
-                  onFocus={() => setOnSearch(true)}
-                  onBlur={() => setOnSearch(false)}
-                  onChange={updateSearchValue}
-                  type="text"
-                  placeholder="Search for anything"
-                  tw="w-full bg-transparent outline-none text-[16px]"
-                />
-                <img src="/assets/svgs/search.svg" tw="ml-3 w-[18px] h-[18px]" />
-              </div>
-              {onSearch &&
-                <SearchHeader searchValue={searchValue} updateSearchValue={updateSearchValue} />
-              }
+            <div tw="relative flex-grow ml-5">
+              <SearchBox />
             </div>
           )}
           <div tw="md:ml-10 flex items-center gap-x-4 md:gap-x-8">
-            {isMobile &&
-              <button
-                onClick={() => setOnSearch(true)}
-              >
-                <img src='/assets/svgs/mobile/search.svg' />
+            {isMobile && (
+              <button onClick={() => setOnSearch(true)}>
+                <img src="/assets/svgs/mobile/search.svg" />
               </button>
-            }
+            )}
             {!!user && (
               <>
                 <Link href="/favorites" passHref>
@@ -266,8 +238,9 @@ const Header = (props: {
                     ref={profileButtonRef}
                   >
                     <img
-                      src={`/assets/svgs/${isMobile ? 'mobile/' : ''
-                        }profile.svg`}
+                      src={`/assets/svgs/${
+                        isMobile ? 'mobile/' : ''
+                      }profile.svg`}
                     />
                   </button>
 
