@@ -13,7 +13,10 @@ const SearchHeader = (props: {
 }) => {
 
     if (props.onClose) {
-        return <div tw='absolute z-50 left-0 top-0 w-full h-[100vh] bg-white'>
+        return <div tw='absolute z-50 left-0 top-0 h-[100vh] w-full bg-white flex flex-col'>
+            <style>
+                {`body { overflow:hidden }`}
+            </style>
             <div tw='flex mt-2 ml-[10px] mr-[14px] gap-x-[10px]'>
                 <div tw='w-full pl-4 pr-[10px] h-9 rounded-[48px] bg-[#F5F5F5] border border-[#A3A3A3] focus-within:border-[#838383] focus-within:bg-white outline-none flex items-center'>
                     <input
@@ -31,7 +34,7 @@ const SearchHeader = (props: {
                 </button>
             </div>
             {!props.searchValue &&
-                <div tw='w-full mt-4'>
+                <div tw='w-full mt-4 bg-white overflow-auto'>
                     <button tw='px-4 w-full flex items-center justify-between'>
                         <div tw='font-semibold text-[14px] text-[#363636]'>Browse by discipline</div>
                         <svg width="6" height="11" viewBox="0 0 6 11" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -78,6 +81,33 @@ const SearchHeader = (props: {
                     </div>
                 </div>
             }
+            {props.searchValue &&
+                <div tw='w-full mt-4 bg-white overflow-auto'>
+                    {
+                        [' collar', ' painting', ' bowl'].map((result, i) => (
+                            <div
+                                key={i}
+                                tw='px-4 py-2 text-[14px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer'
+                            >
+                                {props.searchValue}<b>{result}</b>
+                            </div>
+                        ))
+                    }
+                    <div tw='px-4 mt-3 mb-2 text-[14px] text-[#363636] font-semibold'>Artists</div>
+                    <div tw='px-4 mt-4 grid grid-rows-1 grid-flow-col gap-x-6 overflow-auto'>
+                        {[...Array(10)].map((v, i) => (
+                            <div
+                                key={i}
+                            >
+                                <div tw='w-[64px] h-[64px] rounded-full overflow-hidden relative'>
+                                    <Image src='/assets/images/kevin.png' layout='fill' objectFit='cover' />
+                                </div>
+                                <div tw='mt-2 text-[12px] text-black'>Kevin Fang</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            }
         </div>
     }
 
@@ -107,6 +137,42 @@ const SearchHeader = (props: {
                     ))
                 }
                 <div tw='font-semibold text-[16px] text-[#363636] px-6 mt-4 mb-2'>Featured Artists</div>
+                {
+                    [...Array(2)].map((v, i) => (
+                        <div
+                            key={i}
+                            tw='flex items-center gap-x-3 px-6 py-2 bg-white hover:bg-[#F5F5F5] cursor-pointer'
+                        >
+                            <div tw='w-10 h-10 relative overflow-hidden'>
+                                <Image
+                                    src='/assets/images/kevin.png'
+                                    layout='fill'
+                                    objectFit='cover'
+                                />
+                            </div>
+                            <div>
+                                <div tw='text-[16px] leading-[19px] text-black'>Kevin Fang</div>
+                                <div tw='mt-[2px] text-[14px] leading-[17px] text-[#727373]'>Los Angeles, CA</div>
+                            </div>
+                        </div>
+                    ))
+                }
+            </>
+        }
+        {props.searchValue &&
+            <>
+                {/* matches */}
+                {
+                    [' collar', ' painting', ' bowl'].map((result, i) => (
+                        <div
+                            key={i}
+                            tw='px-6 py-2 text-[16px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer'
+                        >
+                            {props.searchValue}<b>{result}</b>
+                        </div>
+                    ))
+                }
+                <div tw='font-semibold text-[16px] text-[#363636] px-6 mt-4 mb-2'>Artists</div>
                 {
                     [...Array(2)].map((v, i) => (
                         <div

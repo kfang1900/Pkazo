@@ -130,7 +130,7 @@ export default function EditProfilePage() {
       tw`text-[16px] text-[#8B8B8B] flex items-center justify-end h-10`,
     input: tw`border border-[#D8D8D8] focus:border-[#888888] outline-none rounded-[6px] px-3 md:px-[16px] text-[14px] md:text-[16px] w-full h-9 md:h-10`,
     section: tw`font-semibold mt-5 md:mt-9 text-[14px] md:text-[20px] px-4 md:px-0`,
-    button: tw`mt-1 md:mt-0 h-[40px] border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] flex items-center hover:bg-[#F5F5F5]`
+    button: tw`mt-1 md:mt-0 h-[40px] border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] flex items-center hover:bg-[#F5F5F5] duration-100`
   };
   return (
     <div css={[isMobile ? tw`mb-8` : tw`ml-[76px] mt-9 mb-[100px]`]} >

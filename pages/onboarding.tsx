@@ -181,10 +181,9 @@ function Onboarding() {
                   <PortfolioSection values={values} />
                 )}
               </div>
-
               <div
                 tw='mt-10 md:mt-[60px] md:w-[700px] md:mx-auto md:pb-[30px]'
-                css={[isMobile && tw`sticky bottom-0 bg-white pb-4`]}
+                css={[isMobile && tw`sticky w-full bottom-0 bg-white pb-4`]}
               >
                 {isMobile && <div tw='h-[0.5px] bg-[#E3E3E3]' />}
                 <div
