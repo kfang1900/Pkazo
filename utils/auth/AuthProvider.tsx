@@ -93,7 +93,7 @@ export default function FirebaseProvider({
       }
       // If user is not signed in, set user to null
       if (user === null) {
-        // setLoading(false)
+        setLoading(false)
         // setUserInfo(null)
         setEmail('');
         return;
