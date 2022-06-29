@@ -234,6 +234,14 @@ const Header = (props: {
               <>
                 <div className="ml-3 relative">
                   <button
+                    css={[
+                      buttons.red,
+                      tw`font-semibold w-[108px] md:w-[121px] h-[32px] md:h-[42px] text-[12px] md:text-[14px] px-0 py-0 flex-shrink-0`,
+                    ]}
+                  >
+                    Sell on Pkazo
+                  </button>
+                  <button
                     tw="w-4 h-4 md:w-6 md:h-6 my-auto overflow-hidden rounded-full flex items-center"
                     ref={profileButtonRef}
                   >
