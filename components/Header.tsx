@@ -252,14 +252,6 @@ const Header = (props: {
                       aria-labelledby="user-menu-button"
                       tabIndex={-1}
                     >
-                      <Link href={`/account/edit`} passHref>
-                        <a
-                          tw="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
-                          tabIndex={-1}
-                        >
-                          Acconut Settings
-                        </a>
-                      </Link>
                       <a
                         tw="cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
                         tabIndex={-1}
@@ -302,3 +294,14 @@ const Header = (props: {
 };
 
 export default Header;
+
+/*
+<Link href={`/account/edit`} passHref>
+                        <a
+                          tw="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
+                          tabIndex={-1}
+                        >
+                          Acconut Settings
+                        </a>
+                      </Link> 
+*/
