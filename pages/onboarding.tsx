@@ -2,11 +2,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import Head from 'next/head';
 import Header from 'components/Header';
 import tw, { styled } from 'twin.macro';
-import {
-  ErrorMessage,
-  Formik,
-  FormikErrors,
-} from 'formik';
+import { ErrorMessage, Formik, FormikErrors, useFormikContext } from 'formik';
 
 import LoginForm from '../components/popups/LoginForm';
 import useAuth from '../utils/auth/useAuth';
@@ -56,19 +52,18 @@ function Onboarding() {
   // let artistName = '';
   // let discipline = '';
 
-  const sections = [
-    'Profile Details',
-    'Create Portfolios'
-  ];
+  const sections = ['Profile Details', 'Create Portfolios'];
   const subtitles = [
-    'Let\'s get started! Tell us a little about you.',
-    'How would you like to categorize your work?'
+    "Let's get started! Tell us a little about you.",
+    'How would you like to categorize your work?',
   ];
   const defaultCountry = 'United States';
 
   const [signupFormActive, setSignupFormActive] = useState(false);
   const [artistId, setArtistId] = useState('');
+  const [formValues, setFormValues] = useState({});
   const { user, loading } = useAuth();
+  const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -117,6 +112,12 @@ function Onboarding() {
   }, [loading, user]);
   return (
     <>
+      {submitting && (
+        <img
+          tw={'w-full h-screen bg-center bg-no-repeat'}
+          src={'/assets/svgs/Loading.svg'}
+        />
+      )}
       <Head>
         <title>Onboarding</title>
       </Head>
@@ -131,14 +132,12 @@ function Onboarding() {
 
       <Header logoOnly />
 
-      <Container tw='mt-5'>
-        <div tw='flex flex-col items-center text-center px-6'>
-          <div tw='font-semibold text-[#333333] text-[24px]'>
+      <Container tw="mt-5">
+        <div tw="flex flex-col items-center text-center px-6">
+          <div tw="font-semibold text-[#333333] text-[24px]">
             {sections[stage]}
           </div>
-          <div tw='mt-[6px] text-[#333333] text-[16px]'>
-            {subtitles[stage]}
-          </div>
+          <div tw="mt-[6px] text-[#333333] text-[16px]">{subtitles[stage]}</div>
         </div>
         <Formik<OnboardingFormValues>
           initialValues={{
@@ -149,7 +148,7 @@ function Onboarding() {
             acceptCommissions: null,
             onlySale: null,
             uniqueCollections: null,
-            portfolios: []
+            portfolios: [],
           }}
           validateOnChange={false}
           validate={(values) => {
@@ -162,62 +161,64 @@ function Onboarding() {
 
             if (!values.discipline) {
               errors.discipline = 'Please enter your art discipline.';
+            } else {
+              setFormValues(values);
             }
-
             return errors;
           }}
-          onSubmit={() => { 0 }}
+          onSubmit={() => {
+            console.log('Submitting', formValues);
+          }}
         >
-          {({ values, setFieldValue }) =>
+          {({ values, setFieldValue }) => (
             <>
-              <div tw='pt-5 md:pt-12 px-6'>
+              <div tw="pt-5 md:pt-12 px-6">
                 {stage === 0 && (
                   <ProfileDetailsSection
                     country={defaultCountry}
                     values={values}
                   />
                 )}
-                {stage === 1 && (
-                  <PortfolioSection values={values} />
-                )}
+                {stage === 1 && <PortfolioSection values={values} />}
               </div>
               <div
-                tw='mt-10 md:mt-[60px] md:w-[700px] md:mx-auto md:pb-[30px]'
+                tw="mt-10 md:mt-[60px] md:w-[700px] md:mx-auto md:pb-[30px]"
                 css={[isMobile && tw`sticky w-full bottom-0 bg-white pb-4`]}
               >
-                {isMobile && <div tw='h-[0.5px] bg-[#E3E3E3]' />}
+                {isMobile && <div tw="h-[0.5px] bg-[#E3E3E3]" />}
                 <div
-                  css={[isMobile ?
-                    tw`mt-[14px] grid grid-cols-2 gap-x-6 px-6` :
-                    tw`w-full grid grid-cols-[repeat(2, 160px)] justify-between`
+                  css={[
+                    isMobile
+                      ? tw`mt-[14px] grid grid-cols-2 gap-x-6 px-6`
+                      : tw`w-full grid grid-cols-[repeat(2, 160px)] justify-between`,
                   ]}
                 >
                   <button
-                    css={[
-                      buttons.white,
-                      tw`h-12`
-                    ]}
+                    css={[buttons.white, tw`h-12`]}
                     onClick={() => setStage(stage ? stage - 1 : 0)}
                   >
                     {stage ? 'Back' : 'Cancel'}
                   </button>
                   <button
-                    css={[
-                      buttons.red,
-                      tw`h-12`
-                    ]}
-                    onClick={() => setStage(stage < 1 ? stage + 1 : 1)}
+                    css={[buttons.red, tw`h-12`]}
+                    onClick={() => {
+                      if (stage < 1) {
+                        setStage(stage + 1);
+                      } else {
+                        console.log('submitting', values);
+                      }
+                    }}
                   >
                     {stage < 1 ? 'Next' : 'Submit'}
                   </button>
                 </div>
               </div>
             </>
-          }
+          )}
         </Formik>
       </Container>
 
-      <div tw='bg-red-500 hidden'>
+      <div tw="bg-red-500 hidden">
         {stage === 1 && (
           <CreatePortfoliosSection
             user={user}
