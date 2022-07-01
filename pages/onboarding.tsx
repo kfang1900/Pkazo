@@ -64,11 +64,47 @@ function Onboarding() {
   const [formValues, setFormValues] = useState({});
   const { user, loading } = useAuth();
   const [submitting, setSubmitting] = useState(false);
+
   const router = useRouter();
 
-  const submitForm = async (vals: OnboardingFormValues) => {
-    console.log('submitting values', vals);
-    //setSubmitting(false)
+  const submitForm = async (values: OnboardingFormValues) => {
+    console.log('submitting values', values);
+    if (artistId === '') {
+      //for an empty artist ID, add a new document
+      if (!user) {
+        throw new Error('User is not defined');
+      }
+      console.log(values);
+      const app = getApp();
+      const db = getFirestore(app);
+
+      await addDoc(collection(db, 'artists'), {
+        associatedUser: user.uid,
+        artistName: values.name,
+        acceptingCommissions: values.acceptCommissions === 'yes' ? true : false,
+        bio: "This user hasn't completed their bio yet.",
+        coverImage: '',
+        discipline: values.discipline,
+        education: [],
+        exhibitions: [],
+        experience: [],
+        faqs: [],
+        followers: 0,
+        following: 0,
+        gender: '',
+        approved: true,
+        location: values.city + ' ' + values.country,
+        name: values.name,
+        profilePicture: '',
+        numWorks: '',
+        username: values.name
+          .split(' ')
+          .map((n) => n.toLowerCase())
+          .join('-'),
+      });
+      setSubmitting(false);
+      return 0;
+    }
   };
 
   useEffect(() => {
