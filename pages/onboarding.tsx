@@ -66,6 +66,11 @@ function Onboarding() {
   const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
 
+  const submitForm = async (vals: OnboardingFormValues) => {
+    console.log('submitting values', vals);
+    //setSubmitting(false)
+  };
+
   useEffect(() => {
     console.log(loading, user);
     if (loading) {
@@ -205,7 +210,8 @@ function Onboarding() {
                       if (stage < 1) {
                         setStage(stage + 1);
                       } else {
-                        console.log('submitting', values);
+                        setSubmitting(true);
+                        submitForm(values);
                       }
                     }}
                   >
