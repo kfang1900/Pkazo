@@ -168,7 +168,10 @@ function Onboarding() {
     console.log(values);
     const app = getApp();
     const db = getFirestore(app);
-
+    const username = values.name
+      .split(' ')
+      .map((n) => n.toLowerCase())
+      .join('-');
     //Step 1: add the artist document
     const artistref = await addDoc(collection(db, 'artists'), {
       associatedUser: user.uid,
@@ -189,10 +192,7 @@ function Onboarding() {
       name: values.name,
       profilePicture: '',
       numWorks: '',
-      username: values.name
-        .split(' ')
-        .map((n) => n.toLowerCase())
-        .join('-'),
+      username: username,
     });
     console.log('successfully uploaded artist reference ', artistref.id);
 
@@ -206,6 +206,7 @@ function Onboarding() {
     const portPromiseFinished = await Promise.all(portPromises);
     console.log('profile creation complete');
     setSubmitting(false);
+    router.push('/' + username);
     return 0;
   };
 
