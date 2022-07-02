@@ -38,7 +38,7 @@ yarn-error.log*
 *.tsbuildinfo
 
 .env
-
+.eslintcache
 # firebase emulator
 database-debug.log
 firebase-debug.log
@@ -46,5 +46,4 @@ ui-debug.log
 
 .idea/
 todo.md
-.eslintcache
-eslintcache
+
