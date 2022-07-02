@@ -96,6 +96,65 @@ function Onboarding() {
     return workId;
   };
 
+  const uploadPortfolio = async (
+    artistref: string,
+    portfolio: PortfolioData
+  ) => {
+    //Step 2.1: Upload the images to storage bucket
+    const app = getApp();
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const workPromises: Promise<string>[] = []; //Promises of storage reference strings
+    portfolio.works.forEach((work) => {
+      workPromises.push(uploadNewWork(work)); //upload work images to storage bucket
+    });
+    const workImages = await Promise.all(workPromises);
+    console.log('finished uploading images', workImages);
+    const workrefs: Promise<DocumentReference>[] = [];
+
+    //Step 2.2 Upload main image:
+    const portPicture = await uploadImageBlob(
+      storage,
+      portfolio.picture,
+      `/Portfolio/${portfolio.name}/`,
+      'image1'
+    );
+    //Step 2.3: Add work firebase data
+
+    workImages.forEach((workImgRef) => {
+      //Create template works
+      workrefs.push(
+        addDoc(collection(db, 'works'), {
+          images: [workImgRef],
+          title: 'Unnamed ',
+          description: 'No description provided yet',
+        })
+      );
+    });
+    const workrefslst = await Promise.all(workrefs);
+    console.log('finished uploading works', workrefslst);
+    //
+    const strWorks: string[] = [];
+    workrefslst.forEach((workref) => {
+      strWorks.push(workref.id);
+    });
+    const portObject = {
+      name: portfolio.name,
+      description: portfolio.description,
+      picture: portPicture,
+      works: strWorks,
+    };
+    console.log('adding portfolio Object', portObject);
+
+    const portref = await addDoc(
+      collection(db, 'artists', artistref, 'portfolios'),
+      portObject
+    );
+    console.log('uploaded Portfolio', portref);
+    return portref;
+  };
+
   const submitForm = async (values: OnboardingFormValues) => {
     console.log('submitting values', values);
     if (artistId !== '') {
@@ -140,59 +199,13 @@ function Onboarding() {
     //Step 2: Upload work images into storage, upload works, and return the references
 
     //Go through and upload works in each portfolio
-    const ret = await values.portfolios.forEach(async (portfolio) => {
-      setSubmitting(true);
-      //Step 2.1: Upload the images to storage bucket
-      const workPromises: Promise<string>[] = []; //Promises of storage reference strings
-      portfolio.works.forEach((work) => {
-        workPromises.push(uploadNewWork(work)); //upload work images to storage bucket
-      });
-      const workImages = await Promise.all(workPromises);
-      console.log('finished uploading images', workImages);
-      const workrefs: Promise<DocumentReference>[] = [];
-
-      //Step 2.2 Upload main image:
-      const storage = getStorage(app);
-      const portPicture = await uploadImageBlob(
-        storage,
-        portfolio.picture,
-        `/Portfolio/${portfolio.name}/`,
-        'image1'
-      );
-      //Step 2.3: Add work firebase data
-
-      workImages.forEach((workImgRef) => {
-        //Create template works
-        workrefs.push(
-          addDoc(collection(db, 'works'), {
-            images: [workImgRef],
-            title: 'Unnamed ',
-            description: 'No description provided yet',
-          })
-        );
-      });
-      const workrefslst = await Promise.all(workrefs);
-      console.log('finished uploading works', workrefslst);
-      //
-      const strWorks: string[] = [];
-      workrefslst.forEach((workref) => {
-        strWorks.push(workref.id);
-      });
-      const portObject = {
-        name: portfolio.name,
-        description: portfolio.description,
-        picture: portPicture,
-        works: strWorks,
-      };
-      console.log('adding portfolio Object', portObject);
-
-      const portref = await addDoc(
-        collection(db, 'artists', artistref.id, 'portfolios'),
-        portObject
-      );
-      console.log('uploaded Portfolio', portref);
-      setSubmitting(false);
+    const portPromises: Promise<DocumentReference>[] = [];
+    values.portfolios.forEach(async (portfolio) => {
+      portPromises.push(uploadPortfolio(artistref.id, portfolio));
     });
+    const portPromiseFinished = await Promise.all(portPromises);
+    console.log('profile creation complete');
+    setSubmitting(false);
     return 0;
   };
 
