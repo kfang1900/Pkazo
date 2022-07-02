@@ -3,15 +3,22 @@ import Head from 'next/head';
 import Header from 'components/Header';
 import tw, { styled } from 'twin.macro';
 import { ErrorMessage, Formik, FormikErrors, useFormikContext } from 'formik';
-
+import {
+  getStorage,
+  ref,
+  StorageError,
+  uploadBytesResumable,
+} from 'firebase/storage';
 import LoginForm from '../components/popups/LoginForm';
 import useAuth from '../utils/auth/useAuth';
 import { getApp } from 'firebase/app';
 import {
+  DocumentReference,
   addDoc,
   collection,
   doc,
   DocumentData,
+  Firestore,
   getDocs,
   getFirestore,
   query,
@@ -29,6 +36,7 @@ import { Container } from 'styles/Container';
 import buttons from 'styles/Button';
 import { useMediaQuery } from 'react-responsive';
 import { PortfolioData } from 'types/dbTypes';
+import uploadImageBlob from '../utils/firebase/uploadImageBlob';
 
 export interface OnboardingFormValues {
   name: string;
@@ -67,44 +75,125 @@ function Onboarding() {
 
   const router = useRouter();
 
+  const uploadNewWork = async (workImageBlob: string) => {
+    const app = getApp();
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    const ref = await addDoc(collection(db, 'works'), {
+      title: '',
+    });
+    const workId = ref.id;
+    const workImageRef = await uploadImageBlob(
+      storage,
+      workImageBlob,
+      `/Works/${workId}/`,
+      'image1'
+    );
+    const finalref = await updateDoc(doc(db, 'works', workId), {
+      images: [workImageRef],
+    });
+
+    return workId;
+  };
+
   const submitForm = async (values: OnboardingFormValues) => {
     console.log('submitting values', values);
-    if (artistId === '') {
-      //for an empty artist ID, add a new document
-      if (!user) {
-        throw new Error('User is not defined');
-      }
-      console.log(values);
-      const app = getApp();
-      const db = getFirestore(app);
-
-      await addDoc(collection(db, 'artists'), {
-        associatedUser: user.uid,
-        artistName: values.name,
-        acceptingCommissions: values.acceptCommissions === 'yes' ? true : false,
-        bio: "This user hasn't completed their bio yet.",
-        coverImage: '',
-        discipline: values.discipline,
-        education: [],
-        exhibitions: [],
-        experience: [],
-        faqs: [],
-        followers: 0,
-        following: 0,
-        gender: '',
-        approved: true,
-        location: values.city + ' ' + values.country,
-        name: values.name,
-        profilePicture: '',
-        numWorks: '',
-        username: values.name
-          .split(' ')
-          .map((n) => n.toLowerCase())
-          .join('-'),
-      });
-      setSubmitting(false);
-      return 0;
+    if (artistId !== '') {
+      throw new Error(
+        'User already has artist profile, no onboarding necessary'
+      );
     }
+    if (!user) {
+      throw new Error('User is not defined');
+    }
+    console.log(values);
+    const app = getApp();
+    const db = getFirestore(app);
+
+    //Step 1: add the artist document
+    const artistref = await addDoc(collection(db, 'artists'), {
+      associatedUser: user.uid,
+      artistName: values.name,
+      acceptingCommissions: values.acceptCommissions === 'yes' ? true : false,
+      bio: "This user hasn't completed their bio yet.",
+      coverImage: '',
+      discipline: values.discipline,
+      education: [],
+      exhibitions: [],
+      experience: [],
+      faqs: [],
+      followers: 0,
+      following: 0,
+      gender: '',
+      approved: true,
+      location: values.city + ' ' + values.country,
+      name: values.name,
+      profilePicture: '',
+      numWorks: '',
+      username: values.name
+        .split(' ')
+        .map((n) => n.toLowerCase())
+        .join('-'),
+    });
+    console.log('successfully uploaded artist reference ', artistref.id);
+
+    //Step 2: Upload work images into storage, upload works, and return the references
+
+    //Go through and upload works in each portfolio
+    const ret = await values.portfolios.forEach(async (portfolio) => {
+      setSubmitting(true);
+      //Step 2.1: Upload the images to storage bucket
+      const workPromises: Promise<string>[] = []; //Promises of storage reference strings
+      portfolio.works.forEach((work) => {
+        workPromises.push(uploadNewWork(work)); //upload work images to storage bucket
+      });
+      const workImages = await Promise.all(workPromises);
+      console.log('finished uploading images', workImages);
+      const workrefs: Promise<DocumentReference>[] = [];
+
+      //Step 2.2 Upload main image:
+      const storage = getStorage(app);
+      const portPicture = await uploadImageBlob(
+        storage,
+        portfolio.picture,
+        `/Portfolio/${portfolio.name}/`,
+        'image1'
+      );
+      //Step 2.3: Add work firebase data
+
+      workImages.forEach((workImgRef) => {
+        //Create template works
+        workrefs.push(
+          addDoc(collection(db, 'works'), {
+            images: [workImgRef],
+            title: 'Unnamed ',
+            description: 'No description provided yet',
+          })
+        );
+      });
+      const workrefslst = await Promise.all(workrefs);
+      console.log('finished uploading works', workrefslst);
+      //
+      const strWorks: string[] = [];
+      workrefslst.forEach((workref) => {
+        strWorks.push(workref.id);
+      });
+      const portObject = {
+        name: portfolio.name,
+        description: portfolio.description,
+        picture: portPicture,
+        works: strWorks,
+      };
+      console.log('adding portfolio Object', portObject);
+
+      const portref = await addDoc(
+        collection(db, 'artists', artistref.id, 'portfolios'),
+        portObject
+      );
+      console.log('uploaded Portfolio', portref);
+      setSubmitting(false);
+    });
+    return 0;
   };
 
   useEffect(() => {
@@ -137,6 +226,10 @@ function Onboarding() {
           result.push(snapshot);
           username = snapshot.data().username;
         });
+        if (_artistId !== '') {
+          //Reroute if onboarding already has been completed
+          router.push('/' + username);
+        }
         // if (result.length > 0) {
         //   setStage(1);
         // }
