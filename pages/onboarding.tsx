@@ -117,7 +117,7 @@ function Onboarding() {
     const portPicture = await uploadImageBlob(
       storage,
       portfolio.picture,
-      `/Portfolio/${portfolio.name}/`,
+      `/Artists/${artistref}/Portfolio/${portfolio.name}`,
       'image1'
     );
     //Step 2.3: Add work firebase data
