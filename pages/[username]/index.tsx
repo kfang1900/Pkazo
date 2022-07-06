@@ -49,6 +49,7 @@ const fetchArtist = async (
     result.push(snapshot);
   });
   setData(result);
+  //console.log(result)
   if (result.length === 0) {
     setLoadingPortfolio(false);
     return;
@@ -57,8 +58,9 @@ const fetchArtist = async (
     ? await loadStorageImage(result[0].data().coverImage)
     : '/doesnotexist';
   setCover(coverImageURL);
-  console.log('loaded cover image: ', coverImageURL);
+  //console.log('loaded cover image: ', coverImageURL);
   const portfolioCollection = await getPortfolioByRef(result[0]?.id);
+  //console.log("portfolio loaded")
   setPortfolioData(portfolioCollection!);
   if (
     portfolioCollection.PortfolioImages !== [] &&
@@ -66,7 +68,7 @@ const fetchArtist = async (
   ) {
     setLoadingPortfolio(false);
   }
-  console.log(portfolioCollection);
+  //console.log(portfolioCollection);
 };
 
 enum Page {

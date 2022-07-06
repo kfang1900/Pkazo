@@ -19,12 +19,13 @@ function defaultString<T>(arg: (param: string) => string) {
 //Returns the Image URL as a string
 const loadStorageImage = async (url: string) => {
   if (!url) {
-    console.log(url)
+    //console.log(url)
     throw new Error("Didn't receive a valid URL");
   }
   try {
     const app = getApp();
     const storage = getStorage(app);
+    //console.log("Loading storage Image",url)
     return await getDownloadURL(ref(storage, url));
   } catch (e) {
     throw e;
@@ -35,18 +36,18 @@ const loadStorageImages = async (photoURLs: string[]) =>
   Promise.all(photoURLs.map((url) => loadStorageImage(url)));
 
 const fetchArtistByID = async (artistref: string) => {
-  console.log('Fetching artist ', artistref);
-  let app = getApp();
-  let db = getFirestore(app);
+  //console.log('Fetching artist ', artistref);
+  const app = getApp();
+  const db = getFirestore(app);
   const docRef = doc(db, 'artists', artistref);
   const docSnap = await getDoc(docRef);
   return docSnap;
 };
 
 const fetchWorkByID = async (workref: string) => {
-  let app = getApp();
+  const app = getApp();
   //Get that document from the database
-  let db = getFirestore(app);
+  const db = getFirestore(app);
   const docRef = doc(db, 'works', workref);
   const docSnap = await getDoc(docRef);
   return docSnap;
@@ -57,10 +58,10 @@ const fetchWorkByID = async (workref: string) => {
 const getPortfolioHelper = async (docRef: QuerySnapshot<DocumentData>) => {
   console.warn('Deprecated function used: getPortfolioHelper');
 
-  let Portfolios: DocumentData[] = [];
-  let Works: DocumentData[][] = [];
-  let PortfolioImages: string[] = [];
-  let WorkImages: string[][] = [];
+  const Portfolios: DocumentData[] = [];
+  const Works: DocumentData[][] = [];
+  const PortfolioImages: string[] = [];
+  const WorkImages: string[][] = [];
   let curPos = 0;
   const promises: Promise<void>[] = [];
   docRef.forEach((element) => {
@@ -71,12 +72,11 @@ const getPortfolioHelper = async (docRef: QuerySnapshot<DocumentData>) => {
         //console.log(curPos,Portfolios)
         const portImageURL = await loadStorageImage(element.data().picture);
         PortfolioImages.push(portImageURL);
-        let subworks: DocumentData[] = [];
-        let subworkImages: string[] = [];
+        const subworks: DocumentData[] = [];
+        const subworkImages: string[] = [];
         await Promise.all(
           (element.data().works || []).map(async (workref: string) => {
             const workdata = await fetchWorkByID(workref);
-
             if (
               !workdata.data() ||
               !workdata.data()!.images ||
@@ -84,7 +84,7 @@ const getPortfolioHelper = async (docRef: QuerySnapshot<DocumentData>) => {
             ) {
               return;
             }
-
+            //console.log("work information",workdata.data(),workdata.id)
             const workImage = await loadStorageImage(
               workdata.data()!.images[0]
             );
@@ -118,11 +118,13 @@ const getPortfolioHelper = async (docRef: QuerySnapshot<DocumentData>) => {
 const getPortfolioByRef = async (artistref: string) => {
   console.warn('Deprecated function used: getPortfolioByRef');
 
-  let app = getApp();
-  let db = getFirestore(app);
+  const app = getApp();
+  const db = getFirestore(app);
+  //console.log("fetching portfolio collection of",artistref)
   const q = await query(collection(db, 'artists', artistref, 'portfolios'));
   const docRef = await getDocs(q);
-  let dex = 0;
+  //console.log(docRef)
+  const dex = 0;
   const res = await getPortfolioHelper(docRef);
   //console.log("returning res",res)
   return res;
@@ -134,12 +136,12 @@ const getPortfolioByRef = async (artistref: string) => {
  */
 const getPortfolioImagesOnlyByRef = async (artistref: string) => {
   console.warn('Deprecated function used: getPortfolioImagesOnlyByRef');
-  let app = getApp();
-  let db = getFirestore(app);
+  const app = getApp();
+  const db = getFirestore(app);
   const q = await query(collection(db, 'artists', artistref, 'portfolios'));
   const docRef = await getDocs(q);
-  let arr: string[] = [];
-  let arr2: string[] = [];
+  const arr: string[] = [];
+  const arr2: string[] = [];
   docRef.forEach((element) => {
     arr.push(element.data().name);
     arr2.push(element.id);

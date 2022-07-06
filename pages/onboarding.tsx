@@ -75,7 +75,7 @@ function Onboarding() {
 
   const router = useRouter();
 
-  const uploadNewWork = async (workImageBlob: string) => {
+  const uploadNewWork = async (workImageBlob: string, artistref: string) => {
     const app = getApp();
     const db = getFirestore(app);
     const storage = getStorage(app);
@@ -89,8 +89,11 @@ function Onboarding() {
       `/Works/${workId}/`,
       'image1'
     );
+    //console.log("storage work-reference", workImageRef)
     const finalref = await updateDoc(doc(db, 'works', workId), {
       images: [workImageRef],
+      artist: artistref,
+      description: 'No description provided yet',
     });
 
     return workId;
@@ -107,11 +110,10 @@ function Onboarding() {
 
     const workPromises: Promise<string>[] = []; //Promises of storage reference strings
     portfolio.works.forEach((work) => {
-      workPromises.push(uploadNewWork(work)); //upload work images to storage bucket
+      workPromises.push(uploadNewWork(work, artistref)); //upload work images to storage bucket
     });
-    const workImages = await Promise.all(workPromises);
-    console.log('finished uploading images', workImages);
-    const workrefs: Promise<DocumentReference>[] = [];
+    const workRefs = await Promise.all(workPromises);
+    //console.log('finished uploading works', workRefs);
 
     //Step 2.2 Upload main image:
     const portPicture = await uploadImageBlob(
@@ -120,43 +122,25 @@ function Onboarding() {
       `/Artists/${artistref}/Portfolio/${portfolio.name}`,
       'image1'
     );
-    //Step 2.3: Add work firebase data
 
-    workImages.forEach((workImgRef) => {
-      //Create template works
-      workrefs.push(
-        addDoc(collection(db, 'works'), {
-          images: [workImgRef],
-          title: 'Unnamed ',
-          description: 'No description provided yet',
-        })
-      );
-    });
-    const workrefslst = await Promise.all(workrefs);
-    console.log('finished uploading works', workrefslst);
-    //
-    const strWorks: string[] = [];
-    workrefslst.forEach((workref) => {
-      strWorks.push(workref.id);
-    });
     const portObject = {
       name: portfolio.name,
       description: portfolio.description,
       picture: portPicture,
-      works: strWorks,
+      works: workRefs,
     };
-    console.log('adding portfolio Object', portObject);
+    //console.log('adding portfolio Object', portObject);
 
     const portref = await addDoc(
       collection(db, 'artists', artistref, 'portfolios'),
       portObject
     );
-    console.log('uploaded Portfolio', portref);
+    //console.log('uploaded Portfolio', portref);
     return portref;
   };
 
   const submitForm = async (values: OnboardingFormValues) => {
-    console.log('submitting values', values);
+    //console.log('submitting values', values);
     if (artistId !== '') {
       throw new Error(
         'User already has artist profile, no onboarding necessary'
@@ -165,7 +149,7 @@ function Onboarding() {
     if (!user) {
       throw new Error('User is not defined');
     }
-    console.log(values);
+    //console.log(values);
     const app = getApp();
     const db = getFirestore(app);
     const username = values.name
