@@ -21,7 +21,7 @@ import {
 import { defaultCoverImage } from 'utils/FrontEndDefaults';
 import { getPortfolioByRef, loadStorageImage } from 'helpers/FirebaseFunctions';
 import useAuth from '../../utils/auth/useAuth';
-import useRequireOnboarding from '../../utils/hooks/useRequireOnboarding';
+//import useRequireOnboarding from '../../utils/hooks/useRequireOnboarding';
 import { useMediaQuery } from 'react-responsive';
 import { Container } from 'styles/Container';
 import { ArtistData } from '../../types/dbTypes';
@@ -49,7 +49,7 @@ const fetchArtist = async (
     result.push(snapshot);
   });
   setData(result);
-  //console.log(result)
+  console.log(result);
   if (result.length === 0) {
     setLoadingPortfolio(false);
     return;
@@ -58,9 +58,9 @@ const fetchArtist = async (
     ? await loadStorageImage(result[0].data().coverImage)
     : '/doesnotexist';
   setCover(coverImageURL);
-  //console.log('loaded cover image: ', coverImageURL);
+  console.log('loaded cover image: ', coverImageURL);
   const portfolioCollection = await getPortfolioByRef(result[0]?.id);
-  //console.log("portfolio loaded")
+  console.log('portfolio loaded');
   setPortfolioData(portfolioCollection!);
   if (
     portfolioCollection.PortfolioImages !== [] &&
@@ -68,7 +68,7 @@ const fetchArtist = async (
   ) {
     setLoadingPortfolio(false);
   }
-  //console.log(portfolioCollection);
+  console.log(portfolioCollection);
 };
 
 enum Page {
@@ -128,11 +128,12 @@ const Portfolio: NextPage = () => {
   });
   const [loadingPortfolio, setLoadingPortfolio] = useState(true);
   const { artistData: currentUserArtistData } = useAuth();
+  /*
   useRequireOnboarding(
     artistData.length > 0 &&
-      artistData[0].data() &&
-      artistData[0].data().username === username
-  );
+    artistData[0].data() &&
+    artistData[0].data().username === username
+  );*/
 
   const isCurrentUserPage =
     currentUserArtistData && username === currentUserArtistData.username;
