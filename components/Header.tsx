@@ -60,7 +60,12 @@ const Header = (props: {
       return;
     }
     (async () => {
-      setPfp(await loadStorageImage(artistData?.profilePicture));
+      const pfp = await loadStorageImage(artistData?.profilePicture);
+      if (pfp !== null) {
+        setPfp(pfp);
+      } else {
+        setPfp('/images/default-profile-picture.png');
+      }
     })();
   }, [artistData]);
 
