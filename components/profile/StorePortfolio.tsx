@@ -25,7 +25,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
-import { loadStorageImage } from '../../helpers/FirebaseFunctions';
+import { loadStorageImageSafe } from '../../helpers/FirebaseFunctions';
 import algoliasearch from 'algoliasearch/lite';
 import {
   InstantSearch,
@@ -349,7 +349,7 @@ const StorePortFolio = ({
           newWorks.push({
             id: snapshot.id,
             data: workData,
-            imageURL: await loadStorageImage(workData.images[0]),
+            imageURL: await loadStorageImageSafe(workData.images[0]),
           });
           console.log(workData);
           if (!workData.forSale) {

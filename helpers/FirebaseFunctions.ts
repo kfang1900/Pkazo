@@ -22,7 +22,8 @@ const loadStorageImage = async (url: string) => {
     console.log('Given url is', url);
     //return("Does not exist")
     //NOTE: commenting out next line to return null instead of throwing an error,
-    //relaying error handling to front-end. Important for EditPortfolioPage
+    //relaying error handling to front-end. Important for EditPortfolioPage.
+    //If you rely on return type being only string, use loadStorageImageSafe
     //throw new Error("Didn't receive a valid URL");
     return null;
   }
@@ -36,8 +37,26 @@ const loadStorageImage = async (url: string) => {
   }
 };
 
+//Returns the Image URL as a string
+const loadStorageImageSafe = async (url: string) => {
+  if (!url) {
+    //return("Does not exist")
+    //NOTE: commenting out next line to return null instead of throwing an error,
+    //relaying error handling to front-end. Important for EditPortfolioPage
+    throw new Error("Didn't receive a valid URL");
+  }
+  try {
+    const app = getApp();
+    const storage = getStorage(app);
+    //console.log("Loading storage Image",url)
+    return await getDownloadURL(ref(storage, url));
+  } catch (e) {
+    throw e;
+  }
+};
+
 const loadStorageImages = async (photoURLs: string[]) =>
-  Promise.all(photoURLs.map((url) => loadStorageImage(url)));
+  Promise.all(photoURLs.map((url) => loadStorageImageSafe(url)));
 
 const fetchArtistByID = async (artistref: string) => {
   //console.log('Fetching artist ', artistref);
@@ -90,7 +109,7 @@ const getPortfolioHelper = async (docRef: QuerySnapshot<DocumentData>) => {
                 return;
               }
               //console.log("work information",workdata.data(),workdata.id)
-              const workImage = await loadStorageImage(
+              const workImage = await loadStorageImageSafe(
                 workdata.data()!.images[0]
               );
               //console.log(Works,subworks)
@@ -162,5 +181,6 @@ export {
   loadStorageImages,
   fetchArtistByID,
   getPortfolioImagesOnlyByRef,
+  loadStorageImageSafe,
 };
 export default { defaultString };

@@ -19,7 +19,7 @@ import {
   StorageReference,
   uploadBytesResumable,
 } from 'firebase/storage';
-import { loadStorageImage } from '../../helpers/FirebaseFunctions';
+import { loadStorageImageSafe } from '../../helpers/FirebaseFunctions';
 import { PortfolioData, WorkData } from '../../types/dbTypes';
 import { FiChevronLeft } from 'react-icons/all';
 import { FiX } from 'react-icons/fi';
@@ -287,7 +287,7 @@ export default function PortfolioWorkUpload({
                 } as Partial<PortfolioData>
               );
               setUploading(false);
-              const loadedPortfolioImage = await loadStorageImage(
+              const loadedPortfolioImage = await loadStorageImageSafe(
                 portfolioImageRef.toString()
               );
               onClose({

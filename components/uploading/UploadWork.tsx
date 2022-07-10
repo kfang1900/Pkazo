@@ -36,7 +36,7 @@ import {
 import { useRouter } from 'next/router';
 import { WorkData } from '../../types/dbTypes';
 import axios from 'axios';
-import { loadStorageImage } from '../../helpers/FirebaseFunctions';
+import { loadStorageImageSafe } from '../../helpers/FirebaseFunctions';
 import { updateWorksIndex } from '../../utils/indexes/updateIndexes';
 import uploadImage from '../../utils/firebase/uploadImage';
 
@@ -289,7 +289,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
       setEditData(data);
       const _uploadedImages = await Promise.all(
         data.images.map((image) =>
-          loadStorageImage(image).then(
+          loadStorageImageSafe(image).then(
             (url) =>
               ({
                 isLocal: false,

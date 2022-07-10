@@ -9,7 +9,7 @@ import Modal from '../popups/Modal';
 import PortfolioWorkUpload from '../uploading/PortfolioWorkUpload';
 import { getApp } from 'firebase/app';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
-import { loadStorageImage } from '../../helpers/FirebaseFunctions';
+import { loadStorageImageSafe } from '../../helpers/FirebaseFunctions';
 import Link from 'next/link';
 
 export default function CreatePortfoliosSection({
@@ -45,7 +45,7 @@ export default function CreatePortfoliosSection({
       querySnapshot.forEach((doc) => {
         setUsername(doc.data().username);
         docs.push(
-          loadStorageImage(doc.data().picture).then((image) => ({
+          loadStorageImageSafe(doc.data().picture).then((image) => ({
             name: doc.data().name,
             image: image,
           }))
@@ -83,7 +83,13 @@ export default function CreatePortfoliosSection({
                   tw`w-[128px] h-[128px] relative rounded-full overflow-hidden duration-200 origin-bottom border-4 border-transparent mx-[60px]`,
                 ]}
               >
-                <Image src={image} alt={name + ' cover image'} layout="fill" />
+                {image && (
+                  <Image
+                    src={image}
+                    alt={name + ' cover image'}
+                    layout="fill"
+                  />
+                )}
               </div>
               <p tw="text-black mt-2 text-center">{name}</p>
             </div>

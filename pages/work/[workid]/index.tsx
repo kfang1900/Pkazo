@@ -17,7 +17,7 @@ import PostDetails from 'components/popups/PostDetails';
 import {
   fetchArtistByID,
   fetchWorkByID,
-  loadStorageImage,
+  loadStorageImageSafe,
   loadStorageImages,
 } from 'helpers/FirebaseFunctions';
 import {
@@ -179,7 +179,9 @@ const IndividualWork: NextPage = () => {
           setLoading(false);
           throw new Error('Work is associated with a nonexistent artist.');
         }
-        const artistImgURL = await loadStorageImage(artistData.profilePicture);
+        const artistImgURL = await loadStorageImageSafe(
+          artistData.profilePicture
+        );
         setArtistPicture(artistImgURL);
         const images = await loadStorageImages(workData.images);
         console.log(images, workData, 'IMAGES');

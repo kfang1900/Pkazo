@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useReducer } from 'react';
 import ImageURLCacheContext from './ImageURLCacheContext';
-import { loadStorageImage } from '../../helpers/FirebaseFunctions';
+import { loadStorageImageSafe } from '../../helpers/FirebaseFunctions';
 
 export default function ImageURLCacheProvider({
   children,
@@ -32,7 +32,7 @@ export default function ImageURLCacheProvider({
   const getImage = useCallback(
     async (imageRef: string) => {
       if (cache[imageRef]) return cache[imageRef];
-      const url = await loadStorageImage(imageRef);
+      const url = await loadStorageImageSafe(imageRef);
       updateCache(['set-item', imageRef, url]);
       return url;
     },

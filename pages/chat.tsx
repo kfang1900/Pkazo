@@ -13,7 +13,7 @@ import { getApp } from 'firebase/app';
 import { timeElapsed } from 'components/popups/ShowComment';
 import { number } from 'yup/lib/locale';
 import ChatSidebarItem from '../components/chat/ChatSidebarItem';
-import { loadStorageImage } from '../helpers/FirebaseFunctions';
+import { loadStorageImageSafe } from '../helpers/FirebaseFunctions';
 import { ArtistData } from '../types/dbTypes';
 import { getDatabase, onChildAdded, ref } from '@firebase/database';
 
@@ -86,7 +86,7 @@ const ChatPage: NextPage = () => {
         const data = {
           id,
           name: (snapshot.data() as ArtistData).name || id,
-          pfp: await loadStorageImage(
+          pfp: await loadStorageImageSafe(
             (snapshot.data() as ArtistData).profilePicture
           ),
           messages: [],

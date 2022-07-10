@@ -15,7 +15,7 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 import { ArtistData, WorkData } from '../types/dbTypes';
-import { loadStorageImage } from '../helpers/FirebaseFunctions';
+import { loadStorageImageSafe } from '../helpers/FirebaseFunctions';
 import CartItem from '../components/cart/CartItem';
 import formatCurrency from '../utils/formatCurrency';
 import axios from 'axios';
@@ -91,10 +91,10 @@ const CartPage: NextPage = () => {
               return {
                 ...w,
                 artistData: workArtistData.data,
-                artistProfilePictureURL: await loadStorageImage(
+                artistProfilePictureURL: await loadStorageImageSafe(
                   workArtistData.data.profilePicture
                 ),
-                workImageURL: await loadStorageImage(w.workData.images[0]),
+                workImageURL: await loadStorageImageSafe(w.workData.images[0]),
               };
             })();
           })
@@ -113,7 +113,8 @@ const CartPage: NextPage = () => {
           .map((workId) =>
             axios
               .get(
-                `/api/shipping/estimated-rates?workId=${workId}${shippingEstimateZip ? '&zip=' + shippingEstimateZip : ''
+                `/api/shipping/estimated-rates?workId=${workId}${
+                  shippingEstimateZip ? '&zip=' + shippingEstimateZip : ''
                 }`
               )
 
@@ -288,15 +289,15 @@ const CartPage: NextPage = () => {
             <div tw="text-right">
               {ableToCalculateRate && !shippingLoading
                 ? formatCurrency(
-                  works.reduce((acc, w) => acc + w.workData.sale.price, 0) +
-                  shippingCosts.reduce(
-                    (sum, rate) => sum + rate.estimatedRate,
-                    0
+                    works.reduce((acc, w) => acc + w.workData.sale.price, 0) +
+                      shippingCosts.reduce(
+                        (sum, rate) => sum + rate.estimatedRate,
+                        0
+                      )
                   )
-                )
                 : formatCurrency(
-                  works.reduce((acc, w) => acc + w.workData.sale.price, 0)
-                ) + ' + Shipping'}
+                    works.reduce((acc, w) => acc + w.workData.sale.price, 0)
+                  ) + ' + Shipping'}
             </div>
           </div>
           <div tw="sticky bottom-0 bg-white">
