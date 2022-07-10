@@ -229,6 +229,7 @@ const Header = (props: {
                     buttons.red,
                     tw`font-semibold w-[108px] md:w-[121px] h-[32px] md:h-[42px] text-[12px] md:text-[14px] px-0 py-0 flex-shrink-0`,
                   ]}
+                  onClick={() => window.open('/onboarding', '_self')}
                 >
                   Sell on Pkazo
                 </button>
