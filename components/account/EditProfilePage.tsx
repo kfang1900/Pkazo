@@ -34,8 +34,8 @@ export default function EditProfilePage() {
 
   const [data, setData] = useState<
     | (ArtistData & {
-        profilePictureURL: string;
-        coverImageURL: string;
+        profilePictureURL: string | null;
+        coverImageURL: string | null;
       })
     | undefined
   >();
@@ -172,7 +172,7 @@ export default function EditProfilePage() {
             <div tw="relative">
               <div tw="relative w-20 h-20 md:w-[132px] md:h-[132px] overflow-hidden rounded-full flex items-center ">
                 <Image
-                  src={data.profilePictureURL || '/assets/imgs/blank_pfp.jpg'}
+                  src={data.profilePictureURL || '/assets/images/blank_pfp.jpg'}
                   alt="profile_image"
                   width="132px"
                   layout="fill"
