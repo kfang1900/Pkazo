@@ -50,13 +50,18 @@ const ArtistProfile = ({
   const artist = artistData[0].data() as ArtistData;
 
   useEffect(() => {
-    if (!artist.profilePicture) {
-      setPicture('/images/default-profile-picture.png');
-    } else {
-      loadStorageImage(artist.profilePicture).then((profilePictureURL) =>
-        setPicture(profilePictureURL)
-      );
-    }
+    const fetchData = async () => {
+      const artistPFP = await loadStorageImage(artist.profilePicture);
+      if (artistPFP === null) {
+        setPicture('/images/default-profile-picture.png');
+      } else {
+        setPicture(artistPFP);
+      }
+      // call the function
+      fetchData()
+        // make sure to catch any error
+        .catch(console.error);
+    };
   }, [artist]);
 
   const bioRef = useRef<HTMLDivElement>(null);

@@ -19,8 +19,12 @@ function defaultString<T>(arg: (param: string) => string) {
 //Returns the Image URL as a string
 const loadStorageImage = async (url: string) => {
   if (!url) {
-    //console.log(url)
-    throw new Error("Didn't receive a valid URL");
+    console.log('Given url is', url);
+    //return("Does not exist")
+    //NOTE: commenting out next line to return null instead of throwing an error,
+    //relaying error handling to front-end. Important for EditPortfolioPage
+    //throw new Error("Didn't receive a valid URL");
+    return null;
   }
   try {
     const app = getApp();
@@ -71,33 +75,35 @@ const getPortfolioHelper = async (docRef: QuerySnapshot<DocumentData>) => {
         curPos = Portfolios.length - 1;
         //console.log(curPos,Portfolios)
         const portImageURL = await loadStorageImage(element.data().picture);
-        PortfolioImages.push(portImageURL);
-        const subworks: DocumentData[] = [];
-        const subworkImages: string[] = [];
-        await Promise.all(
-          (element.data().works || []).map(async (workref: string) => {
-            const workdata = await fetchWorkByID(workref);
-            if (
-              !workdata.data() ||
-              !workdata.data()!.images ||
-              workdata.data()!.images.length === 0
-            ) {
-              return;
-            }
-            //console.log("work information",workdata.data(),workdata.id)
-            const workImage = await loadStorageImage(
-              workdata.data()!.images[0]
-            );
-            //console.log(Works,subworks)
-            subworks.push({
-              ...workdata.data()!,
-              __id: workdata.id,
-            });
-            subworkImages.push(workImage!);
-          })
-        );
-        Works.push(subworks);
-        WorkImages.push(subworkImages);
+        if (portImageURL !== null) {
+          PortfolioImages.push(portImageURL);
+          const subworks: DocumentData[] = [];
+          const subworkImages: string[] = [];
+          await Promise.all(
+            (element.data().works || []).map(async (workref: string) => {
+              const workdata = await fetchWorkByID(workref);
+              if (
+                !workdata.data() ||
+                !workdata.data()!.images ||
+                workdata.data()!.images.length === 0
+              ) {
+                return;
+              }
+              //console.log("work information",workdata.data(),workdata.id)
+              const workImage = await loadStorageImage(
+                workdata.data()!.images[0]
+              );
+              //console.log(Works,subworks)
+              subworks.push({
+                ...workdata.data()!,
+                __id: workdata.id,
+              });
+              subworkImages.push(workImage!);
+            })
+          );
+          Works.push(subworks);
+          WorkImages.push(subworkImages);
+        }
       })()
     );
   });
