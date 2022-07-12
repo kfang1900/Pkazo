@@ -216,8 +216,8 @@ const Portfolio: NextPage = () => {
           {loading
             ? 'Loading...'
             : artistData.length === 0
-            ? 'User not found'
-            : artistData[0].data().name}
+              ? 'User not found'
+              : artistData[0].data().name}
         </title>
       </Head>
       <Header />
