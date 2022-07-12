@@ -48,7 +48,7 @@ export const PortfolioPopup = ({
                 </svg>
               </button>
               <div tw="w-full text-center text-[16px] leading-[1em] text-[#3C3C3C] font-semibold overflow-ellipsis overflow-hidden whitespace-nowrap">
-                {portfolio.name}
+                {portfolio.name || 'New Portfolio'}
               </div>
               <button
                 onClick={onSave}
@@ -65,12 +65,15 @@ export const PortfolioPopup = ({
             >
               <div tw="relative">
                 <div tw="relative w-[100px] h-[100px] md:w-[180px] md:h-[180px] rounded-full overflow-hidden flex items-center">
-                  <Image
-                    src={portfolio.picture}
-                    layout="fill"
-                    objectFit="cover"
-                    alt="portfolio image"
-                  />
+                  {portfolio.picture ?
+                    <Image
+                      src={portfolio.picture}
+                      layout="fill"
+                      objectFit="cover"
+                      alt="portfolio image"
+                    /> :
+                    <div tw='w-full h-full bg-[#E3E3E3]' />
+                  }
                 </div>
                 <div tw="absolute right-1 bottom-1 md:right-3 md:bottom-3">
                   <FileUploader
@@ -215,7 +218,7 @@ const PortfolioSection = ({ values }: { values: OnboardingFormValues }) => {
 
   const [popupIndex, setPopupIndex] = useState(-1);
   const newPortfolio: PortfolioData = {
-    picture: '/assets/images/kevin_fang.jpg',
+    picture: '',
     name: '',
     description: '',
     works: [],

@@ -243,7 +243,7 @@ function Onboarding() {
     }
   }, [loading, user]);
   return (
-    <>
+    <div tw='min-h-[100vh] flex flex-col'>
       {submitting && (
         <img
           tw={'w-full h-screen bg-center bg-no-repeat'}
@@ -264,7 +264,7 @@ function Onboarding() {
 
       <Header logoOnly />
 
-      <Container tw="mt-5">
+      <div tw="mt-5 h-full flex-grow flex flex-col">
         <div tw="flex flex-col items-center text-center px-6">
           <div tw="font-semibold text-[#333333] text-[24px]">
             {sections[stage]}
@@ -304,7 +304,7 @@ function Onboarding() {
         >
           {({ values, setFieldValue }) => (
             <>
-              <div tw="pt-5 md:pt-12 px-6">
+              <div tw="pt-5 md:pt-12 px-6 flex-grow">
                 {stage === 0 && (
                   <ProfileDetailsSection
                     country={defaultCountry}
@@ -349,7 +349,7 @@ function Onboarding() {
             </>
           )}
         </Formik>
-      </Container>
+      </div>
 
       <div tw="bg-red-500 hidden">
         {stage === 1 && (
@@ -360,7 +360,7 @@ function Onboarding() {
           />
         )}
       </div>
-    </>
+    </div>
   );
 }
 

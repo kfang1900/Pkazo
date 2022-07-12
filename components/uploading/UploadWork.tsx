@@ -250,12 +250,12 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
     ({
       url: string;
     } & (
-      | {
+        | {
           isLocal: true;
           file: File;
         }
-      | { isLocal: false; ref: string }
-    ))[]
+        | { isLocal: false; ref: string }
+      ))[]
   >([]);
   const [uploadPage, setUploadPage] = useState(0);
   const [portfolios, setPortfolios] = useState<{ name: string; id: string }[]>(
@@ -291,15 +291,15 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
         data.images.map((image) =>
           loadStorageImageSafe(image).then(
             (url) =>
-              ({
-                isLocal: false,
-                ref: image,
-                url: url,
-              } as {
-                isLocal: false;
-                ref: string;
-                url: string;
-              })
+            ({
+              isLocal: false,
+              ref: image,
+              url: url,
+            } as {
+              isLocal: false;
+              ref: string;
+              url: string;
+            })
           )
         )
       );
@@ -422,49 +422,49 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                     forSale: values.forSale === 'yes',
                     ...(values.forSale === 'yes'
                       ? {
-                          sale: {
-                            ...(values.salePrice !== '' && {
-                              price: values.salePrice,
-                            }),
-                            ...(values.saleSubject !== '' && {
-                              subject: values.saleSubject,
-                            }),
-                            ...(values.saleColor !== '' && {
-                              color: values.saleColor,
-                            }),
-                            ...(values.saleStyle !== '' && {
-                              style: values.saleStyle,
-                            }),
-                            ...(values.saleFraming !== '' && {
-                              framing: values.saleFraming,
-                            }),
-                          },
-                        }
+                        sale: {
+                          ...(values.salePrice !== '' && {
+                            price: values.salePrice,
+                          }),
+                          ...(values.saleSubject !== '' && {
+                            subject: values.saleSubject,
+                          }),
+                          ...(values.saleColor !== '' && {
+                            color: values.saleColor,
+                          }),
+                          ...(values.saleStyle !== '' && {
+                            style: values.saleStyle,
+                          }),
+                          ...(values.saleFraming !== '' && {
+                            framing: values.saleFraming,
+                          }),
+                        },
+                      }
                       : {}),
                     forPrint: values.forPrint === 'yes',
                     ...(values.forPrint === 'yes'
                       ? {
-                          print: {
-                            ...(values.printPrice !== '' && {
-                              price: values.printPrice,
-                            }),
-                            ...(values.height !== '' && {
-                              height: parseFloat(values.height + ''),
-                            }),
-                            ...(values.width !== '' && {
-                              width: parseFloat(values.width + ''),
-                            }),
-                            ...(values.printUnits !== '' && {
-                              units: values.printUnits,
-                            }),
-                            ...(values.printSurface !== '' && {
-                              surface: values.printSurface,
-                            }),
-                            ...(values.printFraming !== '' && {
-                              framing: values.printFraming,
-                            }),
-                          },
-                        }
+                        print: {
+                          ...(values.printPrice !== '' && {
+                            price: values.printPrice,
+                          }),
+                          ...(values.height !== '' && {
+                            height: parseFloat(values.height + ''),
+                          }),
+                          ...(values.width !== '' && {
+                            width: parseFloat(values.width + ''),
+                          }),
+                          ...(values.printUnits !== '' && {
+                            units: values.printUnits,
+                          }),
+                          ...(values.printSurface !== '' && {
+                            surface: values.printSurface,
+                          }),
+                          ...(values.printFraming !== '' && {
+                            framing: values.printFraming,
+                          }),
+                        },
+                      }
                       : {}),
                     artist: auth.artistId,
                     // serverTimestamp() is not technically a Timestamp, but it will become one on the server.
@@ -478,12 +478,12 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                     images:
                       editMode && editData
                         ? uploadedImages
-                            .filter((i) => !i.isLocal)
-                            .map((i) =>
-                              !i.isLocal
-                                ? i.ref
-                                : 'this value should be unreachable 1'
-                            )
+                          .filter((i) => !i.isLocal)
+                          .map((i) =>
+                            !i.isLocal
+                              ? i.ref
+                              : 'this value should be unreachable 1'
+                          )
                         : [],
                   } as WorkData;
                   let workRef;
@@ -532,10 +532,10 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                       .map((image) =>
                         image.isLocal
                           ? uploadImage(
-                              storage,
-                              image.file,
-                              `/Works/${workId}/`
-                            )
+                            storage,
+                            image.file,
+                            `/Works/${workId}/`
+                          )
                           : 'this value should be unreachable 2'
                       )
                   );
@@ -610,15 +610,15 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                       .flat()
                                       .map(
                                         (file: File) =>
-                                          ({
-                                            file,
-                                            url: URL.createObjectURL(file),
-                                            isLocal: true,
-                                          } as {
-                                            file: File;
-                                            url: string;
-                                            isLocal: true;
-                                          })
+                                        ({
+                                          file,
+                                          url: URL.createObjectURL(file),
+                                          isLocal: true,
+                                        } as {
+                                          file: File;
+                                          url: string;
+                                          isLocal: true;
+                                        })
                                       ),
                                   ]);
                                 }}
@@ -653,15 +653,15 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     .flat()
                                     .map(
                                       (file: File) =>
-                                        ({
-                                          file,
-                                          url: URL.createObjectURL(file),
-                                          isLocal: true,
-                                        } as {
-                                          file: File;
-                                          url: string;
-                                          isLocal: true;
-                                        })
+                                      ({
+                                        file,
+                                        url: URL.createObjectURL(file),
+                                        isLocal: true,
+                                      } as {
+                                        file: File;
+                                        url: string;
+                                        isLocal: true;
+                                      })
                                     ),
                                 ]);
                               }}
@@ -857,6 +857,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     ? tw`border-red-600 focus:border-red-800`
                                     : tw`border-[#D8D8D8] focus:border-[#888888]`,
                                 ]}
+                                className={extraStyle['numberInput']}
                                 min="0"
                               />
                               <div tw="text-[14px] text-[#838383] ml-2">W:</div>
@@ -870,6 +871,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     ? tw`border-red-600 focus:border-red-800`
                                     : tw`border-[#D8D8D8] focus:border-[#888888]`,
                                 ]}
+                                className={extraStyle['numberInput']}
                                 min="0"
                               />
                               <div tw="relative ml-3">
@@ -1021,7 +1023,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     css={[
                                       styles.dropdown,
                                       touched.saleOrientation &&
-                                      errors.saleOrientation
+                                        errors.saleOrientation
                                         ? tw`border-red-600 focus:border-red-800`
                                         : tw`border-[#D8D8D8] focus:border-[#888888]`,
                                     ]}
@@ -1239,7 +1241,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                       styles.dropdown,
                                       tw`pr-6 overflow-ellipsis`,
                                       touched.printSurface &&
-                                      errors.printSurface
+                                        errors.printSurface
                                         ? tw`border-red-600 focus:border-red-800`
                                         : tw`border-[#D8D8D8] focus:border-[#888888]`,
                                     ]}
@@ -1264,7 +1266,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     css={[
                                       { 'accent-color': '#6C6C6C' },
                                       touched.printFraming &&
-                                      errors.printFraming
+                                        errors.printFraming
                                         ? tw`border-red-600 focus:border-red-800`
                                         : tw`border-[#D8D8D8] focus:border-[#888888]`,
                                     ]}
@@ -1281,7 +1283,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     css={[
                                       { 'accent-color': '#6C6C6C' },
                                       touched.printFraming &&
-                                      errors.printFraming
+                                        errors.printFraming
                                         ? tw`border-red-600 focus:border-red-800`
                                         : tw`border-[#D8D8D8] focus:border-[#888888]`,
                                     ]}
@@ -1305,8 +1307,8 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                               ? 'Saving Changes...'
                               : 'Save Changes'
                             : isSubmitting
-                            ? 'Creating Work...'
-                            : 'Create Work'}
+                              ? 'Creating Work...'
+                              : 'Create Work'}
                         </button>
                       </div>
                     </div>
