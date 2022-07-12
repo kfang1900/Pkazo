@@ -1,7 +1,7 @@
 import tw, { css } from 'twin.macro';
 import * as Yup from 'yup';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, FormikBag } from 'formik';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -369,6 +369,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
         : '',
     };
   }, [editMode, editData]);
+
   return (
     <div tw="fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center overflow-auto p-[50px]">
       <div tw="flex m-auto">
@@ -376,8 +377,11 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
           {initialFormValues && (
             <Formik
               initialValues={initialFormValues}
-              validationSchema={validationSchema}
-              onSubmit={async (values, { setFieldError }) => {
+              //validationSchema={validationSchema}
+              //validator={() => ({})}
+              onSubmit={async (values) => {
+                console.log('submitting formik', values, initialFormValues);
+
                 try {
                   if (!auth.artistId) return;
 
@@ -392,26 +396,48 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                   const db = getFirestore(app);
                   const storage = getStorage(app);
                   // TODO: make this atomic with transactions
+                  const ivalues = initialFormValues;
                   const dataToUpload = {
-                    title: values.title,
-                    description: values.description,
-                    portfolio: values.portfolio,
-                    year: values.year,
-                    medium: values.medium,
-                    surface: values.surface,
-                    height: parseFloat(values.height + ''),
-                    width: parseFloat(values.width + ''),
-                    units: values.units,
+                    ...(values.title !== '' && { title: values.title }),
+                    ...(values.description !== '' && {
+                      description: values.description,
+                    }),
+                    ...(values.portfolio !== undefined && {
+                      portfolio: values.portfolio,
+                    }),
+                    ...(values.year !== undefined && { year: values.year }),
+                    ...(values.medium !== undefined && {
+                      medium: values.medium,
+                    }),
+                    ...(values.surface !== undefined && {
+                      surface: values.surface,
+                    }),
+                    ...(values.height !== undefined && {
+                      height: values.height,
+                    }),
+                    ...(values.width !== undefined && {
+                      width: parseFloat(values.width + ''),
+                    }),
+                    ...(values.units !== undefined && { units: values.units }),
                     forSale: values.forSale === 'yes',
                     ...(values.forSale === 'yes'
                       ? {
                           sale: {
-                            price: values.salePrice,
-                            subject: values.saleSubject,
-                            orientation: values.saleOrientation,
-                            color: values.saleColor,
-                            style: values.saleStyle,
-                            framing: values.saleFraming === 'yes',
+                            ...(values.salePrice !== '' && {
+                              price: values.salePrice,
+                            }),
+                            ...(values.saleSubject !== '' && {
+                              subject: values.saleSubject,
+                            }),
+                            ...(values.saleColor !== '' && {
+                              color: values.saleColor,
+                            }),
+                            ...(values.saleStyle !== '' && {
+                              style: values.saleStyle,
+                            }),
+                            ...(values.saleFraming !== '' && {
+                              framing: values.saleFraming,
+                            }),
                           },
                         }
                       : {}),
@@ -419,21 +445,32 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                     ...(values.forPrint === 'yes'
                       ? {
                           print: {
-                            price: values.printPrice,
-                            height: parseFloat(values.height + ''),
-                            width: parseFloat(values.width + ''),
-                            units: values.units,
-                            surface: values.printSurface,
-                            framing: values.printFraming,
+                            ...(values.printPrice !== '' && {
+                              price: values.printPrice,
+                            }),
+                            ...(values.height !== '' && {
+                              height: parseFloat(values.height + ''),
+                            }),
+                            ...(values.width !== '' && {
+                              width: parseFloat(values.width + ''),
+                            }),
+                            ...(values.printUnits !== '' && {
+                              units: values.printUnits,
+                            }),
+                            ...(values.printSurface !== '' && {
+                              surface: values.printSurface,
+                            }),
+                            ...(values.printFraming !== '' && {
+                              framing: values.printFraming,
+                            }),
                           },
                         }
                       : {}),
                     artist: auth.artistId,
                     // serverTimestamp() is not technically a Timestamp, but it will become one on the server.
-                    timestamp:
-                      editMode && editData
-                        ? editData.timestamp
-                        : (serverTimestamp() as Timestamp),
+                    ...(editMode && {
+                      timestamp: serverTimestamp() as Timestamp,
+                    }),
                     editTimestamps:
                       editMode && editData
                         ? arrayUnion(Timestamp.fromDate(new Date()))
@@ -450,7 +487,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                         : [],
                   } as WorkData;
                   let workRef;
-
+                  console.log('updating work: ', editMode, dataToUpload);
                   if (!editMode) {
                     workRef = await addDoc(
                       collection(db, 'works'),
@@ -1259,8 +1296,8 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                         </div>
                         <button
                           css={[buttons.red, tw`ml-auto mt-[24px]`]}
-                          // onClick={() => setUploadPage(1)}
-                          type={'submit'}
+                          //onClick={() => { console.log("Submitting", initialFormValues) }}
+                          type="submit" //This should take care of the form submitting and invoke the forms onSubmit handler
                           disabled={isSubmitting}
                         >
                           {editMode
