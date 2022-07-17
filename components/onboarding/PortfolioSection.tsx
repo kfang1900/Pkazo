@@ -27,7 +27,7 @@ export const PortfolioPopup = ({
         <div
           css={[
             isMobile
-              ? tw`fixed bottom-0 bg-white w-full rounded-t-[12px] h-[90%] flex flex-col overflow-hidden`
+              ? tw`fixed bottom-0 bg-white w-full rounded-t-[12px] h-[92%] flex flex-col overflow-hidden`
               : tw`bg-white w-full max-w-[1000px] rounded-[20px] pt-[56px] pb-8 px-[72px]`,
           ]}
         >
@@ -58,88 +58,90 @@ export const PortfolioPopup = ({
               </button>
             </div>
           )}
-          <div css={[isMobile && tw`px-5 pb-10 overflow-auto`]}>
-            <div
-              tw="flex gap-x-10 mt-5 md:mt-0"
-              css={[isMobile && tw`flex-col items-center w-full`]}
-            >
-              <div tw="relative">
-                <div tw="relative w-[100px] h-[100px] md:w-[180px] md:h-[180px] rounded-full overflow-hidden flex items-center">
-                  {portfolio.picture ?
-                    <Image
-                      src={portfolio.picture}
-                      layout="fill"
-                      objectFit="cover"
-                      alt="portfolio image"
-                    /> :
-                    <div tw='w-full h-full bg-[#E3E3E3]' />
-                  }
+          <div css={[isMobile && tw`px-5 pb-10 overflow-auto h-full flex flex-col justify-between`]}>
+            <div>
+              <div
+                tw="flex gap-x-10 mt-5 md:mt-0"
+                css={[isMobile && tw`flex-col items-center w-full`]}
+              >
+                <div tw="relative">
+                  <div tw="relative w-[100px] h-[100px] md:w-[180px] md:h-[180px] rounded-full overflow-hidden flex items-center">
+                    {portfolio.picture ?
+                      <Image
+                        src={portfolio.picture}
+                        layout="fill"
+                        objectFit="cover"
+                        alt="portfolio image"
+                      /> :
+                      <div tw='w-full h-full bg-[#E3E3E3]' />
+                    }
+                  </div>
+                  <div tw="absolute right-1 bottom-1 md:right-3 md:bottom-3">
+                    <FileUploader
+                      types={['PNG', 'JPG']}
+                      handleChange={(file: File) => {
+                        setPortfolio({
+                          ...portfolio,
+                          picture: URL.createObjectURL(file),
+                        });
+                      }}
+                    >
+                      <button
+                        tw="w-[34px] h-[34px] rounded-full bg-black opacity-70 hover:opacity-60 flex items-center justify-center"
+                        type="button"
+                      >
+                        <Image
+                          src="/assets/svgs/camera.svg"
+                          alt="edit pfp"
+                          width="18px"
+                          height="18px"
+                        />
+                      </button>
+                    </FileUploader>
+                  </div>
                 </div>
-                <div tw="absolute right-1 bottom-1 md:right-3 md:bottom-3">
-                  <FileUploader
-                    types={['PNG', 'JPG']}
-                    handleChange={(file: File) => {
+                <div tw="flex flex-col gap-y-4 flex-1 mt-5 md:mt-0 w-full">
+                  <input
+                    tw="border border-[#D8D8D8] rounded-[6px] outline-none focus:border-[#888888] h-9 px-3"
+                    placeholder="Title"
+                    defaultValue={portfolio.name}
+                    onChange={(e) => {
                       setPortfolio({
                         ...portfolio,
-                        picture: URL.createObjectURL(file),
+                        name: e.target.value,
                       });
                     }}
-                  >
-                    <button
-                      tw="w-[34px] h-[34px] rounded-full bg-black opacity-70 hover:opacity-60 flex items-center justify-center"
-                      type="button"
-                    >
-                      <Image
-                        src="/assets/svgs/camera.svg"
-                        alt="edit pfp"
-                        width="18px"
-                        height="18px"
-                      />
-                    </button>
-                  </FileUploader>
-                </div>
-              </div>
-              <div tw="flex flex-col gap-y-4 flex-1 mt-5 md:mt-0 w-full">
-                <input
-                  tw="border border-[#D8D8D8] rounded-[6px] outline-none focus:border-[#888888] h-9 px-3"
-                  placeholder="Title"
-                  defaultValue={portfolio.name}
-                  onChange={(e) => {
-                    setPortfolio({
-                      ...portfolio,
-                      name: e.target.value,
-                    });
-                  }}
-                />
-                <textarea
-                  tw="border border-[#D8D8D8] rounded-[6px] outline-none focus:border-[#888888] p-3 leading-[22px] resize-none"
-                  placeholder="(Optional) Write a description..."
-                  defaultValue={portfolio.description}
-                  rows={4}
-                  onChange={(e) => {
-                    portfolio.description = e.target.value;
-                  }}
-                />
-              </div>
-            </div>
-            <div tw="mt-8 text-[#575757] text-[16px]">
-              Upload the works that belong in this portfolio. For now, only one
-              image per work.
-            </div>
-            <div tw="mt-4 grid grid-flow-col gap-5 overflow-auto justify-start">
-              {portfolio.works.map((work, i) => (
-                <div
-                  tw="w-[110px] h-[110px] rounded-[5px] relative overflow-hidden"
-                  key={i}
-                >
-                  <Image
-                    src={work}
-                    layout="fill"
-                    objectFit="cover"
-                    alt="work image"
+                  />
+                  <textarea
+                    tw="border border-[#D8D8D8] rounded-[6px] outline-none focus:border-[#888888] p-3 leading-[22px] resize-none"
+                    placeholder="(Optional) Write a description..."
+                    defaultValue={portfolio.description}
+                    rows={4}
+                    onChange={(e) => {
+                      portfolio.description = e.target.value;
+                    }}
                   />
                 </div>
-              ))}
+              </div>
+              <div tw="mt-8 text-[#575757] text-[16px]">
+                Upload the works that belong in this portfolio. For now, only one
+                image per work.
+              </div>
+              <div tw="mt-4 grid grid-flow-col gap-5 overflow-auto justify-start">
+                {portfolio.works.map((work, i) => (
+                  <div
+                    tw="w-[110px] h-[110px] rounded-[5px] relative overflow-hidden"
+                    key={i}
+                  >
+                    <Image
+                      src={work}
+                      layout="fill"
+                      objectFit="cover"
+                      alt="work image"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
             <FileUploader
               multiple={true}
@@ -157,6 +159,7 @@ export const PortfolioPopup = ({
             >
               <button
                 tw="block mt-7 border-[3px] border-dashed border-[#D8D8D8] text-center rounded-[7px] w-full p-6 md:py-10 md:px-0"
+                css={[isMobile && tw`justify-self-end self-end`]}
                 type="button"
               >
                 {isMobile ? (
