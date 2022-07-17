@@ -23,6 +23,7 @@ export const PortfolioPopup = ({
 }) => {
   return (
     <div tw="fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-start justify-center overflow-auto md:p-[50px]">
+      <style>{`body {overflow: hidden}`}</style>
       <div tw="flex w-full justify-center">
         <div
           css={[
@@ -58,7 +59,7 @@ export const PortfolioPopup = ({
               </button>
             </div>
           )}
-          <div css={[isMobile && tw`px-5 pb-10 overflow-auto h-full flex flex-col justify-between`]}>
+          <div css={[isMobile && tw`px-5 pb-6 overflow-auto h-full flex flex-col justify-between`]}>
             <div>
               <div
                 tw="flex gap-x-10 mt-5 md:mt-0"
@@ -123,7 +124,7 @@ export const PortfolioPopup = ({
                   />
                 </div>
               </div>
-              <div tw="mt-8 text-[#575757] text-[16px]">
+              <div tw="mt-4 md:mt-8 text-[#575757] text-[16px]">
                 Upload the works that belong in this portfolio. For now, only one
                 image per work.
               </div>

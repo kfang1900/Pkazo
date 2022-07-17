@@ -22,6 +22,9 @@ export default function CartItem({
   shippingCost,
   shippingCostLoading,
   onCalculateShipping,
+  duplicateArtist,
+  duplicateArtistLast,
+  isLast,
 }: {
   data: CartItemType & {
     workData: WorkData & { forSale: true };
@@ -33,41 +36,46 @@ export default function CartItem({
   shippingCost: number | null;
   onCalculateShipping: () => void;
   shippingCostLoading: boolean;
+  duplicateArtist: boolean;
+  duplicateArtistLast: boolean;
+  isLast: boolean;
 }) {
   return (
     <div tw="mt-[18px]">
-      <div tw="flex items-center">
-        <Link href={'/' + artistData.username} passHref>
-          <div tw="w-[55px] h-[55px] overflow-hidden rounded-full flex items-center cursor-pointer">
-            <Image
-              src={artistProfilePictureURL}
-              alt="profile_image"
-              width="55px"
-              height="55px"
-              objectFit="cover"
-            />
-          </div>
-        </Link>
-        <Link href={'/' + artistData.username} passHref>
-          <div tw="ml-[10px] cursor-pointer">
-            <div tw="text-[16px] leading-[19px] font-semibold text-black">
-              {artistData.name}
+      {!duplicateArtist &&
+        <div tw="flex items-center mb-4">
+          <Link href={'/' + artistData.username} passHref>
+            <div tw="w-[55px] h-[55px] overflow-hidden rounded-full flex items-center cursor-pointer">
+              <Image
+                src={artistProfilePictureURL}
+                alt="profile_image"
+                width="55px"
+                height="55px"
+                objectFit="cover"
+              />
             </div>
-            <div tw="mt-1 text-[14px] font-medium text-[#727373]">
-              {artistData.location}
+          </Link>
+          <Link href={'/' + artistData.username} passHref>
+            <div tw="ml-[10px] cursor-pointer">
+              <div tw="text-[16px] leading-[19px] font-semibold text-black">
+                {artistData.name}
+              </div>
+              <div tw="mt-1 text-[14px] font-medium text-[#727373]">
+                {artistData.location}
+              </div>
             </div>
-          </div>
-        </Link>
-        <button
-          css={[
-            buttons.white,
-            tw`px-6 text-[13px] text-[#3C3C3C] font-semibold ml-auto h-[30px]`,
-          ]}
-        >
-          Message
-        </button>
-      </div>
-      <div tw="flex mt-4">
+          </Link>
+          <button
+            css={[
+              buttons.white,
+              tw`px-6 text-[13px] text-[#3C3C3C] font-semibold ml-auto h-[30px]`,
+            ]}
+          >
+            Message
+          </button>
+        </div>
+      }
+      <div tw="flex">
         <div tw="w-[88px] h-[88px] rounded-[8px] overflow-hidden flex-none">
           <Image
             src={workImageURL}
@@ -131,9 +139,9 @@ export default function CartItem({
             <button
               tw="font-bold"
               onClick={() => 0}
-              // onClick={() => {
-              //     work.buyNow = false;
-              // }}
+            // onClick={() => {
+            //     work.buyNow = false;
+            // }}
             >
               Save for later
             </button>
@@ -146,28 +154,30 @@ export default function CartItem({
       <textarea
         rows={3}
         placeholder={`Add a note to ${artistData.name} (optional)`}
-        tw="mt-5 w-full border-[0.5px] border-[#ECECEC] focus:border-[#D8D8D8] outline-none rounded-[7px] p-3 text-[14px] leading-[17px]"
+        tw="mt-5 w-full border-[0.5px] border-[#ECECEC] focus:border-[#D8D8D8] outline-none rounded-[7px] p-3 text-[14px] leading-[17px] resize-none"
       />
-      <div tw="mt-3 w-full flex flex-col items-end">
-        <div tw="text-[13px] text-black">
-          Shipping:{' '}
-          {shippingCostLoading ? (
-            'Loading...'
-          ) : shippingCost ? (
-            formatCurrency(shippingCost)
-          ) : (
-            <button tw={'underline'} onClick={() => onCalculateShipping()}>
-              Calculate
-            </button>
-          )}
+      {duplicateArtistLast &&
+        <div tw="mt-3 w-full flex flex-col items-end">
+          <div tw="text-[13px] text-black">
+            Shipping:{' '}
+            {shippingCostLoading ? (
+              'Loading...'
+            ) : shippingCost ? (
+              formatCurrency(shippingCost)
+            ) : (
+              <button tw={'underline'} onClick={() => onCalculateShipping()}>
+                Calculate
+              </button>
+            )}
+          </div>
+          {/*TODO*/}
+          {/*<div tw="mt-3 text-[12px] text-[#7C7C7C] text-right">*/}
+          {/*  Estimated delivery: June 3-8 <br />*/}
+          {/*  from Dallas, TX*/}
+          {/*</div>*/}
         </div>
-        {/*TODO*/}
-        {/*<div tw="mt-3 text-[12px] text-[#7C7C7C] text-right">*/}
-        {/*  Estimated delivery: June 3-8 <br />*/}
-        {/*  from Dallas, TX*/}
-        {/*</div>*/}
-      </div>
-      <div tw="h-[0.5px] bg-[#E3E3E3] mt-5" />
+      }
+      {!isLast && duplicateArtistLast && <div tw="h-[0.5px] bg-[#E3E3E3] mt-5" />}
     </div>
   );
 }

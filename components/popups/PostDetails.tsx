@@ -156,6 +156,7 @@ function PostDetails(props: PostDetailsProps) {
   };
   return (
     <div tw="fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center">
+      <style>{`body {overflow: hidden}`}</style>
       <ConfirmUnfollowModal
         showModal={isShowUnfollowConfirmModal}
         setShowModal={setIsShowUnfollwConfirmModal}
@@ -260,7 +261,7 @@ function PostDetails(props: PostDetailsProps) {
                 css={[
                   tw`w-[48px] h-[40px] absolute top-[0px] right-[0px] z-10`,
                   (curComment.trim() === '' || !commentHover) &&
-                    tw`cursor-auto`,
+                  tw`cursor-auto`,
                 ]}
                 onClick={() => {
                   if (curComment.trim() !== '') {

@@ -18,6 +18,7 @@ interface LoginErrors {
 }
 export interface LoginFormProps {
   onClose: () => void;
+  redirect?: () => void;
   defaultSignUp?: boolean;
   notCloseable?: boolean;
 }
@@ -30,6 +31,7 @@ export const Login = (props: LoginFormProps) => {
   };
   const [register, setRegister] = useState(!!props.defaultSignUp);
   const [showPassword, setShowPassword] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const auth = useAuth();
 
   const registerModal = () => {
@@ -68,6 +70,7 @@ export const Login = (props: LoginFormProps) => {
                 values.email,
                 values.password
               );
+              if (props.redirect) props.redirect();
               props.onClose();
             } catch (error: any) {
               switch (error.code) {
@@ -171,6 +174,7 @@ export const Login = (props: LoginFormProps) => {
                 .then(() =>
                   auth.signInWithEmailAndPassword(values.email, values.password)
                 );
+              if (props.redirect) props.redirect();
               props.onClose();
             } catch (error: any) {
               switch (error.code) {
@@ -329,6 +333,7 @@ export const Login = (props: LoginFormProps) => {
 function LoginForm(props: LoginFormProps) {
   return (
     <div tw="fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center overflow-auto p-[50px]">
+      <style>{`body {overflow: hidden}`}</style>
       <div tw="flex m-auto">
         <Login {...props} />
         {!props.notCloseable && (

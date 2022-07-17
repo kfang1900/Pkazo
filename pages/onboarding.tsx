@@ -200,7 +200,10 @@ function Onboarding() {
       return;
     }
     if (!user) {
-      setSignupFormActive(true);
+      if (isMobile)
+        router.push(`/signin?redirect=${window.location.pathname}`)
+      else
+        setSignupFormActive(true);
     } else {
       setSignupFormActive(false);
 

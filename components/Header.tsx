@@ -6,6 +6,7 @@ import useAuth from '../utils/auth/useAuth';
 import tw, { TwStyle } from 'twin.macro';
 import React, { useEffect, useRef, useState } from 'react';
 import LoginForm, { Login } from './popups/LoginForm';
+import CartPopup from './cart/CartPopup';
 import { useRouter } from 'next/router';
 import {
   loadStorageImage,
@@ -15,6 +16,7 @@ import UploadWork from './uploading/UploadWork';
 import { useMediaQuery } from 'react-responsive';
 import SearchHeader from './search/SearchHeader';
 import SearchBox from './search/SearchBox';
+// import { useNavigate } from "react-router-dom";
 
 /* Copied from image.tsx source */
 interface StaticRequire {
@@ -32,6 +34,8 @@ const Header = (props: {
   useEffect(() => {
     if (isMobile !== mediaQuery) setIsMobile(mediaQuery);
   }, [mediaQuery, isMobile]);
+
+  // const navigate = useNavigate();
   // 0 = artist (signed in)
   // 1 = not signed in
   // 2 = regular user (signed in)
@@ -39,6 +43,7 @@ const Header = (props: {
 
   const { user, signOut, isArtist } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showCart, setShowCart] = useState(false);
   const [pfp, setPfp] = useState('');
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showChooseWorkDropdown, setShowChooseWorkDropdown] = useState(false);
@@ -116,6 +121,9 @@ const Header = (props: {
     <div css={navStyle}>
       {!isMobile && showLoginModal && (
         <LoginForm onClose={() => setShowLoginModal(false)} />
+      )}
+      {!isMobile && showCart && (
+        <CartPopup onClose={() => setShowCart(false)} />
       )}
       {isMobile && onSearch && <SearchBox />}
 
@@ -218,12 +226,17 @@ const Header = (props: {
             )}
             {!user && (
               <>
-                <button
-                  tw="text-[12px] md:text-[14px] text-[#3C3C3C] font-semibold py-1 flex-shrink-0"
-                  onClick={() => setShowLoginModal(true)}
+                <Link
+                  href={isMobile ? `/signin?redirect=${window.location.pathname}` : 'javascript:void(0);'}
+                  passHref
                 >
-                  Sign in
-                </button>
+                  <button
+                    tw="text-[12px] md:text-[14px] text-[#3C3C3C] font-semibold py-1 flex-shrink-0"
+                    onClick={() => setShowLoginModal(true)}
+                  >
+                    Sign in
+                  </button>
+                </Link>
                 <button
                   css={[
                     buttons.red,
@@ -277,11 +290,18 @@ const Header = (props: {
                 </div>
               </>
             )}
-            <Link href="/cart" passHref>
-              <img
-                src={`/assets/svgs/${isMobile ? 'mobile/' : ''}cart.svg`}
-                tw="cursor-pointer"
-              />
+            <Link
+              href={isMobile ? "/cart" : 'javascript:void(0);'}
+              passHref
+            >
+              <div
+                onClick={() => setShowCart(true)}
+              >
+                <img
+                  src={`/assets/svgs/${isMobile ? 'mobile/' : ''}cart.svg`}
+                  tw="cursor-pointer"
+                />
+              </div>
             </Link>
           </div>
         </div>

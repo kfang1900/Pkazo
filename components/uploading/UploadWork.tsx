@@ -568,6 +568,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
       }) => (
         <Form>
           <div tw="fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center overflow-auto md:p-[50px]">
+            <style>{`body {overflow: hidden}`}</style>
             <div tw="flex md:m-auto" css={[isMobile && tw`w-full justify-center`]}>
               <div
                 css={[
@@ -604,7 +605,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                   </div>
                 )}
                 {uploadPage === 0 && (
-                  <div css={[isMobile && tw`px-4 pb-10 overflow-auto h-full flex flex-col`]}>
+                  <div css={[isMobile && tw`px-4 pb-6 overflow-auto h-full flex flex-col`]}>
                     <div tw='md:flex'>
                       {/* image */}
                       <div tw="md:w-[550px] md:h-[642px]">
@@ -620,7 +621,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                 />
                               </div>
                             }
-                            <div tw="flex overflow-x-auto gap-x-3 mt-3">
+                            <div tw="flex overflow-x-auto gap-x-3 mt-4 md:mt-3">
                               {uploadedImages.map((image, index) => (
                                 <div
                                   key={index}
@@ -720,7 +721,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                       </div>
                       {/* contents */}
                       <div
-                        tw="flex flex-col items-end w-full md:w-[465px] md:ml-[52px] mt-6 md:mt-0"
+                        tw="flex flex-col items-end w-full md:w-[465px] md:ml-[52px] mt-4 md:mt-6 md:mt-0"
                       >
                         <div
                           tw="w-full md:h-[600px] md:overflow-y-auto"
@@ -1154,7 +1155,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                           </div>
                           <div
                             tw="w-full md:border md:border-[#D8D8D8] md:mt-4 md:rounded-[5px] md:p-4"
-                            css={[isMobile && tw`border-t border-t-[#D8D8D8] py-5`]}
+                            css={[isMobile && tw`border-t border-t-[#D8D8D8] pt-5`]}
                           >
                             <div tw="flex text-[14px] text-[#3C3C3C] justify-between">
                               Prints Available?
