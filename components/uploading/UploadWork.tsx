@@ -988,6 +988,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     ]}
                                     min="1"
                                     max="1000000"
+                                    className={extraStyle['numberInput']}
                                   />
                                   <div tw="text-[14px] text-[#838383] absolute left-4 top-[4px]">
                                     $
@@ -1224,7 +1225,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     name="printHeight"
                                     css={[
                                       styles.dropdown,
-                                      tw`w-[52px] pl-3 pr-0 ml-1`,
+                                      tw`w-[52px] md:w-[52px] pl-3 pr-0 ml-1`,
                                       touched.printHeight && errors.printHeight
                                         ? tw`border-red-600 focus:border-red-800`
                                         : tw`border-[#D8D8D8] focus:border-[#888888]`,
@@ -1239,7 +1240,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                     name="printWidth"
                                     css={[
                                       styles.dropdown,
-                                      tw`w-[52px] pl-3 pr-0 mx-1`,
+                                      tw`w-[52px] md:w-[52px] pl-3 pr-0 mx-1`,
                                       touched.printWidth && errors.printWidth
                                         ? tw`border-red-600 focus:border-red-800`
                                         : tw`border-[#D8D8D8] focus:border-[#888888]`,
@@ -1261,7 +1262,7 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                       name="printUnits"
                                       css={[
                                         styles.dropdown,
-                                        tw`w-[60px] pl-3`,
+                                        tw`w-[60px] md:w-[60px] pl-3`,
                                         touched.printUnits && errors.printUnits
                                           ? tw`border-red-600 focus:border-red-800`
                                           : tw`border-[#D8D8D8] focus:border-[#888888]`,

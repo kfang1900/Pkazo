@@ -8,7 +8,7 @@ import { FiDollarSign, FiMinus, FiPlus } from 'react-icons/fi';
 import tw, { styled } from 'twin.macro';
 
 export default function CustomRefinementList(
-  props: UseRefinementListProps & { title?: string }
+  props: UseRefinementListProps & { title?: string, unique?: boolean }
 ) {
   const {
     items,
@@ -38,7 +38,7 @@ export default function CustomRefinementList(
           <div key={item.label}>
             <div className="check-group" tw="flex items-center">
               <input
-                type="checkbox"
+                type={props.unique ? "radio" : "checkbox"}
                 id={`refinement-check-${props.attribute}-${item.value}`}
                 name={`refinement-check-${props.attribute}`}
                 checked={item.isRefined}

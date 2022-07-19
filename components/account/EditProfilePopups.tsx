@@ -13,7 +13,7 @@ type PopupData =
 const EditProfilePopup = ({
   onSave,
   onClose,
-  type,
+  type
 }: {
   onSave: (data: PopupData) => void;
   onClose: () => void;
