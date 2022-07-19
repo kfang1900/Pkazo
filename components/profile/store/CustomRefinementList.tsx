@@ -23,7 +23,7 @@ export default function CustomRefinementList(
     isShowingMore,
     toggleShowMore,
   } = useRefinementList(props);
-  console.log('RFL', items);
+  //console.log('RFL', items);
   return (
     <li>
       <h3 tw="mb-3 font-bold text-lg">
