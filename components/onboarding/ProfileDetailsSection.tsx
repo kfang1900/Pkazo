@@ -78,6 +78,16 @@ export default function ProfileDetailsSection(
       ]}>
         <div css={[styles.label, styles.req]}>Name</div>
         <Field type='text' name='name' css={styles.input} tw='mt-2 md:mt-0' />
+        <div css={[styles.label, styles.req]} tw='mt-4 md:mt-0'>Username</div>
+        <div tw='flex mt-2 md:mt-0 items-center'>
+          <div tw='font-semibold'>pkazo.com/</div>
+          <Field
+            type='text'
+            name='username'
+            css={styles.input} tw='ml-4'
+            placeholder={values.name.toLowerCase().replace(/\s/g, '')}
+          />
+        </div>
         <div css={[styles.label, styles.req]} tw='mt-4 md:mt-0'>Art Discipline</div>
         <div tw='mt-2 md:mt-0'>
           <Field
@@ -129,6 +139,6 @@ export default function ProfileDetailsSection(
         </div>
         <YesNoRadio name='uniqueCollections' />
       </div>
-    </Form>
+    </Form >
   );
 }
