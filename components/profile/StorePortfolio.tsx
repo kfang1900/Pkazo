@@ -515,10 +515,11 @@ const StorePortFolio = ({
           <div>
             <div
               css={[
-                tw`fixed top-0 bg-white bottom-0 max-w-full w-[400] 2xl:w-[480px] z-[99] -left-full transition-all duration-300`,
+                tw`fixed top-0 bg-white bottom-0 max-w-full z-[99] -left-full transition-all duration-300`,
                 filterOpen && tw`left-0`,
               ]}
             >
+              {filterOpen && <style>{`body {overflow: hidden}`}</style>}
               <span
                 onClick={() => setFilterOpen(false)}
                 className="close-icon"
@@ -528,12 +529,10 @@ const StorePortFolio = ({
               </span>
 
               {/* Filter Box */}
-              <div>
-                <div tw="overflow-auto pr-14 m-6 h-[calc(100vh-120px)]">
-                  <h2 tw="text-3xl font-bold mb-4">Filters</h2>
-
-                  <ul tw={'pl-6'}>
-                    <div>{/* TODO: put the price refinement in here */}</div>
+              <div tw='w-[375px] p-8'>
+                <div tw="overflow-auto h-[calc(100vh-120px)]">
+                  <div tw='text-[32px] text-[#3C3C3C]'>Filters</div>
+                  <div tw='mt-6 flex flex-col gap-y-7'>
 
                     <CustomRefinementGroup attribute={'medium'} />
                     <CustomRefinementGroup attribute={'year'} />
@@ -542,7 +541,7 @@ const StorePortFolio = ({
                       title={'Color'}
                     />
                     <CustomRefinementGroup attribute={'dimensions'} />
-                  </ul>
+                  </div>
                 </div>
               </div>
             </div>
