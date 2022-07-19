@@ -12,6 +12,7 @@ import styles from '../../styles/ProfilePortfolio.module.css';
 import Dropdown from 'styles/Dropdown';
 import Image from 'next/image';
 import { useMediaQuery } from 'react-responsive';
+import buttons from 'styles/Button';
 
 import { Container } from 'styles/Container';
 import { WorkData } from '../../types/dbTypes';
@@ -30,6 +31,8 @@ import CustomRefinementGroup from './store/CustomRefinementList';
 import CustomSortBy from './store/CustomSortBy';
 import ProductCollection from './store/ProductCollection';
 // import algoliaSearchClient from '../shared/algoliaSearchClient';
+import FilterCategory from './store/FilterCategory';
+import DoubleSlider from './store/DoubleSlider';
 import { useRouter } from 'next/router';
 const ListCheckGroup = styled.ul`
   .check-group input[type='radio'],
@@ -81,186 +84,6 @@ const PriceFilterDimension = styled.div`
   }
 `;
 
-const filters = {
-  category: {
-    heading: 'Category',
-    list: [
-      {
-        label: 'Oil',
-      },
-      {
-        label: 'Watercolor',
-      },
-      {
-        label: 'Acrylic',
-      },
-      {
-        label: 'Spray Paint',
-      },
-      {
-        label: 'Ink',
-      },
-      {
-        label: 'Gouache',
-      },
-    ],
-  },
-
-  subject: {
-    heading: 'Subject',
-    list: [
-      {
-        label: 'Abstract',
-      },
-      {
-        label: 'Land',
-      },
-      {
-        label: 'Sea',
-      },
-      {
-        label: 'People',
-      },
-      {
-        label: 'Food',
-      },
-      {
-        label: 'Pop',
-      },
-      {
-        label: 'Abstract & geometric',
-      },
-      {
-        label: 'Anime & cartoon',
-      },
-      {
-        label: 'Architecture & cityscape',
-      },
-      {
-        label: 'Beach & tropical',
-      },
-      {
-        label: 'Comics & manga',
-      },
-      {
-        label: 'Flowers',
-      },
-      {
-        label: 'Geography & locale',
-      },
-      {
-        label: 'Love & friendship',
-      },
-      {
-        label: 'Love & friendship',
-      },
-    ],
-  },
-
-  style: {
-    heading: 'Style',
-    list: [
-      {
-        label: 'Fine Art',
-      },
-      {
-        label: 'Figurative',
-      },
-      {
-        label: 'Realism',
-      },
-      {
-        label: 'Modern',
-      },
-      {
-        label: 'Expressionism',
-      },
-      {
-        label: 'Impressionism',
-      },
-    ],
-  },
-
-  location: {
-    heading: 'Shop Location',
-    list: [
-      {
-        label: 'Any where',
-      },
-      {
-        label: 'Usa',
-      },
-      {
-        label: 'Bangladesh',
-      },
-    ],
-  },
-
-  itemType: {
-    heading: 'Item Type',
-    list: [
-      {
-        label: 'All Items',
-      },
-      {
-        label: 'Hand Made',
-      },
-      {
-        label: 'Vintage',
-      },
-    ],
-  },
-
-  price: {
-    heading: 'Price ($)',
-    radio_check: true,
-    list: [
-      {
-        label: 'Any price',
-      },
-      {
-        label: 'Under USD 25',
-      },
-      {
-        label: 'USD 25 to USD 50',
-      },
-      {
-        label: 'USD 50 to USD 100',
-      },
-      {
-        label: 'Over USD 100',
-      },
-    ],
-  },
-
-  color: {
-    heading: 'Color',
-    radio_check: true,
-    list: [
-      {
-        label: 'Black and White',
-        code: '#090909',
-      },
-      {
-        label: 'Red',
-        code: '#FF3A3A',
-      },
-      {
-        label: 'Orange',
-        code: '#FFA944',
-      },
-      {
-        label: 'Green',
-        code: '#A7FF72',
-      },
-      {
-        label: 'Purple',
-        code: '#F095FF',
-      },
-    ],
-  },
-};
-
 interface PortfolioObject {
   Portfolios: Record<string, any>[];
   Works: Record<string, any>[][];
@@ -285,6 +108,77 @@ const StorePortFolio = ({
     React.useState('Low to High');
 
   console.log('Profile type', profileType);
+  const filters = {
+    portfolio: {
+      title: 'Portfolio',
+      values: [
+        'All portfolios',
+        ...portfolioData.Portfolios.map((p) => p.name),
+      ],
+      unique: true,
+    },
+    price: {
+      title: 'Price',
+      values: [
+        'All prices',
+        'Under $200',
+        '$200 to $500',
+        '$500 to $2000',
+        'Over $2000',
+        'Custom',
+      ],
+      unique: true,
+    },
+    size: {
+      title: 'Size',
+      values: ['All sizes', 'Small', 'Medium', 'Large', 'Oversized'],
+      unique: true,
+    },
+    medium: {
+      title: 'Medium',
+      values: ['Oil', 'Watercolor', 'Acrylic', 'Ink', 'Gouache', 'Spraypaint'],
+    },
+    surface: {
+      title: 'Surface',
+      values: [
+        'Stretched canvas',
+        'Canvas board',
+        'Wood',
+        'Fabric',
+        'Linen',
+        'Paper',
+      ],
+    },
+    subject: {
+      title: 'Subject',
+      values: [
+        'Portrait',
+        'Nature',
+        'Street',
+        'Beach',
+        'Floral',
+        'Vacation',
+        'Tropical',
+      ],
+    },
+    style: {
+      title: 'Style',
+      values: [
+        'Abstract',
+        'Cubist',
+        'Expressoinist',
+        'Folk',
+        'Impressionist',
+        'Minimalist',
+        'Photorealist',
+        'Pointillist',
+        'Pop art',
+        'Psychedelic',
+        'Surrealist',
+      ],
+    },
+  };
+
   // Price Value
   const [priceValue, setPriceValue] = React.useState(0);
   const [pricefilter, setPriceFilter] = React.useState({
@@ -298,6 +192,13 @@ const StorePortFolio = ({
   const [filterInitialMax, setFilterInitialMax] = React.useState(0);
   const [minValue, setMinValue] = React.useState(0);
   const [maxValue, setMaxValue] = React.useState(10000);
+  const [allWorks, setAllWorks] = useState<
+    {
+      id: string;
+      data: WorkData & { forSale: true };
+      imageURL: string;
+    }[]
+  >([]);
   const [works, setWorks] = useState<
     {
       id: string;
@@ -350,6 +251,7 @@ const StorePortFolio = ({
           }
         })
       );
+      setAllWorks(newWorks);
       setWorks(newWorks);
       setLoading(false);
       console.log('Works: ', works);
@@ -383,13 +285,34 @@ const StorePortFolio = ({
   };
 
   const getPortfolioMatch = (e: string) => {
-    console.log(e);
+    //console.log(e, portfolioData);
+    const obj = portfolioData.Portfolios.find(
+      (portfolio) => portfolio.name === e
+    );
+    if (obj) {
+      const newWorks: {
+        id: string;
+        data: WorkData & { forSale: true };
+        imageURL: string;
+      }[] = [];
+      //console.log(allWorks);
+      allWorks.forEach((work) => {
+        //console.log(obj.works, work.id, obj.works.includes(work.id))
+        if (obj?.works.includes(work.id)) {
+          console.log('adding to new work');
+          newWorks.push(work);
+        }
+      });
+      setWorks(newWorks);
+    } else {
+      setWorks(allWorks);
+    }
+    return;
   };
 
   return (
     <>
       <h1>Store</h1>
-
       <>
         <div>
           <Container tw="px-4 md:px-0">
@@ -527,22 +450,59 @@ const StorePortFolio = ({
                 </span>
 
                 {/* Filter Box */}
-                <div>
-                  <div tw="overflow-auto pr-14 m-6 h-[calc(100vh-120px)]">
-                    <h2 tw="text-3xl font-bold mb-4">Filters</h2>
-
-                    <ul tw={'pl-6'}>
-                      <div>{/* TODO: put the price refinement in here */}</div>
-                      {/*                     
-                      <CustomRefinementGroup attribute={'medium'} />
-                      <CustomRefinementGroup attribute={'year'} />
-                      <CustomRefinementGroup
-                        attribute={'sale.color'}
-                        title={'Color'}
-                      />
-                      <CustomRefinementGroup attribute={'dimensions'} /> */}
-                    </ul>
+                <div tw="w-full md:w-[400px] h-[100vh] overflow-auto">
+                  <div tw="p-8">
+                    <div tw="flex w-full items-center justify-between">
+                      <div tw="text-[32px] text-[#3C3C3C]">Filters</div>
+                      <button tw="w-5 h-5" onClick={() => setFilterOpen(false)}>
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9.40898 7.99829L15.7044 1.71285C15.8926 1.52468 15.9983 1.26947 15.9983 1.00336C15.9983 0.737256 15.8926 0.482046 15.7044 0.293879C15.5162 0.105711 15.261 0 14.9949 0C14.7288 0 14.4736 0.105711 14.2854 0.293879L8 6.58932L1.71456 0.293879C1.52639 0.105711 1.27118 2.36263e-07 1.00507 2.38246e-07C0.738961 2.40229e-07 0.483751 0.105711 0.295584 0.293879C0.107417 0.482046 0.0017056 0.737256 0.0017056 1.00336C0.0017056 1.26947 0.107417 1.52468 0.295584 1.71285L6.59102 7.99829L0.295584 14.2837C0.201924 14.3766 0.127583 14.4872 0.0768515 14.6089C0.0261196 14.7307 0 14.8613 0 14.9932C0 15.1251 0.0261196 15.2558 0.0768515 15.3775C0.127583 15.4993 0.201924 15.6098 0.295584 15.7027C0.38848 15.7964 0.499001 15.8707 0.620772 15.9214C0.742543 15.9722 0.873154 15.9983 1.00507 15.9983C1.13699 15.9983 1.2676 15.9722 1.38937 15.9214C1.51114 15.8707 1.62166 15.7964 1.71456 15.7027L8 9.40727L14.2854 15.7027C14.3783 15.7964 14.4889 15.8707 14.6106 15.9214C14.7324 15.9722 14.863 15.9983 14.9949 15.9983C15.1268 15.9983 15.2575 15.9722 15.3792 15.9214C15.501 15.8707 15.6115 15.7964 15.7044 15.7027C15.7981 15.6098 15.8724 15.4993 15.9232 15.3775C15.9739 15.2558 16 15.1251 16 14.9932C16 14.8613 15.9739 14.7307 15.9232 14.6089C15.8724 14.4872 15.7981 14.3766 15.7044 14.2837L9.40898 7.99829Z"
+                            fill="#3C3C3C"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                    <div tw="mt-6 flex flex-col gap-y-7">
+                      <FilterCategory {...filters['portfolio']} />
+                      <FilterCategory {...filters['price']} isPrice />
+                      <FilterCategory {...filters['size']} />
+                      <FilterCategory {...filters['medium']} />
+                      <FilterCategory {...filters['surface']} />
+                      <FilterCategory {...filters['subject']} />
+                      <FilterCategory {...filters['style']} />
+                    </div>
                   </div>
+                  <div tw="sticky w-full bottom-0 bg-white">
+                    <div tw="h-[0.5px] bg-[#E3E3E3]" />
+                    <div tw="px-4 flex w-full px-8 py-5 gap-x-3">
+                      <button
+                        onClick={() => setFilterOpen(false)}
+                        css={[buttons.white, tw`w-full h-10`]}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => setFilterOpen(false)}
+                        css={[buttons.red, tw`w-full h-10`]}
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                  <span
+                    onClick={() => setFilterOpen(false)}
+                    css={[
+                      tw`fixed z-[98] left-0 top-0 bottom-0 bg-[rgba(34,34,34,0.65)]`,
+                      filterOpen && tw`w-full`,
+                    ]}
+                  ></span>
                 </div>
               </div>
               <span
@@ -707,20 +667,45 @@ return (
                       <CustomRefinementGroup attribute={'dimensions'} />
                     </ul>
                   </div>
-                </div>
-              </div>
+        <div>
+          <div
+            css={[
+              tw`fixed bg-white max-w-full z-[99] transition-all duration-300`,
+              isMobile ?
+                (filterOpen ? tw`bottom-0` : tw`-bottom-full`) :
+                (filterOpen ? tw`left-0` : tw`-left-full`),
+              isMobile ? tw`left-0 right-0` : tw`top-0 bottom-0`
+            ]}
+          >
+            {filterOpen && <style>{`body {overflow: hidden}`}</style>}
+            {!isMobile &&
               <span
                 onClick={() => setFilterOpen(false)}
-                css={[
-                  tw`fixed z-[98] left-0 top-0 bottom-0 bg-[rgba(34,34,34,0.65)]`,
-                  filterOpen && tw`w-full`,
-                ]}
-              ></span>
-            </div>
+                className="close-icon"
+                tw="before:content-[''] before:w-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full before:h-0 before:absolute before:bg-white/20 before:rounded-full before:z-[-1] absolute text-white cursor-pointer rounded-full flex items-center justify-center text-3xl w-[50px] h-[50px] top-5 right-[-60px]"
+              >
+                <FiX />
+              </span>
+            }
+
+            
           )}
         </div>
       </InstantSearch>
     </>
+          </div>
+          {!isMobile &&
+            <span
+              onClick={() => setFilterOpen(false)}
+              css={[
+                tw`fixed z-[98] left-0 top-0 bottom-0 bg-[rgba(34,34,34,0.65)]`,
+                filterOpen && tw`w-full`,
+              ]}
+            ></span>
+          }
+        </div>
+      </div>
+    </InstantSearch>
   );
 };
 */

@@ -200,10 +200,8 @@ function Onboarding() {
       return;
     }
     if (!user) {
-      if (isMobile)
-        router.push(`/signin?redirect=${window.location.pathname}`)
-      else
-        setSignupFormActive(true);
+      if (isMobile) router.push(`/signin?redirect=${window.location.pathname}`);
+      else setSignupFormActive(true);
     } else {
       setSignupFormActive(false);
 
@@ -246,7 +244,7 @@ function Onboarding() {
     }
   }, [loading, user]);
   return (
-    <div tw='min-h-[100vh] flex flex-col'>
+    <div tw="min-h-[100vh] flex flex-col">
       {submitting && (
         <img
           tw={'w-full h-screen bg-center bg-no-repeat'}
@@ -257,6 +255,8 @@ function Onboarding() {
         <title>Onboarding</title>
       </Head>
 
+      <Header logoOnly />
+
       {signupFormActive && (
         <LoginForm
           defaultSignUp
@@ -264,8 +264,6 @@ function Onboarding() {
           onClose={() => setSignupFormActive(false)}
         />
       )}
-
-      <Header logoOnly />
 
       <div tw="mt-5 h-full flex-grow flex flex-col">
         <div tw="flex flex-col items-center text-center px-6">
@@ -317,25 +315,31 @@ function Onboarding() {
                 {stage === 1 && <PortfolioSection values={values} />}
               </div>
               <div
-                tw="mt-10 md:mt-[60px] md:w-[700px] md:mx-auto md:pb-[30px]"
+                tw="mt-10 md:mt-[60px] md:px-[60px] md:w-full md:mx-auto md:pb-[30px]"
                 css={[isMobile && tw`sticky w-full bottom-0 bg-white pb-4`]}
               >
                 {isMobile && <div tw="h-[0.5px] bg-[#E3E3E3]" />}
                 <div
                   css={[
                     isMobile
-                      ? tw`mt-[14px] grid grid-cols-2 gap-x-6 px-6`
+                      ? tw`mt-[14px] grid grid-cols-2 gap-x-3 px-6`
                       : tw`w-full grid grid-cols-[repeat(2, 160px)] justify-between`,
                   ]}
                 >
                   <button
-                    css={[buttons.white, tw`h-12`]}
+                    css={[
+                      buttons.white,
+                      tw`h-12 flex items-center justify-center`,
+                    ]}
                     onClick={() => setStage(stage ? stage - 1 : 0)}
                   >
                     {stage ? 'Back' : 'Cancel'}
                   </button>
                   <button
-                    css={[buttons.red, tw`h-12`]}
+                    css={[
+                      buttons.red,
+                      tw`h-12 flex items-center justify-center`,
+                    ]}
                     onClick={() => {
                       if (stage < 1) {
                         setStage(stage + 1);

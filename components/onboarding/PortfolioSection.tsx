@@ -59,34 +59,40 @@ export const PortfolioPopup = ({
               </button>
             </div>
           )}
-          <div css={[isMobile && tw`px-5 pb-6 overflow-auto h-full flex flex-col justify-between`]}>
+          <div
+            css={[
+              isMobile &&
+                tw`px-5 pb-6 overflow-auto h-full flex flex-col justify-between`,
+            ]}
+          >
             <div>
               <div
                 tw="flex gap-x-10 mt-5 md:mt-0"
                 css={[isMobile && tw`flex-col items-center w-full`]}
               >
-                <div tw="relative">
-                  <div tw="relative w-[100px] h-[100px] md:w-[180px] md:h-[180px] rounded-full overflow-hidden flex items-center">
-                    {portfolio.picture ?
-                      <Image
-                        src={portfolio.picture}
-                        layout="fill"
-                        objectFit="cover"
-                        alt="portfolio image"
-                      /> :
-                      <div tw='w-full h-full bg-[#E3E3E3]' />
-                    }
-                  </div>
-                  <div tw="absolute right-1 bottom-1 md:right-3 md:bottom-3">
-                    <FileUploader
-                      types={['PNG', 'JPG']}
-                      handleChange={(file: File) => {
-                        setPortfolio({
-                          ...portfolio,
-                          picture: URL.createObjectURL(file),
-                        });
-                      }}
-                    >
+                <FileUploader
+                  types={['PNG', 'JPG']}
+                  handleChange={(file: File) => {
+                    setPortfolio({
+                      ...portfolio,
+                      picture: URL.createObjectURL(file),
+                    });
+                  }}
+                >
+                  <div tw="relative">
+                    <div tw="relative w-[100px] h-[100px] md:w-[166px] md:h-[166px] rounded-full overflow-hidden flex items-center">
+                      {portfolio.picture ? (
+                        <Image
+                          src={portfolio.picture}
+                          layout="fill"
+                          objectFit="cover"
+                          alt="portfolio image"
+                        />
+                      ) : (
+                        <div tw="w-full h-full bg-[#E3E3E3]" />
+                      )}
+                    </div>
+                    <div tw="absolute right-1 bottom-1 md:right-3 md:bottom-3">
                       <button
                         tw="w-[34px] h-[34px] rounded-full bg-black opacity-70 hover:opacity-60 flex items-center justify-center"
                         type="button"
@@ -98,9 +104,9 @@ export const PortfolioPopup = ({
                           height="18px"
                         />
                       </button>
-                    </FileUploader>
+                    </div>
                   </div>
-                </div>
+                </FileUploader>
                 <div tw="flex flex-col gap-y-4 flex-1 mt-5 md:mt-0 w-full">
                   <input
                     tw="border border-[#D8D8D8] rounded-[6px] outline-none focus:border-[#888888] h-9 px-3"
@@ -125,21 +131,21 @@ export const PortfolioPopup = ({
                 </div>
               </div>
               <div tw="mt-4 md:mt-8 text-[#575757] text-[16px]">
-                Upload the works that belong in this portfolio. For now, only one
-                image per work.
+                Upload the works that belong in this portfolio. For now, only
+                one image per work.
               </div>
-              <div tw="mt-4 grid grid-flow-col gap-5 overflow-auto justify-start">
+              <div tw="mt-2 grid grid-flow-col gap-5 overflow-x-auto justify-start">
                 {portfolio.works.map((work, i) => (
-                  <div
-                    tw="w-[110px] h-[110px] rounded-[5px] relative overflow-hidden"
-                    key={i}
-                  >
-                    <Image
-                      src={work}
-                      layout="fill"
-                      objectFit="cover"
-                      alt="work image"
-                    />
+                  <div tw="relative" key={i}>
+                    <div tw="mt-2 w-[110px] h-[110px] rounded-[5px] relative overflow-hidden">
+                      <Image
+                        src={work}
+                        layout="fill"
+                        objectFit="cover"
+                        alt="work image"
+                      />
+                    </div>
+                    <div tw="absolute top-0 right-[-10px] w-5 h-5 rounded-full bg-black opacity-70"></div>
                   </div>
                 ))}
               </div>

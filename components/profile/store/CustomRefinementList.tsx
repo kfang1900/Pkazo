@@ -8,7 +8,7 @@ import { FiDollarSign, FiMinus, FiPlus } from 'react-icons/fi';
 import tw, { styled } from 'twin.macro';
 
 export default function CustomRefinementList(
-  props: UseRefinementListProps & { title?: string }
+  props: UseRefinementListProps & { title?: string; unique?: boolean }
 ) {
   const {
     items,
@@ -25,33 +25,35 @@ export default function CustomRefinementList(
   } = useRefinementList(props);
   //console.log('RFL', items);
   return (
-    <li>
-      <h3 tw="mb-3 font-bold text-lg">
+    <div>
+      <div tw="font-bold text-[20px] text-[#3C3C3C]">
         {props.title
           ? props.title
           : props.attribute.charAt(0).toUpperCase() +
             props.attribute.substring(1)}
-      </h3>
-      <ul tw="mb-5">
+      </div>
+      <div tw="mt-4 flex flex-col gap-y-[10px]">
         {items.map((item, i) => (
-          <li key={item.label}>
-            <div className="check-group">
+          <div key={item.label}>
+            <div className="check-group" tw="flex items-center">
               <input
-                type="checkbox"
-                tw={'mr-3'}
+                type={props.unique ? 'radio' : 'checkbox'}
                 id={`refinement-check-${props.attribute}-${item.value}`}
-                name={`refinement-check-${props.attribute}-${item.value}`}
+                name={`refinement-check-${props.attribute}`}
                 checked={item.isRefined}
+                tw="w-4 h-4"
+                css={{ 'accent-color': '#E24E4D' }}
                 onChange={(e) => refine(item.value)}
               />
               <label
                 htmlFor={`refinement-check-${props.attribute}-${item.value}`}
                 className="check-label"
+                tw="ml-3 font-semibold text-[14px] text-[#5A5A5A]"
               >
                 {item.label}
               </label>
             </div>
-          </li>
+          </div>
         ))}
 
         {canToggleShowMore && (
@@ -71,7 +73,7 @@ export default function CustomRefinementList(
             </div>
           </li>
         )}
-      </ul>
-    </li>
+      </div>
+    </div>
   );
 }
