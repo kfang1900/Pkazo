@@ -10,7 +10,7 @@ const ShopManager = () => {
     }, [mediaQuery, isMobile]);
 
     const router = useRouter();
-    if (!isMobile) router.push('/artist/collections');
+    // if (!isMobile) router.push('/artist/collections');
     return <div>mobile shop manager menu</div>
 }
 

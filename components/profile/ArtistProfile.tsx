@@ -99,7 +99,9 @@ const ArtistProfile = ({
               {artist.name}
             </div>
             <div tw="text-[16px] leading-[20px] mt-1 text-[#727373] font-medium flex items-center gap-x-[6px]">
-              {artist.location}<div tw='text-[10px]'>&bull;</div>{artist.discipline}
+              {artist.location}
+              <div tw='text-[10px]'>&bull;</div>
+              {artist.discipline}
             </div>
             <div tw="flex mt-auto">
               {/* <button
