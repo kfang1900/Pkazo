@@ -192,10 +192,12 @@ const Cart: NextPage = () => {
         </Modal>
       )}
       {loading && (
-        <img
-          tw={'w-full h-screen bg-center bg-no-repeat'}
-          src={'/assets/svgs/Loading.svg'}
-        />
+        <div tw='flex w-full justify-center'>
+          <img
+            src={'/assets/svgs/loading.svg'}
+            tw='w-[80px] md:w-[100px]'
+          />
+        </div>
       )}
 
       {!loading && (

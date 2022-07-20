@@ -250,7 +250,7 @@ function Onboarding() {
       {submitting && (
         <img
           tw={'w-full h-screen bg-center bg-no-repeat'}
-          src={'/assets/svgs/Loading.svg'}
+          src={'/assets/svgs/loading.svg'}
         />
       )}
       <Head>

@@ -60,7 +60,7 @@ export default function CartItem({
               <div tw="text-[16px] leading-[19px] font-semibold text-black">
                 {artistData.name}
               </div>
-              <div tw="mt-1 text-[14px] font-medium text-[#727373]">
+              <div tw="text-[14px] font-medium text-[#727373]">
                 {artistData.location}
               </div>
             </div>
@@ -68,7 +68,7 @@ export default function CartItem({
           <button
             css={[
               buttons.white,
-              tw`px-6 text-[13px] text-[#3C3C3C] font-semibold ml-auto h-[30px]`,
+              tw`w-[100px] flex items-center justify-center text-[13px] text-[#3C3C3C] font-semibold ml-auto h-[32px]`,
             ]}
           >
             Message

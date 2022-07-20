@@ -296,6 +296,7 @@ const Header = (props: {
             >
               <div
                 onClick={() => setShowCart(true)}
+                tw='flex-shrink-0'
               >
                 <img
                   src={`/assets/svgs/${isMobile ? 'mobile/' : ''}cart.svg`}

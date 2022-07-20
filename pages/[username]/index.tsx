@@ -222,8 +222,11 @@ const Portfolio: NextPage = () => {
       </Head>
       <Header />
       {loading ? (
-        <div tw={'flex flex-col'}>
-          <h2 tw={'mx-auto text-lg'}>Loading</h2>
+        <div tw='flex w-full justify-center'>
+          <img
+            src={'/assets/svgs/loading.svg'}
+            tw='w-[80px] md:w-[100px]'
+          />
         </div>
       ) : artistData.length === 0 ? (
         <div>
@@ -257,10 +260,10 @@ const Portfolio: NextPage = () => {
           {profileType === 1 && (
             <Container>
               <div
-                tw="flex items-center justify-center gap-x-20 border-[#F1F1F1]"
+                tw="flex items-center justify-center gap-x-20 border-[#E8E8E8]"
                 css={[
                   isMobile && tw`gap-x-3`,
-                  isMobile ? tw`border-b-2` : tw`border-b-4`,
+                  isMobile ? tw`border-b-[2px]` : tw`border-b-4`,
                 ]}
               >
                 {pages.map(({ name, value }, index) => (
@@ -272,7 +275,7 @@ const Portfolio: NextPage = () => {
                     }}
                     css={[
                       isMobile
-                        ? tw`text-[16px] w-20 py-1 border-b-2 mb-[-2px]`
+                        ? tw`text-[16px] w-20 py-1 border-b-[2px] mb-[-2px]`
                         : tw`text-[18px] w-[200px] py-2 border-b-4 mb-[-4px]`,
                       tw`relative z-10 font-semibold text-gray-600 duration-150 border-transparent cursor-pointer bg-none`,
                       page === value && tw`border-soft-red pointer-events-none`,

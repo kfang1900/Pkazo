@@ -216,7 +216,7 @@ function GallerySection({
         tw="flex justify-center items-center mt-4 md:mt-[30px]"
         css={[curGallery.Images.length > 9 && tw`mb-1 md:mb-5`]}
       >
-        <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
+        <hr tw="h-[2px] bg-[#E8E8E8] flex-grow" />
         {curGallery.Images.length > 9 && (
           <button
             tw="rounded-full border-none outline-none bg-[#F4F4F4] hover:bg-[#EBEBEB]"
@@ -237,67 +237,76 @@ function GallerySection({
             />
           </button>
         )}
-        <hr tw="border border-[#C7C7C7] bg-[#C7C7C7] flex-grow" />
+        <hr tw="h-[2px] bg-[#E8E8E8] flex-grow" />
       </div>
       {/* Gallery Section --End-- */}
 
       {/* education, experience, exhibitions */}
       {artistData && (
-        <div
-          tw="w-full mb-4 md:mb-[30px]"
-          css={[
-            isMobile
-              ? tw`flex flex-col mt-7 gap-6 px-4`
-              : tw`grid grid-cols-3 gap-16 mt-7`,
-          ]}
-        >
-          <div tw="flex gap-x-3">
-            {!isMobile && <div tw="w-1 h-11 rounded-[8px] bg-[#CBCBCB]" />}
-            <div>
-              <div tw="text-black text-[18px] md:text-[20px] md:mb-5 font-semibold">
-                Education
-              </div>
-              {artistData.education // education array
-                .sort((a, b) => (b.end || b.start) - (a.end || a.start)) // b.end - a.end, sorted by end year
-                .map((education, i) => (
-                  <div key={i} tw="mt-2 md:mt-4">
-                    {showEdu(education)}
+        artistData.education.length > 0 ||
+        artistData.experience.length > 0 ||
+        artistData.exhibitions.length > 0) && (
+          <div
+            tw="w-full pb-4 md:pb-[30px]"
+            css={[
+              isMobile
+                ? tw`flex flex-col mt-7 gap-6 px-4`
+                : tw`grid grid-cols-3 gap-16 mt-7`,
+            ]}
+          >
+            {artistData.education.length > 0 &&
+              <div tw="flex gap-x-3">
+                {!isMobile && <div tw="w-1 h-11 rounded-[8px] bg-[#CBCBCB]" />}
+                <div>
+                  <div tw="text-black text-[18px] md:text-[20px] md:mb-5 font-semibold">
+                    Education
                   </div>
-                ))}
-            </div>
-          </div>
-          <div tw="flex gap-x-3">
-            {!isMobile && <div tw="w-1 h-11 rounded-[8px] bg-[#CBCBCB]" />}
-            <div>
-              <div tw="text-black text-[18px] md:text-[20px] md:mb-5 font-semibold">
-                Experience
+                  {artistData.education // education array
+                    .sort((a, b) => (b.end || b.start) - (a.end || a.start)) // b.end - a.end, sorted by end year
+                    .map((education, i) => (
+                      <div key={i} tw="mt-2 md:mt-4">
+                        {showEdu(education)}
+                      </div>
+                    ))}
+                </div>
               </div>
-              {artistData.experience //experience array
-                .sort((a, b) => (b.end || b.start) - (a.end || a.start)) // b.end - a.end, sorted by end year
-                .map((experience, i) => (
-                  <div key={i} tw="mt-2 md:mt-4">
-                    {showExp(experience)}
+            }
+            {artistData.experience.length > 0 &&
+              <div tw="flex gap-x-3">
+                {!isMobile && <div tw="w-1 h-11 rounded-[8px] bg-[#CBCBCB]" />}
+                <div>
+                  <div tw="text-black text-[18px] md:text-[20px] md:mb-5 font-semibold">
+                    Experience
                   </div>
-                ))}
-            </div>
-          </div>
-          <div tw="flex gap-x-3">
-            {!isMobile && <div tw="w-1 h-11 rounded-[8px] bg-[#CBCBCB]" />}
-            <div>
-              <div tw="text-black text-[18px] md:text-[20px] md:mb-5 font-semibold">
-                Exhibitions
+                  {artistData.experience //experience array
+                    .sort((a, b) => (b.end || b.start) - (a.end || a.start)) // b.end - a.end, sorted by end year
+                    .map((experience, i) => (
+                      <div key={i} tw="mt-2 md:mt-4">
+                        {showExp(experience)}
+                      </div>
+                    ))}
+                </div>
               </div>
-              {artistData.exhibitions // exhibition array
-                .sort((a, b) => b.year - a.year) // b.end - a.end, sorted by end year
-                .map((exhibition, i) => (
-                  <div key={i} tw="mt-2 md:mt-4">
-                    {showExh(exhibition)}
+            }
+            {artistData.exhibitions.length > 0 &&
+              <div tw="flex gap-x-3">
+                {!isMobile && <div tw="w-1 h-11 rounded-[8px] bg-[#CBCBCB]" />}
+                <div>
+                  <div tw="text-black text-[18px] md:text-[20px] md:mb-5 font-semibold">
+                    Exhibitions
                   </div>
-                ))}
-            </div>
+                  {artistData.exhibitions // exhibition array
+                    .sort((a, b) => b.year - a.year) // b.end - a.end, sorted by end year
+                    .map((exhibition, i) => (
+                      <div key={i} tw="mt-2 md:mt-4">
+                        {showExh(exhibition)}
+                      </div>
+                    ))}
+                </div>
+              </div>
+            }
           </div>
-        </div>
-      )}
+        )}
 
       {/* <div tw="mt-7">
         <div tw="flex items-end">

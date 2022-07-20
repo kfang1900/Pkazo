@@ -44,8 +44,8 @@ const ShowMore = (props: ShowMoreProps) => {
                     ]}
                 >
                     {!showMore && <>
-                        <div tw='w-[2em] bg-gradient-to-l from-white' />
-                        <div tw='bg-white px-1 tracking-widest'>{' ... '}</div>
+                        <div tw='w-[3em] bg-gradient-to-l from-white' />
+                        <div tw='bg-white tracking-widest'>{'...'}</div>
                     </>}
                     <div tw='underline cursor-pointer bg-white' onClick={() => setShowMore(!showMore)}>
                         See {showMore ? 'less' : 'more'}
