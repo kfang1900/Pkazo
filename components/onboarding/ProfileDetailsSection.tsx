@@ -24,15 +24,19 @@ import React, { ReactNode, useState, useMemo, useEffect } from 'react';
 import tw from 'twin.macro';
 import { User } from '@firebase/auth';
 import { ArtistData } from '../../types/dbTypes';
-import countryList from 'react-select-country-list'
-import { OnboardingFormValues } from 'pages/onboarding'
+import countryList from 'react-select-country-list';
+import { OnboardingFormValues } from 'pages/onboarding';
 import { useMediaQuery } from 'react-responsive';
 import InfoHover from './InfoHover';
 import { Container } from 'styles/Container';
 
-export default function ProfileDetailsSection(
-  { country, values }: { country?: string, values: OnboardingFormValues }
-) {
+export default function ProfileDetailsSection({
+  country,
+  values,
+}: {
+  country?: string;
+  values: OnboardingFormValues;
+}) {
   const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -50,65 +54,83 @@ export default function ProfileDetailsSection(
   const YesNoRadio = (props: { name: string }) => {
     const yesId = `yes${props.name}`;
     const noId = `no${props.name}`;
-    return <div tw='mt-3 md:mt-0 md:h-11 flex items-center text-[16px] leading-[1em] text-[#333333] font-medium'>
-      <label htmlFor={yesId}>Yes</label>
-      <Field
-        type='radio'
-        name={props.name}
-        value='yes'
-        id={yesId}
-        tw="w-4 h-4 ml-3"
-        css={{ 'accent-color': '#E24E4D' }}
-      />
-      <label htmlFor={noId} tw='ml-8'>No</label>
-      <Field
-        type='radio'
-        name={props.name}
-        value='no'
-        id={noId}
-        tw='w-4 h-4 ml-3'
-        css={{ 'accent-color': '#E24E4D' }}
-      />
-    </div>
-  }
+    return (
+      <div tw="mt-3 md:mt-0 md:h-11 flex items-center text-[16px] leading-[1em] text-[#333333] font-medium">
+        <label htmlFor={yesId}>Yes</label>
+        <Field
+          type="radio"
+          name={props.name}
+          value="yes"
+          id={yesId}
+          tw="w-4 h-4 ml-3"
+          css={{ 'accent-color': '#E24E4D' }}
+        />
+        <label htmlFor={noId} tw="ml-8">
+          No
+        </label>
+        <Field
+          type="radio"
+          name={props.name}
+          value="no"
+          id={noId}
+          tw="w-4 h-4 ml-3"
+          css={{ 'accent-color': '#E24E4D' }}
+        />
+      </div>
+    );
+  };
   return (
     <Form>
-      <div css={[
-        !isMobile && tw`mx-auto grid grid-cols-[190px 1fr] items-center gap-x-[60px] gap-y-7 max-w-[648px]`
-      ]}>
+      <div
+        css={[
+          !isMobile &&
+            tw`mx-auto grid grid-cols-[190px 1fr] items-center gap-x-[60px] gap-y-7 max-w-[648px]`,
+        ]}
+      >
         <div css={[styles.label, styles.req]}>Name</div>
-        <Field type='text' name='name' css={styles.input} tw='mt-2 md:mt-0' />
-        <div css={[styles.label, styles.req]} tw='mt-4 md:mt-0'>Username</div>
-        <div tw='flex mt-2 md:mt-0 items-center'>
-          <div tw='font-semibold'>pkazo.com/</div>
+        <Field type="text" name="name" css={styles.input} tw="mt-2 md:mt-0" />
+        <div css={[styles.label, styles.req]} tw="mt-4 md:mt-0">
+          Username
+        </div>
+        <div tw="flex mt-2 md:mt-0 items-center">
+          <div tw="font-semibold">pkazo.com/</div>
           <Field
-            type='text'
-            name='username'
-            css={styles.input} tw='ml-4'
+            type="text"
+            name="username"
+            css={styles.input}
+            tw="ml-4"
             placeholder={values.name.toLowerCase().replace(/\s/g, '')}
           />
         </div>
-        <div css={[styles.label, styles.req]} tw='mt-4 md:mt-0'>Art Discipline</div>
-        <div tw='mt-2 md:mt-0'>
+        <div css={[styles.label, styles.req]} tw="mt-4 md:mt-0">
+          Art Discipline
+        </div>
+        <div tw="mt-2 md:mt-0">
           <Field
             as={Dropdown}
-            type='select'
-            name='discipline'
+            type="select"
+            name="discipline"
             appearance={styles.input}
             triangle
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               values.discipline = event.target.value;
             }}
           >
-            {['Painter', 'Photographer', 'Other'].map((i) => <option key={i} value={i}>{i}</option>)}
+            {['Painter', 'Photographer', 'Other'].map((i) => (
+              <option key={i} value={i}>
+                {i}
+              </option>
+            ))}
           </Field>
         </div>
-        <div css={[styles.label, styles.req]} tw='mt-4 md:mt-0'>Location</div>
-        <div tw='mt-2 md:mt-0 grid grid-cols-2 gap-x-5 md:gap-x-8'>
+        <div css={[styles.label, styles.req]} tw="mt-4 md:mt-0">
+          Location
+        </div>
+        <div tw="mt-2 md:mt-0 grid grid-cols-2 gap-x-5 md:gap-x-8">
           <Field
             as={Dropdown}
             type="select"
-            name='country'
+            name="country"
             appearance={[styles.input, tw`pr-6 overflow-ellipsis`]}
             triangle
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,28 +139,44 @@ export default function ProfileDetailsSection(
             }}
           >
             <option value={selectedCountry}>{selectedCountry}</option>
-            {countries.map((i, ind) =>
-              i !== selectedCountry && <option key={ind} value={i}>{i}</option>)
-            }
+            {countries.map(
+              (i, ind) =>
+                i !== selectedCountry && (
+                  <option key={ind} value={i}>
+                    {i}
+                  </option>
+                )
+            )}
           </Field>
-          <Field type='text' name='city' css={styles.input} placeholder='Zip code' />
+          <Field
+            type="text"
+            name="city"
+            css={styles.input}
+            placeholder="Zip code"
+          />
         </div>
-        <div tw='flex'>
-          <div css={[styles.label, styles.req]} tw='mt-6 md:mt-0'>Do you accept commissions?</div>
-          <InfoHover text='Can people message you with custom requests?' />
+        <div tw="flex">
+          <div css={[styles.label, styles.req]} tw="mt-6 md:mt-0">
+            Do you accept commissions?
+          </div>
+          <InfoHover text="Can people message you with custom requests?" />
         </div>
-        <YesNoRadio name='acceptCommission' />
-        <div tw='flex'>
-          <div css={[styles.label, styles.req]} tw='mt-6 md:mt-0'>Is all your work for sale?</div>
-          <InfoHover text='Can people message you with custom requests?' />
+        <YesNoRadio name="acceptCommission" />
+        <div tw="flex">
+          <div css={[styles.label, styles.req]} tw="mt-6 md:mt-0">
+            Is all your work for sale?
+          </div>
+          <InfoHover text="Can people message you with custom requests?" />
         </div>
-        <YesNoRadio name='onlySale' />
-        <div tw='flex'>
-          <div css={[styles.label, styles.req]} tw='mt-6 md:mt-0'>Are your collections unique to you?</div>
-          <InfoHover text='Can people message you with custom requests?' />
+        <YesNoRadio name="onlySale" />
+        <div tw="flex">
+          <div css={[styles.label, styles.req]} tw="mt-6 md:mt-0">
+            Are your collections unique to you?
+          </div>
+          <InfoHover text="Can people message you with custom requests?" />
         </div>
-        <YesNoRadio name='uniqueCollections' />
+        <YesNoRadio name="uniqueCollections" />
       </div>
-    </Form >
+    </Form>
   );
 }

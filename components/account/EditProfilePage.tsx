@@ -34,9 +34,9 @@ export default function EditProfilePage() {
 
   const [data, setData] = useState<
     | (ArtistData & {
-      profilePictureURL: string | null;
-      coverImageURL: string | null;
-    })
+        profilePictureURL: string | null;
+        coverImageURL: string | null;
+      })
     | undefined
   >();
   const [artistId, setArtistId] = useState('');
@@ -113,10 +113,10 @@ export default function EditProfilePage() {
               showPopup === 0
                 ? 'education'
                 : showPopup === 1
-                  ? 'experience'
-                  : showPopup === 2
-                    ? 'exhibitions'
-                    : 'UNKNOWN';
+                ? 'experience'
+                : showPopup === 2
+                ? 'exhibitions'
+                : 'UNKNOWN';
 
             if (type === 'UNKNOWN') {
               throw new Error(

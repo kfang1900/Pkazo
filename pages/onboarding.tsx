@@ -200,10 +200,8 @@ function Onboarding() {
       return;
     }
     if (!user) {
-      if (isMobile)
-        router.push(`/signin?redirect=${window.location.pathname}`)
-      else
-        setSignupFormActive(true);
+      if (isMobile) router.push(`/signin?redirect=${window.location.pathname}`);
+      else setSignupFormActive(true);
     } else {
       setSignupFormActive(false);
 
@@ -246,7 +244,7 @@ function Onboarding() {
     }
   }, [loading, user]);
   return (
-    <div tw='min-h-[100vh] flex flex-col'>
+    <div tw="min-h-[100vh] flex flex-col">
       {submitting && (
         <img
           tw={'w-full h-screen bg-center bg-no-repeat'}
@@ -329,13 +327,19 @@ function Onboarding() {
                   ]}
                 >
                   <button
-                    css={[buttons.white, tw`h-12 flex items-center justify-center`]}
+                    css={[
+                      buttons.white,
+                      tw`h-12 flex items-center justify-center`,
+                    ]}
                     onClick={() => setStage(stage ? stage - 1 : 0)}
                   >
                     {stage ? 'Back' : 'Cancel'}
                   </button>
                   <button
-                    css={[buttons.red, tw`h-12 flex items-center justify-center`]}
+                    css={[
+                      buttons.red,
+                      tw`h-12 flex items-center justify-center`,
+                    ]}
                     onClick={() => {
                       if (stage < 1) {
                         setStage(stage + 1);

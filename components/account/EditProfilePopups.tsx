@@ -13,7 +13,7 @@ type PopupData =
 const EditProfilePopup = ({
   onSave,
   onClose,
-  type
+  type,
 }: {
   onSave: (data: PopupData) => void;
   onClose: () => void;
@@ -78,7 +78,7 @@ const EditProfilePopup = ({
           css={[
             isMobile
               ? tw`fixed bottom-0 bg-white w-full top-[40px] rounded-t-[12px] flex flex-col overflow-hidden`
-              : tw`bg-white w-[540px] rounded-[20px] px-9 pt-9 pb-6`
+              : tw`bg-white w-[540px] rounded-[20px] px-9 pt-9 pb-6`,
           ]}
         >
           {isMobile && (
@@ -112,10 +112,11 @@ const EditProfilePopup = ({
             </div>
           )}
           <div css={[isMobile && tw`px-5 py-8`]}>
-            {!isMobile && <div tw="text-[20px] text-black font-semibold">
-              Add {popups[type].title}
-            </div>
-            }
+            {!isMobile && (
+              <div tw="text-[20px] text-black font-semibold">
+                Add {popups[type].title}
+              </div>
+            )}
             <div tw="md:mt-6 text-[16px] text-[#3C3C3C] font-semibold flex flex-col gap-y-6 md:gap-y-9">
               {popups[type].fields.map((field, i) => (
                 <div key={i}>
@@ -162,9 +163,9 @@ const EditProfilePopup = ({
                         selected={
                           new Date().getFullYear() - i ===
                           data[type][
-                          (popups[type].dateRange
-                            ? 'start'
-                            : 'year') as keyof PopupData
+                            (popups[type].dateRange
+                              ? 'start'
+                              : 'year') as keyof PopupData
                           ]
                         }
                       >
@@ -206,7 +207,7 @@ const EditProfilePopup = ({
               </div>
             </div>
           </div>
-          {!isMobile &&
+          {!isMobile && (
             <div tw="mt-6 flex justify-end">
               <button
                 css={[buttons.red, tw`text-[14px] px-7 h-9`]}
@@ -218,9 +219,9 @@ const EditProfilePopup = ({
                 Save
               </button>
             </div>
-          }
+          )}
         </div>
-        {!isMobile &&
+        {!isMobile && (
           <button
             onClick={onClose}
             tw="flex-shrink-0 ml-5 w-11 h-11 border-0 outline-none bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.15)] rounded-full flex items-center justify-center"
@@ -233,7 +234,7 @@ const EditProfilePopup = ({
               alt="close button"
             />
           </button>
-        }
+        )}
       </div>
     </div>
   );
