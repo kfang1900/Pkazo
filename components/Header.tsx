@@ -122,8 +122,8 @@ const Header = (props: {
       {!isMobile && showLoginModal && (
         <LoginForm onClose={() => setShowLoginModal(false)} />
       )}
-      {!isMobile && showCart && (
-        <CartPopup onClose={() => setShowCart(false)} />
+      {!isMobile && (
+        <CartPopup onClose={() => setShowCart(false)} toShow={showCart} />
       )}
       {isMobile && onSearch && <SearchBox />}
 
@@ -144,7 +144,7 @@ const Header = (props: {
               <SearchBox />
             </div>
           )}
-          <div tw="md:ml-10 flex items-center gap-x-4 md:gap-x-8">
+          <div tw="md:ml-10 flex items-center gap-x-4 md:gap-x-8 flex-shrink-0">
             {isMobile && (
               <button onClick={() => setOnSearch(true)}>
                 <img src="/assets/svgs/mobile/search.svg" />
@@ -152,34 +152,34 @@ const Header = (props: {
             )}
             {!!user && (
               <>
-                <Link href="/favorites" passHref>
+                {/* <Link href="/favorites" passHref>
                   <img
                     src={`/assets/svgs/${isMobile ? 'mobile/' : ''}like.svg`}
-                    tw="cursor-pointer"
+                    tw="cursor-pointer flex-shrink-0"
                   />
-                </Link>
+                </Link> */}
                 <Link href="/chats" passHref>
                   <img
                     src={`/assets/svgs/${isMobile ? 'mobile/' : ''}chat.svg`}
-                    tw="cursor-pointer"
+                    tw="cursor-pointer flex-shrink-0"
                   />
                 </Link>
               </>
             )}
             {!!user && isArtist && (
               <>
-                <Link href={`/${username}`} passHref>
+                <Link href={`/artist`} passHref>
                   <a>
                     <img
                       src={`/assets/svgs/${isMobile ? 'mobile/' : ''}shop.svg`}
-                      tw="cursor-pointer"
+                      tw="cursor-pointer flex-shrink-0"
                     />
                   </a>
                 </Link>
                 <button onClick={() => setShowUploadWorkPopup(true)}>
                   <img
                     src={`/assets/svgs/${isMobile ? 'mobile/' : ''}create.svg`}
-                    tw="cursor-pointer"
+                    tw="cursor-pointer flex-shrink-0"
                   />
                 </button>
                 <div className="relative">

@@ -84,7 +84,7 @@ export default function ProfileDetailsSection({
       <div
         css={[
           !isMobile &&
-            tw`mx-auto grid grid-cols-[190px 1fr] items-center gap-x-[60px] gap-y-7 max-w-[648px]`,
+          tw`mx-auto grid grid-cols-[190px 1fr] items-center gap-x-[60px] gap-y-7 max-w-[648px]`,
         ]}
       >
         <div css={[styles.label, styles.req]}>Name</div>
@@ -93,7 +93,7 @@ export default function ProfileDetailsSection({
           Username
         </div>
         <div tw="flex mt-2 md:mt-0 items-center">
-          <div tw="font-semibold">pkazo.com/</div>
+          <div tw="font-semibold text-[#ADADAD]">pkazo.com/</div>
           <Field
             type="text"
             name="username"

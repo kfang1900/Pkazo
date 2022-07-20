@@ -28,12 +28,12 @@ const EditAccount: NextPage = () => {
             </Head>
             <Header isBuyer />
             <div tw="flex h-full">
-                <div tw="sticky top-0 w-[289px] border-r border-r-[#D8D8D8] pt-2">
+                <div tw="sticky top-0 px-[60px] border-r border-r-[#D8D8D8] pt-2">
                     {pages.map((p, i) => (
                         <div
                             key={i}
                             css={[
-                                tw`my-5 py-2 ml-[60px] cursor-pointer`,
+                                tw`my-5 py-2 cursor-pointer`,
                                 page === i && tw`font-bold`,
                             ]}
                             onClick={() => setPage(i)}

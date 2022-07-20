@@ -433,14 +433,18 @@ const StorePortFolio = ({
             </div>
           </Container>
 
-          {!isMobile && (
-            <div>
-              <div
-                css={[
-                  tw`fixed top-0 bg-white bottom-0 max-w-full w-[400] 2xl:w-[480px] z-[99] -left-full transition-all duration-300`,
-                  filterOpen && tw`left-0`,
-                ]}
-              >
+          <div>
+            <div
+              css={[
+                tw`fixed bg-white max-w-full z-[99] transition-all duration-300`,
+                isMobile ?
+                  (filterOpen ? tw`bottom-0` : tw`-bottom-full`) :
+                  (filterOpen ? tw`left-0` : tw`-left-full`),
+                isMobile ? tw`left-0 right-0` : tw`top-0 bottom-0`
+              ]}
+            >
+              {filterOpen && <style>{`body {overflow: hidden}`}</style>}
+              {!isMobile &&
                 <span
                   onClick={() => setFilterOpen(false)}
                   className="close-icon"
@@ -448,12 +452,14 @@ const StorePortFolio = ({
                 >
                   <FiX />
                 </span>
+              }
 
-                {/* Filter Box */}
-                <div tw="w-full md:w-[400px] h-[100vh] overflow-auto">
-                  <div tw="p-8">
-                    <div tw="flex w-full items-center justify-between">
-                      <div tw="text-[32px] text-[#3C3C3C]">Filters</div>
+              {/* Filter Box */}
+              <div tw='w-full md:w-[400px] h-[100vh] overflow-auto'>
+                <div tw='p-8'>
+                  <div tw='flex w-full items-center justify-between'>
+                    <div tw='text-[32px] text-[#3C3C3C]'>Filters</div>
+                    {isMobile &&
                       <button tw="w-5 h-5" onClick={() => setFilterOpen(false)}>
                         <svg
                           width="20"
@@ -468,43 +474,38 @@ const StorePortFolio = ({
                           />
                         </svg>
                       </button>
-                    </div>
-                    <div tw="mt-6 flex flex-col gap-y-7">
-                      <FilterCategory {...filters['portfolio']} />
-                      <FilterCategory {...filters['price']} isPrice />
-                      <FilterCategory {...filters['size']} />
-                      <FilterCategory {...filters['medium']} />
-                      <FilterCategory {...filters['surface']} />
-                      <FilterCategory {...filters['subject']} />
-                      <FilterCategory {...filters['style']} />
-                    </div>
+                    }
                   </div>
-                  <div tw="sticky w-full bottom-0 bg-white">
-                    <div tw="h-[0.5px] bg-[#E3E3E3]" />
-                    <div tw="px-4 flex w-full px-8 py-5 gap-x-3">
-                      <button
-                        onClick={() => setFilterOpen(false)}
-                        css={[buttons.white, tw`w-full h-10`]}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={() => setFilterOpen(false)}
-                        css={[buttons.red, tw`w-full h-10`]}
-                      >
-                        Apply
-                      </button>
-                    </div>
+                  <div tw='mt-6 flex flex-col gap-y-7'>
+                    <FilterCategory {...filters['portfolio']} />
+                    <FilterCategory {...filters['price']} isPrice />
+                    <FilterCategory {...filters['size']} />
+                    <FilterCategory {...filters['medium']} />
+                    <FilterCategory {...filters['surface']} />
+                    <FilterCategory {...filters['subject']} />
+                    <FilterCategory {...filters['style']} />
                   </div>
-                  <span
-                    onClick={() => setFilterOpen(false)}
-                    css={[
-                      tw`fixed z-[98] left-0 top-0 bottom-0 bg-[rgba(34,34,34,0.65)]`,
-                      filterOpen && tw`w-full`,
-                    ]}
-                  ></span>
+                </div>
+                <div tw="sticky w-full bottom-0 bg-white">
+                  <div tw='h-[0.5px] bg-[#E3E3E3]' />
+                  <div tw='px-4 flex w-full px-8 py-5 gap-x-3'>
+                    <button
+                      onClick={() => setFilterOpen(false)}
+                      css={[buttons.white, tw`w-full h-10`]}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => setFilterOpen(false)}
+                      css={[buttons.red, tw`w-full h-10`]}
+                    >
+                      Apply
+                    </button>
+                  </div>
                 </div>
               </div>
+            </div>
+            {!isMobile &&
               <span
                 onClick={() => setFilterOpen(false)}
                 css={[
@@ -512,8 +513,8 @@ const StorePortFolio = ({
                   filterOpen && tw`w-full`,
                 ]}
               ></span>
-            </div>
-          )}
+            }
+          </div>
           {/* <DrawerFilter drawerToggle={drawerToggle} handleCloseFilter={handleCloseFilter}/> */}
         </div>
       </>
