@@ -7,6 +7,10 @@ import { ArtistData, WorkData } from '../../types/dbTypes';
 import { CartItem as CartItemType } from '../../utils/hooks/useCart';
 import formatCurrency from '../../utils/formatCurrency';
 import Link from 'next/link';
+import { getApp } from 'firebase/app';
+import { arrayUnion, doc, getFirestore, updateDoc } from 'firebase/firestore';
+import useAuth from '../../utils/auth/useAuth';
+import { useRouter } from 'next/router';
 
 export default function CartItem({
   data: {
@@ -27,8 +31,9 @@ export default function CartItem({
   isLast,
 }: {
   data: CartItemType & {
+    id: string;
     workData: WorkData & { forSale: true };
-    artistData: ArtistData;
+    artistData: ArtistData & { id: string };
     workImageURL: string;
     artistProfilePictureURL: string;
   };
@@ -40,9 +45,11 @@ export default function CartItem({
   duplicateArtistLast: boolean;
   isLast: boolean;
 }) {
+  const { user } = useAuth();
+  const router = useRouter();
   return (
     <div tw="mt-[18px]">
-      {!duplicateArtist &&
+      {!duplicateArtist && (
         <div tw="flex items-center mb-4">
           <Link href={'/' + artistData.username} passHref>
             <div tw="w-[55px] h-[55px] overflow-hidden rounded-full flex items-center cursor-pointer">
@@ -66,6 +73,19 @@ export default function CartItem({
             </div>
           </Link>
           <button
+            onClick={() => {
+              if (!user || !artistData.id) {
+                return;
+              }
+              const app = getApp();
+              const db = getFirestore(app);
+
+              updateDoc(doc(db, 'users', user.uid), {
+                chats: arrayUnion(artistData.id),
+              }).then(() => {
+                return router.push(`/chat#${artistData.id}`);
+              });
+            }}
             css={[
               buttons.white,
               tw`w-[100px] flex items-center justify-center text-[13px] text-[#3C3C3C] font-semibold ml-auto h-[32px]`,
@@ -74,7 +94,7 @@ export default function CartItem({
             Message
           </button>
         </div>
-      }
+      )}
       <div tw="flex">
         <div tw="w-[88px] h-[88px] rounded-[8px] overflow-hidden flex-none">
           <Image
@@ -139,9 +159,9 @@ export default function CartItem({
             <button
               tw="font-bold"
               onClick={() => 0}
-            // onClick={() => {
-            //     work.buyNow = false;
-            // }}
+              // onClick={() => {
+              //     work.buyNow = false;
+              // }}
             >
               Save for later
             </button>
@@ -156,7 +176,7 @@ export default function CartItem({
         placeholder={`Add a note to ${artistData.name} (optional)`}
         tw="mt-5 w-full border-[0.5px] border-[#ECECEC] focus:border-[#D8D8D8] outline-none rounded-[7px] p-3 text-[14px] leading-[17px] resize-none"
       />
-      {duplicateArtistLast &&
+      {duplicateArtistLast && (
         <div tw="mt-3 w-full flex flex-col items-end">
           <div tw="text-[13px] text-black">
             Shipping:{' '}
@@ -176,8 +196,10 @@ export default function CartItem({
           {/*  from Dallas, TX*/}
           {/*</div>*/}
         </div>
-      }
-      {!isLast && duplicateArtistLast && <div tw="h-[0.5px] bg-[#E3E3E3] mt-5" />}
+      )}
+      {!isLast && duplicateArtistLast && (
+        <div tw="h-[0.5px] bg-[#E3E3E3] mt-5" />
+      )}
     </div>
   );
 }
