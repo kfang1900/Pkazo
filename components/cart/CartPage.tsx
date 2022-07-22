@@ -90,7 +90,10 @@ const Cart: NextPage = () => {
             return (async () => {
               return {
                 ...w,
-                artistData: workArtistData.data,
+                artistData: {
+                  ...workArtistData.data,
+                  id: workArtistData.id,
+                },
                 artistProfilePictureURL: await loadStorageImageSafe(
                   workArtistData.data.profilePicture
                 ),
