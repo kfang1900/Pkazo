@@ -122,7 +122,8 @@ export default function FirebaseProvider({
 
     return unsubscribe;
   }, []);
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginModalDefaultSignup, setLoginModalDefaultSignup] = useState(false);
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
   const auth = getAuth();
   return (
     <AuthContext.Provider
@@ -159,8 +160,16 @@ export default function FirebaseProvider({
         artistData,
         userData,
         artistId,
-        showLoginModal,
-        setShowLoginModal,
+        loginModalVisible,
+        loginModalDefaultSignup,
+        showLoginModal: (defaultSignup = false) => {
+          setLoginModalDefaultSignup(defaultSignup);
+          setLoginModalVisible(true);
+        },
+        hideLoginModal: () => {
+          setLoginModalDefaultSignup(false);
+          setLoginModalVisible(false);
+        },
         signOut: () => {
           return signOut(getAuth());
         },

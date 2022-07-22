@@ -16,6 +16,7 @@ import UploadWork from './uploading/UploadWork';
 import { useMediaQuery } from 'react-responsive';
 import SearchHeader from './search/SearchHeader';
 import SearchBox from './search/SearchBox';
+import { hide } from 'dom7';
 // import { useNavigate } from "react-router-dom";
 
 /* Copied from image.tsx source */
@@ -41,7 +42,16 @@ const Header = (props: {
   // 2 = regular user (signed in)
   // const [profileType, setProfileType] = useState(1);
 
-  const { user, signOut, isArtist } = useAuth();
+  const {
+    user,
+    signOut,
+    isArtist,
+    loginModalDefaultSignup,
+    artistData,
+    showLoginModal,
+    loginModalVisible,
+    hideLoginModal,
+  } = useAuth();
 
   const [showCart, setShowCart] = useState(false);
   const [pfp, setPfp] = useState('');
@@ -57,7 +67,6 @@ const Header = (props: {
   };
 
   const router = useRouter();
-  const { artistData, showLoginModal, setShowLoginModal } = useAuth();
   const username = artistData?.username;
   useEffect(() => {
     console.log('user', user);
@@ -106,21 +115,27 @@ const Header = (props: {
     );
   }
   const navStyle = [tw`top-0 z-50 w-full`, props.isHome && tw`sticky`];
-  if (isMobile && showLoginModal) {
+  if (isMobile && loginModalVisible) {
     return (
       <div
         css={navStyle}
         tw="h-screen overscroll-contain overflow-hidden flex justify-center"
       >
-        <Login onClose={() => setShowLoginModal(false)} />
+        <Login
+          onClose={() => hideLoginModal()}
+          defaultSignUp={loginModalDefaultSignup}
+        />
       </div>
     );
   }
 
   return (
     <div css={navStyle}>
-      {!isMobile && showLoginModal && (
-        <LoginForm onClose={() => setShowLoginModal(false)} />
+      {!isMobile && loginModalVisible && (
+        <LoginForm
+          onClose={() => hideLoginModal()}
+          defaultSignUp={loginModalDefaultSignup}
+        />
       )}
       {!isMobile && (
         <CartPopup onClose={() => setShowCart(false)} toShow={showCart} />
@@ -236,7 +251,7 @@ const Header = (props: {
                 >
                   <button
                     tw="text-[12px] md:text-[14px] text-[#3C3C3C] font-semibold py-1 flex-shrink-0"
-                    onClick={() => setShowLoginModal(true)}
+                    onClick={() => showLoginModal()}
                   >
                     Sign in
                   </button>

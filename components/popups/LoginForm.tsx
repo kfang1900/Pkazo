@@ -21,6 +21,7 @@ export interface LoginFormProps {
   redirect?: () => void;
   defaultSignUp?: boolean;
   notCloseable?: boolean;
+
 }
 export const Login = (props: LoginFormProps) => {
   const styles = {

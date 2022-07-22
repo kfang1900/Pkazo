@@ -39,7 +39,7 @@ const ArtistProfile = ({
   artistData: QueryDocumentSnapshot<DocumentData>[];
   isCurrentUserPage?: boolean;
 }) => {
-  const { artistId, user, setShowLoginModal } = useAuth();
+  const { artistId, user, showLoginModal } = useAuth();
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
 
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
@@ -230,7 +230,7 @@ const ArtistProfile = ({
                       <button
                         onClick={() => {
                           if (!user || !artistData[0].id) {
-                            setShowLoginModal(true);
+                            showLoginModal(true);
                             return;
                           }
                           const app = getApp();

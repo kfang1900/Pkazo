@@ -45,7 +45,7 @@ export default function CartItem({
   duplicateArtistLast: boolean;
   isLast: boolean;
 }) {
-  const { user, setShowLoginModal } = useAuth();
+  const { user, showLoginModal } = useAuth();
   const router = useRouter();
   return (
     <div tw="mt-[18px]">
@@ -75,7 +75,7 @@ export default function CartItem({
           <button
             onClick={() => {
               if (!user || !artistData.id) {
-                setShowLoginModal(true);
+                showLoginModal(true);
                 return;
               }
               const app = getApp();
