@@ -35,6 +35,12 @@ const Header = (props: {
     if (isMobile !== mediaQuery) setIsMobile(mediaQuery);
   }, [mediaQuery, isMobile]);
 
+  const largeQuery = useMediaQuery({ query: `(min-width: 1280px)` });
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+  useEffect(() => {
+    if (isLargeScreen !== largeQuery) setIsLargeScreen(largeQuery);
+  }, [largeQuery, isLargeScreen]);
+
   // const navigate = useNavigate();
   // 0 = artist (signed in)
   // 1 = not signed in
@@ -60,7 +66,7 @@ const Header = (props: {
   const { artistData } = useAuth();
   const username = artistData?.username;
   useEffect(() => {
-    console.log('user', user);
+    // console.log('user', user);
     if (!artistData || !artistData?.profilePicture) {
       return;
     }
@@ -93,7 +99,7 @@ const Header = (props: {
   if (props.logoOnly) {
     return (
       <div tw="top-0 z-50 w-full">
-        <div tw="bg-white h-[56px] md:h-[60px] px-5 md:px-[60px] flex items-center justify-between border-b md:border-0 border-[#D8D8D8]">
+        <div tw="bg-white h-[56px] md:h-[60px] px-5 md:px-[36px] xl:px-[60px] flex items-center justify-between border-b md:border-0 border-[#D8D8D8]">
           <Link href="/" passHref>
             <img
               src="/assets/images/Pkazo.svg"
@@ -131,7 +137,7 @@ const Header = (props: {
         {showUploadWorkPopup && (
           <UploadWork onClose={() => setShowUploadWorkPopup(false)} />
         )}
-        <div tw="bg-white h-10 md:h-[60px] px-4 md:px-[60px] flex items-center justify-between border-b border-[#D8D8D8]">
+        <div tw="bg-white h-10 md:h-[60px] px-4 md:px-[36px] xl:px-[60px] flex items-center justify-between border-b border-[#D8D8D8]">
           <Link href="/" passHref>
             <img
               src="/assets/images/Pkazo.svg"
@@ -168,7 +174,7 @@ const Header = (props: {
             )}
             {!!user && isArtist && (
               <>
-                <Link href={`/artist`} passHref>
+                <Link href={`/artist?redirect=${window.location.pathname}`} passHref>
                   <a>
                     <img
                       src={`/assets/svgs/${isMobile ? 'mobile/' : ''}shop.svg`}
@@ -210,6 +216,14 @@ const Header = (props: {
                           tabIndex={-1}
                         >
                           Account Settings
+                        </a>
+                      </Link>
+                      <Link href={`/${username}`} passHref>
+                        <a
+                          tw="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
+                          tabIndex={-1}
+                        >
+                          Profile
                         </a>
                       </Link>
                       <a

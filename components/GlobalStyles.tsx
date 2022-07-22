@@ -10,11 +10,11 @@ const GlobalStyles = () => (
         body {
           font-family: Inter
         }
-        @media (min-width: 768px) {
-          body {
-            font-family: Open Sans
-          }
-        }`
+        // @media (min-width: 768px) {
+        //   body {
+        //     font-family: Open Sans
+        //   }
+        // }`
       }
     </style>
   </>
