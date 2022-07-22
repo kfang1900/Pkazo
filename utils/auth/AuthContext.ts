@@ -24,6 +24,8 @@ export type Auth = {
   artistId: string | null;
   userData: UserData | null;
   isArtist: boolean | null;
+  showLoginModal: boolean;
+  setShowLoginModal: (newState: boolean) => void;
 };
 
 const AuthContext = createContext<Auth>({
@@ -46,6 +48,7 @@ const AuthContext = createContext<Auth>({
   signOut: async () => {
     /* noop */
   },
+
   email: '',
   loading: true,
   user: null,
@@ -53,6 +56,10 @@ const AuthContext = createContext<Auth>({
   artistId: null,
   userData: null,
   isArtist: null,
+  showLoginModal: false,
+  setShowLoginModal: () => {
+    /* noop */
+  },
 });
 
 export default AuthContext;

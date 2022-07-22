@@ -42,7 +42,7 @@ const Header = (props: {
   // const [profileType, setProfileType] = useState(1);
 
   const { user, signOut, isArtist } = useAuth();
-  const [showLoginModal, setShowLoginModal] = useState(false);
+
   const [showCart, setShowCart] = useState(false);
   const [pfp, setPfp] = useState('');
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -57,7 +57,7 @@ const Header = (props: {
   };
 
   const router = useRouter();
-  const { artistData } = useAuth();
+  const { artistData, showLoginModal, setShowLoginModal } = useAuth();
   const username = artistData?.username;
   useEffect(() => {
     console.log('user', user);
@@ -227,7 +227,11 @@ const Header = (props: {
             {!user && (
               <>
                 <Link
-                  href={isMobile ? `/signin?redirect=${window.location.pathname}` : 'javascript:void(0);'}
+                  href={
+                    isMobile
+                      ? `/signin?redirect=${window.location.pathname}`
+                      : 'javascript:void(0);'
+                  }
                   passHref
                 >
                   <button
@@ -265,8 +269,9 @@ const Header = (props: {
                     ref={profileButtonRef}
                   >
                     <img
-                      src={`/assets/svgs/${isMobile ? 'mobile/' : ''
-                        }profile.svg`}
+                      src={`/assets/svgs/${
+                        isMobile ? 'mobile/' : ''
+                      }profile.svg`}
                     />
                   </button>
 
@@ -290,14 +295,8 @@ const Header = (props: {
                 </div>
               </>
             )}
-            <Link
-              href={isMobile ? "/cart" : 'javascript:void(0);'}
-              passHref
-            >
-              <div
-                onClick={() => setShowCart(true)}
-                tw='flex-shrink-0'
-              >
+            <Link href={isMobile ? '/cart' : 'javascript:void(0);'} passHref>
+              <div onClick={() => setShowCart(true)} tw="flex-shrink-0">
                 <img
                   src={`/assets/svgs/${isMobile ? 'mobile/' : ''}cart.svg`}
                   tw="cursor-pointer"

@@ -93,7 +93,7 @@ export default function FirebaseProvider({
       }
       // If user is not signed in, set user to null
       if (user === null) {
-        setLoading(false)
+        setLoading(false);
         // setUserInfo(null)
         setEmail('');
         return;
@@ -122,6 +122,7 @@ export default function FirebaseProvider({
 
     return unsubscribe;
   }, []);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const auth = getAuth();
   return (
     <AuthContext.Provider
@@ -158,6 +159,8 @@ export default function FirebaseProvider({
         artistData,
         userData,
         artistId,
+        showLoginModal,
+        setShowLoginModal,
         signOut: () => {
           return signOut(getAuth());
         },
