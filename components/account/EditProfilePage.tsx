@@ -241,15 +241,10 @@ export default function EditProfilePage() {
                 try {
                   await updateArtistsIndex(artistId);
                 } catch (e) {
-                  console.warn("Axios Error:")
+                  console.warn('Axios Error:');
                   console.log(e);
                 }
-                console.log(data, {
-                  name: values.name,
-                  discipline: values.discipline,
-                  location: values.location,
-                  bio: values.bio,
-                });
+
                 setData((oldData) => {
                   return Object.assign({}, oldData, {
                     name: values.name,
@@ -291,16 +286,7 @@ export default function EditProfilePage() {
                       ]}
                     />
                     <div />
-                    {console.log(
-                      values.name,
-                      data.name,
-                      values.location,
-                      data.location,
-                      values.discipline,
-                      data.discipline,
-                      values.bio,
-                      data.bio
-                    )}
+
                     {isDataModified(values) && !isMobile && (
                       <div>
                         <input
