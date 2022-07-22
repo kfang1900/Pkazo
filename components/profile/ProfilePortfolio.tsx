@@ -187,17 +187,19 @@ function GallerySection({
               //.Images.slice(0, seeNum)
               curGallery.Images?.slice(0, seeNum).map((gallery: string, i) => (
                 <div tw={'relative'} key={i}>
-                  {userData.username === artistData.username && (
-                    <button
-                      tw={'absolute right-2 top-4 underline'}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setActiveEditingWork(curGallery.Data[i].__id);
-                      }}
-                    >
-                      edit
-                    </button>
-                  )}
+                  {userData &&
+                    artistData &&
+                    userData.username === artistData.username && (
+                      <button
+                        tw={'absolute right-2 top-4 underline'}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveEditingWork(curGallery.Data[i].__id);
+                        }}
+                      >
+                        Edit
+                      </button>
+                    )}
                   <Link
                     key={i}
                     passHref
