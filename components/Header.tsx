@@ -158,7 +158,7 @@ const Header = (props: {
                     tw="cursor-pointer flex-shrink-0"
                   />
                 </Link> */}
-                <Link href="/chats" passHref>
+                <Link href="/chat" passHref>
                   <img
                     src={`/assets/svgs/${isMobile ? 'mobile/' : ''}chat.svg`}
                     tw="cursor-pointer flex-shrink-0"
