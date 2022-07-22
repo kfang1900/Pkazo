@@ -217,6 +217,7 @@ export default function EditProfilePage() {
           {!isMobile && (
             <div tw="font-semibold mt-12 text-[20px]">Basic Information</div>
           )}
+
           {data && (
             <Formik
               initialValues={{
@@ -237,7 +238,18 @@ export default function EditProfilePage() {
                   numPosts: 0,
                   numWorks: 3, //TODO make this do something better
                 } as Partial<ArtistData>);
-                await updateArtistsIndex(artistId);
+                try {
+                  await updateArtistsIndex(artistId);
+                } catch (e) {
+                  console.warn("Axios Error:")
+                  console.log(e);
+                }
+                console.log(data, {
+                  name: values.name,
+                  discipline: values.discipline,
+                  location: values.location,
+                  bio: values.bio,
+                });
                 setData((oldData) => {
                   return Object.assign({}, oldData, {
                     name: values.name,
@@ -279,6 +291,16 @@ export default function EditProfilePage() {
                       ]}
                     />
                     <div />
+                    {console.log(
+                      values.name,
+                      data.name,
+                      values.location,
+                      data.location,
+                      values.discipline,
+                      data.discipline,
+                      values.bio,
+                      data.bio
+                    )}
                     {isDataModified(values) && !isMobile && (
                       <div>
                         <input
