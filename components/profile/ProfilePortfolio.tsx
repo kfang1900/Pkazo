@@ -43,7 +43,7 @@ function GallerySection({
   portfolioData: PortfolioObject;
   artistData: ArtistData | null;
 }) {
-  const { userData } = useAuth();
+  const { artistData: userArtistData } = useAuth();
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
   const [curGallery, setCurGallery] = useState<{
@@ -187,9 +187,9 @@ function GallerySection({
               //.Images.slice(0, seeNum)
               curGallery.Images?.slice(0, seeNum).map((gallery: string, i) => (
                 <div tw={'relative'} key={i}>
-                  {userData &&
+                  {userArtistData &&
                     artistData &&
-                    userData.username === artistData.username && (
+                    userArtistData.username === artistData.username && (
                       <button
                         tw={'absolute right-2 top-4 underline'}
                         onClick={(e) => {
