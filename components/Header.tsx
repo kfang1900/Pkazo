@@ -16,6 +16,7 @@ import UploadWork from './uploading/UploadWork';
 import { useMediaQuery } from 'react-responsive';
 import SearchHeader from './search/SearchHeader';
 import SearchBox from './search/SearchBox';
+import { hide } from 'dom7';
 // import { useNavigate } from "react-router-dom";
 
 /* Copied from image.tsx source */
@@ -47,8 +48,17 @@ const Header = (props: {
   // 2 = regular user (signed in)
   // const [profileType, setProfileType] = useState(1);
 
-  const { user, signOut, isArtist } = useAuth();
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const {
+    user,
+    signOut,
+    isArtist,
+    loginModalDefaultSignup,
+    artistData,
+    showLoginModal,
+    loginModalVisible,
+    hideLoginModal,
+  } = useAuth();
+
   const [showCart, setShowCart] = useState(false);
   const [pfp, setPfp] = useState('');
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -63,7 +73,6 @@ const Header = (props: {
   };
 
   const router = useRouter();
-  const { artistData } = useAuth();
   const username = artistData?.username;
   useEffect(() => {
     // console.log('user', user);
@@ -112,21 +121,27 @@ const Header = (props: {
     );
   }
   const navStyle = [tw`top-0 z-50 w-full`, props.isHome && tw`sticky`];
-  if (isMobile && showLoginModal) {
+  if (isMobile && loginModalVisible) {
     return (
       <div
         css={navStyle}
         tw="h-screen overscroll-contain overflow-hidden flex justify-center"
       >
-        <Login onClose={() => setShowLoginModal(false)} />
+        <Login
+          onClose={() => hideLoginModal()}
+          defaultSignUp={loginModalDefaultSignup}
+        />
       </div>
     );
   }
 
   return (
     <div css={navStyle}>
-      {!isMobile && showLoginModal && (
-        <LoginForm onClose={() => setShowLoginModal(false)} />
+      {!isMobile && loginModalVisible && (
+        <LoginForm
+          onClose={() => hideLoginModal()}
+          defaultSignUp={loginModalDefaultSignup}
+        />
       )}
       {!isMobile && (
         <CartPopup onClose={() => setShowCart(false)} toShow={showCart} />
@@ -164,7 +179,7 @@ const Header = (props: {
                     tw="cursor-pointer flex-shrink-0"
                   />
                 </Link> */}
-                <Link href="/chats" passHref>
+                <Link href="/chat" passHref>
                   <img
                     src={`/assets/svgs/${isMobile ? 'mobile/' : ''}chat.svg`}
                     tw="cursor-pointer flex-shrink-0"
@@ -241,12 +256,16 @@ const Header = (props: {
             {!user && (
               <>
                 <Link
-                  href={isMobile ? `/signin?redirect=${window.location.pathname}` : 'javascript:void(0);'}
+                  href={
+                    isMobile
+                      ? `/signin?redirect=${window.location.pathname}`
+                      : 'javascript:void(0);'
+                  }
                   passHref
                 >
                   <button
                     tw="text-[12px] md:text-[14px] text-[#3C3C3C] font-semibold py-1 flex-shrink-0"
-                    onClick={() => setShowLoginModal(true)}
+                    onClick={() => showLoginModal()}
                   >
                     Sign in
                   </button>
@@ -279,8 +298,9 @@ const Header = (props: {
                     ref={profileButtonRef}
                   >
                     <img
-                      src={`/assets/svgs/${isMobile ? 'mobile/' : ''
-                        }profile.svg`}
+                      src={`/assets/svgs/${
+                        isMobile ? 'mobile/' : ''
+                      }profile.svg`}
                     />
                   </button>
 
@@ -304,14 +324,8 @@ const Header = (props: {
                 </div>
               </>
             )}
-            <Link
-              href={isMobile ? "/cart" : 'javascript:void(0);'}
-              passHref
-            >
-              <div
-                onClick={() => setShowCart(true)}
-                tw='flex-shrink-0'
-              >
+            <Link href={isMobile ? '/cart' : 'javascript:void(0);'} passHref>
+              <div onClick={() => setShowCart(true)} tw="flex-shrink-0">
                 <img
                   src={`/assets/svgs/${isMobile ? 'mobile/' : ''}cart.svg`}
                   tw="cursor-pointer"

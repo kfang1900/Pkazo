@@ -93,7 +93,7 @@ export default function FirebaseProvider({
       }
       // If user is not signed in, set user to null
       if (user === null) {
-        setLoading(false)
+        setLoading(false);
         // setUserInfo(null)
         setEmail('');
         return;
@@ -122,6 +122,8 @@ export default function FirebaseProvider({
 
     return unsubscribe;
   }, []);
+  const [loginModalDefaultSignup, setLoginModalDefaultSignup] = useState(false);
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
   const auth = getAuth();
   return (
     <AuthContext.Provider
@@ -158,6 +160,16 @@ export default function FirebaseProvider({
         artistData,
         userData,
         artistId,
+        loginModalVisible,
+        loginModalDefaultSignup,
+        showLoginModal: (defaultSignup = false) => {
+          setLoginModalDefaultSignup(defaultSignup);
+          setLoginModalVisible(true);
+        },
+        hideLoginModal: () => {
+          setLoginModalDefaultSignup(false);
+          setLoginModalVisible(false);
+        },
         signOut: () => {
           return signOut(getAuth());
         },

@@ -39,7 +39,7 @@ const ArtistProfile = ({
   artistData: QueryDocumentSnapshot<DocumentData>[];
   isCurrentUserPage?: boolean;
 }) => {
-  const { artistId, user } = useAuth();
+  const { artistId, user, showLoginModal } = useAuth();
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
 
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
@@ -68,6 +68,7 @@ const ArtistProfile = ({
   const bioRef = useRef<HTMLDivElement>(null);
   const [moreBio, setMoreBio] = useState(false);
   const [showMore, setShowMore] = useState(false);
+
   const handleBioResize = () => {
     if (bioRef.current && 72 < bioRef.current['scrollHeight']) {
       setMoreBio(true);
@@ -93,7 +94,7 @@ const ArtistProfile = ({
               />
             )}
           </div>
-          <div tw='h-full flex flex-col'>
+          <div tw="h-full flex flex-col">
             <div tw="text-[22px] leading-[26px] text-black font-medium">
               {artist.name}
             </div>
@@ -122,7 +123,7 @@ const ArtistProfile = ({
                 <button
                   onClick={() => router.push('/account/edit')}
                   css={buttons.white}
-                  tw='text-[14px] h-8 px-5'
+                  tw="text-[14px] h-8 px-5"
                 >
                   Edit Profile
                 </button>
@@ -233,6 +234,7 @@ const ArtistProfile = ({
                         tw="text-[#3B3B3B] w-10 h-10 p-0 flex items-center justify-center"
                         onClick={() => {
                           if (!user || !artistData[0].id) {
+                            showLoginModal(true);
                             return;
                           }
                           const app = getApp();

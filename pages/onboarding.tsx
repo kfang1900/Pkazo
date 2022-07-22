@@ -149,13 +149,14 @@ function Onboarding() {
     if (!user) {
       throw new Error('User is not defined');
     }
+    // TODO: check for duplicate usernames
     //console.log(values);
     const app = getApp();
     const db = getFirestore(app);
     const username = values.name
       .split(' ')
       .map((n) => n.toLowerCase())
-      .join('-');
+      .join('');
     //Step 1: add the artist document
     const artistref = await addDoc(collection(db, 'artists'), {
       associatedUser: user.uid,

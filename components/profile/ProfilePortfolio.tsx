@@ -14,6 +14,7 @@ import { useFavicon } from 'react-use';
 import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { showEdu, showExp, showExh } from './ArtistInfoHelper';
 import UploadWork from '../uploading/UploadWork';
+import useAuth from '../../utils/auth/useAuth';
 
 interface PortfolioObject {
   Portfolios: Record<string, any>[];
@@ -42,6 +43,7 @@ function GallerySection({
   portfolioData: PortfolioObject;
   artistData: ArtistData | null;
 }) {
+  const { artistData: userArtistData } = useAuth();
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   const [activeIndex, setActiveIndex] = useState<null | number>(null);
   const [curGallery, setCurGallery] = useState<{
@@ -112,7 +114,7 @@ function GallerySection({
             <div
               css={[
                 isMobile &&
-                tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`,
+                  tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`,
               ]}
               tw="md:flex md:justify-between gap-6 md:w-full"
               style={{
@@ -185,15 +187,19 @@ function GallerySection({
               //.Images.slice(0, seeNum)
               curGallery.Images?.slice(0, seeNum).map((gallery: string, i) => (
                 <div tw={'relative'} key={i}>
-                  <button
-                    tw={'absolute right-2 top-4 underline'}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveEditingWork(curGallery.Data[i].__id);
-                    }}
-                  >
-                    edit
-                  </button>
+                  {userArtistData &&
+                    artistData &&
+                    userArtistData.username === artistData.username && (
+                      <button
+                        tw={'absolute right-2 top-4 underline'}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveEditingWork(curGallery.Data[i].__id);
+                        }}
+                      >
+                        Edit
+                      </button>
+                    )}
                   <Link
                     key={i}
                     passHref
@@ -232,7 +238,7 @@ function GallerySection({
               css={[
                 tw`m-auto scale-50 md:scale-100`,
                 seeNum >= curGallery.Images.length &&
-                tw`scale-y-[-0.5] md:scale-y-[-1]`,
+                  tw`scale-y-[-0.5] md:scale-y-[-1]`,
               ]}
             />
           </button>
@@ -242,10 +248,10 @@ function GallerySection({
       {/* Gallery Section --End-- */}
 
       {/* education, experience, exhibitions */}
-      {artistData && (
-        artistData.education.length > 0 ||
-        artistData.experience.length > 0 ||
-        artistData.exhibitions.length > 0) && (
+      {artistData &&
+        (artistData.education.length > 0 ||
+          artistData.experience.length > 0 ||
+          artistData.exhibitions.length > 0) && (
           <div
             tw="w-full pb-4 md:pb-[30px]"
             css={[
@@ -254,7 +260,7 @@ function GallerySection({
                 : tw`grid grid-cols-3 gap-16 mt-7`,
             ]}
           >
-            {artistData.education.length > 0 &&
+            {artistData.education.length > 0 && (
               <div tw="flex gap-x-3">
                 {!isMobile && <div tw="w-1 h-11 rounded-[8px] bg-[#CBCBCB]" />}
                 <div>
@@ -270,8 +276,8 @@ function GallerySection({
                     ))}
                 </div>
               </div>
-            }
-            {artistData.experience.length > 0 &&
+            )}
+            {artistData.experience.length > 0 && (
               <div tw="flex gap-x-3">
                 {!isMobile && <div tw="w-1 h-11 rounded-[8px] bg-[#CBCBCB]" />}
                 <div>
@@ -287,8 +293,8 @@ function GallerySection({
                     ))}
                 </div>
               </div>
-            }
-            {artistData.exhibitions.length > 0 &&
+            )}
+            {artistData.exhibitions.length > 0 && (
               <div tw="flex gap-x-3">
                 {!isMobile && <div tw="w-1 h-11 rounded-[8px] bg-[#CBCBCB]" />}
                 <div>
@@ -304,7 +310,7 @@ function GallerySection({
                     ))}
                 </div>
               </div>
-            }
+            )}
           </div>
         )}
 
