@@ -34,7 +34,7 @@ const Cart: NextPage = () => {
   const [works, setWorks] = useState<
     (CartItemType & {
       workData: WorkData & { forSale: true };
-      artistData: ArtistData;
+      artistData: ArtistData & { id: string };
       workImageURL: string;
       artistProfilePictureURL: string;
     })[]
@@ -113,7 +113,8 @@ const Cart: NextPage = () => {
           .map((workId) =>
             axios
               .get(
-                `/api/shipping/estimated-rates?workId=${workId}${shippingEstimateZip ? '&zip=' + shippingEstimateZip : ''
+                `/api/shipping/estimated-rates?workId=${workId}${
+                  shippingEstimateZip ? '&zip=' + shippingEstimateZip : ''
                 }`
               )
 
@@ -152,7 +153,7 @@ const Cart: NextPage = () => {
     setShippingEstimateModalZip,
   ]);
   return (
-    <div tw='h-full flex-1 flex flex-col'>
+    <div tw="h-full flex-1 flex flex-col">
       {showShippingEstimateModal && (
         <Modal
           small
@@ -192,17 +193,14 @@ const Cart: NextPage = () => {
         </Modal>
       )}
       {loading && (
-        <div tw='flex w-full justify-center'>
-          <img
-            src={'/assets/svgs/loading.svg'}
-            tw='w-[80px] md:w-[100px]'
-          />
+        <div tw="flex w-full justify-center">
+          <img src={'/assets/svgs/loading.svg'} tw="w-[80px] md:w-[100px]" />
         </div>
       )}
 
       {!loading && (
         <div tw="w-full h-full flex-1 flex flex-col relative">
-          <div tw='px-4 flex-1 flex flex-col'>
+          <div tw="px-4 flex-1 flex flex-col">
             {works
               .sort((a, b) => {
                 if (a.artistData.username < b.artistData.username) return -1;
@@ -228,13 +226,21 @@ const Cart: NextPage = () => {
                   }
                   shippingCostLoading={shippingLoading}
                   onCalculateShipping={() => setShowShippingEstimateModal(true)}
-                  duplicateArtist={i > 0 && arr[i - 1].artistData.username === arr[i].artistData.username}
-                  duplicateArtistLast={i === works.length - 1 || arr[i].artistData.username !== arr[i + 1].artistData.username}
+                  duplicateArtist={
+                    i > 0 &&
+                    arr[i - 1].artistData.username ===
+                      arr[i].artistData.username
+                  }
+                  duplicateArtistLast={
+                    i === works.length - 1 ||
+                    arr[i].artistData.username !==
+                      arr[i + 1].artistData.username
+                  }
                   isLast={i === works.length - 1}
                 />
               ))}
-            <div tw='mt-auto flex-1' />
-            <LineBreak tw='mt-5' />
+            <div tw="mt-auto flex-1" />
+            <LineBreak tw="mt-5" />
             <div tw="flex mt-4">
               <input type="checkbox" tw="w-[18px] h-[18px] rounded-[4px]" />
               <div tw="ml-2">
@@ -297,21 +303,21 @@ const Cart: NextPage = () => {
               <div tw="text-right">
                 {ableToCalculateRate && !shippingLoading
                   ? formatCurrency(
-                    works.reduce((acc, w) => acc + w.workData.sale.price, 0) +
-                    shippingCosts.reduce(
-                      (sum, rate) => sum + rate.estimatedRate,
-                      0
+                      works.reduce((acc, w) => acc + w.workData.sale.price, 0) +
+                        shippingCosts.reduce(
+                          (sum, rate) => sum + rate.estimatedRate,
+                          0
+                        )
                     )
-                  )
                   : formatCurrency(
-                    works.reduce((acc, w) => acc + w.workData.sale.price, 0)
-                  ) + ' + Shipping'}
+                      works.reduce((acc, w) => acc + w.workData.sale.price, 0)
+                    ) + ' + Shipping'}
               </div>
             </div>
           </div>
           <div tw="sticky w-full bottom-0 bg-white mt-4">
             <LineBreak />
-            <div tw='px-4'>
+            <div tw="px-4">
               <button tw="w-full h-11 mt-[14px] mb-4 bg-[#2C1D1D] hover:bg-[#3B2727] rounded-[30px] text-center text-white text-[14px] font-bold">
                 Proceed to checkout
               </button>
