@@ -263,7 +263,7 @@ const Header = (props: {
                 <Link
                   href={
                     isMobile
-                      ? `/signin?redirect=${window.location.pathname}`
+                      ? `/signin${window.location.pathname.length > 1 ? `?redirect=${window.location.pathname}` : ''}`
                       : 'javascript:void(0);'
                   }
                   passHref
