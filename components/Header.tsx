@@ -263,7 +263,7 @@ const Header = (props: {
                 <Link
                   href={
                     isMobile
-                      ? `/signin${window.location.pathname.length > 1 ? `?redirect=${window.location.pathname}` : ''}`
+                      ? `/signin?redirect=${window.location.pathname}`
                       : 'javascript:void(0);'
                   }
                   passHref
@@ -275,15 +275,24 @@ const Header = (props: {
                     Sign in
                   </button>
                 </Link>
-                <button
-                  css={[
-                    buttons.red,
-                    tw`font-semibold w-[108px] md:w-[121px] h-[32px] md:h-[42px] text-[12px] md:text-[14px] px-0 py-0 flex-shrink-0`,
-                  ]}
-                  onClick={() => window.open('/onboarding', '_self')}
+                <Link
+                  href={
+                    isMobile
+                      ? `/signin?redirect=/onboarding`
+                      : 'javascript:void(0);'
+                  }
+                  passHref
                 >
-                  Sell on Pkazo
-                </button>
+                  <button
+                    css={[
+                      buttons.red,
+                      tw`font-semibold w-[108px] md:w-[121px] h-[32px] md:h-[42px] text-[12px] md:text-[14px] px-0 py-0 flex-shrink-0`,
+                    ]}
+                    onClick={() => window.open('/onboarding', '_self')}
+                  >
+                    Sell on Pkazo
+                  </button>
+                </Link>
               </>
             )}
             {!!user && !isArtist && (
@@ -355,7 +364,7 @@ const Header = (props: {
           </div>
         )}
       </>
-    </div>
+    </div >
   );
 };
 

@@ -12,7 +12,6 @@ import { useRouter } from 'next/router';
 const LoginPage: NextPage = () => {
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   const router = useRouter();
-  console.log('router setup done');
   return <div>
     <Head>
       <title>Login</title>
