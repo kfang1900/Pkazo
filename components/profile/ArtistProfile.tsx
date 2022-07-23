@@ -41,6 +41,7 @@ const ArtistProfile = ({
 }) => {
   const { artistId, user, showLoginModal } = useAuth();
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
+  const isSmall = !useMediaQuery({ query: `(min-width: 1024px)` });
 
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
   const [picture, setPicture] = useState('');
@@ -80,31 +81,33 @@ const ArtistProfile = ({
     window.addEventListener('resize', handleBioResize);
   });
   useEffect(handleBioResize, [bioRef]);
-  return isMobile ? (
-    <>
-      <div tw="mt-4 mb-3 px-5">
-        <div tw="grid grid-cols-[96px auto] gap-5">
-          <div tw="w-[96px] h-[96px] my-auto relative overflow-hidden rounded-full flex items-center">
-            {picture && (
-              <Image
-                src={picture}
-                alt="profile_image"
-                layout='fill'
-                objectFit="cover"
-              />
-            )}
-          </div>
-          <div tw="h-full flex flex-col">
-            <div tw="text-[22px] leading-[26px] text-black font-medium">
-              {artist.name}
+  return <div tw="mt-4 md:mt-12 mb-3 md:mb-10 px-5 flex">
+    <div tw='md:w-[10%] md:flex-shrink' />
+    <div tw='w-full'>
+      {isSmall ? (
+        <>
+          <div tw="w-full grid grid-cols-[96px auto] md:grid-cols-[128px auto] gap-5 md:gap-8">
+            <div tw="w-[96px] h-[96px] md:w-[128px] md:h-[128px] bg-red-500 my-auto relative overflow-hidden rounded-full flex items-center">
+              {picture && (
+                <Image
+                  src={picture}
+                  alt="profile_image"
+                  layout='fill'
+                  objectFit="cover"
+                />
+              )}
             </div>
-            <div tw="text-[16px] leading-[20px] mt-1 text-[#727373] font-medium flex items-center gap-x-[6px]">
-              {artist.location}
-              <div tw='w-[2px] h-[2px] rounded-full bg-[#727373]' />
-              {artist.discipline}
-            </div>
-            <div tw="flex mt-auto">
-              {/* <button
+            <div tw="h-full flex flex-col">
+              <div tw="text-[22px] md:text-[36px] leading-[26px] md:leading-[32px] text-[#222222] font-medium md:font-semibold">
+                {artist.name}
+              </div>
+              <div tw="text-[16px] md:text-[24px] leading-[20px] md:leading-[24px] mt-1 md:mt-3 text-[#8E8E93] font-medium flex items-center gap-x-[6px] md:gap-x-4">
+                {artist.location}
+                <div tw='w-[2px] h-[2px] md:w-[6px] md:h-[6px] rounded-full bg-[#8E8E93]' />
+                {artist.discipline}
+              </div>
+              <div tw="flex mt-auto">
+                {/* <button
                 onClick={() => setIsFollowing(!isFollowing)}
                 css={buttons.white}
                 tw="text-[#3B3B3B] h-8 text-[13px] px-3 gap-[6px] flex justify-center items-center font-semibold"
@@ -119,101 +122,96 @@ const ArtistProfile = ({
                 />
               {numFormatter((artist as any)?.followers || 3122)}
             </button> */}
-              {isCurrentUserPage ? (
-                <button
-                  onClick={() => router.push('/account/edit')}
-                  css={buttons.white}
-                  tw="text-[14px] h-8 px-5"
-                >
-                  Edit Profile
-                </button>
-              ) : (
-                <>
+                {isCurrentUserPage ? (
                   <button
+                    onClick={() => router.push('/account/edit')}
                     css={buttons.white}
-                    tw="text-[#3B3B3B] w-8 h-8 p-0 flex items-center justify-center"
-                    onClick={() => {
-                      if (!user || !artistData[0].id) {
-                        return;
-                      }
-                      const app = getApp();
-                      const db = getFirestore(app);
+                    tw="text-[14px] h-8 px-5"
+                  >
+                    Edit Profile
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      css={buttons.white}
+                      tw="text-[#3B3B3B] w-8 h-8 md:w-11 md:h-11 p-0 flex items-center justify-center"
+                      onClick={() => {
+                        if (!user || !artistData[0].id) {
+                          return;
+                        }
+                        const app = getApp();
+                        const db = getFirestore(app);
 
-                      updateDoc(doc(db, 'users', user.uid), {
-                        chats: arrayUnion(artistData[0].id),
-                      }).then(() => {
-                        return router.push(`/chat#${artistData[0].id}`);
-                      });
-                    }}
-                  >
-                    <div tw='pb-[1px] pl-[1px]'>
-                      <img src='assets/svgs/message.svg' />
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => 0}
-                    css={buttons.red}
-                    tw="text-[14px] ml-[12px] flex items-center justify-center font-semibold w-[116px] h-8"
-                  >
-                    Commission
-                  </button>
-                </>
-              )}
+                        updateDoc(doc(db, 'users', user.uid), {
+                          chats: arrayUnion(artistData[0].id),
+                        }).then(() => {
+                          return router.push(`/chat#${artistData[0].id}`);
+                        });
+                      }}
+                    >
+                      <div tw='pb-[1px] pl-[1px]'>
+                        <img src='assets/svgs/message.svg' tw='md:w-6 md:h-6' />
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => 0}
+                      css={buttons.red}
+                      tw="text-[14px] md:text-[20px] ml-3 md:ml-5 flex items-center justify-center font-semibold w-[116px] h-8 md:w-[170px] md:h-11"
+                    >
+                      Commission
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-        <ShowMore
-          appearance={tw`mt-4 text-[#3C3C3C] text-[14px] leading-[19px]`}
-          height={57}
-          fixed
-        >
-          <div>{artist.bio}</div>
-        </ShowMore>
-        <div tw="flex mt-3 items-center">
-          <img src="/assets/svgs/star.svg" tw="w-[15px] h-[14px]" />
-          <div tw="text-[13px] text-black ml-1 font-semibold">4.9 </div>
-          <Link href="#" passHref>
-            <div tw="text-[13px] text-[#838383] ml-[6px] underline cursor-pointer">
-              See {numFormatter(313)} reviews
-            </div>
-          </Link>
-        </div>
-      </div>
-    </>
-  ) : (
-    <>
-      <section tw="mt-[48px] mb-[40px]">
-        <div tw="flex">
-          <div tw="w-[10%] flex-shrink-[0.5]" />
-          <div tw="w-full grid grid-cols-[200px auto]">
-            <div tw="w-[200px] h-[200px] my-auto relative overflow-hidden rounded-full flex items-center">
-              {picture && (
-                <Image
-                  src={picture}
-                  alt="profile_image"
-                  layout='fill'
-                  objectFit="cover"
-                />
-              )}
-            </div>
-            <div tw="flex">
-              <div tw="max-w-[85px] w-[10%] h-full flex-shrink-0" />
-              <div tw="flex flex-col">
-                <div tw="flex items-start justify-start">
-                  <div tw="text-[32px] leading-[32px] font-semibold text-black">
-                    {artist.name}
-                  </div>
-                  <div tw="w-10 flex-shrink h-full" />
-                  {isCurrentUserPage ? (
-                    <button
-                      onClick={() => router.push('/account/edit')}
-                      css={buttons.white}
-                    >
-                      Edit Profile
-                    </button>
-                  ) : (
-                    <>
-                      {/* <button
+          <ShowMore
+            appearance={tw`mt-4 md:mt-5 text-black text-[14px] md:text-[16px] leading-[19px] md:leading-[24px]`}
+            height={isMobile ? 57 : 72}
+            fixed
+          >
+            <div>{artist.bio}</div>
+          </ShowMore>
+          <div tw="flex mt-3 items-center">
+            <img src="/assets/svgs/star.svg" tw="w-[15px] h-[14px]" />
+            <div tw="text-[13px] md:text-[18px] text-black ml-1 md:ml-[6px] font-semibold">4.9 </div>
+            <Link href="#" passHref>
+              <div tw="text-[13px] md:text-[18px] text-[#8E8E93] ml-[6px] md:ml-4 underline cursor-pointer">
+                See {numFormatter(313)} reviews
+              </div>
+            </Link>
+          </div>
+        </>
+      ) : (
+        <div tw="w-full grid grid-cols-[200px auto]">
+          <div tw="w-[200px] h-[200px] bg-red-500 my-auto relative overflow-hidden rounded-full flex items-center">
+            {picture && (
+              <Image
+                src={picture}
+                alt="profile_image"
+                layout='fill'
+                objectFit="cover"
+              />
+            )}
+          </div>
+          <div tw="flex">
+            <div tw="w-[52px] h-full flex-shrink-0" />
+            <div tw="flex flex-col">
+              <div tw="flex items-center justify-start">
+                <div tw="text-[36px] leading-[32px] font-semibold text-black">
+                  {artist.name}
+                </div>
+                <div tw='max-w-[80px] flex-grow' />
+                {isCurrentUserPage ? (
+                  <button
+                    onClick={() => router.push('/account/edit')}
+                    css={buttons.white}
+                  >
+                    Edit Profile
+                  </button>
+                ) : (
+                  <div tw='flex'  >
+                    {/* <button
                         onClick={() => setIsFollowing(!isFollowing)}
                         css={buttons.white}
                         tw="flex-shrink-0 text-[#3B3B3B] text-[16px] px-5 py-3 gap-2 flex justify-center items-center font-semibold"
@@ -229,70 +227,69 @@ const ArtistProfile = ({
                         {numFormatter((artist as any)?.followers | 3900)}
                       </button> */}
 
-                      <button
-                        css={buttons.white}
-                        tw="text-[#3B3B3B] w-10 h-10 p-0 flex items-center justify-center"
-                        onClick={() => {
-                          if (!user || !artistData[0].id) {
-                            showLoginModal(true);
-                            return;
-                          }
-                          const app = getApp();
-                          const db = getFirestore(app);
+                    <button
+                      css={buttons.white}
+                      tw="text-[#3B3B3B] border-2 w-11 h-11 p-0 flex items-center justify-center flex-none"
+                      onClick={() => {
+                        if (!user || !artistData[0].id) {
+                          showLoginModal(true);
+                          return;
+                        }
+                        const app = getApp();
+                        const db = getFirestore(app);
 
-                          updateDoc(doc(db, 'users', user.uid), {
-                            chats: arrayUnion(artistData[0].id),
-                          }).then(() => {
-                            return router.push(`/chat#${artistData[0].id}`);
-                          });
-                        }}
-                      >
-                        <div tw='pb-[1px] pl-[1px]'>
-                          <img src='assets/svgs/message.svg' tw='w-5 h-5' />
-                        </div>
-                      </button>
+                        updateDoc(doc(db, 'users', user.uid), {
+                          chats: arrayUnion(artistData[0].id),
+                        }).then(() => {
+                          return router.push(`/chat#${artistData[0].id}`);
+                        });
+                      }}
+                    >
+                      <div tw='pb-[1px] pl-[1px]'>
+                        <img src='assets/svgs/message.svg' tw='w-[24px] h-[24px]' />
+                      </div>
+                    </button>
 
-                      <button
-                        onClick={() => 0}
-                        css={buttons.red}
-                        tw="ml-5 px-7 py-2 font-semibold"
-                      >
-                        Commission
-                      </button>
-                    </>
-                  )}
-                </div>
-                <div tw='text-[#8E8E93] font-semibold text-[20px] leading-[27px] mt-[-2px] flex items-center gap-x-3'>
-                  {artist.location}
-                  <div tw='w-[5px] h-[5px] rounded-full bg-[#8E8E93]' />
-                  {artist.discipline}
-                </div>
-                <ShowMore
-                  appearance={tw`mt-3 text-black text-[16px] leading-[24px]`}
-                  height={72}
-                  fixed
-                >
-                  <div>{artist.bio}</div>
-                </ShowMore>
-                <div tw="flex mt-3 items-center">
-                  <img src="/assets/svgs/star.svg" tw="w-6 h-[22px]" />
-                  <div tw="text-[18px] text-black ml-[7px] font-semibold">
-                    4.9{' '}
+                    <button
+                      onClick={() => 0}
+                      css={buttons.red}
+                      tw="ml-5 w-[170px] h-11 flex items-center justify-center text-[20px] font-semibold text-white"
+                    >
+                      Commission
+                    </button>
                   </div>
-                  <Link href="#" passHref>
-                    <div tw="text-[18px] text-[#8E8E93] ml-[10px] underline cursor-pointer">
-                      See {numFormatter(313)} reviews
-                    </div>
-                  </Link>
+                )}
+              </div>
+              <div tw='text-[#8E8E93] font-medium text-[24px] leading-[29px] mt-[4px] flex items-center gap-x-4'>
+                {artist.location}
+                <div tw='w-[6px] h-[6px] rounded-full bg-[#8E8E93]' />
+                {artist.discipline}
+              </div>
+              <ShowMore
+                appearance={tw`mt-3 text-black text-[16px] leading-[24px]`}
+                height={72}
+                fixed
+              >
+                <div>{artist.bio}</div>
+              </ShowMore>
+              <div tw="flex mt-3 items-center">
+                <img src="/assets/svgs/star.svg" tw="w-6 h-[22px]" />
+                <div tw="text-[18px] text-black ml-[6px] font-semibold">
+                  4.9{' '}
                 </div>
+                <Link href="#" passHref>
+                  <div tw="text-[18px] text-[#8E8E93] ml-4 underline cursor-pointer">
+                    See {numFormatter(313)} reviews
+                  </div>
+                </Link>
               </div>
             </div>
           </div>
-          <div tw="w-[10%] flex-shrink-[0.5]" />
         </div>
-      </section>
-    </>
-  );
+      )}
+    </div>
+    <div tw='md:w-[10%] md:flex-shrink' />
+  </div >
 };
 
 export default ArtistProfile;

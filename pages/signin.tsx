@@ -10,9 +10,9 @@ import { Login } from 'components/popups/LoginForm';
 import { useRouter } from 'next/router';
 
 const LoginPage: NextPage = () => {
-  // const [searchParams, setsearchParams] = useSearchParams(window.location.search);
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   const router = useRouter();
+  console.log('router setup done');
   return <div>
     <Head>
       <title>Login</title>
@@ -21,7 +21,9 @@ const LoginPage: NextPage = () => {
     <div tw='flex justify-center w-full'>
       <Login
         onClose={() => 0}
-        redirect={() => router.push(queryString.parse(window.location.search).redirect as string || '/')}
+        redirect={() => router.push(
+          (queryString.parse(window.location.search).redirect as string || '/') + (queryString.exclude(window.location.search, ['redirect']))
+        )}
       />
     </div>
   </div>

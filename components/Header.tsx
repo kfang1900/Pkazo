@@ -28,6 +28,7 @@ type StaticImport = StaticRequire | StaticImageData;
 const Header = (props: {
   isBuyer?: boolean | undefined;
   logoOnly?: boolean;
+  isSticky?: boolean;
   isHome?: boolean;
 }) => {
   const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
@@ -64,6 +65,7 @@ const Header = (props: {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showChooseWorkDropdown, setShowChooseWorkDropdown] = useState(false);
   const [showUploadWorkPopup, setShowUploadWorkPopup] = useState(false);
+  const [loginPopup, setLoginPopup] = useState(false);
 
   // search states
   const [showSearch, setShowSearch] = useState(false);
@@ -120,26 +122,26 @@ const Header = (props: {
       </div>
     );
   }
-  const navStyle = [tw`top-0 z-50 w-full`, props.isHome && tw`sticky`];
-  if (isMobile && loginModalVisible) {
-    return (
-      <div
-        css={navStyle}
-        tw="h-screen overscroll-contain overflow-hidden flex justify-center"
-      >
-        <Login
-          onClose={() => hideLoginModal()}
-          defaultSignUp={loginModalDefaultSignup}
-        />
-      </div>
-    );
-  }
+  const navStyle = [tw`top-0 z-50 w-full`, props.isSticky && tw`sticky`];
+  // if (isMobile && loginPopup) {
+  //   return (
+  //     <div
+  //       css={navStyle}
+  //       tw="h-screen overscroll-contain overflow-hidden flex justify-center"
+  //     >
+  //       <Login
+  //         onClose={() => hideLoginModal()}
+  //         defaultSignUp={loginModalDefaultSignup}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div css={navStyle}>
-      {!isMobile && loginModalVisible && (
+      {!isMobile && loginPopup && (
         <LoginForm
-          onClose={() => hideLoginModal()}
+          onClose={() => setLoginPopup(false)}
           defaultSignUp={loginModalDefaultSignup}
         />
       )}
@@ -152,7 +154,10 @@ const Header = (props: {
         {showUploadWorkPopup && (
           <UploadWork onClose={() => setShowUploadWorkPopup(false)} />
         )}
-        <div tw="bg-white h-10 md:h-[60px] px-4 md:px-[36px] xl:px-[60px] flex items-center justify-between border-b border-[#D8D8D8]">
+        <div
+          tw="bg-white h-10 md:h-[60px] px-4 md:px-[36px] xl:px-[60px] flex items-center justify-between duration-100 border-b "
+          css={[props.isHome ? tw`border-transparent` : tw`border-[#EFEFEF]`]}
+        >
           <Link href="/" passHref>
             <img
               src="/assets/images/Pkazo.svg"
@@ -264,8 +269,8 @@ const Header = (props: {
                   passHref
                 >
                   <button
-                    tw="text-[12px] md:text-[14px] text-[#3C3C3C] font-semibold py-1 flex-shrink-0"
-                    onClick={() => showLoginModal()}
+                    tw="text-[12px] md:text-[14px] text-[#222222] font-semibold py-1 flex-shrink-0"
+                    onClick={() => setLoginPopup(true)}
                   >
                     Sign in
                   </button>
@@ -298,9 +303,8 @@ const Header = (props: {
                     ref={profileButtonRef}
                   >
                     <img
-                      src={`/assets/svgs/${
-                        isMobile ? 'mobile/' : ''
-                      }profile.svg`}
+                      src={`/assets/svgs/${isMobile ? 'mobile/' : ''
+                        }profile.svg`}
                     />
                   </button>
 

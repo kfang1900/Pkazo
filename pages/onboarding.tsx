@@ -37,9 +37,11 @@ import buttons from 'styles/Button';
 import { useMediaQuery } from 'react-responsive';
 import { PortfolioData } from 'types/dbTypes';
 import uploadImageBlob from '../utils/firebase/uploadImageBlob';
+import queryString from 'query-string';
 
 export interface OnboardingFormValues {
   name: string;
+  username: string;
   discipline: string;
   country: string;
   city: string;
@@ -153,10 +155,7 @@ function Onboarding() {
     //console.log(values);
     const app = getApp();
     const db = getFirestore(app);
-    const username = values.name
-      .split(' ')
-      .map((n) => n.toLowerCase())
-      .join('');
+    const username = values.username;
     //Step 1: add the artist document
     const artistref = await addDoc(collection(db, 'artists'), {
       associatedUser: user.uid,
@@ -201,8 +200,7 @@ function Onboarding() {
       return;
     }
     if (!user) {
-      if (isMobile) router.push(`/signin?redirect=${window.location.pathname}`);
-      else setSignupFormActive(true);
+      setSignupFormActive(true);
     } else {
       setSignupFormActive(false);
 
@@ -259,11 +257,16 @@ function Onboarding() {
       <Header logoOnly />
 
       {signupFormActive && (
-        <LoginForm
-          defaultSignUp
-          notCloseable
-          onClose={() => setSignupFormActive(false)}
-        />
+        isMobile ? (
+          router.push(
+            `/signin${window.location.search}${window.location.search ? '&' : '?'}redirect=${window.location.pathname}`
+          )
+        ) :
+          <LoginForm
+            defaultSignUp
+            notCloseable
+            onClose={() => setSignupFormActive(false)}
+          />
       )}
 
       <div tw="mt-5 h-full flex-grow flex flex-col">
@@ -276,6 +279,7 @@ function Onboarding() {
         <Formik<OnboardingFormValues>
           initialValues={{
             name: '',
+            username: typeof window !== 'undefined' && queryString.parse(window.location.search).username as string || '',
             discipline: '',
             country: defaultCountry,
             city: '',
@@ -327,15 +331,18 @@ function Onboarding() {
                       : tw`w-full grid grid-cols-[repeat(2, 160px)] justify-between`,
                   ]}
                 >
-                  <button
-                    css={[
-                      buttons.white,
-                      tw`h-12 flex items-center justify-center`,
-                    ]}
-                    onClick={() => setStage(stage ? stage - 1 : 0)}
-                  >
-                    {stage ? 'Back' : 'Cancel'}
-                  </button>
+                  {stage ?
+                    <button
+                      css={[
+                        buttons.white,
+                        tw`h-12 flex items-center justify-center`,
+                      ]}
+                      onClick={() => setStage(stage ? stage - 1 : 0)}
+                    >
+                      Back
+                    </button> :
+                    <div />
+                  }
                   <button
                     css={[
                       buttons.red,
@@ -357,16 +364,6 @@ function Onboarding() {
             </>
           )}
         </Formik>
-      </div>
-
-      <div tw="bg-red-500 hidden">
-        {stage === 1 && (
-          <CreatePortfoliosSection
-            user={user}
-            onComplete={() => setStage(2)}
-            artistId={artistId}
-          />
-        )}
       </div>
     </div>
   );

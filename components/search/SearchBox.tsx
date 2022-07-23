@@ -144,7 +144,7 @@ export default function SearchBox() {
   return (
     <div
       className="aa-Autocomplete"
-      tw="pl-6 pr-5 rounded-[48px] h-10 bg-[#F5F5F5] border border-[#A3A3A3] focus-within:border-[#838383] focus-within:bg-white outline-none flex items-center"
+      tw="pl-6 pr-5 rounded-[48px] h-10 bg-[#F5F5F5] border border-[#AAAAAA] focus-within:border-[#838383] focus-within:bg-white outline-none flex items-center"
       {...autocomplete.getRootProps({})}
     >
       {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
@@ -178,44 +178,44 @@ export default function SearchBox() {
                   <ul className="aa-List" {...autocomplete.getListProps()}>
                     {source.sourceId === 'Works'
                       ? items.map((item) => (
-                          <>
-                            <Link
-                              href={`/work/${item.id}`}
-                              key={item.objectID}
-                              passHref
-                            >
-                              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                              {/*
+                        <>
+                          <Link
+                            href={`/work/${item.id}`}
+                            key={item.objectID}
+                            passHref
+                          >
+                            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                            {/*
                             // @ts-ignore */}
-                              <li
-                                tw="px-6 py-2 text-[16px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer"
-                                className="aa-Item"
-                                {...autocomplete.getItemProps({
-                                  item,
-                                  source,
-                                })}
-                              >
-                                {autocompleteState.query.substring(
-                                  0,
+                            <li
+                              tw="px-6 py-2 text-[16px] text-[#5A5A5A] w-full bg-white hover:bg-[#F5F5F5] cursor-pointer"
+                              className="aa-Item"
+                              {...autocomplete.getItemProps({
+                                item,
+                                source,
+                              })}
+                            >
+                              {autocompleteState.query.substring(
+                                0,
+                                getMatchingPrefixIndex(
+                                  autocompleteState.query,
+                                  (item as WorkRecord).title
+                                ) + 1
+                              )}
+                              <b>
+                                {(item as WorkRecord).title.substring(
                                   getMatchingPrefixIndex(
                                     autocompleteState.query,
                                     (item as WorkRecord).title
-                                  ) + 1
+                                  )
                                 )}
-                                <b>
-                                  {(item as WorkRecord).title.substring(
-                                    getMatchingPrefixIndex(
-                                      autocompleteState.query,
-                                      (item as WorkRecord).title
-                                    )
-                                  )}
-                                </b>
-                              </li>
-                            </Link>
-                          </>
-                        ))
+                              </b>
+                            </li>
+                          </Link>
+                        </>
+                      ))
                       : source.sourceId === 'Artists'
-                      ? items.map((item) => (
+                        ? items.map((item) => (
                           <Link
                             href={`/${(item as ArtistData).username}`}
                             key={item.objectID}
@@ -238,7 +238,7 @@ export default function SearchBox() {
                             </li>
                           </Link>
                         ))
-                      : 'ERROR'}{' '}
+                        : 'ERROR'}{' '}
                   </ul>
                 </React.Fragment>
               );

@@ -44,7 +44,7 @@ const EditAccount: NextPage = () => {
             <Head>
                 <title>Collections</title>
             </Head>
-            {!isMobile && <Header isBuyer isHome />}
+            {!isMobile && <Header isBuyer isSticky />}
             <div tw='md:flex flex-1'>
                 {isMobile &&
                     <div tw='sticky top-0 z-50 bg-white'>

@@ -90,15 +90,17 @@ export default function ProfileDetailsSection({
         <div css={[styles.label, styles.req]}>Name</div>
         <Field type="text" name="name" css={styles.input} tw="mt-2 md:mt-0" />
         <div css={[styles.label, styles.req]} tw="mt-4 md:mt-0">
-          Username
+          Pkazo Link
         </div>
-        <div tw="flex mt-2 md:mt-0 items-center">
-          <div tw="font-semibold text-[#ADADAD]">pkazo.com/</div>
+        <div
+          tw='mt-2 md:mt-0 flex focus-within:border-[#888888] flex items-center'
+          css={[styles.input]}
+        >
+          <div tw="font-semibold text-[#939393]">pkazo.com/</div>
           <Field
             type="text"
             name="username"
-            css={styles.input}
-            tw="ml-4"
+            tw='outline-none w-full'
             placeholder={values.name.toLowerCase().replace(/\s/g, '')}
           />
         </div>
