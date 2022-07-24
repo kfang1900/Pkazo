@@ -132,7 +132,7 @@ const Home: NextPage = () => {
                 Simply upload your images and fill out our artist-specific fields. Keep 100% on purchases from your fans that visit your page. Get paid instantly.
               </div>
             </div>
-            <div tw='md:relative w-full mt-4 md:mt-0 bg-blue-500'>
+            <div tw='md:relative w-full mt-4 md:mt-0'>
               <Image
                 src='/assets/images/homepage/upload.png'
                 alt='portfolios example'
