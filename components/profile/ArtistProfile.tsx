@@ -58,12 +58,11 @@ const ArtistProfile = ({
       } else {
         setPicture(artistPFP);
       }
-      console.log(picture);
-      // call the function
-      fetchData()
-        // make sure to catch any error
-        .catch(console.error);
     };
+    // call the function
+    fetchData()
+      // make sure to catch any error
+      .catch(console.error);
   }, [artist]);
 
   const bioRef = useRef<HTMLDivElement>(null);
