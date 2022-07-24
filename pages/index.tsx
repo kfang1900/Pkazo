@@ -103,7 +103,7 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div tw='mt-8 md:mt-[80px] lg:mt-[100px] flex flex-col mx-auto gap-y-6 md:gap-y-0 lg:gap-y-[30px] max-w-[1000px] px-4 md:px-9'>
-          <div tw='grid grid-cols-1 md:grid-cols-[47% 47%] justify-between md:h-[500px]'>
+          <div tw='md:grid md:grid-cols-[47% 47%] justify-between md:h-[500px]'>
             <div tw='h-full flex flex-col justify-center md:order-last'>
               <div tw='text-[28px] leading-[36px] md:text-[36px] md:leading-[40px] text-black font-semibold'>
                 Display your work beautifully
@@ -123,7 +123,7 @@ const Home: NextPage = () => {
               />
             </div>
           </div>
-          <div tw='grid grid-cols-1 md:grid-cols-[40% 60%] gap-x-[20px] md:h-[500px]'>
+          <div tw='md:grid md:grid-cols-[40% 60%] gap-x-[20px] md:h-[500px]'>
             <div tw='h-full flex flex-col justify-center'>
               <div tw='text-[28px] leading-[36px] md:text-[36px] md:leading-[40px] text-black font-semibold'>
                 Selling made easy and free
