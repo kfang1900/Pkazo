@@ -22,7 +22,7 @@ const EditAccount: NextPage = () => {
 
   const pages = [
     'Edit Profile',
-    'Shop Settings',
+    // 'Shop Settings',
     // 'Apps and Websites',
     // 'Email and SMS',
   ];
@@ -49,7 +49,6 @@ const EditAccount: NextPage = () => {
         </div>
         <div tw='border-l border-l-[#D8D8D8] w-full'>
           {page === 0 && <EditProfilePage />}
-          {page === 1 && <ShopSettingsPage />}
         </div>
       </div>
     </>

@@ -34,9 +34,9 @@ export default function EditProfilePage() {
 
   const [data, setData] = useState<
     | (ArtistData & {
-        profilePictureURL: string | null;
-        coverImageURL: string | null;
-      })
+      profilePictureURL: string | null;
+      coverImageURL: string | null;
+    })
     | undefined
   >();
   const [artistId, setArtistId] = useState('');
@@ -113,10 +113,10 @@ export default function EditProfilePage() {
               showPopup === 0
                 ? 'education'
                 : showPopup === 1
-                ? 'experience'
-                : showPopup === 2
-                ? 'exhibitions'
-                : 'UNKNOWN';
+                  ? 'experience'
+                  : showPopup === 2
+                    ? 'exhibitions'
+                    : 'UNKNOWN';
 
             if (type === 'UNKNOWN') {
               throw new Error(
@@ -206,10 +206,11 @@ export default function EditProfilePage() {
             </div>
             {!isMobile && (
               <div tw="ml-9 flex flex-col justify-center">
-                <div tw="text-black text-[28px] font-semibold">{data.name}</div>
-                <div tw="text-[#8B8B8B] text-[20px] font-semibold mt-[10px]">
+                <div tw="text-black text-[32px] leading-[32px] font-semibold">{data.name}</div>
+                <div tw='text-[#8E8E93] font-medium text-[24px] leading-[29px] mt-3 flex items-center gap-x-4'>
                   {data.location}
-                  &nbsp;&nbsp;•&nbsp;&nbsp;{data.discipline}
+                  <div tw='w-[6px] h-[6px] rounded-full bg-[#8E8E93]' />
+                  {data.discipline}
                 </div>
               </div>
             )}

@@ -161,7 +161,7 @@ function Onboarding() {
       associatedUser: user.uid,
       artistName: values.name,
       acceptingCommissions: values.acceptCommissions === 'yes' ? true : false,
-      bio: "This user hasn't completed their bio yet.",
+      bio: "",
       coverImage: '',
       discipline: values.discipline,
       education: [],

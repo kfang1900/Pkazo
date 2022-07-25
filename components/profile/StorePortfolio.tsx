@@ -442,13 +442,18 @@ const StorePortFolio = ({
         >
           {filterOpen && <style>{`body {overflow: hidden}`}</style>}
           {!isMobile &&
-            <span
+            <button
               onClick={() => setFilterOpen(false)}
-              className="close-icon"
-              tw="before:content-[''] before:w-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full before:h-0 before:absolute before:bg-white/20 before:rounded-full before:z-[-1] absolute text-white cursor-pointer rounded-full flex items-center justify-center text-3xl w-[50px] h-[50px] top-5 right-[-60px]"
+              className="close-icon group"
+              tw="absolute rounded-full w-11 h-11 top-5 right-[-60px] flex items-center justify-center"
             >
-              <FiX />
-            </span>
+              <div tw='w-0 transition-all duration-200 group-hover:w-full group-hover:h-full h-0 absolute bg-white/20 rounded-full z-[-1]' />
+              <img
+                src="/assets/svgs/close.svg"
+                tw="w-4 h-4 m-auto"
+                alt="close button"
+              />
+            </button>
           }
 
           {/* Filter Box */}

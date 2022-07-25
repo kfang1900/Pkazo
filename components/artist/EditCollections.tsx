@@ -23,6 +23,7 @@ import { getDownloadURL, getStorage, ref } from 'firebase/storage';
 import UploadWork from '../uploading/UploadWork';
 import ImageUploadButton from '../account/ImageUploadButton';
 import uploadImage from '../../utils/firebase/uploadImage';
+import { PortfolioPopup } from '../onboarding/PortfolioSection';
 import PortfolioWorkUpload from '../uploading/PortfolioWorkUpload';
 import Modal from '../popups/Modal';
 import { useMediaQuery } from 'react-responsive';
@@ -120,9 +121,33 @@ export default function EditProfilePage() {
   // if empty, then the modal will be on create mode
   const [currentlyEditingWork, setCurrentlyEditingWork] = useState('');
 
+  const defaultPortfolio: PortfolioData = {
+    picture: '',
+    name: '',
+    description: '',
+    works: [],
+  };
+  const [newPortfolio, setNewPortfolio] = useState<PortfolioData>({
+    ...defaultPortfolio,
+  });
+
   return (
     <div tw="w-full">
-      {createNewPortfolioMode && (
+      {
+        // portfolio, setPortfolio is useState<dbTypes/PortfolioData>
+        <PortfolioPopup
+          portfolio={newPortfolio}
+          setPortfolio={setNewPortfolio}
+          onSave={() => {
+            // add portfolio to list of portfolios
+            setCreateNewPortfolioMode(false);
+          }}
+          onCancel={() => setCreateNewPortfolioMode(false)}
+          isMobile={isMobile}
+          toShow={createNewPortfolioMode}
+        />
+      }
+      {/* {createNewPortfolioMode && (
         <Modal open onClose={() => setCreateNewPortfolioMode(false)}>
           <PortfolioWorkUpload
             artistId={artistId + ''}
@@ -133,7 +158,7 @@ export default function EditProfilePage() {
             }}
           />
         </Modal>
-      )}
+      )} */}
       {showUploadEditWorkModal && (
         <UploadWork
           onClose={() => setShowUploadEditWorkModal(false)}
@@ -179,6 +204,7 @@ export default function EditProfilePage() {
               setName('');
               setDescription('');
               setCreateNewPortfolioMode(true);
+              setNewPortfolio({ ...defaultPortfolio });
             }}
             tw="w-[60px] h-[60px] md:w-[108px] md:h-[108px] bg-[#F3F3F3] hover:bg-[#E8E8E8] rounded-full flex items-center justify-center"
           >

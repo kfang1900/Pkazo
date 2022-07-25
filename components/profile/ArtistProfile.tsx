@@ -86,7 +86,7 @@ const ArtistProfile = ({
       {isSmall ? (
         <>
           <div tw="w-full grid grid-cols-[96px auto] md:grid-cols-[128px auto] gap-5 md:gap-8">
-            <div tw="w-[96px] h-[96px] md:w-[128px] md:h-[128px] bg-red-500 my-auto relative overflow-hidden rounded-full flex items-center">
+            <div tw="w-[96px] h-[96px] md:w-[128px] md:h-[128px] my-auto relative overflow-hidden rounded-full flex items-center">
               {picture && (
                 <Image
                   src={picture}
@@ -169,7 +169,7 @@ const ArtistProfile = ({
             height={isMobile ? 57 : 72}
             fixed
           >
-            <div>{artist.bio}</div>
+            <div>{artist.bio || "This artist hasn't completed their bio yet."}</div>
           </ShowMore>
           <div tw="flex mt-3 items-center">
             <img src="/assets/svgs/star.svg" tw="w-[15px] h-[14px]" />
@@ -183,7 +183,7 @@ const ArtistProfile = ({
         </>
       ) : (
         <div tw="w-full grid grid-cols-[200px auto]">
-          <div tw="w-[200px] h-[200px] bg-red-500 my-auto relative overflow-hidden rounded-full flex items-center">
+          <div tw="w-[200px] h-[200px] my-auto relative overflow-hidden rounded-full flex items-center">
             {picture && (
               <Image
                 src={picture}
@@ -200,7 +200,7 @@ const ArtistProfile = ({
                 <div tw="text-[36px] leading-[32px] font-semibold text-black">
                   {artist.name}
                 </div>
-                <div tw='max-w-[80px] flex-grow' />
+                <div tw='min-w-[40px] max-w-[80px] flex-grow' />
                 {isCurrentUserPage ? (
                   <button
                     onClick={() => router.push('/account/edit')}
@@ -269,7 +269,7 @@ const ArtistProfile = ({
                 height={72}
                 fixed
               >
-                <div>{artist.bio}</div>
+                <div>{artist.bio || "This artist hasn't completed their bio yet."}</div>
               </ShowMore>
               <div tw="flex mt-3 items-center">
                 <img src="/assets/svgs/star.svg" tw="w-6 h-[22px]" />

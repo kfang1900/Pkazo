@@ -163,9 +163,9 @@ const EditProfilePopup = ({
                         selected={
                           new Date().getFullYear() - i ===
                           data[type][
-                            (popups[type].dateRange
-                              ? 'start'
-                              : 'year') as keyof PopupData
+                          (popups[type].dateRange
+                            ? 'start'
+                            : 'year') as keyof PopupData
                           ]
                         }
                       >
@@ -224,9 +224,11 @@ const EditProfilePopup = ({
         {!isMobile && (
           <button
             onClick={onClose}
-            tw="flex-shrink-0 ml-5 w-11 h-11 border-0 outline-none bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.15)] rounded-full flex items-center justify-center"
+            tw="flex-shrink-0 ml-5 w-11 h-11 border-0 relative rounded-full flex items-center justify-center"
             type="button"
+            className='group'
           >
+            <div tw='w-0 transition-all duration-200 group-hover:w-full group-hover:h-full h-0 absolute bg-white/20 rounded-full z-[-1]' />
             <Image
               src="/assets/svgs/close.svg"
               width="16px"

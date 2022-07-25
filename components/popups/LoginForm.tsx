@@ -340,8 +340,10 @@ function LoginForm(props: LoginFormProps) {
         {!props.notCloseable && (
           <button
             onClick={props.onClose}
-            tw="ml-5 w-11 h-11 border-0 outline-none bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.15)] rounded-full"
+            tw="ml-5 w-11 h-11 border-0 relative flex items-center justify-center rounded-full"
+            className='group'
           >
+            <div tw='w-0 transition-all duration-200 group-hover:w-full group-hover:h-full h-0 absolute bg-white/20 rounded-full z-[-1]' />
             <img
               src="/assets/svgs/close.svg"
               tw="w-4 h-4 m-auto"
