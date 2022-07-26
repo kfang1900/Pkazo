@@ -8,7 +8,7 @@ import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 import { useMediaQuery } from 'react-responsive';
 import { useRouter } from 'next/router';
-import DashboardSidebar from 'components/artist/DashboardSidebar'
+import DashboardSidebar from 'components/artist/DashboardSidebar';
 
 import useRequireOnboarding from '../../utils/hooks/useRequireOnboarding';
 import EditCollections from '../../components/artist/EditCollections';
@@ -32,13 +32,6 @@ const EditAccount: NextPage = () => {
 
     useRequireOnboarding();
 
-    const pages = [
-        'Collections',
-        'Orders and Shipping',
-        'Edit FAQs',
-        // 'Apps and Websites',
-        // 'Email and SMS',
-    ];
     return (
         <div tw='absolute top-0 h-[100vh] flex flex-col w-full'>
             <Head>
@@ -46,28 +39,6 @@ const EditAccount: NextPage = () => {
             </Head>
             {!isMobile && <Header isBuyer isSticky />}
             <div tw='md:flex flex-1'>
-                {isMobile &&
-                    <div tw='sticky top-0 z-50 bg-white'>
-                        <div tw='flex items-center justify-between h-12 px-5'>
-                            <Link
-                                href={`/artist${window.location.search}`}
-                                passHref
-                            >
-
-                                <Image
-                                    src='/assets/svgs/mobile/back.svg'
-                                    width='11'
-                                    height='18'
-                                    alt='popup back'
-                                    tw='cursor-pointer'
-                                />
-                            </Link>
-                            <div tw='text-[16px] text-black font-semibold'>Collections</div>
-                            <div />
-                        </div>
-                        <div tw='h-[0.5px] bg-[#E2E2E2] w-full' />
-                    </div>
-                }
                 <DashboardSidebar
                     toShow={showSidebar && !isMobile}
                     onClose={() => setShowSidebar(false)}

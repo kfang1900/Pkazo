@@ -15,6 +15,7 @@ import { loadStorageImage } from '../../helpers/FirebaseFunctions';
 import { Field, Form, Formik } from 'formik';
 import tw from 'twin.macro';
 import React, { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
 import useAuth from '../../utils/auth/useAuth';
 import useRequireOnboarding from '../../utils/hooks/useRequireOnboarding';
 import { ArtistData } from '../../types/dbTypes';
@@ -104,7 +105,7 @@ export default function EditProfilePage() {
     button: tw`mt-1 md:mt-0 h-[40px] border border-[#D8D8D8] rounded-[6px] pl-4 pr-3 text-[#3C3C3C] text-[16px] flex items-center hover:bg-[#F5F5F5] duration-100`,
   };
   return (
-    <div css={[isMobile ? tw`mb-8` : tw`ml-[76px] mt-9 mb-[100px]`]}>
+    <div css={[isMobile ? tw`mb-8` : tw`mt-9 mb-[100px] flex justify-center`]}>
       {showPopup >= 0 && (
         <EditProfilePopups
           onSave={(data) => {
@@ -137,38 +138,37 @@ export default function EditProfilePage() {
       )}
       {!data && <p>Loading...</p>}
       {data && (
-        <>
+        <div>
           {isMobile && (
-            <div tw="w-full border-b-[0.5px] border-b-[#E2E2E2] mb-5 px-4 py-3 grid grid-cols-[40px auto 40px]">
-              <div>
-                <div tw="cursor-pointer w-3">
-                  <svg
-                    width="11"
-                    height="18"
-                    viewBox="0 0 11 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+            <div tw='sticky top-0 z-50 bg-white'>
+              <div tw='flex items-center justify-between h-12 px-5'>
+                <div tw='w-10'>
+                  <Link
+                    href={`/account${window.location.search}`}
+                    passHref
                   >
-                    <path
-                      d="M0.240234 8.94922C0.240234 9.28125 0.367188 9.56445 0.630859 9.81836L8.24805 17.2695C8.45312 17.4844 8.72656 17.5918 9.03906 17.5918C9.67383 17.5918 10.1719 17.1035 10.1719 16.459C10.1719 16.1465 10.0449 15.8633 9.83008 15.6484L2.96484 8.94922L9.83008 2.25C10.0449 2.02539 10.1719 1.74219 10.1719 1.42969C10.1719 0.794922 9.67383 0.306641 9.03906 0.306641C8.72656 0.306641 8.45312 0.414062 8.24805 0.628906L0.630859 8.08008C0.367188 8.33398 0.25 8.61719 0.240234 8.94922Z"
-                      fill="#3C3C3C"
+                    <Image
+                      src='/assets/svgs/mobile/back.svg'
+                      width='11'
+                      height='18'
+                      alt='popup back'
+                      tw='cursor-pointer'
                     />
-                  </svg>
+                  </Link>
+                </div>
+                <div tw='text-[16px] text-black font-semibold'>Edit Profile</div>
+                <div tw='w-10'>
+                  {isModified && (
+                    <div tw="cursor-pointer text-[14px] font-semibold text-[#E44C4D]">
+                      Save
+                    </div>
+                  )}
                 </div>
               </div>
-              <div tw="text-center text-[14px] font-bold text-black">
-                Edit Profile
-              </div>
-              {isModified && (
-                <div>
-                  <div tw="cursor-pointer text-[14px] font-semibold text-[#E44C4D]">
-                    Save
-                  </div>
-                </div>
-              )}
+              <div tw='h-[0.5px] bg-[#E2E2E2] w-full' />
             </div>
           )}
-          <div tw="flex" css={[isMobile && tw`justify-center w-full`]}>
+          <div tw="flex" css={[isMobile && tw`justify-center w-full mt-5`]}>
             <div tw="relative">
               <div tw="relative w-20 h-20 md:w-[132px] md:h-[132px] overflow-hidden rounded-full flex items-center ">
                 <Image
@@ -267,7 +267,7 @@ export default function EditProfilePage() {
                     css={[
                       isMobile
                         ? tw`mt-5 grid grid-cols-[80px auto] px-4 gap-x-2 gap-y-3`
-                        : tw`w-full mt-6 grid grid-cols-[115px 450px] gap-x-7 gap-y-6`,
+                        : tw`w-full mt-6 grid grid-cols-[115px 506px] gap-x-7 gap-y-6`,
                     ]}
                   >
                     <div css={styles.label}>Name</div>
@@ -282,14 +282,14 @@ export default function EditProfilePage() {
                       name="bio"
                       css={[
                         styles.input,
-                        tw`md:w-[710px] h-[80px] md:h-[160px] py-2 resize-none`,
+                        tw`h-[80px] md:h-[160px] py-2 resize-none`,
                         isMobile && tw`col-span-2 -mt-1`,
                       ]}
                     />
                     <div />
 
-                    {isDataModified(values) && !isMobile && (
-                      <div>
+                    {isDataModified(values) && (
+                      <div css={[isMobile && tw`hidden`]}>
                         <input
                           type="submit"
                           value="Save"
@@ -317,7 +317,7 @@ export default function EditProfilePage() {
             </Formik>
           )}
           <div css={styles.section}>Cover Image</div>
-          <div tw="mt-3 md:mt-6 relative w-full h-[136px] md:w-[852px] md:h-[201px] bg-gray-200">
+          <div tw="mt-3 md:mt-6 relative overflow-hidden w-full h-[136px] md:w-[648px] md:h-[201px] bg-gray-200">
             {data.coverImageURL && (
               <Image
                 src={data.coverImageURL}
@@ -327,7 +327,7 @@ export default function EditProfilePage() {
               />
             )}
 
-            <div className="right-3 bottom-3">
+            <div className="right-0 bottom-3">
               <ImageUploadButton
                 uploadLocation={`Artists/${artistId}/Cover_Photo`}
                 onError={(error) => {
@@ -427,7 +427,7 @@ export default function EditProfilePage() {
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

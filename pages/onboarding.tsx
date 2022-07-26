@@ -259,7 +259,7 @@ function Onboarding() {
       {signupFormActive && (
         isMobile ? (
           router.push(
-            `/signin${window.location.search}${window.location.search ? '&' : '?'}redirect=${window.location.pathname}`
+            `/signin${window.location.search}${window.location.search ? '&' : '?'}redirect=onboarding`
           )
         ) :
           <LoginForm

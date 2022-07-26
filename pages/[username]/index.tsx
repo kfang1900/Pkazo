@@ -220,7 +220,7 @@ const Portfolio: NextPage = () => {
               : artistData[0].data().name}
         </title>
       </Head>
-      <Header />
+      <Header isSticky />
       {loading ? (
         <div tw='flex w-full justify-center'>
           <img

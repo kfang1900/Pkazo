@@ -230,7 +230,7 @@ const Header = (props: {
                       aria-labelledby="user-menu-button"
                       tabIndex={-1}
                     >
-                      <Link href={`/account/edit`} passHref>
+                      <Link href={`/account?redirect=${window.location.pathname}`} passHref>
                         <a
                           tw="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
                           tabIndex={-1}

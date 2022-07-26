@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import tw from 'twin.macro';
 import Image from 'next/image';
 import useAuth from '../../utils/auth/useAuth';
+import Link from 'next/link';
 import { getApp } from 'firebase/app';
 import {
   addDoc,
@@ -71,7 +72,7 @@ async function loadPortfolios(artistId: string) {
     )
   );
 }
-export default function EditProfilePage() {
+export default function EditCollections() {
   const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -133,6 +134,28 @@ export default function EditProfilePage() {
 
   return (
     <div tw="w-full">
+      {isMobile &&
+        <div tw='sticky top-0 z-50 bg-white'>
+          <div tw='flex items-center justify-between h-12 px-5'>
+            <Link
+              href={`/artist${window.location.search}`}
+              passHref
+            >
+
+              <Image
+                src='/assets/svgs/mobile/back.svg'
+                width='11'
+                height='18'
+                alt='popup back'
+                tw='cursor-pointer'
+              />
+            </Link>
+            <div tw='text-[16px] text-black font-semibold'>Collections</div>
+            <div />
+          </div>
+          <div tw='h-[0.5px] bg-[#E2E2E2] w-full' />
+        </div>
+      }
       {
         // portfolio, setPortfolio is useState<dbTypes/PortfolioData>
         <PortfolioPopup

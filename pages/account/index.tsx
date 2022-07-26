@@ -14,17 +14,12 @@ const ShopManager = () => {
     }, [mediaQuery, isMobile]);
 
     useEffect(() => {
-        if (!mediaQuery) router.push(`/artist/${pages[0].url}`);
+        if (!mediaQuery) router.push(`/account/${pages[0].url}`);
     })
 
     const pages = [
-        { title: 'Collections', url: 'collections' },
-        { title: 'Orders', url: 'orders' },
-        { title: 'Reviews', url: 'reviews' },
-        { title: 'Shipping', url: 'shipping' },
-        { title: 'Return Policy', url: 'return' },
-        { title: 'FAQ', url: 'faq' },
-        { title: 'Payments', url: 'payments' },
+        { title: 'Edit Profile', url: 'edit' },
+        { title: 'Change Password', url: 'password' },
     ]
 
     const router = useRouter();
@@ -43,14 +38,14 @@ const ShopManager = () => {
                         tw='cursor-pointer'
                     />
                 </Link>
-                <div tw='text-[16px] text-black font-semibold'>Artist Dashboard</div>
+                <div tw='text-[16px] text-black font-semibold'>Account Settings</div>
                 <div />
             </div>
             <div tw='h-[0.5px] bg-[#E2E2E2] w-full' />
         </div>
         <div tw='my-3'>
             {pages.map(({ title, url }, i) => (
-                <Link key={i} href={`/artist/${url}${typeof window === 'undefined' ? '' : window.location.search}`} passHref>
+                <Link key={i} href={`/account/${url}${typeof window === 'undefined' ? '' : window.location.search}`} passHref>
                     <div tw='pl-5 pr-4 py-3 flex items-center justify-between w-full bg-white hover:bg-[#F5F5F5] cursor-pointer'>
                         <div tw='text-[14px] text-black font-medium'>{title}</div>
                         <svg width="7" height="13" viewBox="0 0 7 13" fill="none" xmlns="http://www.w3.org/2000/svg">
