@@ -4,7 +4,7 @@ import Image from 'next/image';
 import tw from 'twin.macro';
 import { useMediaQuery } from 'react-responsive';
 
-const Sidebar = (
+const DashboardSidebar = (
     { toShow, onClose, pageName }:
         { toShow: boolean, onClose: () => void, pageName: string }) => {
 
@@ -56,4 +56,4 @@ const Sidebar = (
     </div>
 }
 
-export default Sidebar;
+export default DashboardSidebar;

@@ -435,8 +435,8 @@ const StorePortFolio = ({
           css={[
             tw`fixed bg-white max-w-full z-[99] transition-all duration-300`,
             isMobile ?
-              (filterOpen ? tw`bottom-0` : tw`-bottom-full`) :
-              (filterOpen ? tw`left-0` : tw`-left-full`),
+              (filterOpen ? tw`bottom-0` : tw`z-[-1] -bottom-full`) :
+              (filterOpen ? tw`left-0` : tw`z-[-1] -left-full`),
             isMobile ? tw`left-0 right-0` : tw`top-0 bottom-0`
           ]}
         >

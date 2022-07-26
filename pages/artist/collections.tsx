@@ -8,7 +8,7 @@ import Link from 'next/link';
 import tw, { styled } from 'twin.macro';
 import { useMediaQuery } from 'react-responsive';
 import { useRouter } from 'next/router';
-import Sidebar from 'components/artist/Sidebar'
+import DashboardSidebar from 'components/artist/DashboardSidebar'
 
 import useRequireOnboarding from '../../utils/hooks/useRequireOnboarding';
 import EditCollections from '../../components/artist/EditCollections';
@@ -68,7 +68,7 @@ const EditAccount: NextPage = () => {
                         <div tw='h-[0.5px] bg-[#E2E2E2] w-full' />
                     </div>
                 }
-                <Sidebar
+                <DashboardSidebar
                     toShow={showSidebar && !isMobile}
                     onClose={() => setShowSidebar(false)}
                     pageName='collections'
