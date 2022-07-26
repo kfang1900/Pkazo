@@ -122,7 +122,7 @@ const Header = (props: {
       </div>
     );
   }
-  const navStyle = [tw`top-0 z-50 w-full`, props.isSticky && tw`sticky`];
+  const navStyle = [tw`top-0 z-50 w-full`, props.isSticky && tw`fixed`];
   // if (isMobile && loginPopup) {
   //   return (
   //     <div
@@ -138,19 +138,19 @@ const Header = (props: {
   // }
 
   return (
-    <div css={navStyle}>
-      {!isMobile && loginPopup && (
-        <LoginForm
-          onClose={() => setLoginPopup(false)}
-          defaultSignUp={loginModalDefaultSignup}
-        />
-      )}
-      {!isMobile && (
-        <CartPopup onClose={() => setShowCart(false)} toShow={showCart} />
-      )}
-      {isMobile && onSearch && <SearchBox />}
-
-      <>
+    <>
+      {props.isSticky && <div tw='mb-10 md:mb-[60px] w-full' />}
+      <div css={navStyle}>
+        {!isMobile && loginPopup && (
+          <LoginForm
+            onClose={() => setLoginPopup(false)}
+            defaultSignUp={loginModalDefaultSignup}
+          />
+        )}
+        {!isMobile && (
+          <CartPopup onClose={() => setShowCart(false)} toShow={showCart} />
+        )}
+        {isMobile && onSearch && <SearchBox />}
         {showUploadWorkPopup && (
           <UploadWork onClose={() => setShowUploadWorkPopup(false)} />
         )}
@@ -363,8 +363,8 @@ const Header = (props: {
             </div>
           </div>
         )}
-      </>
-    </div >
+      </div >
+    </>
   );
 };
 
