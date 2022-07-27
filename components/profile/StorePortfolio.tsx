@@ -431,7 +431,7 @@ const StorePortFolio = ({
       </Container>
 
       <div>
-        <div css={[!filterOpen && tw`fixed top-full h-[100vh] left-0 right-0 bg-red-500 z-[100]`]} />
+        <div css={[!filterOpen && tw`fixed -bottom-full h-[100vh] left-0 right-0 bg-red-500 z-[100]`]} />
         <div
           css={[
             tw`fixed bg-white max-w-full z-[99] transition-all duration-300`,
