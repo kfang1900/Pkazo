@@ -505,7 +505,7 @@ const StorePortFolio = ({
                 </button>
               </div>
             </div>
-            <div css={[!filterOpen && tw`w-full h-full bg-white`]} />
+            <div css={[!filterOpen && tw`w-full h-full bg-white z-50`]} />
           </div>
         </div>
         {!isMobile &&
