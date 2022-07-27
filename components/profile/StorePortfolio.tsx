@@ -435,7 +435,7 @@ const StorePortFolio = ({
           css={[
             tw`fixed bg-white max-w-full z-[99] transition-all duration-300`,
             isMobile ?
-              (filterOpen ? tw`bottom-0` : tw`z-[-1] bottom-[-100vh]`) :
+              (filterOpen ? tw`top-0` : tw`z-[-1] top-full`) :
               (filterOpen ? tw`left-0` : tw`z-[-1] -left-full`),
             isMobile ? tw`left-0 right-0` : tw`top-0 bottom-0`
           ]}
@@ -457,7 +457,7 @@ const StorePortFolio = ({
           }
 
           {/* Filter Box */}
-          <div tw='w-full md:w-[400px] h-[100vh] overflow-auto'>
+          <div tw='w-full md:w-[400px] overflow-auto'>
             <div tw='p-8'>
               <div tw='flex w-full items-center justify-between'>
                 <div tw='text-[32px] text-[#3C3C3C]'>Filters</div>
