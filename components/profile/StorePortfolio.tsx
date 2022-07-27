@@ -436,7 +436,7 @@ const StorePortFolio = ({
             tw`fixed bg-white max-w-full z-[99] transition-all duration-300`,
             isMobile ?
               (filterOpen ? tw`top-0` : tw`z-[-1] top-full`) :
-              (filterOpen ? tw`left-0` : tw`z-[-1] -left-full`),
+              (filterOpen ? tw`left-0` : tw`-left-full`),
             isMobile ? tw`left-0 right-0` : tw`top-0 bottom-0`
           ]}
         >
@@ -505,6 +505,7 @@ const StorePortFolio = ({
                 </button>
               </div>
             </div>
+            <div css={[!filterOpen && tw`w-full h-full bg-white`]} />
           </div>
         </div>
         {!isMobile &&
