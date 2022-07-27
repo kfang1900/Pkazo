@@ -457,7 +457,7 @@ const StorePortFolio = ({
           }
 
           {/* Filter Box */}
-          <div tw='w-full md:w-[400px] overflow-auto'>
+          <div tw='w-full md:w-[400px] max-h-[100vh] overflow-auto'>
             <div tw='p-8'>
               <div tw='flex w-full items-center justify-between'>
                 <div tw='text-[32px] text-[#3C3C3C]'>Filters</div>
