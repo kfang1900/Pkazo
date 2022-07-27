@@ -14,7 +14,7 @@ const Upload: NextPage = () => {
     <>
       <Header isBuyer />
       <Container>
-        <UploadWork onClose={() => 0} />
+        <UploadWork onClose={() => 0} toShow={true} />
       </Container>
     </>
   );

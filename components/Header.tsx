@@ -151,9 +151,10 @@ const Header = (props: {
           <CartPopup onClose={() => setShowCart(false)} toShow={showCart} />
         )}
         {isMobile && onSearch && <SearchBox />}
-        {showUploadWorkPopup && (
-          <UploadWork onClose={() => setShowUploadWorkPopup(false)} />
-        )}
+        <UploadWork
+          onClose={() => setShowUploadWorkPopup(false)}
+          toShow={showUploadWorkPopup}
+        />
         <div
           tw="bg-white h-10 md:h-[60px] px-4 md:px-[36px] xl:px-[60px] flex items-center justify-between duration-100 border-b "
           css={[props.isHome ? tw`border-transparent` : tw`border-[#EFEFEF]`]}

@@ -22,7 +22,7 @@ export default function Hit({
   return (
     <>
       {editing && (
-        <UploadWork onClose={() => setEditing(false)} workId={work.id} />
+        <UploadWork onClose={() => setEditing(false)} workId={work.id} toShow={editing} />
       )}
       <Link href={'/work/' + work.id} passHref>
         <div tw="cursor-pointer my-4 md:my-10">

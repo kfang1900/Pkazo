@@ -458,7 +458,7 @@ const IndividualWork: NextPage = () => {
           </form>
         </Modal>
       )}
-      {showCheckoutModal && (
+      {true && (
         <CheckoutModal
           onClose={() => setShowCheckoutModal(false)}
           workId={workId + ''}

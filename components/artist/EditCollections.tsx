@@ -182,12 +182,11 @@ export default function EditCollections() {
           />
         </Modal>
       )} */}
-      {showUploadEditWorkModal && (
-        <UploadWork
-          onClose={() => setShowUploadEditWorkModal(false)}
-          workId={currentlyEditingWork}
-        />
-      )}
+      <UploadWork
+        onClose={() => setShowUploadEditWorkModal(false)}
+        workId={currentlyEditingWork}
+        toShow={showUploadEditWorkModal}
+      />
       {/* portfolio circles */}
       <div
         css={[isMobile ?

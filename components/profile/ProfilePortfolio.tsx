@@ -192,13 +192,13 @@ function GallerySection({
                     artistData &&
                     userArtistData.username === artistData.username && (
                       <button
-                        tw={'absolute right-2 top-4 underline'}
+                        tw='absolute right-2 top-2 rounded-full w-[32px] h-[32px] md:w-[40px] h-[40px] xl:w-[52px] xl:h-[52px] bg-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.3)] flex items-center justify-center'
                         onClick={(e) => {
                           e.preventDefault();
                           setActiveEditingWork(curGallery.Data[i].__id);
                         }}
                       >
-                        Edit
+                        <img src='/assets/svgs/edit.svg' tw='w-[50%] h-[50%]' />
                       </button>
                     )}
                   <Link
