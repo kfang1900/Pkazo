@@ -379,7 +379,7 @@ function UploadWork({ onClose, workId, toShow }:
   return (
     <div
       tw="fixed top-0 left-0 w-full z-50 flex items-center justify-center overflow-auto md:p-[50px]"
-      css={[toShow && tw`h-full bg-black/40`, !toShow && !isMobile && tw``]}
+      css={[toShow && tw`h-full bg-black/40`, !toShow && !isMobile && tw`hidden`]}
     >
       {toShow && <style>{`body {overflow: hidden}`}</style>}
       <div
@@ -392,7 +392,7 @@ function UploadWork({ onClose, workId, toShow }:
               ? tw`fixed top-full -bottom-full bg-white w-full rounded-t-[12px] flex flex-col overflow-hidden duration-300`
               : tw`bg-white rounded-[20px] z-20 p-[52px] w-[1171px] h-[746px]`,
             isMobile && toShow && tw`top-[30px] bottom-0`,
-            // !isMobile && !toShow && tw`hidden`
+            !isMobile && !toShow && tw`hidden`
           ]}
         >
           {initialFormValues && (

@@ -24,7 +24,7 @@ const Checkout: NextPage = () => {
                 <title>Checkout</title>
             </Head>
             <div tw='flex justify-center mt-[64px]'>
-                <CheckoutForm />
+                <CheckoutForm country='United States' />
             </div>
         </div>
     );
