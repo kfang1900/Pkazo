@@ -216,17 +216,14 @@ const Portfolio: NextPage = () => {
           {loading
             ? 'Loading...'
             : artistData.length === 0
-              ? 'User not found'
-              : artistData[0].data().name}
+            ? 'User not found'
+            : artistData[0].data().name}
         </title>
       </Head>
       <Header />
       {loading ? (
-        <div tw='flex w-full justify-center'>
-          <img
-            src={'/assets/svgs/loading.svg'}
-            tw='w-[80px] md:w-[100px]'
-          />
+        <div tw="flex w-full justify-center">
+          <img src={'/assets/svgs/loading.svg'} tw="w-[80px] md:w-[100px]" />
         </div>
       ) : artistData.length === 0 ? (
         <div>
@@ -299,7 +296,7 @@ const Portfolio: NextPage = () => {
                     artistData={artistData2}
                   />
                   {/*<Resume {...artistData} />*/}
-                  {/*  TODO fix resume section */}
+                  TODO fix resume section
                 </>
               )}
               {(page === Page.STORE || profileType !== 1) && (
