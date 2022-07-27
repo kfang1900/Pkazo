@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useMediaQuery } from 'react-responsive';
+import CheckoutForm from 'components/cart/CheckoutForm';
+import 'twin.macro';
 
 const Checkout: NextPage = () => {
     const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
@@ -21,7 +23,9 @@ const Checkout: NextPage = () => {
             <Head>
                 <title>Checkout</title>
             </Head>
-            checkout page
+            <div tw='flex justify-center mt-[64px]'>
+                <CheckoutForm />
+            </div>
         </div>
     );
 };
