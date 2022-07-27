@@ -431,14 +431,14 @@ const StorePortFolio = ({
       </Container>
 
       <div>
-        <div css={[!filterOpen && tw`fixed -bottom-full h-[100vh] left-0 right-0 bg-white z-[100]`]} />
+        {/* <div css={[!filterOpen && tw`fixed -bottom-full h-[100vh] left-0 right-0 bg-white z-[100]`]} /> */}
         <div
           css={[
             tw`fixed bg-white max-w-full z-[99] transition-all duration-300`,
             isMobile ?
-              (filterOpen ? tw`top-0` : tw`z-[-1] top-[100vh]`) :
+              (filterOpen ? tw`top-0` : tw`z-[-1] top-[100vh] bottom-0`) :
               (filterOpen ? tw`left-0` : tw`-left-full`),
-            isMobile ? tw`left-0 right-0` : tw`top-0 bottom-0`
+            isMobile ? tw`left-0 right-0 overflow-hidden` : tw`top-0 bottom-0`
           ]}
         >
           {filterOpen && <style>{`body {overflow: hidden}`}</style>}
