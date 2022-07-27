@@ -125,7 +125,7 @@ const ArtistProfile = ({
                   <button
                     onClick={() => router.push(`/account/edit?redirect=${window.location.pathname}`)}
                     css={buttons.white}
-                    tw="text-[14px] h-8 px-5"
+                    tw="text-[14px] md:text-[20px] h-8 md:h-12 px-3 md:px-6 flex items-center justify-center md:border-2"
                   >
                     Edit Profile
                   </button>
@@ -133,7 +133,7 @@ const ArtistProfile = ({
                   <>
                     <button
                       css={buttons.white}
-                      tw="text-[#3B3B3B] w-8 h-8 md:w-11 md:h-11 p-0 flex items-center justify-center"
+                      tw="text-[#3B3B3B] w-8 h-8 md:w-12 md:h-12 p-0 flex items-center justify-center md:border-2"
                       onClick={() => {
                         if (!user || !artistData[0].id) {
                           return;
@@ -155,7 +155,7 @@ const ArtistProfile = ({
                     <button
                       onClick={() => 0}
                       css={buttons.red}
-                      tw="text-[14px] md:text-[20px] ml-3 md:ml-5 flex items-center justify-center font-semibold w-[116px] h-8 md:w-[170px] md:h-11"
+                      tw="text-[14px] md:text-[20px] ml-3 md:ml-5 flex items-center justify-center font-semibold w-[116px] h-8 md:w-[170px] md:h-12"
                     >
                       Commission
                     </button>
@@ -205,6 +205,7 @@ const ArtistProfile = ({
                   <button
                     onClick={() => router.push(`/account/edit?redirect=${window.location.pathname}`)}
                     css={buttons.white}
+                    tw="px-6 h-12 text-[20px] font-semibold border-2"
                   >
                     Edit Profile
                   </button>
@@ -228,7 +229,7 @@ const ArtistProfile = ({
 
                     <button
                       css={buttons.white}
-                      tw="text-[#3B3B3B] border-2 w-11 h-11 p-0 flex items-center justify-center flex-none"
+                      tw="text-[#3B3B3B] border-2 w-12 h-12 p-0 flex items-center justify-center flex-none border-2"
                       onClick={() => {
                         if (!user || !artistData[0].id) {
                           showLoginModal(true);
@@ -252,7 +253,7 @@ const ArtistProfile = ({
                     <button
                       onClick={() => 0}
                       css={buttons.red}
-                      tw="ml-5 w-[170px] h-11 flex items-center justify-center text-[20px] font-semibold text-white"
+                      tw="ml-5 w-[170px] h-12 flex items-center justify-center text-[20px] font-semibold text-white"
                     >
                       Commission
                     </button>

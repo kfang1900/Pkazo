@@ -231,20 +231,20 @@ const Header = (props: {
                       aria-labelledby="user-menu-button"
                       tabIndex={-1}
                     >
-                      <Link href={`/account?redirect=${window.location.pathname}`} passHref>
-                        <a
-                          tw="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
-                          tabIndex={-1}
-                        >
-                          Account Settings
-                        </a>
-                      </Link>
                       <Link href={`/${username}`} passHref>
                         <a
                           tw="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
                           tabIndex={-1}
                         >
                           Profile
+                        </a>
+                      </Link>
+                      <Link href={`/account?redirect=${window.location.pathname}`} passHref>
+                        <a
+                          tw="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
+                          tabIndex={-1}
+                        >
+                          Account Settings
                         </a>
                       </Link>
                       <a

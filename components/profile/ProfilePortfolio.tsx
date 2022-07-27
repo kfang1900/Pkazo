@@ -101,13 +101,11 @@ function GallerySection({
   const [activeEditingWork, setActiveEditingWork] = useState('');
   return (
     <div>
-      {/*
       <UploadWork
         workId={activeEditingWork}
         onClose={() => setActiveEditingWork('')}
         toShow={!!activeEditingWork}
       />
-      }
       {/* Circle Images Section --Start-- */}
       <section css={[isMobile ? tw`mt-4` : tw`mt-[52px]`]}>
         <div className="container">
