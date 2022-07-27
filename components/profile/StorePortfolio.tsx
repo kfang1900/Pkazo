@@ -426,7 +426,7 @@ const StorePortFolio = ({
 
         {/* Portfolio Gallery */}
         <div tw="mb-4 md:mb-[30px]">
-          {!loading && <ProductCollection {...works} />}
+          {!loading && <ProductCollection works={works} />}
         </div>
       </Container>
 

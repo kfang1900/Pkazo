@@ -36,9 +36,9 @@ export const PortfolioPopup = ({
         <div
           css={[
             isMobile
-              ? tw`fixed -bottom-full bg-white w-full rounded-t-[12px] h-[92%] flex flex-col overflow-hidden duration-300`
+              ? tw`fixed top-full -bottom-full bg-white w-full rounded-t-[12px] flex flex-col overflow-hidden duration-300`
               : tw`bg-white w-full max-w-[1000px] rounded-[20px] pt-[56px] pb-8 px-[72px]`,
-            isMobile && toShow && tw`bottom-0`,
+            isMobile && toShow && tw`top-[30px] bottom-0`,
             !isMobile && !toShow && tw`hidden`
           ]}
         >

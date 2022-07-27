@@ -41,13 +41,6 @@ import { loadStorageImageSafe } from '../../helpers/FirebaseFunctions';
 import { updateWorksIndex } from '../../utils/indexes/updateIndexes';
 import uploadImage from '../../utils/firebase/uploadImage';
 
-export interface UploadWorkProps {
-  onClose: () => void;
-
-  // If provided, the popup will be in 'edit mode'.
-  workId?: string;
-}
-
 /* copied from image.tsx */
 interface StaticRequire {
   default: StaticImageData;
@@ -235,7 +228,13 @@ const validationSchema = Yup.object().shape({
   }),
 });
 
-function UploadWork({ onClose, workId }: UploadWorkProps) {
+function UploadWork({ onClose, workId, toShow }:
+  {
+    onClose: () => void;
+    workId?: string;
+    toShow: boolean;
+  }
+) {
   const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -378,202 +377,207 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
   }, [editMode, editData]);
 
   return (
-    initialFormValues && (
-      <Formik
-        initialValues={initialFormValues}
-        //validationSchema={validationSchema}
-        //validator={() => ({})}
-        onSubmit={async (values) => {
-          console.log('submitting formik', values, initialFormValues);
+    <div
+      tw="fixed top-0 left-0 w-full z-50 flex items-center justify-center overflow-auto md:p-[50px]"
+      css={[toShow && tw`h-full bg-black/40`, !toShow && !isMobile && tw``]}
+    >
+      {toShow && <style>{`body {overflow: hidden}`}</style>}
+      <div
+        tw="flex md:m-auto"
+        css={[isMobile && tw`w-full justify-center`]}
+      >
+        <div
+          css={[
+            isMobile
+              ? tw`fixed top-full -bottom-full bg-white w-full rounded-t-[12px] flex flex-col overflow-hidden duration-300`
+              : tw`bg-white rounded-[20px] z-20 p-[52px] w-[1171px] h-[746px]`,
+            isMobile && toShow && tw`top-[30px] bottom-0`,
+            // !isMobile && !toShow && tw`hidden`
+          ]}
+        >
+          {initialFormValues && (
+            <Formik
+              initialValues={initialFormValues}
+              //validationSchema={validationSchema}
+              //validator={() => ({})}
+              onSubmit={async (values) => {
+                console.log('submitting formik', values, initialFormValues);
 
-          try {
-            if (!auth.artistId) return;
+                try {
+                  if (!auth.artistId) return;
 
-            console.log(values);
+                  console.log(values);
 
-            if (uploadedImages.length === 0) {
-              alert('Please select at least one image for this work.');
-              return;
-            }
+                  if (uploadedImages.length === 0) {
+                    alert('Please select at least one image for this work.');
+                    return;
+                  }
 
-            const app = getApp();
-            const db = getFirestore(app);
-            const storage = getStorage(app);
-            // TODO: make this atomic with transactions
-            const ivalues = initialFormValues;
-            const dataToUpload = {
-              ...(values.title !== '' && { title: values.title }),
-              ...(values.description !== '' && {
-                description: values.description,
-              }),
-              ...(values.portfolio !== undefined && {
-                portfolio: values.portfolio,
-              }),
-              ...(values.year !== undefined && { year: values.year }),
-              ...(values.medium !== undefined && {
-                medium: values.medium,
-              }),
-              ...(values.surface !== undefined && {
-                surface: values.surface,
-              }),
-              ...(values.height !== undefined && {
-                height: values.height,
-              }),
-              ...(values.width !== undefined && {
-                width: parseFloat(values.width + ''),
-              }),
-              ...(values.units !== undefined && { units: values.units }),
-              forSale: values.forSale === 'yes',
-              ...(values.forSale === 'yes'
-                ? {
-                  sale: {
-                    ...(values.salePrice !== '' && {
-                      price: values.salePrice,
+                  const app = getApp();
+                  const db = getFirestore(app);
+                  const storage = getStorage(app);
+                  // TODO: make this atomic with transactions
+                  const ivalues = initialFormValues;
+                  const dataToUpload = {
+                    ...(values.title !== '' && { title: values.title }),
+                    ...(values.description !== '' && {
+                      description: values.description,
                     }),
-                    ...(values.saleSubject !== '' && {
-                      subject: values.saleSubject,
+                    ...(values.portfolio !== undefined && {
+                      portfolio: values.portfolio,
                     }),
-                    ...(values.saleColor !== '' && {
-                      color: values.saleColor,
+                    ...(values.year !== undefined && { year: values.year }),
+                    ...(values.medium !== undefined && {
+                      medium: values.medium,
                     }),
-                    ...(values.saleStyle !== '' && {
-                      style: values.saleStyle,
+                    ...(values.surface !== undefined && {
+                      surface: values.surface,
                     }),
-                    ...(values.saleFraming !== '' && {
-                      framing: values.saleFraming,
+                    ...(values.height !== undefined && {
+                      height: values.height,
                     }),
-                  },
-                }
-                : {}),
-              forPrint: values.forPrint === 'yes',
-              ...(values.forPrint === 'yes'
-                ? {
-                  print: {
-                    ...(values.printPrice !== '' && {
-                      price: values.printPrice,
-                    }),
-                    ...(values.height !== '' && {
-                      height: parseFloat(values.height + ''),
-                    }),
-                    ...(values.width !== '' && {
+                    ...(values.width !== undefined && {
                       width: parseFloat(values.width + ''),
                     }),
-                    ...(values.printUnits !== '' && {
-                      units: values.printUnits,
+                    ...(values.units !== undefined && { units: values.units }),
+                    forSale: values.forSale === 'yes',
+                    ...(values.forSale === 'yes'
+                      ? {
+                        sale: {
+                          ...(values.salePrice !== '' && {
+                            price: values.salePrice,
+                          }),
+                          ...(values.saleSubject !== '' && {
+                            subject: values.saleSubject,
+                          }),
+                          ...(values.saleColor !== '' && {
+                            color: values.saleColor,
+                          }),
+                          ...(values.saleStyle !== '' && {
+                            style: values.saleStyle,
+                          }),
+                          ...(values.saleFraming !== '' && {
+                            framing: values.saleFraming,
+                          }),
+                        },
+                      }
+                      : {}),
+                    forPrint: values.forPrint === 'yes',
+                    ...(values.forPrint === 'yes'
+                      ? {
+                        print: {
+                          ...(values.printPrice !== '' && {
+                            price: values.printPrice,
+                          }),
+                          ...(values.height !== '' && {
+                            height: parseFloat(values.height + ''),
+                          }),
+                          ...(values.width !== '' && {
+                            width: parseFloat(values.width + ''),
+                          }),
+                          ...(values.printUnits !== '' && {
+                            units: values.printUnits,
+                          }),
+                          ...(values.printSurface !== '' && {
+                            surface: values.printSurface,
+                          }),
+                          ...(values.printFraming !== '' && {
+                            framing: values.printFraming,
+                          }),
+                        },
+                      }
+                      : {}),
+                    artist: auth.artistId,
+                    // serverTimestamp() is not technically a Timestamp, but it will become one on the server.
+                    ...(editMode && {
+                      timestamp: serverTimestamp() as Timestamp,
                     }),
-                    ...(values.printSurface !== '' && {
-                      surface: values.printSurface,
-                    }),
-                    ...(values.printFraming !== '' && {
-                      framing: values.printFraming,
-                    }),
-                  },
-                }
-                : {}),
-              artist: auth.artistId,
-              // serverTimestamp() is not technically a Timestamp, but it will become one on the server.
-              ...(editMode && {
-                timestamp: serverTimestamp() as Timestamp,
-              }),
-              editTimestamps:
-                editMode && editData
-                  ? arrayUnion(Timestamp.fromDate(new Date()))
-                  : [],
-              images:
-                editMode && editData
-                  ? uploadedImages
-                    .filter((i) => !i.isLocal)
-                    .map((i) =>
-                      !i.isLocal
-                        ? i.ref
-                        : 'this value should be unreachable 1'
-                    )
-                  : [],
-            } as WorkData;
-            let workRef;
-            console.log('updating work: ', editMode, dataToUpload);
-            if (!editMode) {
-              workRef = await addDoc(collection(db, 'works'), dataToUpload);
-              workId = workRef.id;
-            } else {
-              workRef = await updateDoc(
-                doc(db, 'works', workId + ''),
-                dataToUpload
-              );
-              if (editData && editData.portfolio !== values.portfolio) {
-                await updateDoc(
-                  doc(
-                    db,
-                    'artists',
-                    auth.artistId || '',
-                    'portfolios',
-                    editData.portfolio
-                  ),
-                  {
-                    works: arrayRemove(workId),
+                    editTimestamps:
+                      editMode && editData
+                        ? arrayUnion(Timestamp.fromDate(new Date()))
+                        : [],
+                    images:
+                      editMode && editData
+                        ? uploadedImages
+                          .filter((i) => !i.isLocal)
+                          .map((i) =>
+                            !i.isLocal
+                              ? i.ref
+                              : 'this value should be unreachable 1'
+                          )
+                        : [],
+                  } as WorkData;
+                  let workRef;
+                  console.log('updating work: ', editMode, dataToUpload);
+                  if (!editMode) {
+                    workRef = await addDoc(collection(db, 'works'), dataToUpload);
+                    workId = workRef.id;
+                  } else {
+                    workRef = await updateDoc(
+                      doc(db, 'works', workId + ''),
+                      dataToUpload
+                    );
+                    if (editData && editData.portfolio !== values.portfolio) {
+                      await updateDoc(
+                        doc(
+                          db,
+                          'artists',
+                          auth.artistId || '',
+                          'portfolios',
+                          editData.portfolio
+                        ),
+                        {
+                          works: arrayRemove(workId),
+                        }
+                      );
+                    }
                   }
-                );
-              }
-            }
-            await updateDoc(
-              doc(
-                db,
-                'artists',
-                auth.artistId || '',
-                'portfolios',
-                values.portfolio
-              ),
-              {
-                works: arrayUnion(workId),
-              }
-            );
-            const imageReferences = await Promise.all(
-              uploadedImages
-                .filter((i) => i.isLocal)
-                .map((image) =>
-                  image.isLocal
-                    ? uploadImage(storage, image.file, `/Works/${workId}/`)
-                    : 'this value should be unreachable 2'
-                )
-            );
-            await updateDoc(doc(db, 'works', workId + ''), {
-              images: arrayUnion(...imageReferences),
-            });
-            await updateWorksIndex(workId + '');
-            if (!editMode) {
-              return router.push(`/work/${workId}`);
-            } else {
-              onClose();
-            }
-          } catch (error: any) {
-            console.log(error);
-            throw error;
-            alert('An error occurred ' + error?.message);
-          }
-        }}
-      >
-        {({
-          values,
-          errors,
-          isSubmitting,
-          setFieldValue,
-          setFieldTouched,
-          touched,
-        }) => (
-          <Form>
-            <div tw="fixed top-0 left-0 w-full h-full z-50 bg-black/40 flex items-center justify-center overflow-auto md:p-[50px]">
-              <style>{`body {overflow: hidden}`}</style>
-              <div
-                tw="flex md:m-auto"
-                css={[isMobile && tw`w-full justify-center`]}
-              >
-                <div
-                  css={[
-                    isMobile
-                      ? tw`fixed bottom-0 bg-white w-full rounded-t-[12px] top-[30px] flex flex-col overflow-hidden`
-                      : tw`bg-white rounded-[20px] z-20 p-[52px] w-[1171px] h-[746px]`,
-                  ]}
-                >
+                  await updateDoc(
+                    doc(
+                      db,
+                      'artists',
+                      auth.artistId || '',
+                      'portfolios',
+                      values.portfolio
+                    ),
+                    {
+                      works: arrayUnion(workId),
+                    }
+                  );
+                  const imageReferences = await Promise.all(
+                    uploadedImages
+                      .filter((i) => i.isLocal)
+                      .map((image) =>
+                        image.isLocal
+                          ? uploadImage(storage, image.file, `/Works/${workId}/`)
+                          : 'this value should be unreachable 2'
+                      )
+                  );
+                  await updateDoc(doc(db, 'works', workId + ''), {
+                    images: arrayUnion(...imageReferences),
+                  });
+                  await updateWorksIndex(workId + '');
+                  if (!editMode) {
+                    return router.push(`/work/${workId}`);
+                  } else {
+                    onClose();
+                  }
+                } catch (error: any) {
+                  console.log(error);
+                  throw error;
+                  alert('An error occurred ' + error?.message);
+                }
+              }}
+            >
+              {({
+                values,
+                errors,
+                isSubmitting,
+                setFieldValue,
+                setFieldTouched,
+                touched,
+              }) => (
+                <Form>
                   {isMobile && (
                     <div tw="w-full flex items-center justify-between gap-x-4 px-5 py-[18px] border-b border-b-[#E2E2E2]">
                       <button tw="w-4 h-4" onClick={onClose}>
@@ -922,10 +926,10 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                 <div css={[styles.label, tw`w-[60px]`]}>
                                   Size
                                 </div>
-                                <div tw="text-[14px] text-[#838383]">H:</div>
+                                <div tw="text-[14px] text-[#838383]">W:</div>
                                 <Field
                                   type="number"
-                                  name="height"
+                                  name="width"
                                   css={[
                                     styles.dropdown,
                                     tw`w-[52px] md:w-[52px] pl-3 pr-0 ml-1`,
@@ -937,11 +941,11 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                   min="0"
                                 />
                                 <div tw="text-[14px] text-[#838383] ml-2">
-                                  W:
+                                  H:
                                 </div>
                                 <Field
                                   type="number"
-                                  name="width"
+                                  name="height"
                                   css={[
                                     styles.dropdown,
                                     tw`w-[52px] md:w-[52px] pl-3 pr-0 mx-1`,
@@ -1275,11 +1279,11 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                   <div css={styles.label}>Size</div>
                                   <div tw="ml-auto flex items-center">
                                     <div tw="text-[14px] text-[#838383]">
-                                      H:
+                                      W:
                                     </div>
                                     <Field
                                       type="number"
-                                      name="printHeight"
+                                      name="printWidth"
                                       css={[
                                         styles.dropdown,
                                         tw`w-[52px] md:w-[52px] pl-3 pr-0 ml-1`,
@@ -1291,11 +1295,11 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                                       min="0"
                                     />
                                     <div tw="text-[14px] text-[#838383] ml-2">
-                                      W:
+                                      H:
                                     </div>
                                     <Field
                                       type="number"
-                                      name="printWidth"
+                                      name="printHeight"
                                       css={[
                                         styles.dropdown,
                                         tw`w-[52px] md:w-[52px] pl-3 pr-0 mx-1`,
@@ -1480,27 +1484,27 @@ function UploadWork({ onClose, workId }: UploadWorkProps) {
                   {/*    </div>*/}
                   {/*  </div>*/}
                   {/*)}*/}
-                </div>
-                {!isMobile && (
-                  <button
-                    onClick={() => onClose()}
-                    tw="ml-5 w-12 h-12 border-0 flex items-center justify-center relative rounded-full"
-                    className='group'
-                  >
-                    <div tw='w-0 transition-all duration-200 group-hover:w-full group-hover:h-full h-0 absolute bg-white/20 rounded-full z-[-1]' />
-                    <img
-                      src="/assets/svgs/close.svg"
-                      tw="w-5 h-5 m-auto"
-                      alt="close button"
-                    />
-                  </button>
-                )}
-              </div>
-            </div>
-          </Form>
+                </Form>
+              )}
+            </Formik>
+          )}
+        </div>
+        {!isMobile && toShow && (
+          <button
+            onClick={() => onClose()}
+            tw="ml-5 w-12 h-12 border-0 flex items-center justify-center relative rounded-full"
+            className='group'
+          >
+            <div tw='w-0 transition-all duration-200 group-hover:w-full group-hover:h-full h-0 absolute bg-white/20 rounded-full z-[-1]' />
+            <img
+              src="/assets/svgs/close.svg"
+              tw="w-5 h-5 m-auto"
+              alt="close button"
+            />
+          </button>
         )}
-      </Formik>
-    )
+      </div>
+    </div>
   );
 }
 

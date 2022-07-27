@@ -101,12 +101,11 @@ function GallerySection({
   const [activeEditingWork, setActiveEditingWork] = useState('');
   return (
     <div>
-      {activeEditingWork && (
-        <UploadWork
-          workId={activeEditingWork}
-          onClose={() => setActiveEditingWork('')}
-        />
-      )}
+      <UploadWork
+        workId={activeEditingWork}
+        onClose={() => setActiveEditingWork('')}
+        toShow={!!activeEditingWork}
+      />
       {/* Circle Images Section --Start-- */}
       <section css={[isMobile ? tw`mt-4` : tw`mt-[52px]`]}>
         <div className="container">
@@ -114,7 +113,7 @@ function GallerySection({
             <div
               css={[
                 isMobile &&
-                  tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`,
+                tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`,
               ]}
               tw="md:flex md:justify-between gap-6 md:w-full"
               style={{
@@ -238,7 +237,7 @@ function GallerySection({
               css={[
                 tw`m-auto scale-50 md:scale-100`,
                 seeNum >= curGallery.Images.length &&
-                  tw`scale-y-[-0.5] md:scale-y-[-1]`,
+                tw`scale-y-[-0.5] md:scale-y-[-1]`,
               ]}
             />
           </button>

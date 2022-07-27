@@ -108,8 +108,7 @@ const IndividualWork: NextPage = () => {
       }
       axios
         .get(
-          `/api/shipping/estimated-rates?workId=${workId}${
-            zip ? '&zip=' + zip : ''
+          `/api/shipping/estimated-rates?workId=${workId}${zip ? '&zip=' + zip : ''
           }`
         )
 
@@ -231,7 +230,7 @@ const IndividualWork: NextPage = () => {
           {workImages[selectedImage] ? (
             <div tw="relative w-full flex items-center">
               <img src={workImages[selectedImage]} tw="w-full" />
-              <button tw="bg-white border border-[#E8E8E8] hover:bg-[#F5F5F5] w-9 h-9 rounded-full absolute top-[10px] right-[10px]">
+              {/* <button tw="bg-white border border-[#E8E8E8] hover:bg-[#F5F5F5] w-9 h-9 rounded-full absolute top-[10px] right-[10px]">
                 <img src="/assets/svgs/like.svg" tw="m-auto w-[18px]" />
               </button>
               <div tw="w-9 h-9 absolute top-[10px] right-[60px]">
@@ -240,7 +239,7 @@ const IndividualWork: NextPage = () => {
                   text={`Checkout this work I found on Pkazo: ${workData.title} https://pkazo.com/work/${workId}`}
                   url={`https://pkazo.com/work/${workId}`}
                 />
-              </div>
+              </div> */}
             </div>
           ) : (
             <div tw="w-full text-center m-auto py-5">Unable to load image</div>
@@ -284,39 +283,41 @@ const IndividualWork: NextPage = () => {
                 </div>
               </div>
             </div>
-            <div tw="mt-4 grid grid-cols-[68px 68px] justify-center w-full gap-x-[24px] text-[16px] font-semibold">
-              {['Original', 'Print'].map((type) => (
-                <div
-                  key={type}
-                  onClick={() => setIsOriginal(type === 'Original')}
-                >
+            {workData.forSale && workData.forPrint &&
+              <div tw="mt-4 grid grid-cols-[68px 68px] justify-center w-full gap-x-[24px] text-[16px] font-semibold">
+                {['Original', 'Print'].map((type) => (
                   <div
-                    css={[
-                      isOriginal === (type === 'Original')
-                        ? tw`text-[#3C3C3C]`
-                        : tw`text-[#838383]`,
-                    ]}
-                    tw="cursor-pointer w-full text-center"
+                    key={type}
+                    onClick={() => setIsOriginal(type === 'Original')}
                   >
-                    {type}
+                    <div
+                      css={[
+                        isOriginal === (type === 'Original')
+                          ? tw`text-[#3C3C3C]`
+                          : tw`text-[#838383]`,
+                      ]}
+                      tw="cursor-pointer w-full text-center"
+                    >
+                      {type}
+                    </div>
+                    {isOriginal === (type === 'Original') && (
+                      <div tw="h-[2px] bg-[#E44C4D] rounded-full" />
+                    )}
                   </div>
-                  {isOriginal === (type === 'Original') && (
-                    <div tw="h-[2px] bg-[#E44C4D] rounded-full" />
-                  )}
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            }
             <div tw="mt-5 flex items-center justify-between">
               <div tw="font-medium italic text-[24px] leading-[1em] text-[#5F5F5F]">
                 {workData.title}
               </div>
               {workData.forSale && (
                 <div tw="font-semibold text-[24px] leading-[1em] text-[#222222]">
-                  ${workData.sale?.price}
+                  ${isOriginal ? (workData.forSale && workData.sale.price || 'NFS') : (workData.forPrint && workData.print.price)}
                 </div>
               )}
             </div>
-            <div tw="flex flex-wrap w-full mt-[10px]">
+            {/* <div tw="flex flex-wrap w-full mt-[10px]">
               {[workData.surface].map((tag) => (
                 <div
                   tw="bg-[#FFE1E1] rounded-[52px] h-6 px-[11px] font-semibold text-[12px] text-[#742F2F] flex items-center"
@@ -325,13 +326,25 @@ const IndividualWork: NextPage = () => {
                   {tag}
                 </div>
               ))}
-            </div>
+            </div> */}
             <div tw="font-medium mt-3 text-[14px] text-[#3C3C3C] leading-[1em] flex flex-col justify-between h-[55px]">
               <div>{workData.year}</div>
-              <div>{workData.medium}</div>
-              <div>
-                {workData.height} x {workData.width} inches
-              </div>
+              {isOriginal && (
+                <>
+                  <div>{workData.medium}</div>
+                  <div>
+                    {workData.width} x {workData.height} inches
+                  </div>
+                </>
+              )}
+              {!isOriginal && workData.forPrint && (
+                <>
+                  <div>{workData.print.surface}</div>
+                  <div>
+                    {workData.print.width} x {workData.print.height} inches
+                  </div>
+                </>
+              )}
             </div>
             {workData.forSale ? (
               <div tw="mt-5">
@@ -495,7 +508,7 @@ const IndividualWork: NextPage = () => {
                     onClick={() =>
                       setSelectedImage(
                         (selectedImage - 1 + workImages.length) %
-                          workImages.length
+                        workImages.length
                       )
                     }
                   >
@@ -631,18 +644,11 @@ const IndividualWork: NextPage = () => {
               <div tw="italic text-[36px] leading-[1em] text-[#3C3C3C]">
                 {workData.title}
               </div>
-              {isOriginal && workData.forSale && (
-                <div tw="font-semibold text-[32px] leading-[1em] text-[#242424]">
-                  ${workData.sale.price}
-                </div>
-              )}
-              {!isOriginal && workData.forPrint && (
-                <div tw="font-semibold text-[32px] leading-[1em] text-[#242424]">
-                  ${workData.print.price}
-                </div>
-              )}
+              <div tw="font-semibold text-[32px] leading-[1em] text-[#242424]">
+                ${isOriginal ? (workData.forSale && workData.sale.price || 'NFS') : (workData.forPrint && workData.print.price)}
+              </div>
             </div>
-            <div tw="flex flex-wrap w-full mt-2">
+            {/* <div tw="flex flex-wrap w-full mt-2">
               {[workData.surface].map((tag) => (
                 <div
                   tw="bg-[#FFE1E1] rounded-[22px] h-7 px-4 font-semibold text-[12px] text-[#742F2F] flex items-center"
@@ -651,20 +657,24 @@ const IndividualWork: NextPage = () => {
                   {tag}
                 </div>
               ))}
-            </div>
+            </div> */}
             <div tw="mt-3 text-[20px] text-black leading-[1em] flex flex-col gap-y-3">
               <div>{workData.year}</div>
-              <div>{workData.medium}</div>
               {isOriginal && (
-                <div>
-                  {workData.height} x {workData.width} inches
-                </div>
+                <>
+                  <div>{workData.medium}</div>
+                  <div>
+                    {workData.width} x {workData.height} inches
+                  </div>
+                </>
               )}
               {!isOriginal && workData.forPrint && (
-                <div>
-                  {workData.print.surface}, {workData.print.height} x{' '}
-                  {workData.print.width} inches
-                </div>
+                <>
+                  <div>{workData.print.surface}</div>
+                  <div>
+                    {workData.print.width} x {workData.print.height} inches
+                  </div>
+                </>
               )}
             </div>
 
