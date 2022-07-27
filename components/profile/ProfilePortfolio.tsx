@@ -115,7 +115,7 @@ function GallerySection({
             <div
               css={[
                 isMobile &&
-                  tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`,
+                tw`grid grid-rows-1 grid-flow-col px-4 overflow-auto justify-start`,
               ]}
               tw="md:flex md:justify-between gap-6 md:w-full"
               style={{
@@ -192,7 +192,7 @@ function GallerySection({
                     artistData &&
                     userArtistData.username === artistData.username && (
                       <button
-                        tw='absolute right-2 top-2 rounded-full w-[32px] h-[32px] md:w-[40px] h-[40px] xl:w-[52px] xl:h-[52px] bg-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.3)] flex items-center justify-center'
+                        tw='absolute right-2 top-2 rounded-full w-[32px] h-[32px] md:w-[40px] md:h-[40px] xl:w-[52px] xl:h-[52px] bg-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.3)] flex items-center justify-center'
                         onClick={(e) => {
                           e.preventDefault();
                           setActiveEditingWork(curGallery.Data[i].__id);
@@ -239,7 +239,7 @@ function GallerySection({
               css={[
                 tw`m-auto scale-50 md:scale-100`,
                 seeNum >= curGallery.Images.length &&
-                  tw`scale-y-[-0.5] md:scale-y-[-1]`,
+                tw`scale-y-[-0.5] md:scale-y-[-1]`,
               ]}
             />
           </button>
