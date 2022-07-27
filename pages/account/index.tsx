@@ -14,7 +14,7 @@ const ShopManager = () => {
     }, [mediaQuery, isMobile]);
 
     useEffect(() => {
-        if (!mediaQuery) router.push(`/account/${pages[0].url}`);
+        if (!mediaQuery) router.replace(`/account/${pages[0].url}`);
     })
 
     const pages = [

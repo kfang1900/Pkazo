@@ -123,7 +123,7 @@ const ArtistProfile = ({
             </button> */}
                 {isCurrentUserPage ? (
                   <button
-                    onClick={() => router.push(`/account?redirect=${window.location.pathname}`)}
+                    onClick={() => router.push(`/account/edit?redirect=${window.location.pathname}`)}
                     css={buttons.white}
                     tw="text-[14px] h-8 px-5"
                   >
@@ -203,7 +203,7 @@ const ArtistProfile = ({
                 <div tw='min-w-[40px] max-w-[80px] flex-grow' />
                 {isCurrentUserPage ? (
                   <button
-                    onClick={() => router.push(`/account?redirect=${window.location.pathname}`)}
+                    onClick={() => router.push(`/account/edit?redirect=${window.location.pathname}`)}
                     css={buttons.white}
                   >
                     Edit Profile
