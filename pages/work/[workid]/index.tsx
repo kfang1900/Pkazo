@@ -108,7 +108,8 @@ const IndividualWork: NextPage = () => {
       }
       axios
         .get(
-          `/api/shipping/estimated-rates?workId=${workId}${zip ? '&zip=' + zip : ''
+          `/api/shipping/estimated-rates?workId=${workId}${
+            zip ? '&zip=' + zip : ''
           }`
         )
 
@@ -283,7 +284,7 @@ const IndividualWork: NextPage = () => {
                 </div>
               </div>
             </div>
-            {workData.forSale && workData.forPrint &&
+            {workData.forSale && workData.forPrint && (
               <div tw="mt-4 grid grid-cols-[68px 68px] justify-center w-full gap-x-[24px] text-[16px] font-semibold">
                 {['Original', 'Print'].map((type) => (
                   <div
@@ -306,14 +307,17 @@ const IndividualWork: NextPage = () => {
                   </div>
                 ))}
               </div>
-            }
+            )}
             <div tw="mt-5 flex items-center justify-between">
               <div tw="font-medium italic text-[24px] leading-[1em] text-[#5F5F5F]">
                 {workData.title}
               </div>
               {workData.forSale && (
                 <div tw="font-semibold text-[24px] leading-[1em] text-[#222222]">
-                  ${isOriginal ? (workData.forSale && workData.sale.price || 'NFS') : (workData.forPrint && workData.print.price)}
+                  $
+                  {isOriginal
+                    ? (workData.forSale && workData.sale.price) || 'NFS'
+                    : workData.forPrint && workData.print.price}
                 </div>
               )}
             </div>
@@ -458,7 +462,7 @@ const IndividualWork: NextPage = () => {
           </form>
         </Modal>
       )}
-      {true && (
+      {showCheckoutModal && (
         <CheckoutModal
           onClose={() => setShowCheckoutModal(false)}
           workId={workId + ''}
@@ -508,7 +512,7 @@ const IndividualWork: NextPage = () => {
                     onClick={() =>
                       setSelectedImage(
                         (selectedImage - 1 + workImages.length) %
-                        workImages.length
+                          workImages.length
                       )
                     }
                   >
@@ -645,7 +649,10 @@ const IndividualWork: NextPage = () => {
                 {workData.title}
               </div>
               <div tw="font-semibold text-[32px] leading-[1em] text-[#242424]">
-                ${isOriginal ? (workData.forSale && workData.sale.price || 'NFS') : (workData.forPrint && workData.print.price)}
+                $
+                {isOriginal
+                  ? (workData.forSale && workData.sale.price) || 'NFS'
+                  : workData.forPrint && workData.print.price}
               </div>
             </div>
             {/* <div tw="flex flex-wrap w-full mt-2">
