@@ -15,7 +15,7 @@ import { useRouter } from 'next/router';
 export default function CartItem({
   data: {
     id,
-    quantity,
+    // quantity,
     artistData,
     type,
     workData,
@@ -103,6 +103,7 @@ export default function CartItem({
             width="88px"
             height="88px"
             objectFit="cover"
+            alt='work image'
           />
         </div>
         <div tw="ml-4 w-full">
@@ -160,9 +161,9 @@ export default function CartItem({
             <button
               tw="font-bold"
               onClick={() => 0}
-              // onClick={() => {
-              //     work.buyNow = false;
-              // }}
+            // onClick={() => {
+            //     work.buyNow = false;
+            // }}
             >
               Save for later
             </button>

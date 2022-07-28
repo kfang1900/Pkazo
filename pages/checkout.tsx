@@ -27,11 +27,11 @@ const Checkout: NextPage = () => {
             <Head>
                 <title>Checkout</title>
             </Head>
-            <div tw='flex justify-center mb-[100px]'>
+            <div tw='flex justify-center'>
                 <div tw='min-w-[36px] xl:min-w-[60px] flex-grow' />
                 <CheckoutForm country='United States' page={page} setPage={setPage} />
-                <div tw='w-[1px] bg-[#DCDCDC] ml-16' />
-                <CheckoutCart />
+                <div tw='w-[1px] bg-[#DCDCDC] ml-16 flex-none' />
+                <CheckoutCart page={page} />
                 <div tw='min-w-[36px] xl:min-w-[60px] flex-grow bg-[#FAFAFA]' />
             </div>
         </div>
