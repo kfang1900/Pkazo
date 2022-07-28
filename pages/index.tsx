@@ -87,7 +87,7 @@ const Home: NextPage = () => {
                 tw='w-full lg:mt-4 h-[52px] md:h-[64px] text-[16px] md:text-[20px] font-semibold md:font-bold'
                 onClick={() => router.push(
                   isMobile && !user ?
-                    `/signin?redirect=/onboarding${username && '&username=' + username}` :
+                    `/signin?redirect=/onboarding${username && '&username=' + username}&register` :
                     `/onboarding${username && '?username=' + username}`
                 )}
               >

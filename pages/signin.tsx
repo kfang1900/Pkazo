@@ -23,6 +23,7 @@ const LoginPage: NextPage = () => {
         redirect={() => router.push(
           (queryString.parse(window.location.search).redirect as string || '/') + (queryString.exclude(window.location.search, ['redirect']))
         )}
+        defaultSignUp={typeof window !== "undefined" && typeof queryString.parse(window.location.search).register !== 'undefined'}
       />
     </div>
   </div>

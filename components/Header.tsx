@@ -283,7 +283,7 @@ const Header = (props: {
                   ]}
                   onClick={() => {
                     if (isMobile)
-                      router.push('/signin?redirect=onboarding');
+                      router.push('/signin?redirect=onboarding&register');
                     else
                       window.open('/onboarding', '_self')
                   }}
