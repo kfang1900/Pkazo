@@ -8,6 +8,7 @@ import { useMediaQuery } from 'react-responsive';
 import buttons from 'styles/Button'
 import { useInView } from 'react-intersection-observer';
 import { useRouter } from 'next/router';
+import useAuth from '../utils/auth/useAuth';
 
 const Home: NextPage = () => {
   const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
@@ -30,6 +31,9 @@ const Home: NextPage = () => {
 
   // username state
   const [username, setUsername] = useState('');
+
+  // is signed in
+  const { user } = useAuth();
 
   return (
     <>
@@ -82,7 +86,7 @@ const Home: NextPage = () => {
                 ]}
                 tw='w-full lg:mt-4 h-[52px] md:h-[64px] text-[16px] md:text-[20px] font-semibold md:font-bold'
                 onClick={() => router.push(
-                  isMobile ?
+                  isMobile && !user ?
                     `/signin?redirect=/onboarding${username && '&username=' + username}` :
                     `/onboarding${username && '?username=' + username}`
                 )}

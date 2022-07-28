@@ -18,8 +18,10 @@ interface CheckoutValues {
 }
 
 const CheckoutForm = (
-    { country }: {
+    { country, page, setPage }: {
         country: string;
+        page: number;
+        setPage: (x: number) => void;
     }
 ) => {
 
@@ -27,12 +29,12 @@ const CheckoutForm = (
     const countries = useMemo(() => countryList().getLabels(), []);
 
     const pages = ['Information', 'Shipping', 'Payment'];
-    const [page, setPage] = useState(0);
+    // const [page, setPage] = useState(0);
     const styles = {
         label: tw`text-[#333333] text-[22px] font-bold`,
         input: tw`border border-[#D9D9D9] focus:border-[#888888] outline-none rounded-[6px] w-full h-12 px-4`
     }
-    return <div tw='max-w-[572px] w-full'>
+    return <div tw='max-w-[572px] w-full mt-16'>
         <Image
             src='/assets/images/Pkazo.svg'
             alt='Pkazo logo'
@@ -60,7 +62,7 @@ const CheckoutForm = (
             )}
         </div>
         {/* Form section */}
-        <div tw='mt-16 mb-[100px]'>
+        <div tw='mt-16'>
             <Formik<CheckoutValues>
                 initialValues={{
                     email: '',
@@ -77,76 +79,81 @@ const CheckoutForm = (
             >
                 {({ values }) => (
                     <Form>
-                        <div css={[styles.label]}>Contact Information</div>
-                        <Field
-                            type="input"
-                            name="email"
-                            css={[styles.input, tw`mt-6`]}
-                            placeholder="Email"
-                        />
-                        <div css={[styles.label, tw`mt-16`]}>Shipping Address</div>
-                        <div tw='mt-6 flex flex-col gap-y-4'>
-                            <Field
-                                as={Dropdown}
-                                type="select"
-                                name="country"
-                                appearance={[styles.input, tw`pr-6 overflow-ellipsis`]}
-                                triangle
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                    values.country = event.target.value;
-                                    setSelectedCountry(values.country);
-                                }}
-                            >
-                                <option value={selectedCountry}>{selectedCountry}</option>
-                                {countries.map((i, ind) =>
-                                    i !== selectedCountry && (
-                                        <option key={ind} value={i}>
-                                            {i}
-                                        </option>
-                                    )
-                                )}
-                            </Field>
-                            <div tw='flex gap-x-4'>
+                        {page === 0 && (
+                            <>
+                                <div css={[styles.label]}>Contact Information</div>
                                 <Field
                                     type="input"
-                                    name="firstName"
-                                    css={[styles.input]}
-                                    placeholder="First name"
+                                    name="email"
+                                    css={[styles.input, tw`mt-6`]}
+                                    placeholder="Email"
                                 />
-                                <Field
-                                    type="input"
-                                    name="lastName"
-                                    css={[styles.input]}
-                                    placeholder="Last name"
-                                />
-                            </div>
-                            <Field
-                                type="input"
-                                name="company"
-                                css={[styles.input]}
-                                placeholder="Company (optional)"
-                            />
-                            <Field
-                                type="input"
-                                name="address"
-                                css={[styles.input]}
-                                placeholder="Address"
-                            />
-                            <Field
-                                type="input"
-                                name="apartment"
-                                css={[styles.input]}
-                                placeholder="Apartment, suite, etc. (optional)"
-                            />
-                        </div>
-                        <div tw='mt-16 w-full flex justify-end'>
-                            <button
-                                type='button'
-                                css={[buttons.red, tw`px-[30px] h-[52px] ml-auto`]}
-                            >
-                                Continue to Shipping
-                            </button>
-                        </div>
+                                <div css={[styles.label, tw`mt-16`]}>Shipping Address</div>
+                                <div tw='mt-6 flex flex-col gap-y-4'>
+                                    <Field
+                                        as={Dropdown}
+                                        type="select"
+                                        name="country"
+                                        appearance={[styles.input, tw`pr-6 overflow-ellipsis`]}
+                                        triangle
+                                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                            values.country = event.target.value;
+                                            setSelectedCountry(values.country);
+                                        }}
+                                    >
+                                        <option value={selectedCountry}>{selectedCountry}</option>
+                                        {countries.map((i, ind) =>
+                                            i !== selectedCountry && (
+                                                <option key={ind} value={i}>
+                                                    {i}
+                                                </option>
+                                            )
+                                        )}
+                                    </Field>
+                                    <div tw='flex gap-x-4'>
+                                        <Field
+                                            type="input"
+                                            name="firstName"
+                                            css={[styles.input]}
+                                            placeholder="First name"
+                                        />
+                                        <Field
+                                            type="input"
+                                            name="lastName"
+                                            css={[styles.input]}
+                                            placeholder="Last name"
+                                        />
+                                    </div>
+                                    <Field
+                                        type="input"
+                                        name="company"
+                                        css={[styles.input]}
+                                        placeholder="Company (optional)"
+                                    />
+                                    <Field
+                                        type="input"
+                                        name="address"
+                                        css={[styles.input]}
+                                        placeholder="Address"
+                                    />
+                                    <Field
+                                        type="input"
+                                        name="apartment"
+                                        css={[styles.input]}
+                                        placeholder="Apartment, suite, etc. (optional)"
+                                    />
+                                </div>
+                                <div tw='mt-16 w-full flex justify-end'>
+                                    <button
+                                        type='button'
+                                        css={[buttons.red, tw`px-[30px] h-[52px] ml-auto`]}
+                                        onClick={() => setPage(1)}
+                                    >
+                                        Continue to Shipping
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </Form>
                 )}
             </Formik>

@@ -276,24 +276,20 @@ const Header = (props: {
                     Sign in
                   </button>
                 </Link>
-                <Link
-                  href={
-                    isMobile
-                      ? `/signin?redirect=/onboarding`
-                      : 'javascript:void(0);'
-                  }
-                  passHref
+                <button
+                  css={[
+                    buttons.red,
+                    tw`font-semibold w-[108px] md:w-[121px] h-[32px] md:h-[42px] text-[12px] md:text-[14px] px-0 py-0 flex-shrink-0`,
+                  ]}
+                  onClick={() => {
+                    if (isMobile)
+                      router.push('/signin?redirect=onboarding');
+                    else
+                      window.open('/onboarding', '_self')
+                  }}
                 >
-                  <button
-                    css={[
-                      buttons.red,
-                      tw`font-semibold w-[108px] md:w-[121px] h-[32px] md:h-[42px] text-[12px] md:text-[14px] px-0 py-0 flex-shrink-0`,
-                    ]}
-                    onClick={() => window.open('/onboarding', '_self')}
-                  >
-                    Sell on Pkazo
-                  </button>
-                </Link>
+                  Sell on Pkazo
+                </button>
               </>
             )}
             {!!user && !isArtist && (
