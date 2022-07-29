@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import tw from 'twin.macro'
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import Dropdown from 'styles/Dropdown';
 import buttons from 'styles/Button';
@@ -18,12 +18,21 @@ interface CheckoutValues {
     apartment: string;
     shipping: string;
 }
+interface CheckoutErrors {
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    address?: string;
+    shipping?: string;
+}
 
 const CheckoutForm = (
-    { country, page, setPage }: {
+    { country, page, setPage, isMobile, isLargeScreen }: {
         country: string;
         page: number;
         setPage: (x: number) => void;
+        isMobile?: boolean;
+        isLargeScreen?: boolean;
     }
 ) => {
 
@@ -34,7 +43,8 @@ const CheckoutForm = (
     const styles = {
         label: tw`text-[#333333] text-[22px] font-bold`,
         input: tw`border border-[#D9D9D9] focus:border-[#888888] outline-none rounded-[6px] w-full h-12 px-4`,
-        back: tw`bg-[#F2F2F2] rounded-[6px] w-full flex items-center px-4 h-14 gap-x-6 text-[14px]`
+        back: tw`bg-[#F2F2F2] rounded-[6px] w-full flex items-center px-4 h-14 gap-x-6 text-[14px]`,
+        error: tw`text-[12px] mt-[2px] text-[#A61A2E]`
     }
 
     // shipping options
@@ -64,23 +74,25 @@ const CheckoutForm = (
     // input refs
     const emailRef = useRef<HTMLInputElement>(null);
     const addressRef = useRef<HTMLInputElement>(null);
-    const refs = [null, emailRef, addressRef];
     const [formFocus, setFormFocus] = useState(0);
 
     useEffect(() => {
+        const refs = [null, emailRef, addressRef];
         if (formFocus) {
             refs[formFocus]?.current?.focus();
             setFormFocus(0);
         }
-    })
+    }, [formFocus])
 
     return <div tw='max-w-[572px] w-full mt-16 pb-[100px]'>
-        <Image
-            src='/assets/images/Pkazo.svg'
-            alt='Pkazo logo'
-            width='137'
-            height='48'
-        />
+        {isLargeScreen &&
+            <Image
+                src='/assets/images/Pkazo.svg'
+                alt='Pkazo logo'
+                width='137'
+                height='48'
+            />
+        }
         <div tw='mt-3 flex items-center gap-x-3'>
             {pages.map((p, i) =>
                 <>
@@ -93,8 +105,9 @@ const CheckoutForm = (
                         />
                     }
                     <div
-                        tw='text-[14px] font-semibold'
+                        tw='text-[14px] font-semibold cursor-pointer'
                         css={[page === i ? tw`text-black` : tw`text-[#737373]`]}
+                        onClick={() => setPage(i)}
                     >
                         {p}
                     </div>
@@ -115,21 +128,48 @@ const CheckoutForm = (
                     shipping: '',
                 }}
                 validateOnChange={false}
-                validate={() => { 0 }}
-                onSubmit={() => { 0 }}
+                validate={(values) => {
+                    console.log('validating')
+                    const errors: CheckoutErrors = {};
+                    if (!values.email) {
+                        errors.email = 'Enter an email';
+                    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+                        errors.email = 'Invalid email';
+                    }
+                    if (!values.firstName) {
+                        errors.firstName = 'Enter a first name';
+                    }
+                    if (!values.lastName) {
+                        errors.lastName = 'Enter a last name';
+                    }
+                    if (!values.address) {
+                        errors.address = 'Enter an address';
+                    }
+                    console.log(errors);
+                    return errors;
+                }}
+                onSubmit={() => {
+                    if (page < 2)
+                        setPage(page + 1)
+                }}
             >
-                {({ values }) => (
+                {({ values, errors }) => (
                     <Form>
                         {page === 0 && (
                             <>
                                 <div css={[styles.label]}>Contact Information</div>
-                                <Field
-                                    type="input"
-                                    name="email"
-                                    css={[styles.input, tw`mt-6`]}
-                                    placeholder="Email"
-                                    innerRef={emailRef}
-                                />
+                                <div>
+                                    <Field
+                                        type="input"
+                                        name="email"
+                                        css={[styles.input, tw`mt-6`, errors.email && tw`border-[#A61A2E]`]}
+                                        placeholder="Email"
+                                        innerRef={emailRef}
+                                    />
+                                    <div css={[styles.error]}>
+                                        <ErrorMessage name='email' />
+                                    </div>
+                                </div>
                                 <div css={[styles.label, tw`mt-16`]}>Shipping Address</div>
                                 <div tw='mt-6 flex flex-col gap-y-4'>
                                     <Field
@@ -152,19 +192,29 @@ const CheckoutForm = (
                                             )
                                         )}
                                     </Field>
-                                    <div tw='flex gap-x-4'>
-                                        <Field
-                                            type="input"
-                                            name="firstName"
-                                            css={[styles.input]}
-                                            placeholder="First name"
-                                        />
-                                        <Field
-                                            type="input"
-                                            name="lastName"
-                                            css={[styles.input]}
-                                            placeholder="Last name"
-                                        />
+                                    <div tw='grid grid-cols-2 gap-x-4'>
+                                        <div>
+                                            <Field
+                                                type="input"
+                                                name="firstName"
+                                                css={[styles.input, errors.firstName && tw`border-[#A61A2E]`]}
+                                                placeholder="First name"
+                                            />
+                                            <div css={[styles.error]}>
+                                                <ErrorMessage name='firstName' />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <Field
+                                                type="input"
+                                                name="lastName"
+                                                css={[styles.input, errors.lastName && tw`border-[#A61A2E]`]}
+                                                placeholder="Last name"
+                                            />
+                                            <div css={[styles.error]}>
+                                                <ErrorMessage name='lastName' />
+                                            </div>
+                                        </div>
                                     </div>
                                     <Field
                                         type="input"
@@ -172,13 +222,18 @@ const CheckoutForm = (
                                         css={[styles.input]}
                                         placeholder="Company (optional)"
                                     />
-                                    <Field
-                                        type="input"
-                                        name="address"
-                                        css={[styles.input]}
-                                        placeholder="Address"
-                                        innerRef={addressRef}
-                                    />
+                                    <div>
+                                        <Field
+                                            type="input"
+                                            name="address"
+                                            css={[styles.input, errors.address && tw`border-[#A61A2E]`]}
+                                            placeholder="Address"
+                                            innerRef={addressRef}
+                                        />
+                                        <div css={[styles.error]}>
+                                            <ErrorMessage name='address' />
+                                        </div>
+                                    </div>
                                     <Field
                                         type="input"
                                         name="apartment"
@@ -188,10 +243,10 @@ const CheckoutForm = (
                                 </div>
                                 <div tw='mt-16 w-full flex justify-end'>
                                     <button
-                                        type='button'
+                                        type='submit'
                                         css={[buttons.red, tw`px-[30px] h-[52px]`]}
-                                        onClick={() => setPage(1)}
-                                    // onClick={() => emailRef.current?.focus()}
+                                    // onClick={() => !validateForm() && setPage(1)}
+                                    // disabled={validateInfo(values)}
                                     >
                                         Continue to Shipping
                                     </button>

@@ -6,6 +6,7 @@ import { ArtistData, WorkData } from '../../types/dbTypes';
 import { CartItem as CartItemType } from '../../utils/hooks/useCart';
 import { formatPrice } from '../popups/PostDetails';
 
+import scrollStyle from 'styles/UploadWork.module.css';
 import Dropdown from 'styles/Dropdown';
 import buttons from 'styles/Button';
 
@@ -19,11 +20,11 @@ const CheckoutCart = ({ page }: { page: number }) => {
     //     })[]
     // >([]);
     const [works, setWorks] = useState([
-        { artistData: { username: 'Kevin Fang' } },
-        { artistData: { username: 'Kevin Fang' } },
-        { artistData: { username: 'Kevin Fang' } },
-        { artistData: { username: 'Alice Yu' } },
-        { artistData: { username: 'Alice Yu' } }
+        { artistData: { username: 'Kevin Fang' }, type: 'original' },
+        { artistData: { username: 'Kevin Fang' }, type: 'print' },
+        { artistData: { username: 'Kevin Fang' }, type: 'print' },
+        { artistData: { username: 'Alice Yu' }, type: 'original' },
+        { artistData: { username: 'Alice Yu' }, type: 'original' }
     ]);
 
     const [subtotal, setSubtotal] = useState(0);
@@ -32,7 +33,7 @@ const CheckoutCart = ({ page }: { page: number }) => {
 
     return <div tw='max-w-[572px] w-full pl-12 bg-[#FAFAFA]'>
         <div tw='max-h-[100vh] pt-16 pb-[100px] flex flex-col'>
-            <div tw='overflow-auto pb-9'>
+            <div tw='overflow-auto pb-9' className={scrollStyle['workInfo']}>
                 {works
                     .sort((a, b) => {
                         if (a.artistData.username < b.artistData.username) return -1;
@@ -52,19 +53,19 @@ const CheckoutCart = ({ page }: { page: number }) => {
                                             objectFit='cover'
                                         />
                                     </div>
-                                    <div tw='ml-3'>
-                                        <div tw='text-[20px] leading-[24px] font-semibold text-black'>
+                                    <div tw='ml-[10px]'>
+                                        <div tw='text-[16px] leading-[19px] font-semibold text-black'>
                                             { /* data.artistData.name */}
                                             {data.artistData.username}
                                         </div>
-                                        <div tw='mt-[2px] text-[18px] leading-[21px] font-semibold text-[#727373]'>
+                                        <div tw='mt-[2px] text-[14px] font-medium text-[#727373]'>
                                             {/*data.artistData.location*/}
                                             NYC, New York
                                         </div>
                                     </div>
                                 </div>
                             }
-                            <div tw='mt-4 flex'>
+                            <div tw='mt-4 flex items-center'>
                                 <div tw='relative w-[120px] h-[120px] flex items-center justify-center'>
                                     <Image
                                         src='/assets/images/jammer.jpg'
@@ -73,10 +74,19 @@ const CheckoutCart = ({ page }: { page: number }) => {
                                         objectFit='contain'
                                     />
                                 </div>
-                                <div tw='ml-4'>
-                                    <div tw='text-[32px] italic text-[#696969] font-semibold'>
+                                <div tw='ml-4 self-start'>
+                                    <div
+                                        tw='h-5 px-2 rounded-[52px] w-auto text-[12px] font-semibold inline-block'
+                                        css={[data.type === 'print' ? tw`bg-[#D8E8D8] text-[#222222]` : tw`bg-[#FFE1E1] text-[#742F2F]`]}
+                                    >
+                                        {data.type === 'print' ? 'Print' : 'Original'}
+                                    </div>
+                                    <div tw='text-[24px] italic text-[#696969] font-medium'>
                                         Jammer
                                     </div>
+                                </div>
+                                <div tw='ml-auto text-[20px] text-[#242424] font-semibold'>
+                                    {formatPrice(1820)}
                                 </div>
                             </div>
                         </div>
