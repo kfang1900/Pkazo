@@ -41,8 +41,8 @@ const CheckoutForm = (
 
     const pages = ['Information', 'Shipping', 'Payment'];
     const styles = {
-        label: tw`text-[#333333] text-[22px] font-bold`,
-        input: tw`border border-[#D9D9D9] focus:border-[#888888] outline-none rounded-[6px] w-full h-12 px-4`,
+        label: tw`text-[#333333] text-[18px] md:text-[22px] font-semibold md:font-bold`,
+        input: tw`text-[14px] md:text-[16px] border border-[#D9D9D9] focus:border-[#888888] outline-none rounded-[6px] w-full h-11 md:h-12 px-4`,
         back: tw`bg-[#F2F2F2] rounded-[6px] w-full flex items-center px-4 h-14 gap-x-6 text-[14px]`,
         error: tw`text-[12px] mt-[2px] text-[#A61A2E]`
     }
@@ -84,7 +84,7 @@ const CheckoutForm = (
         }
     }, [formFocus])
 
-    return <div tw='max-w-[572px] w-full mt-16 pb-[100px]'>
+    return <div tw='max-w-[572px] w-full mt-8 lg:mt-16 pb-[100px] px-4 md:px-0'>
         {isLargeScreen &&
             <Image
                 src='/assets/images/Pkazo.svg'
@@ -93,19 +93,19 @@ const CheckoutForm = (
                 height='48'
             />
         }
-        <div tw='mt-3 flex items-center gap-x-3'>
+        <div tw='md:mt-2 flex items-center gap-x-3'>
             {pages.map((p, i) =>
                 <>
                     {i > 0 &&
                         <Image
                             src='/assets/svgs/arrow_right.svg'
                             alt='section break'
-                            width='6'
-                            height='10'
+                            width={isMobile ? '6' : '8'}
+                            height={isMobile ? '10' : '12'}
                         />
                     }
                     <div
-                        tw='text-[14px] font-semibold cursor-pointer'
+                        tw='text-[14px] md:text-[16px] font-semibold cursor-pointer'
                         css={[page === i ? tw`text-black` : tw`text-[#737373]`]}
                         onClick={() => setPage(i)}
                     >
@@ -115,7 +115,7 @@ const CheckoutForm = (
             )}
         </div>
         {/* Form section */}
-        <div tw='mt-16'>
+        <div tw='mt-12 md:mt-16'>
             <Formik<CheckoutValues>
                 initialValues={{
                     email: '',
@@ -162,7 +162,7 @@ const CheckoutForm = (
                                     <Field
                                         type="input"
                                         name="email"
-                                        css={[styles.input, tw`mt-6`, errors.email && tw`border-[#A61A2E]`]}
+                                        css={[styles.input, tw`mt-4 md:mt-6`, errors.email && tw`border-[#A61A2E]`]}
                                         placeholder="Email"
                                         innerRef={emailRef}
                                     />
@@ -170,8 +170,8 @@ const CheckoutForm = (
                                         <ErrorMessage name='email' />
                                     </div>
                                 </div>
-                                <div css={[styles.label, tw`mt-16`]}>Shipping Address</div>
-                                <div tw='mt-6 flex flex-col gap-y-4'>
+                                <div css={[styles.label, tw`mt-12 md:mt-16`]}>Shipping Address</div>
+                                <div tw='mt-4 md:mt-6 flex flex-col gap-y-3 md:gap-y-4'>
                                     <Field
                                         as={Dropdown}
                                         type="select"
@@ -192,7 +192,7 @@ const CheckoutForm = (
                                             )
                                         )}
                                     </Field>
-                                    <div tw='grid grid-cols-2 gap-x-4'>
+                                    <div tw='md:grid md:grid-cols-2 md:gap-x-4'>
                                         <div>
                                             <Field
                                                 type="input"
@@ -204,7 +204,7 @@ const CheckoutForm = (
                                                 <ErrorMessage name='firstName' />
                                             </div>
                                         </div>
-                                        <div>
+                                        <div tw='mt-3 md:mt-0'>
                                             <Field
                                                 type="input"
                                                 name="lastName"
