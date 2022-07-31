@@ -7,7 +7,8 @@ import tw, { styled } from 'twin.macro';
 import buttons from 'styles/Button';
 import Dropdown from 'styles/Dropdown';
 import { useMediaQuery } from 'react-responsive';
-import useCart, { CartItem as CartItemType } from '../../utils/hooks/useCart';
+import useCart from '../../utils/hooks/useCart';
+import { CartItem as CartItemType } from '../../utils/hooks/CartContext';
 import {
   doc,
   DocumentSnapshot,
@@ -116,7 +117,8 @@ const Cart: NextPage = () => {
           .map((workId) =>
             axios
               .get(
-                `/api/shipping/estimated-rates?workId=${workId}${shippingEstimateZip ? '&zip=' + shippingEstimateZip : ''
+                `/api/shipping/estimated-rates?workId=${workId}${
+                  shippingEstimateZip ? '&zip=' + shippingEstimateZip : ''
                 }`
               )
 
@@ -230,12 +232,12 @@ const Cart: NextPage = () => {
                   duplicateArtist={
                     i > 0 &&
                     arr[i - 1].artistData.username ===
-                    arr[i].artistData.username
+                      arr[i].artistData.username
                   }
                   duplicateArtistLast={
                     i === works.length - 1 ||
                     arr[i].artistData.username !==
-                    arr[i + 1].artistData.username
+                      arr[i + 1].artistData.username
                   }
                   isLast={i === works.length - 1}
                 />
@@ -304,15 +306,15 @@ const Cart: NextPage = () => {
               <div tw="text-right">
                 {ableToCalculateRate && !shippingLoading
                   ? formatCurrency(
-                    works.reduce((acc, w) => acc + w.workData.sale.price, 0) +
-                    shippingCosts.reduce(
-                      (sum, rate) => sum + rate.estimatedRate,
-                      0
+                      works.reduce((acc, w) => acc + w.workData.sale.price, 0) +
+                        shippingCosts.reduce(
+                          (sum, rate) => sum + rate.estimatedRate,
+                          0
+                        )
                     )
-                  )
                   : formatCurrency(
-                    works.reduce((acc, w) => acc + w.workData.sale.price, 0)
-                  ) + ' + Shipping'}
+                      works.reduce((acc, w) => acc + w.workData.sale.price, 0)
+                    ) + ' + Shipping'}
               </div>
             </div>
           </div>

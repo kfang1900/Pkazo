@@ -4,7 +4,7 @@ import tw from 'twin.macro';
 import Dropdown from '../../styles/Dropdown';
 import React from 'react';
 import { ArtistData, WorkData } from '../../types/dbTypes';
-import { CartItem as CartItemType } from '../../utils/hooks/useCart';
+import { CartItem as CartItemType } from '../../utils/hooks/CartContext';
 import formatCurrency from '../../utils/formatCurrency';
 import Link from 'next/link';
 import { getApp } from 'firebase/app';
@@ -103,7 +103,7 @@ export default function CartItem({
             width="88px"
             height="88px"
             objectFit="cover"
-            alt='work image'
+            alt="work image"
           />
         </div>
         <div tw="ml-4 w-full">
@@ -161,9 +161,9 @@ export default function CartItem({
             <button
               tw="font-bold"
               onClick={() => 0}
-            // onClick={() => {
-            //     work.buyNow = false;
-            // }}
+              // onClick={() => {
+              //     work.buyNow = false;
+              // }}
             >
               Save for later
             </button>

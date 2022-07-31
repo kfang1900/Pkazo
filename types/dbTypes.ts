@@ -1,6 +1,6 @@
 import { GeoPoint, Timestamp } from 'firebase/firestore';
 import { DocumentData } from 'firebase/firestore';
-import { Cart } from '../utils/hooks/useCart';
+import { Cart } from '../utils/hooks/CartContext';
 
 type ArtistType =
   | 'hobbyist'
