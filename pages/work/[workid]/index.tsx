@@ -94,7 +94,7 @@ const IndividualWork: NextPage = () => {
   const [showShippingPolicies, setShowShippingPolicies] = useState(false);
   const router = useRouter();
   const { workid: workId } = router.query;
-  const { cartLoading, addCartItem, cart } = useCart();
+  const { cartLoading, addCartItem, cart, showCart } = useCart();
   const inCart = useMemo(
     () => workId && cart.some((i) => i.id === workId),
     [cart, workId]
@@ -191,14 +191,14 @@ const IndividualWork: NextPage = () => {
     }
   }, [router.isReady, workData, workId]);
 
-  const addToCart = () => {
+  const addToCart = async (isOriginal = true) => {
     if (!cartLoading) {
-      addCartItem({
+      await addCartItem({
         id: workId + '',
         quantity: 1,
-        type: 'original',
+        type: isOriginal ? 'original' : 'print',
       });
-      return router.push('/cart');
+      showCart();
     } else {
       alert('Loading cart... Please try again in 5 seconds.');
     }
@@ -368,9 +368,13 @@ const IndividualWork: NextPage = () => {
                 <button
                   tw="mt-[14px]"
                   css={[buttons.red, tw`h-12 text-[16px] text-white w-full`]}
-                  onClick={() => addToCart()}
+                  onClick={() => addToCart(isOriginal)}
                 >
-                  {inCart ? 'In your cart' : 'Add to cart'}
+                  {inCart
+                    ? 'In your cart'
+                    : isOriginal
+                    ? 'Add to cart'
+                    : 'Add print to cart'}
                 </button>
                 <div tw="w-full items-center grid grid-cols-[16px auto] gap-x-2 mt-5">
                   <img src="/assets/svgs/shieldpay.svg" />

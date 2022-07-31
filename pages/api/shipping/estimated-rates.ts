@@ -121,7 +121,7 @@ export default async function handler(
 
   res.status(200).json({
     rates: data.rates.map((rate) => ({
-      amount: rate.amount,
+      amount: Math.ceil(rate.amount), // round to the nearest dollar for estimates
       attributes: rate.attributes,
       durationTerms: (rate as { duration_terms?: string }).duration_terms,
       name:

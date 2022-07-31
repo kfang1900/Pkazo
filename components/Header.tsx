@@ -17,6 +17,7 @@ import { useMediaQuery } from 'react-responsive';
 import SearchHeader from './search/SearchHeader';
 import SearchBox from './search/SearchBox';
 import { hide } from 'dom7';
+import useCart from '../utils/hooks/useCart';
 // import { useNavigate } from "react-router-dom";
 
 /* Copied from image.tsx source */
@@ -60,7 +61,7 @@ const Header = (props: {
     hideLoginModal,
   } = useAuth();
 
-  const [showCart, setShowCart] = useState(false);
+  const { cartVisible, showCart, hideCart } = useCart();
   const [pfp, setPfp] = useState('');
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showChooseWorkDropdown, setShowChooseWorkDropdown] = useState(false);
@@ -139,7 +140,7 @@ const Header = (props: {
 
   return (
     <>
-      {props.isSticky && <div tw='mb-10 md:mb-[60px] w-full' />}
+      {props.isSticky && <div tw="mb-10 md:mb-[60px] w-full" />}
       <div css={navStyle}>
         {!isMobile && loginPopup && (
           <LoginForm
@@ -148,7 +149,7 @@ const Header = (props: {
           />
         )}
         {!isMobile && (
-          <CartPopup onClose={() => setShowCart(false)} toShow={showCart} />
+          <CartPopup onClose={() => hideCart()} toShow={cartVisible} />
         )}
         {isMobile && onSearch && <SearchBox />}
         <UploadWork
@@ -195,7 +196,10 @@ const Header = (props: {
             )}
             {!!user && isArtist && (
               <>
-                <Link href={`/artist?redirect=${window.location.pathname}`} passHref>
+                <Link
+                  href={`/artist?redirect=${window.location.pathname}`}
+                  passHref
+                >
                   <a>
                     <img
                       src={`/assets/svgs/${isMobile ? 'mobile/' : ''}shop.svg`}
@@ -239,7 +243,10 @@ const Header = (props: {
                           Profile
                         </a>
                       </Link>
-                      <Link href={`/account?redirect=${window.location.pathname}`} passHref>
+                      <Link
+                        href={`/account?redirect=${window.location.pathname}`}
+                        passHref
+                      >
                         <a
                           tw="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100"
                           tabIndex={-1}
@@ -284,8 +291,7 @@ const Header = (props: {
                   onClick={() => {
                     if (isMobile)
                       router.push('/signin?redirect=onboarding&register');
-                    else
-                      window.open('/onboarding', '_self')
+                    else window.open('/onboarding', '_self');
                   }}
                 >
                   Sell on Pkazo
@@ -309,8 +315,9 @@ const Header = (props: {
                     ref={profileButtonRef}
                   >
                     <img
-                      src={`/assets/svgs/${isMobile ? 'mobile/' : ''
-                        }profile.svg`}
+                      src={`/assets/svgs/${
+                        isMobile ? 'mobile/' : ''
+                      }profile.svg`}
                     />
                   </button>
 
@@ -335,7 +342,7 @@ const Header = (props: {
               </>
             )}
             <Link href={isMobile ? '/cart' : 'javascript:void(0);'} passHref>
-              <div onClick={() => setShowCart(true)} tw="flex-shrink-0">
+              <div onClick={() => showCart()} tw="flex-shrink-0">
                 <img
                   src={`/assets/svgs/${isMobile ? 'mobile/' : ''}cart.svg`}
                   tw="cursor-pointer"
@@ -360,7 +367,7 @@ const Header = (props: {
             </div>
           </div>
         )}
-      </div >
+      </div>
     </>
   );
 };

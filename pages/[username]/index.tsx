@@ -296,7 +296,6 @@ const Portfolio: NextPage = () => {
                     artistData={artistData2}
                   />
                   {/*<Resume {...artistData} />*/}
-                  TODO fix resume section
                 </>
               )}
               {(page === Page.STORE || profileType !== 1) && (
