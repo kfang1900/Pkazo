@@ -25,6 +25,7 @@ import useAuth from '../../utils/auth/useAuth';
 import { useMediaQuery } from 'react-responsive';
 import { Container } from 'styles/Container';
 import { ArtistData } from '../../types/dbTypes';
+import axios from 'axios';
 
 //import { sample_artist } from 'utils/Sample_Posts_Imports';
 
@@ -209,6 +210,7 @@ const Portfolio: NextPage = () => {
     })();
   }, [username, setArtistData2]);
   // TODO: fix the scroll position reset when going from store tab to gallery tab (doesn't work in the other direction)
+
   return (
     <>
       <Head>

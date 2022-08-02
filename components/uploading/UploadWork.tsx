@@ -413,7 +413,15 @@ function UploadWork({
           {initialFormValues && (
             <Formik
               initialValues={initialFormValues}
-              //validationSchema={validationSchema}
+              validationSchema={Yup.object().shape({
+                title: Yup.string()
+                  .max(100, 'Too Long!')
+                  .required('This value is required.'),
+                description: Yup.string().required('This value is required.'),
+                portfolio: Yup.string().required(
+                  'You must select a portfolio.'
+                ),
+              })}
               //validator={() => ({})}
               onSubmit={async (values) => {
                 console.log('submitting formik', values, initialFormValues);
@@ -436,6 +444,8 @@ function UploadWork({
                       'Please select a portfolio for this work to live in.'
                     );
                     return;
+                  } else {
+                    alert(values.portfolio);
                   }
 
                   const app = getApp();
@@ -546,13 +556,16 @@ function UploadWork({
                       dataToUpload
                     );
                     if (editData && editData.portfolio !== values.portfolio) {
+                      if (!auth.artistId) {
+                        throw new Error('User has no artist ID!');
+                      }
                       await updateDoc(
                         doc(
                           db,
                           'artists',
-                          auth.artistId || '',
+                          auth.artistId,
                           'portfolios',
-                          editData.portfolio
+                          values.portfolio
                         ),
                         {
                           works: arrayRemove(workId),

@@ -47,6 +47,7 @@ export default async function handler(
     });
   }
   const ids: string[] = req.body.ids;
+  const deleteIds: string[] = [];
   const data = (
     await Promise.all(
       ids.map((id) =>
@@ -57,6 +58,7 @@ export default async function handler(
           .get()
           .then((snapshot) => {
             if (!snapshot.exists || !snapshot.data()) {
+              deleteIds.push(id);
               return null;
             }
             return {
@@ -69,6 +71,9 @@ export default async function handler(
     )
   ).filter((w) => w !== null) as (WorkRecord | ArtistRecord)[];
   await index.saveObjects(data);
+  if (deleteIds.length > 0) {
+    await index.deleteObjects(deleteIds);
+  }
   res.status(200).json({
     success: true,
   });

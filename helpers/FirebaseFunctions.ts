@@ -43,7 +43,8 @@ const loadStorageImageSafe = async (url: string) => {
     //return("Does not exist")
     //NOTE: commenting out next line to return null instead of throwing an error,
     //relaying error handling to front-end. Important for EditPortfolioPage
-    throw new Error("Didn't receive a valid URL");
+    // throw new Error("Didn't receive a valid URL");
+    return;
   }
   try {
     const app = getApp();

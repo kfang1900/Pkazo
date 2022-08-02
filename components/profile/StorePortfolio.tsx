@@ -26,7 +26,10 @@ import {
   where,
 } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
-import { loadStorageImageSafe } from '../../helpers/FirebaseFunctions';
+import {
+  loadStorageImage,
+  loadStorageImageSafe,
+} from '../../helpers/FirebaseFunctions';
 import CustomRefinementGroup from './store/CustomRefinementList';
 import CustomSortBy from './store/CustomSortBy';
 import ProductCollection from './store/ProductCollection';
@@ -240,10 +243,13 @@ const StorePortFolio = ({
       await Promise.all(
         querySnapshot.docs.map(async (snapshot) => {
           const workData = snapshot.data() as WorkData & { forSale: true };
+          if (!workData.images[0]) {
+            console.warn('No images for work!');
+          }
           newWorks.push({
             id: snapshot.id,
             data: workData,
-            imageURL: await loadStorageImageSafe(workData.images[0]),
+            imageURL: (await loadStorageImageSafe(workData.images[0])) + '',
           });
           console.log(workData);
           if (!workData.forSale) {
@@ -435,34 +441,38 @@ const StorePortFolio = ({
         <div
           css={[
             tw`fixed bg-white max-w-full z-[99] transition-all duration-300`,
-            isMobile ?
-              (filterOpen ? tw`top-0` : tw`z-[-1] top-[100vh] bottom-0`) :
-              (filterOpen ? tw`left-0` : tw`-left-full`),
-            isMobile ? tw`left-0 right-0 overflow-hidden` : tw`top-0 bottom-0`
+            isMobile
+              ? filterOpen
+                ? tw`top-0`
+                : tw`z-[-1] top-[100vh] bottom-0`
+              : filterOpen
+              ? tw`left-0`
+              : tw`-left-full`,
+            isMobile ? tw`left-0 right-0 overflow-hidden` : tw`top-0 bottom-0`,
           ]}
         >
           {filterOpen && <style>{`body {overflow: hidden}`}</style>}
-          {!isMobile &&
+          {!isMobile && (
             <button
               onClick={() => setFilterOpen(false)}
               className="close-icon group"
               tw="absolute rounded-full w-11 h-11 top-5 right-[-60px] flex items-center justify-center"
             >
-              <div tw='w-0 transition-all duration-200 group-hover:w-full group-hover:h-full h-0 absolute bg-white/20 rounded-full z-[-1]' />
+              <div tw="w-0 transition-all duration-200 group-hover:w-full group-hover:h-full h-0 absolute bg-white/20 rounded-full z-[-1]" />
               <img
                 src="/assets/svgs/close.svg"
                 tw="w-4 h-4 m-auto"
                 alt="close button"
               />
             </button>
-          }
+          )}
 
           {/* Filter Box */}
-          <div tw='w-full md:w-[400px] max-h-[100vh] overflow-auto relative'>
-            <div tw='p-8'>
-              <div tw='flex w-full items-center justify-between'>
-                <div tw='text-[32px] text-[#3C3C3C]'>Filters</div>
-                {isMobile &&
+          <div tw="w-full md:w-[400px] max-h-[100vh] overflow-auto relative">
+            <div tw="p-8">
+              <div tw="flex w-full items-center justify-between">
+                <div tw="text-[32px] text-[#3C3C3C]">Filters</div>
+                {isMobile && (
                   <button tw="w-5 h-5" onClick={() => setFilterOpen(false)}>
                     <svg
                       width="20"
@@ -477,9 +487,9 @@ const StorePortFolio = ({
                       />
                     </svg>
                   </button>
-                }
+                )}
               </div>
-              <div tw='mt-6 flex flex-col gap-y-7'>
+              <div tw="mt-6 flex flex-col gap-y-7">
                 <FilterCategory {...filters['portfolio']} />
                 <FilterCategory {...filters['price']} isPrice />
                 <FilterCategory {...filters['size']} />
@@ -490,8 +500,8 @@ const StorePortFolio = ({
               </div>
             </div>
             <div tw="sticky w-full bottom-0 bg-white">
-              <div tw='h-[0.5px] bg-[#E3E3E3]' />
-              <div tw='px-4 flex w-full px-8 py-5 gap-x-3'>
+              <div tw="h-[0.5px] bg-[#E3E3E3]" />
+              <div tw="px-4 flex w-full px-8 py-5 gap-x-3">
                 <button
                   onClick={() => setFilterOpen(false)}
                   css={[buttons.white, tw`w-full h-10`]}
@@ -508,7 +518,7 @@ const StorePortFolio = ({
             </div>
           </div>
         </div>
-        {!isMobile &&
+        {!isMobile && (
           <span
             onClick={() => setFilterOpen(false)}
             css={[
@@ -516,7 +526,7 @@ const StorePortFolio = ({
               filterOpen && tw`w-full`,
             ]}
           ></span>
-        }
+        )}
       </div>
       {/* <DrawerFilter drawerToggle={drawerToggle} handleCloseFilter={handleCloseFilter}/> */}
     </div>
