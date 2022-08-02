@@ -4,7 +4,10 @@ import Hit from './Hit';
 import Masonry from 'react-masonry-css';
 import React, { useEffect, useReducer } from 'react';
 import { ForSaleWorkRecord, WorkRecord } from '../../../types/dbTypes';
-import { loadStorageImageSafe } from '../../../helpers/FirebaseFunctions';
+import {
+  loadStorageImage,
+  loadStorageImageSafe,
+} from '../../../helpers/FirebaseFunctions';
 
 export default function CustomHits(props: HitsProps<ForSaleWorkRecord>) {
   console.log(props);
@@ -25,8 +28,8 @@ export default function CustomHits(props: HitsProps<ForSaleWorkRecord>) {
       if (!hit.images || hit.images.length === 0) return;
       const imageRef = hit.images[0];
       if (!memonizedImageURLS[imageRef]) {
-        loadStorageImageSafe(imageRef).then((url) =>
-          addMemonizedImageURL([hit.id, url])
+        loadStorageImage(imageRef).then((url) =>
+          addMemonizedImageURL([hit.id, url + ''])
         );
       }
     });

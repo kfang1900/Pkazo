@@ -16,7 +16,10 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 import { ArtistData, WorkData } from '../../types/dbTypes';
-import { loadStorageImageSafe } from '../../helpers/FirebaseFunctions';
+import {
+  loadStorageImage,
+  loadStorageImageSafe,
+} from '../../helpers/FirebaseFunctions';
 import CartItem from './CartItem';
 import formatCurrency from '../../utils/formatCurrency';
 import axios from 'axios';
@@ -95,10 +98,11 @@ const Cart: NextPage = () => {
                   ...workArtistData.data,
                   id: workArtistData.id,
                 },
-                artistProfilePictureURL: await loadStorageImageSafe(
-                  workArtistData.data.profilePicture
-                ),
-                workImageURL: await loadStorageImageSafe(w.workData.images[0]),
+                artistProfilePictureURL:
+                  (await loadStorageImage(workArtistData.data.profilePicture)) +
+                  '',
+                workImageURL:
+                  (await loadStorageImage(w.workData.images[0])) + '',
               };
             })();
           })

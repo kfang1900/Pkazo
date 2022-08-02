@@ -19,7 +19,7 @@ function defaultString<T>(arg: (param: string) => string) {
 //Returns the Image URL as a string
 const loadStorageImage = async (url: string) => {
   if (!url) {
-    console.log('Given url is', url);
+    console.warn("Unable to load storage URL because URL wasn't provided");
     //return("Does not exist")
     //NOTE: commenting out next line to return null instead of throwing an error,
     //relaying error handling to front-end. Important for EditPortfolioPage.
@@ -44,7 +44,7 @@ const loadStorageImageSafe = async (url: string) => {
     //NOTE: commenting out next line to return null instead of throwing an error,
     //relaying error handling to front-end. Important for EditPortfolioPage
     // throw new Error("Didn't receive a valid URL");
-    return;
+    return '';
   }
   try {
     const app = getApp();

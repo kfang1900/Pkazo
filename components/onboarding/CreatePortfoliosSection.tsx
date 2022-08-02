@@ -9,7 +9,10 @@ import Modal from '../popups/Modal';
 import PortfolioWorkUpload from '../uploading/PortfolioWorkUpload';
 import { getApp } from 'firebase/app';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
-import { loadStorageImageSafe } from '../../helpers/FirebaseFunctions';
+import {
+  loadStorageImage,
+  loadStorageImageSafe,
+} from '../../helpers/FirebaseFunctions';
 import Link from 'next/link';
 
 export default function CreatePortfoliosSection({
@@ -45,9 +48,9 @@ export default function CreatePortfoliosSection({
       querySnapshot.forEach((doc) => {
         setUsername(doc.data().username);
         docs.push(
-          loadStorageImageSafe(doc.data().picture).then((image) => ({
+          loadStorageImage(doc.data().picture).then((image) => ({
             name: doc.data().name,
-            image: image,
+            image: image + '',
           }))
         );
       });
