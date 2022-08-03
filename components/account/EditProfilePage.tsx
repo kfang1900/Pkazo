@@ -35,9 +35,9 @@ export default function EditProfilePage() {
 
   const [data, setData] = useState<
     | (ArtistData & {
-      profilePictureURL: string | null;
-      coverImageURL: string | null;
-    })
+        profilePictureURL: string | null;
+        coverImageURL: string | null;
+      })
     | undefined
   >();
   const [artistId, setArtistId] = useState('');
@@ -114,10 +114,10 @@ export default function EditProfilePage() {
               showPopup === 0
                 ? 'education'
                 : showPopup === 1
-                  ? 'experience'
-                  : showPopup === 2
-                    ? 'exhibitions'
-                    : 'UNKNOWN';
+                ? 'experience'
+                : showPopup === 2
+                ? 'exhibitions'
+                : 'UNKNOWN';
 
             if (type === 'UNKNOWN') {
               throw new Error(
@@ -140,24 +140,23 @@ export default function EditProfilePage() {
       {data && (
         <div>
           {isMobile && (
-            <div tw='sticky top-0 z-50 bg-white'>
-              <div tw='flex items-center justify-between h-12 px-5'>
-                <div tw='w-10'>
-                  <Link
-                    href={`/account${window.location.search}`}
-                    passHref
-                  >
+            <div tw="sticky top-0 z-50 bg-white">
+              <div tw="flex items-center justify-between h-12 px-5">
+                <div tw="w-10">
+                  <Link href={`/account${window.location.search}`} passHref>
                     <Image
-                      src='/assets/svgs/mobile/back.svg'
-                      width='11'
-                      height='18'
-                      alt='popup back'
-                      tw='cursor-pointer'
+                      src="/assets/svgs/mobile/back.svg"
+                      width="11"
+                      height="18"
+                      alt="popup back"
+                      tw="cursor-pointer"
                     />
                   </Link>
                 </div>
-                <div tw='text-[16px] text-black font-semibold'>Edit Profile</div>
-                <div tw='w-10'>
+                <div tw="text-[16px] text-black font-semibold">
+                  Edit Profile
+                </div>
+                <div tw="w-10">
                   {isModified && (
                     <div tw="cursor-pointer text-[14px] font-semibold text-[#E44C4D]">
                       Save
@@ -165,7 +164,7 @@ export default function EditProfilePage() {
                   )}
                 </div>
               </div>
-              <div tw='h-[0.5px] bg-[#E2E2E2] w-full' />
+              <div tw="h-[0.5px] bg-[#E2E2E2] w-full" />
             </div>
           )}
           <div tw="flex" css={[isMobile && tw`justify-center w-full mt-5`]}>
@@ -206,10 +205,12 @@ export default function EditProfilePage() {
             </div>
             {!isMobile && (
               <div tw="ml-9 flex flex-col justify-center">
-                <div tw="text-black text-[32px] leading-[32px] font-semibold">{data.name}</div>
-                <div tw='text-[#8E8E93] font-medium text-[24px] leading-[29px] mt-3 flex items-center gap-x-4'>
+                <div tw="text-black text-[32px] leading-[32px] font-semibold">
+                  {data.name}
+                </div>
+                <div tw="text-[#8E8E93] font-medium text-[24px] leading-[29px] mt-3 flex items-center gap-x-4">
                   {data.location}
-                  <div tw='w-[6px] h-[6px] rounded-full bg-[#8E8E93]' />
+                  <div tw="w-[6px] h-[6px] rounded-full bg-[#8E8E93]" />
                   {data.discipline}
                 </div>
               </div>
@@ -236,8 +237,6 @@ export default function EditProfilePage() {
                   discipline: values.discipline,
                   location: values.location,
                   bio: values.bio,
-                  numPosts: 0,
-                  numWorks: 3, //TODO make this do something better
                 } as Partial<ArtistData>);
                 try {
                   await updateArtistsIndex(artistId);
@@ -286,10 +285,10 @@ export default function EditProfilePage() {
                         isMobile && tw`col-span-2 -mt-1`,
                       ]}
                     />
-                    <div />
+                    {!isMobile && <div />}
 
                     {isDataModified(values) && (
-                      <div css={[isMobile && tw`hidden`]}>
+                      <>
                         <input
                           type="submit"
                           value="Save"
@@ -309,7 +308,7 @@ export default function EditProfilePage() {
                         >
                           Cancel
                         </button>
-                      </div>
+                      </>
                     )}
                   </div>
                 </Form>

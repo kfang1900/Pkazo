@@ -26,6 +26,7 @@ import { useMediaQuery } from 'react-responsive';
 import { Container } from 'styles/Container';
 import { ArtistData } from '../../types/dbTypes';
 import axios from 'axios';
+import { updateWorksIndex } from '../../utils/indexes/updateIndexes';
 
 //import { sample_artist } from 'utils/Sample_Posts_Imports';
 

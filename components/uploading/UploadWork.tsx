@@ -413,15 +413,7 @@ function UploadWork({
           {initialFormValues && (
             <Formik
               initialValues={initialFormValues}
-              validationSchema={Yup.object().shape({
-                title: Yup.string()
-                  .max(100, 'Too Long!')
-                  .required('This value is required.'),
-                description: Yup.string().required('This value is required.'),
-                portfolio: Yup.string().required(
-                  'You must select a portfolio.'
-                ),
-              })}
+              validationSchema={validationSchema}
               //validator={() => ({})}
               onSubmit={async (values) => {
                 console.log('submitting formik', values, initialFormValues);
@@ -445,7 +437,7 @@ function UploadWork({
                     );
                     return;
                   } else {
-                    alert(values.portfolio);
+                    // alert(values.portfolio);
                   }
 
                   const app = getApp();

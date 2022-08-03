@@ -26,15 +26,23 @@ import {
   where,
 } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
+import { loadStorageImageSafe } from '../../helpers/FirebaseFunctions';
+import algoliasearch from 'algoliasearch/lite';
 import {
-  loadStorageImage,
-  loadStorageImageSafe,
-} from '../../helpers/FirebaseFunctions';
+  InstantSearch,
+  RefinementList,
+  SearchBox,
+  Hits,
+  useSearchBox,
+  Configure,
+} from 'react-instantsearch-hooks-web';
+import CustomSearch from './store/CustomSearch';
+import Hit from './store/Hit';
+import CustomHits from './store/CustomHits';
 import CustomRefinementGroup from './store/CustomRefinementList';
 import CustomSortBy from './store/CustomSortBy';
-import ProductCollection from './store/ProductCollection';
-// import algoliaSearchClient from '../shared/algoliaSearchClient';
 import FilterCategory from './store/FilterCategory';
+import algoliaSearchClient from '../shared/algoliaSearchClient';
 import DoubleSlider from './store/DoubleSlider';
 import { useRouter } from 'next/router';
 const ListCheckGroup = styled.ul`
@@ -110,7 +118,6 @@ const StorePortFolio = ({
   const [sortValueDropdown, setSortValueDropdown] =
     React.useState('Low to High');
 
-  console.log('Profile type', profileType);
   const filters = {
     portfolio: {
       title: 'Portfolio',
@@ -195,13 +202,6 @@ const StorePortFolio = ({
   const [filterInitialMax, setFilterInitialMax] = React.useState(0);
   const [minValue, setMinValue] = React.useState(0);
   const [maxValue, setMaxValue] = React.useState(10000);
-  const [allWorks, setAllWorks] = useState<
-    {
-      id: string;
-      data: WorkData & { forSale: true };
-      imageURL: string;
-    }[]
-  >([]);
   const [works, setWorks] = useState<
     {
       id: string;
@@ -213,7 +213,6 @@ const StorePortFolio = ({
   const { username } = router.query;
   const [artistId, setArtistId] = useState('');
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     (async () => {
       const app = getApp();
@@ -226,8 +225,6 @@ const StorePortFolio = ({
       }
       const _artistId = artistIdSnapshot.docs[0].id;
       setArtistId(_artistId);
-
-      console.log('artist ID', _artistId);
       const querySnapshot = await getDocs(
         query(
           collection(db, 'works'),
@@ -243,13 +240,10 @@ const StorePortFolio = ({
       await Promise.all(
         querySnapshot.docs.map(async (snapshot) => {
           const workData = snapshot.data() as WorkData & { forSale: true };
-          if (!workData.images[0]) {
-            console.warn('No images for work!');
-          }
           newWorks.push({
             id: snapshot.id,
             data: workData,
-            imageURL: (await loadStorageImageSafe(workData.images[0])) + '',
+            imageURL: await loadStorageImageSafe(workData.images[0]),
           });
           console.log(workData);
           if (!workData.forSale) {
@@ -257,10 +251,8 @@ const StorePortFolio = ({
           }
         })
       );
-      setAllWorks(newWorks);
       setWorks(newWorks);
       setLoading(false);
-      console.log('Works: ', works);
     })();
   }, []);
 
@@ -290,189 +282,159 @@ const StorePortFolio = ({
     }
   };
 
-  const getPortfolioMatch = (e: string) => {
-    //console.log(e, portfolioData);
-    const obj = portfolioData.Portfolios.find(
-      (portfolio) => portfolio.name === e
-    );
-    if (obj) {
-      const newWorks: {
-        id: string;
-        data: WorkData & { forSale: true };
-        imageURL: string;
-      }[] = [];
-      //console.log(allWorks);
-      allWorks.forEach((work) => {
-        //console.log(obj.works, work.id, obj.works.includes(work.id))
-        if (obj?.works.includes(work.id)) {
-          console.log('adding to new work');
-          newWorks.push(work);
-        }
-      });
-      setWorks(newWorks);
-    } else {
-      setWorks(allWorks);
-    }
-    return;
-  };
-
   return (
-    <div>
-      <Container tw="px-4 md:px-0 bg-white">
-        {profileType === 3 && (
-          <div tw="flex justify-center gap-6 md:gap-[140px] mt-4 md:mt-12">
-            {portfolioData.Portfolios.map((portfolio, index) => (
-              <div
-                key={index}
-                tw="cursor-pointer"
-                onClick={() => {
-                  setActiveIndex(activeIndex === index ? null : index);
-                  // setCurGallery(
-                  //   getGalleryData(
-                  //     portfolioData,
-                  //     activeIndex === index ? null : index
-                  //   )
-                  // );
-                }}
-              >
+    <InstantSearch searchClient={algoliaSearchClient} indexName="pkazo-works">
+      <Configure
+        facetFilters={[
+          `artist:${artistId || 'notarealartist'}`,
+          'forSale:true',
+        ]}
+      />
+      <div>
+        <Container tw="px-4 md:px-0">
+          {profileType === 3 && (
+            <div tw="flex justify-center gap-6 md:gap-[140px] mt-4 md:mt-12">
+              {portfolioData.Portfolios.map((portfolio, index) => (
                 <div
-                  css={[
-                    tw`relative rounded-full overflow-hidden origin-bottom border-transparent`,
-                    activeIndex === index && tw`border-[#C6C5C3]`,
-                    isMobile
-                      ? tw`w-[60px] h-[60px] border-2`
-                      : tw`w-[128px] h-[128px] border-4`,
-                  ]}
+                  key={index}
+                  tw="cursor-pointer"
+                  onClick={() => {
+                    setActiveIndex(activeIndex === index ? null : index);
+                    // setCurGallery(
+                    //   getGalleryData(
+                    //     portfolioData,
+                    //     activeIndex === index ? null : index
+                    //   )
+                    // );
+                  }}
                 >
-                  {portfolioData.PortfolioImages[index] && (
-                    <Image
-                      src={portfolioData.PortfolioImages[index]}
-                      alt="Portfolio Image"
-                      layout="fill"
-                    />
-                  )}
-                </div>
+                  <div
+                    css={[
+                      tw`relative rounded-full overflow-hidden origin-bottom border-transparent`,
+                      activeIndex === index && tw`border-[#C6C5C3]`,
+                      isMobile
+                        ? tw`w-[60px] h-[60px] border-2`
+                        : tw`w-[128px] h-[128px] border-4`,
+                    ]}
+                  >
+                    {portfolioData.PortfolioImages[index] && (
+                      <Image
+                        src={portfolioData.PortfolioImages[index]}
+                        alt="Portfolio Image"
+                        layout="fill"
+                      />
+                    )}
+                  </div>
 
-                <div
-                  css={[
-                    tw`text-[#3C3C3C] text-center`,
-                    isMobile ? tw`text-[12px] mt-1` : tw`text-[16px] mt-2`,
-                  ]}
-                >
-                  {portfolio.name}
+                  <div
+                    css={[
+                      tw`text-[#3C3C3C] text-center`,
+                      isMobile ? tw`text-[12px] mt-1` : tw`text-[16px] mt-2`,
+                    ]}
+                  >
+                    {portfolio.name}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-        {/* Heading */}
-        <div
-          tw="flex items-center gap-x-3 md:gap-x-6 w-full"
-          css={[
-            profileType === 1 && tw`mt-3 md:mt-6`,
-            profileType === 2 && tw`mt-4 md:mt-[52px]`,
-            profileType === 3 && tw`mt-4 md:mt-12`,
-          ]}
-        >
-          {/* Filter Button */}
+              ))}
+            </div>
+          )}
+          {/* Heading */}
           <div
-            onClick={() => setFilterOpen(true)}
-            tw="cursor-pointer flex items-center border border-[#D8D8D8] focus:border-[#A2A2A2] text-[#65676B]"
+            tw="flex items-center gap-x-3 md:gap-x-6 w-full"
             css={[
-              isMobile
-                ? tw`w-[32px] h-[32px] rounded-full justify-center`
-                : tw`gap-[10px] h-11 pl-[22px] pr-6 rounded-[40px]`,
+              profileType === 1 && tw`mt-3 md:mt-6`,
+              profileType === 2 && tw`mt-4 md:mt-[52px]`,
+              profileType === 3 && tw`mt-4 md:mt-12`,
             ]}
           >
-            <img
-              src="/assets/svgs/filter.svg"
-              tw="w-4 h-4 md:w-auto md:h-auto"
-            />
-            {!isMobile && 'All Filters'}
-          </div>
-          {/* Search  */}
-          {/*<CustomSearch />*/}
-          {/* Portfolio for profile 1 and 2 */}
-          {profileType !== 3 && !isMobile && (
-            <Dropdown
-              onChange={(event) => {
-                getPortfolioMatch(event.target.value);
-              }}
-              appearance={tw`border-[#D8D8D8] rounded-[40px] pl-5 min-w-[160px] h-11 focus:border-[#A2A2A2] text-[#3C3C3C]`}
+            {/* Filter Button */}
+            <div
+              onClick={() => setFilterOpen(true)}
+              tw="cursor-pointer flex items-center border border-[#D8D8D8] focus:border-[#A2A2A2] text-[#65676B]"
+              css={[
+                isMobile
+                  ? tw`w-[32px] h-[32px] rounded-full justify-center`
+                  : tw`gap-[10px] h-11 pl-[22px] pr-6 rounded-[40px]`,
+              ]}
             >
-              <option value="all">
-                {profileType === 1 ? 'All Portfolios' : 'Category'}
-              </option>
-              {portfolioData.Portfolios.map((portfolio) => (
-                <option value={portfolio.name} key={portfolio.name}>
-                  {portfolio.name}
-                </option>
-              ))}
-            </Dropdown>
-          )}
-          {/* Price Sort */}
-          {/* <CustomSortBy /> */}
-          {/*/!* Grid *!/*/}
-          {/*<div tw="flex items-center text-2xl rounded border border-gray-200">*/}
-          {/*  <span tw="px-4 py-2 cursor-pointer transition-all duration-300 text-gray-700 hover:text-black border-r border-gray-200">*/}
-          {/*    <MdWidgets />*/}
-          {/*  </span>*/}
-          {/*  <span tw="px-4 py-2 cursor-pointer transition-all duration-300 text-gray-700 hover:text-black">*/}
-          {/*    <BsGrid3X3GapFill />*/}
-          {/*  </span>*/}
-          {/*</div>*/}
-        </div>
-
-        {/* No Portfolio Found */}
-        {!loading && works.length === 0 && (
-          <div tw="text-[#3C3C3C] text-[12px] md:text-[16px] mt-4 md:mt-8">
-            No works for sale
-          </div>
-        )}
-
-        {/* Portfolio Gallery */}
-        <div tw="mb-4 md:mb-[30px]">
-          {!loading && <ProductCollection works={works} />}
-        </div>
-      </Container>
-
-      <div>
-        {/* <div css={[!filterOpen && tw`fixed -bottom-full h-[100vh] left-0 right-0 bg-white z-[100]`]} /> */}
-        <div
-          css={[
-            tw`fixed bg-white max-w-full z-[99] transition-all duration-300`,
-            isMobile
-              ? filterOpen
-                ? tw`top-0`
-                : tw`z-[-1] top-[100vh] bottom-0`
-              : filterOpen
-              ? tw`left-0`
-              : tw`-left-full`,
-            isMobile ? tw`left-0 right-0 overflow-hidden` : tw`top-0 bottom-0`,
-          ]}
-        >
-          {filterOpen && <style>{`body {overflow: hidden}`}</style>}
-          {!isMobile && (
-            <button
-              onClick={() => setFilterOpen(false)}
-              className="close-icon group"
-              tw="absolute rounded-full w-11 h-11 top-5 right-[-60px] flex items-center justify-center"
-            >
-              <div tw="w-0 transition-all duration-200 group-hover:w-full group-hover:h-full h-0 absolute bg-white/20 rounded-full z-[-1]" />
               <img
-                src="/assets/svgs/close.svg"
-                tw="w-4 h-4 m-auto"
-                alt="close button"
+                src="/assets/svgs/filter.svg"
+                tw="w-4 h-4 md:w-auto md:h-auto"
               />
-            </button>
+              {!isMobile && 'All Filters'}
+            </div>
+            {/* Search  */}
+            <CustomSearch />
+            {/* Portfolio for profile 1 and 2 */}
+            {profileType !== 3 && !isMobile && (
+              <Dropdown
+                onChange={(event) => event.target.value}
+                appearance={tw`border-[#D8D8D8] rounded-[40px] pl-5 min-w-[160px] h-11 focus:border-[#A2A2A2] text-[#3C3C3C]`}
+              >
+                <option value="all">
+                  {profileType === 1 ? 'All Portfolios' : 'Category'}
+                </option>
+                {portfolioData.Portfolios.map((portfolio) => (
+                  <option value={portfolio.name} key={portfolio.name}>
+                    {portfolio.name}
+                  </option>
+                ))}
+              </Dropdown>
+            )}
+            {/* Price Sort */}
+            <CustomSortBy />
+            {/*/!* Grid *!/*/}
+            {/*<div tw="flex items-center text-2xl rounded border border-gray-200">*/}
+            {/*  <span tw="px-4 py-2 cursor-pointer transition-all duration-300 text-gray-700 hover:text-black border-r border-gray-200">*/}
+            {/*    <MdWidgets />*/}
+            {/*  </span>*/}
+            {/*  <span tw="px-4 py-2 cursor-pointer transition-all duration-300 text-gray-700 hover:text-black">*/}
+            {/*    <BsGrid3X3GapFill />*/}
+            {/*  </span>*/}
+            {/*</div>*/}
+          </div>
+
+          {/* No Portfolio Found */}
+          {!loading && works.length === 0 && (
+            <div tw="text-[#3C3C3C] text-[12px] md:text-[16px] mt-4 md:mt-8">
+              No works for sale
+            </div>
           )}
 
-          {/* Filter Box */}
-          <div tw="w-full md:w-[400px] max-h-[100vh] overflow-auto relative">
-            <div tw="p-8">
-              <div tw="flex w-full items-center justify-between">
-                <div tw="text-[32px] text-[#3C3C3C]">Filters</div>
-                {isMobile && (
+          {/* Portfolio Gallery */}
+          <div tw="mb-4 md:mb-[30px]">{!loading && <CustomHits />}</div>
+        </Container>
+
+        <div>
+          <div
+            css={[
+              tw`fixed bg-white max-w-full z-[99] transition-all duration-300`,
+              isMobile
+                ? filterOpen
+                  ? tw`bottom-0`
+                  : tw`-bottom-full`
+                : filterOpen
+                ? tw`left-0`
+                : tw`-left-full`,
+              isMobile ? tw`left-0 right-0` : tw`top-0 bottom-0`,
+            ]}
+          >
+            {filterOpen && <style>{`body {overflow: hidden}`}</style>}
+            {!isMobile && (
+              <span
+                onClick={() => setFilterOpen(false)}
+                className="close-icon"
+                tw="before:content-[''] before:w-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full before:h-0 before:absolute before:bg-white/20 before:rounded-full before:z-[-1] absolute text-white cursor-pointer rounded-full flex items-center justify-center text-3xl w-[50px] h-[50px] top-5 right-[-60px]"
+              >
+                <FiX />
+              </span>
+            )}
+
+            {/* Filter Box */}
+            <div tw="w-full md:w-[400px] h-[100vh] overflow-auto">
+              <div tw="p-8">
+                <div tw="flex w-full items-center justify-between">
+                  <div tw="text-[32px] text-[#3C3C3C]">Filters</div>
                   <button tw="w-5 h-5" onClick={() => setFilterOpen(false)}>
                     <svg
                       width="20"
@@ -487,226 +449,37 @@ const StorePortFolio = ({
                       />
                     </svg>
                   </button>
-                )}
+                </div>
+                <div tw="mt-6 flex flex-col gap-y-7">
+                  <FilterCategory {...filters['portfolio']} />
+                  <FilterCategory {...filters['price']} isPrice />
+                  <FilterCategory {...filters['size']} />
+                  <FilterCategory {...filters['medium']} />
+                  <FilterCategory {...filters['surface']} />
+                  <FilterCategory {...filters['subject']} />
+                  <FilterCategory {...filters['style']} />
+                </div>
               </div>
-              <div tw="mt-6 flex flex-col gap-y-7">
-                <FilterCategory {...filters['portfolio']} />
-                <FilterCategory {...filters['price']} isPrice />
-                <FilterCategory {...filters['size']} />
-                <FilterCategory {...filters['medium']} />
-                <FilterCategory {...filters['surface']} />
-                <FilterCategory {...filters['subject']} />
-                <FilterCategory {...filters['style']} />
-              </div>
-            </div>
-            <div tw="sticky w-full bottom-0 bg-white">
-              <div tw="h-[0.5px] bg-[#E3E3E3]" />
-              <div tw="px-4 flex w-full px-8 py-5 gap-x-3">
-                <button
-                  onClick={() => setFilterOpen(false)}
-                  css={[buttons.white, tw`w-full h-10`]}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => setFilterOpen(false)}
-                  css={[buttons.red, tw`w-full h-10`]}
-                >
-                  Apply
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        {!isMobile && (
-          <span
-            onClick={() => setFilterOpen(false)}
-            css={[
-              tw`fixed z-[98] left-0 top-0 bottom-0 bg-[rgba(34,34,34,0.65)]`,
-              filterOpen && tw`w-full`,
-            ]}
-          ></span>
-        )}
-      </div>
-      {/* <DrawerFilter drawerToggle={drawerToggle} handleCloseFilter={handleCloseFilter}/> */}
-    </div>
-  );
-};
-/*
-ALGOLIA BASED SEARCH
-return (
-    <>
-      <h1>Store</h1>
-
-      <InstantSearch searchClient={algoliaSearchClient} indexName="pkazo-works">
-        <Configure
-          facetFilters={[
-            `artist:${artistId || 'notarealartist'}`,
-            'forSale:true',
-          ]}
-        />
-        <div>
-          <Container tw="px-4 md:px-0">
-            {profileType === 3 && (
-              <div tw="flex justify-center gap-6 md:gap-[140px] mt-4 md:mt-12">
-                {portfolioData.Portfolios.map((portfolio, index) => (
-                  <div
-                    key={index}
-                    tw="cursor-pointer"
-                    onClick={() => {
-                      setActiveIndex(activeIndex === index ? null : index);
-                      // setCurGallery(
-                      //   getGalleryData(
-                      //     portfolioData,
-                      //     activeIndex === index ? null : index
-                      //   )
-                      // );
-                    }}
+              <div tw="sticky w-full bottom-0 bg-white">
+                <div tw="h-[0.5px] bg-[#E3E3E3]" />
+                <div tw="px-4 flex w-full px-8 py-5 gap-x-3">
+                  <button
+                    onClick={() => setFilterOpen(false)}
+                    css={[buttons.white, tw`w-full h-10`]}
                   >
-                    <div
-                      css={[
-                        tw`relative rounded-full overflow-hidden origin-bottom border-transparent`,
-                        activeIndex === index && tw`border-[#C6C5C3]`,
-                        isMobile
-                          ? tw`w-[60px] h-[60px] border-2`
-                          : tw`w-[128px] h-[128px] border-4`,
-                      ]}
-                    >
-                      {portfolioData.PortfolioImages[index] && (
-                        <Image
-                          src={portfolioData.PortfolioImages[index]}
-                          alt="Portfolio Image"
-                          layout="fill"
-                        />
-                      )}
-                    </div>
-
-                    <div
-                      css={[
-                        tw`text-[#3C3C3C] text-center`,
-                        isMobile ? tw`text-[12px] mt-1` : tw`text-[16px] mt-2`,
-                      ]}
-                    >
-                      {portfolio.name}
-                    </div>
-                  </div>
-                ))}
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => setFilterOpen(false)}
+                    css={[buttons.red, tw`w-full h-10`]}
+                  >
+                    Apply
+                  </button>
+                </div>
               </div>
-            )}
-            <div
-              tw="flex items-center gap-x-3 md:gap-x-6 w-full"
-              css={[
-                profileType === 1 && tw`mt-3 md:mt-6`,
-                profileType === 2 && tw`mt-4 md:mt-[52px]`,
-                profileType === 3 && tw`mt-4 md:mt-12`,
-              ]}
-            >
-              <div
-                onClick={() => setFilterOpen(true)}
-                tw="cursor-pointer flex items-center border border-[#D8D8D8] focus:border-[#A2A2A2] text-[#65676B]"
-                css={[
-                  isMobile
-                    ? tw`w-[32px] h-[32px] rounded-full justify-center`
-                    : tw`gap-[10px] h-11 pl-[22px] pr-6 rounded-[40px]`,
-                ]}
-              >
-                <img
-                  src="/assets/svgs/filter.svg"
-                  tw="w-4 h-4 md:w-auto md:h-auto"
-                />
-                {!isMobile && 'All Filters'}
-              </div>
-              <CustomSearch />
-              {profileType !== 3 && !isMobile && (
-                <Dropdown
-                  onChange={(event) => event.target.value}
-                  appearance={tw`border-[#D8D8D8] rounded-[40px] pl-5 min-w-[160px] h-11 focus:border-[#A2A2A2] text-[#3C3C3C]`}
-                >
-                  <option value="all">
-                    {profileType === 1 ? 'All Portfolios' : 'Category'}
-                  </option>
-                  {portfolioData.Portfolios.map((portfolio) => (
-                    <option value={portfolio.name} key={portfolio.name}>
-                      {portfolio.name}
-                    </option>
-                  ))}
-                </Dropdown>
-              )}
-             
-              <CustomSortBy />
-              
             </div>
-
-            {!loading && works.length === 0 && (
-              <div tw="text-[#3C3C3C] text-[12px] md:text-[16px] mt-4 md:mt-8">
-                No works for sale
-              </div>
-            )}
-
-            <div tw="mb-4 md:mb-[30px]">{!loading && <CustomHits />}</div>
-            <h1>Works Found</h1>
-          </Container>
-
-          {!isMobile && (
-            <div>
-              <div
-                css={[
-                  tw`fixed top-0 bg-white bottom-0 max-w-full w-[400] 2xl:w-[480px] z-[99] -left-full transition-all duration-300`,
-                  filterOpen && tw`left-0`,
-                ]}
-              >
-                <span
-                  onClick={() => setFilterOpen(false)}
-                  className="close-icon"
-                  tw="before:content-[''] before:w-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full before:h-0 before:absolute before:bg-white/20 before:rounded-full before:z-[-1] absolute text-white cursor-pointer rounded-full flex items-center justify-center text-3xl w-[50px] h-[50px] top-5 right-[-60px]"
-                >
-                  <FiX />
-                </span>
-
-                <div>
-                  <div tw="overflow-auto pr-14 m-6 h-[calc(100vh-120px)]">
-                    <h2 tw="text-3xl font-bold mb-4">Filters</h2>
-
-                    <ul tw={'pl-6'}>
-                      <div></div>
-
-                      <CustomRefinementGroup attribute={'medium'} />
-                      <CustomRefinementGroup attribute={'year'} />
-                      <CustomRefinementGroup
-                        attribute={'sale.color'}
-                        title={'Color'}
-                      />
-                      <CustomRefinementGroup attribute={'dimensions'} />
-                    </ul>
-                  </div>
-        <div>
-          <div
-            css={[
-              tw`fixed bg-white max-w-full z-[99] transition-all duration-300`,
-              isMobile ?
-                (filterOpen ? tw`bottom-0` : tw`-bottom-full`) :
-                (filterOpen ? tw`left-0` : tw`-left-full`),
-              isMobile ? tw`left-0 right-0` : tw`top-0 bottom-0`
-            ]}
-          >
-            {filterOpen && <style>{`body {overflow: hidden}`}</style>}
-            {!isMobile &&
-              <span
-                onClick={() => setFilterOpen(false)}
-                className="close-icon"
-                tw="before:content-[''] before:w-0 before:transition-all before:duration-300 hover:before:w-full hover:before:h-full before:h-0 before:absolute before:bg-white/20 before:rounded-full before:z-[-1] absolute text-white cursor-pointer rounded-full flex items-center justify-center text-3xl w-[50px] h-[50px] top-5 right-[-60px]"
-              >
-                <FiX />
-              </span>
-            }
-
-            
-          )}
-        </div>
-      </InstantSearch>
-    </>
           </div>
-          {!isMobile &&
+          {!isMobile && (
             <span
               onClick={() => setFilterOpen(false)}
               css={[
@@ -714,12 +487,12 @@ return (
                 filterOpen && tw`w-full`,
               ]}
             ></span>
-          }
+          )}
         </div>
+        {/* <DrawerFilter drawerToggle={drawerToggle} handleCloseFilter={handleCloseFilter}/> */}
       </div>
     </InstantSearch>
   );
 };
-*/
 
 export default StorePortFolio;

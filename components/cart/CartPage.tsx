@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -32,8 +32,7 @@ type EstimatedRateItem = {
   id: string;
   estimatedRate: number;
 };
-
-const Cart: NextPage = () => {
+export function CartComponent() {
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   const [works, setWorks] = useState<
     (CartItemType & {
@@ -334,5 +333,8 @@ const Cart: NextPage = () => {
       )}
     </div>
   );
+}
+const Cart: NextPage = () => {
+  return <CartComponent />;
 };
 export default Cart;
