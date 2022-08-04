@@ -157,11 +157,12 @@ function Onboarding() {
     const db = getFirestore(app);
     const username = values.username;
     //Step 1: add the artist document
+    console.log('Trying to upload new artist reference');
     const artistref = await addDoc(collection(db, 'artists'), {
       associatedUser: user.uid,
       artistName: values.name,
       acceptingCommissions: values.acceptCommissions === 'yes' ? true : false,
-      bio: "",
+      bio: '',
       coverImage: '',
       discipline: values.discipline,
       education: [],
@@ -256,18 +257,20 @@ function Onboarding() {
 
       <Header logoOnly />
 
-      {signupFormActive && (
-        isMobile ? (
+      {signupFormActive &&
+        (isMobile ? (
           router.push(
-            `/signin${window.location.search}${window.location.search ? '&' : '?'}redirect=onboarding`
+            `/signin${window.location.search}${
+              window.location.search ? '&' : '?'
+            }redirect=onboarding`
           )
-        ) :
+        ) : (
           <LoginForm
             defaultSignUp
             notCloseable
             onClose={() => setSignupFormActive(false)}
           />
-      )}
+        ))}
 
       <div tw="mt-5 h-full flex-grow flex flex-col">
         <div tw="flex flex-col items-center text-center px-6">
@@ -279,7 +282,11 @@ function Onboarding() {
         <Formik<OnboardingFormValues>
           initialValues={{
             name: '',
-            username: typeof window !== 'undefined' && queryString.parse(window.location.search).username as string || '',
+            username:
+              (typeof window !== 'undefined' &&
+                (queryString.parse(window.location.search)
+                  .username as string)) ||
+              '',
             discipline: '',
             country: defaultCountry,
             city: '',
@@ -331,7 +338,7 @@ function Onboarding() {
                       : tw`w-full grid grid-cols-[repeat(2, 160px)] justify-between`,
                   ]}
                 >
-                  {stage ?
+                  {stage ? (
                     <button
                       css={[
                         buttons.white,
@@ -340,9 +347,10 @@ function Onboarding() {
                       onClick={() => setStage(stage ? stage - 1 : 0)}
                     >
                       Back
-                    </button> :
+                    </button>
+                  ) : (
                     <div />
-                  }
+                  )}
                   <button
                     css={[
                       buttons.red,

@@ -2,6 +2,7 @@ import {
   ErrorMessage,
   Field,
   FieldProps,
+  useFormikContext,
   Form,
   Formik,
   FormikErrors,
@@ -37,6 +38,7 @@ export default function ProfileDetailsSection({
   country?: string;
   values: OnboardingFormValues;
 }) {
+  const formikProps = useFormikContext();
   const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -84,24 +86,37 @@ export default function ProfileDetailsSection({
       <div
         css={[
           !isMobile &&
-          tw`mx-auto grid grid-cols-[190px 1fr] items-center gap-x-[60px] gap-y-7 max-w-[648px]`,
+            tw`mx-auto grid grid-cols-[190px 1fr] items-center gap-x-[60px] gap-y-7 max-w-[648px]`,
         ]}
       >
         <div css={[styles.label, styles.req]}>Name</div>
-        <Field type="text" name="name" css={styles.input} tw="mt-2 md:mt-0" />
+        <Field
+          onChange={(e: any) => {
+            formikProps.handleChange(e);
+            formikProps.setFieldValue(
+              'username',
+              e.target.value.toLowerCase().replace(/\s/g, '')
+            );
+          }}
+          type="text"
+          name="name"
+          css={styles.input}
+          tw="mt-2 md:mt-0"
+        />
         <div css={[styles.label, styles.req]} tw="mt-4 md:mt-0">
           Pkazo Link
         </div>
         <div
-          tw='mt-2 md:mt-0 flex focus-within:border-[#888888] flex items-center'
+          tw="mt-2 md:mt-0 flex focus-within:border-[#888888] flex items-center"
           css={[styles.input]}
         >
           <div tw="font-semibold text-[#939393]">pkazo.com/</div>
           <Field
             type="text"
             name="username"
-            tw='outline-none w-full'
-            placeholder={values.name.toLowerCase().replace(/\s/g, '')}
+            tw="outline-none w-full"
+            //placeholder={values.name.toLowerCase().replace(/\s/g, '')}
+            //value={values.name.toLowerCase().replace(/\s/g, '')}
           />
         </div>
         <div css={[styles.label, styles.req]} tw="mt-4 md:mt-0">
