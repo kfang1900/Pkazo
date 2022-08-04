@@ -58,7 +58,7 @@ const fetchArtist = async (
   }
   const coverImageURL = result[0]?.data()?.coverImage
     ? await loadStorageImage(result[0].data().coverImage)
-    : '/doesnotexist';
+    : defaultCoverImage;
   setCover(coverImageURL);
   console.log('loaded cover image: ', coverImageURL);
   const portfolioCollection = await getPortfolioByRef(result[0]?.id);
