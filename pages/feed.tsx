@@ -31,7 +31,7 @@ const Feed: NextPage = () => {
                 css={[
                   tw`w-[15%] text-lg relative z-10 font-semibold text-[#8B8B8B] hover:bg-black/5 duration-150 py-1 border-b-4 border-transparent cursor-pointer text-center`,
                   page === index &&
-                  tw`border-soft-red pointer-events-none hover:bg-transparent text-[#333333]`,
+                    tw`border-soft-red pointer-events-none hover:bg-transparent text-[#333333]`,
                 ]}
               >
                 {p}

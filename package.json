@@ -8,6 +8,7 @@
     "start": "npm run dev",
     "serve": "next start",
     "lint": "next lint",
+    "format": "prettier --write '**/(*.js|.jsx|.ts|.tsx|.css|.md)'",
     "fbemu": "firebase emulators:start",
     "prepare": "husky install"
   },

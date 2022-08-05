@@ -23,18 +23,20 @@ const Dropdown = (props: DropdownProps) => {
         tw="pointer-events-none absolute top-1/2 -translate-y-1/2 transform"
         css={[props.triangle ? tw`right-3` : tw`right-4`]}
       >
-        {props.triangle ?
+        {props.triangle ? (
           <svg
             width="10"
             height="6"
             viewBox="0 0 10 6"
             fill="none"
-            xmlns="http://www.w3.org/2000/svg">
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M0.462769 0.166992H9.50119L4.9906 5.83287L0.462769 0.166992Z"
-              fill="#757575" />
+              fill="#757575"
+            />
           </svg>
-          :
+        ) : (
           <svg
             width="14"
             height="9"
@@ -47,7 +49,7 @@ const Dropdown = (props: DropdownProps) => {
               fill="#8E8E93"
             />
           </svg>
-        }
+        )}
       </button>
     </div>
   );

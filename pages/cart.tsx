@@ -12,12 +12,12 @@ import Cart from 'components/cart/CartPage';
 const CartPage: NextPage = () => {
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   return (
-    <div tw='min-h-[100vh] flex flex-col'>
+    <div tw="min-h-[100vh] flex flex-col">
       <Head>
         <title>Cart</title>
       </Head>
       <Header />
-      <div tw='flex-1 flex flex-col'>
+      <div tw="flex-1 flex flex-col">
         <Cart />
       </div>
     </div>
