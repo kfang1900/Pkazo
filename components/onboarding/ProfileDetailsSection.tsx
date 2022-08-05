@@ -8,6 +8,7 @@ import {
   FormikErrors,
 } from 'formik';
 import { getApp } from 'firebase/app';
+import useAuth from 'utils/auth/useAuth';
 import {
   addDoc,
   collection,
@@ -41,6 +42,7 @@ export default function ProfileDetailsSection({
   const formikProps = useFormikContext();
   const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
   const [isMobile, setIsMobile] = useState(false);
+  const [prepName, setName] = useState('');
   useEffect(() => {
     if (isMobile !== mediaQuery) setIsMobile(mediaQuery);
   }, [mediaQuery, isMobile]);

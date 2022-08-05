@@ -292,6 +292,7 @@ function Onboarding() {
             uniqueCollections: null,
             portfolios: [],
           }}
+          enableReinitialize
           validateOnChange={false}
           validate={(values) => {
             const errors: FormikErrors<OnboardingFormValues> = {};
