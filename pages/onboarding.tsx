@@ -20,6 +20,7 @@ import {
   DocumentData,
   Firestore,
   getDocs,
+  getDoc,
   getFirestore,
   query,
   QueryDocumentSnapshot,
@@ -194,7 +195,6 @@ function Onboarding() {
     router.push('/' + username);
     return 0;
   };
-
   useEffect(() => {
     console.log(loading, user);
     if (loading) {
@@ -229,6 +229,7 @@ function Onboarding() {
           //Reroute if onboarding already has been completed
           router.push('/' + username);
         }
+
         // if (result.length > 0) {
         //   setStage(1);
         // }
@@ -281,12 +282,8 @@ function Onboarding() {
         </div>
         <Formik<OnboardingFormValues>
           initialValues={{
-            name: '',
-            username:
-              (typeof window !== 'undefined' &&
-                (queryString.parse(window.location.search)
-                  .username as string)) ||
-              '',
+            name: user?.displayName || '',
+            username: user?.displayName?.toLowerCase().replace(/\s/g, '') || '',
             discipline: '',
             country: defaultCountry,
             city: '',
