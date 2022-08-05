@@ -227,6 +227,7 @@ function Onboarding() {
         });
         if (_artistId !== '') {
           //Reroute if onboarding already has been completed
+
           router.push('/' + username);
         }
 
@@ -322,7 +323,12 @@ function Onboarding() {
                     values={values}
                   />
                 )}
-                {stage === 1 && <PortfolioSection values={values} />}
+                {stage === 1 && (
+                  <PortfolioSection
+                    values={values}
+                    setFieldValue={setFieldValue}
+                  />
+                )}
               </div>
               <div
                 tw="mt-10 md:mt-[60px] md:px-[60px] md:w-full md:mx-auto md:pb-[30px]"

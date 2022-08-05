@@ -123,7 +123,7 @@ export default async function handler(
     console.log(JSON.stringify(e));
     res.status(500).json({
       success: false,
-      error: e,
+      code: 'INTERNAL_ERROR',
     });
   }
 }

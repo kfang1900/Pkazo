@@ -23,58 +23,69 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log(req.body);
-  if (!req.body.index || ['artists', 'works'].indexOf(req.body.index) === -1) {
-    res.status(400).json({
-      success: false,
-      code: 'INVALID_INDEX',
-      message:
-        'The provided index to update was invalid. It must be one of: artists, works.',
-    });
-  }
+  try {
+    console.log(req.body);
+    if (
+      !req.body.index ||
+      ['artists', 'works'].indexOf(req.body.index) === -1
+    ) {
+      res.status(400).json({
+        success: false,
+        code: 'INVALID_INDEX',
+        message:
+          'The provided index to update was invalid. It must be one of: artists, works.',
+      });
+    }
 
-  const index = client.initIndex(`pkazo-${req.body.index}`);
+    const index = client.initIndex(`pkazo-${req.body.index}`);
 
-  if (
-    !req.body.ids ||
-    !Array.isArray(req.body.ids) ||
-    req.body.ids.length === 0
-  ) {
-    res.status(400).json({
-      success: false,
-      code: 'INVALID_IDS',
-      message: 'An array of one or more ids must be provided.',
-    });
-  }
-  const ids: string[] = req.body.ids;
-  const deleteIds: string[] = [];
-  const data = (
-    await Promise.all(
-      ids.map((id) =>
-        admin
-          .firestore()
-          .collection(req.body.index)
-          .doc(id)
-          .get()
-          .then((snapshot) => {
-            if (!snapshot.exists || !snapshot.data()) {
-              deleteIds.push(id);
-              return null;
-            }
-            return {
-              ...snapshot.data(),
-              id: snapshot.id,
-              objectID: snapshot.id,
-            } as WorkRecord;
-          })
+    if (
+      !req.body.ids ||
+      !Array.isArray(req.body.ids) ||
+      req.body.ids.length === 0
+    ) {
+      res.status(400).json({
+        success: false,
+        code: 'INVALID_IDS',
+        message: 'An array of one or more ids must be provided.',
+      });
+    }
+    const ids: string[] = req.body.ids;
+    const deleteIds: string[] = [];
+    const data = (
+      await Promise.all(
+        ids.map((id) =>
+          admin
+            .firestore()
+            .collection(req.body.index)
+            .doc(id)
+            .get()
+            .then((snapshot) => {
+              if (!snapshot.exists || !snapshot.data()) {
+                deleteIds.push(id);
+                return null;
+              }
+              return {
+                ...snapshot.data(),
+                id: snapshot.id,
+                objectID: snapshot.id,
+              } as WorkRecord;
+            })
+        )
       )
-    )
-  ).filter((w) => w !== null) as (WorkRecord | ArtistRecord)[];
-  await index.saveObjects(data);
-  if (deleteIds.length > 0) {
-    await index.deleteObjects(deleteIds);
+    ).filter((w) => w !== null) as (WorkRecord | ArtistRecord)[];
+    await index.saveObjects(data);
+    if (deleteIds.length > 0) {
+      await index.deleteObjects(deleteIds);
+    }
+    res.status(200).json({
+      success: true,
+    });
+  } catch (e) {
+    console.error(JSON.stringify(e));
+    res.status(500).json({
+      success: false,
+      code: 'INTERNAL_ERROR',
+    });
   }
-  res.status(200).json({
-    success: true,
-  });
 }

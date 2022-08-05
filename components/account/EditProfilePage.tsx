@@ -288,7 +288,7 @@ export default function EditProfilePage() {
                     {!isMobile && <div />}
 
                     {isDataModified(values) && (
-                      <>
+                      <div>
                         <input
                           type="submit"
                           value="Save"
@@ -308,7 +308,7 @@ export default function EditProfilePage() {
                         >
                           Cancel
                         </button>
-                      </>
+                      </div>
                     )}
                   </div>
                 </Form>

@@ -94,11 +94,22 @@ export default function ProfileDetailsSection({
         <div css={[styles.label, styles.req]}>Name</div>
         <Field
           onChange={(e: any) => {
+            const oldName = values.name;
             formikProps.handleChange(e);
-            formikProps.setFieldValue(
-              'username',
-              e.target.value.toLowerCase().replace(/\s/g, '')
-            );
+            if (values.username === oldName.toLowerCase().replace(/\s/g, '')) {
+              formikProps.setFieldValue(
+                'username',
+                e.target.value.toLowerCase().replace(/\s/g, '')
+              );
+            }
+          }}
+          validate={(name: string) => {
+            // TODO: actually show validation message
+            if (name.length > 100) {
+              return 'Please enter just the first 100 characters of your name';
+            } else if (name.length < 4 || name.indexOf(' ') === -1) {
+              return 'Please enter your full name.';
+            }
           }}
           type="text"
           name="name"
