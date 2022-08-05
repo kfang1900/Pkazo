@@ -4,6 +4,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  setDoc,
   getFirestore,
   QuerySnapshot,
   DocumentData,
@@ -175,6 +176,21 @@ const getPortfolioImagesOnlyByRef = async (artistref: string) => {
   return [arr, arr2];
 };
 
+//Creates a user document with the same reference as the authentication id.
+//returns that reference to be in sync.
+const createUserWithID = async (
+  uid: string,
+  email: string,
+  displayName: string
+) => {
+  const app = getApp();
+  const db = getFirestore(app);
+  await setDoc(doc(db, 'users', uid), {
+    name: displayName,
+    email: email,
+  });
+  return uid;
+};
 export {
   getPortfolioByRef,
   fetchWorkByID,
@@ -183,5 +199,6 @@ export {
   fetchArtistByID,
   getPortfolioImagesOnlyByRef,
   loadStorageImageSafe,
+  createUserWithID,
 };
 export default { defaultString };
