@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import Image from 'next/image';
 import Link from 'next/link';
-
 import buttons from '../../styles/Button';
 import ConfirmUnfollowModal from '../profile/ConfirmUnfollow';
 import PostImage from './PostImage';
 import { MdRadioButtonUnchecked } from 'react-icons/md';
 import useAuth from '../../utils/auth/useAuth';
+import { createUserWithID } from 'helpers/FirebaseFunctions';
 
 interface LoginErrors {
   email?: string;
@@ -21,7 +21,6 @@ export interface LoginFormProps {
   redirect?: () => void;
   defaultSignUp?: boolean;
   notCloseable?: boolean;
-
 }
 export const Login = (props: LoginFormProps) => {
   const styles = {
@@ -66,13 +65,23 @@ export const Login = (props: LoginFormProps) => {
           }}
           onSubmit={async (values, { setFieldError }) => {
             try {
-              await auth.createUserWithEmailAndPassword(
+              const credential = await auth.createUserWithEmailAndPassword(
                 values.displayName,
                 values.email,
                 values.password
               );
-              if (props.redirect) props.redirect();
-              props.onClose();
+              if (credential && credential.user) {
+                console.log('creating user with uid ', credential.user.uid);
+                //Create a database reference for this user to later store user information.
+                const ref = await createUserWithID(
+                  credential.user.uid,
+                  values.displayName,
+                  values.email
+                );
+                console.log('created user with uid ', ref);
+                if (props.redirect) props.redirect();
+                props.onClose();
+              }
             } catch (error: any) {
               switch (error.code) {
                 case 'auth/email-already-in-use': {
@@ -341,9 +350,9 @@ function LoginForm(props: LoginFormProps) {
           <button
             onClick={props.onClose}
             tw="ml-5 w-11 h-11 border-0 relative flex items-center justify-center rounded-full"
-            className='group'
+            className="group"
           >
-            <div tw='w-0 transition-all duration-200 group-hover:w-full group-hover:h-full h-0 absolute bg-white/20 rounded-full z-[-1]' />
+            <div tw="w-0 transition-all duration-200 group-hover:w-full group-hover:h-full h-0 absolute bg-white/20 rounded-full z-[-1]" />
             <img
               src="/assets/svgs/close.svg"
               tw="w-4 h-4 m-auto"
