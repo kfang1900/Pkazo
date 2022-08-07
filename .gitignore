@@ -47,5 +47,5 @@ ui-debug.log
 .idea/
 todo.md
 
-.eslintcache
 .vscode
+.eslintcache
