@@ -233,7 +233,7 @@ function UploadWork({
   workId,
   toShow,
 }: {
-  onClose: () => void;
+  onClose: (newData: WorkData) => void;
   workId?: string;
   toShow: boolean;
 }) {
@@ -365,7 +365,7 @@ function UploadWork({
       surface: editData.surface,
       height: editData.height,
       width: editData.width,
-      units: editData.units,
+      units: editData.units || 'in',
       forSale: editData.forSale ? 'yes' : 'no',
       salePrice: editData.forSale ? editData.sale.price : '',
       saleSubject: editData.forSale ? editData.sale.subject : '',
@@ -376,18 +376,18 @@ function UploadWork({
         ? editData.sale.framing
           ? 'yes'
           : 'no'
-        : '',
+        : 'no',
       forPrint: editData.forPrint ? 'yes' : 'no',
       printPrice: editData.forPrint ? editData.print.price : '',
       printHeight: editData.forPrint ? editData.print.height : '',
       printWidth: editData.forPrint ? editData.print.width : '',
-      printUnits: editData.forPrint ? editData.print.units : '',
+      printUnits: editData.forPrint ? editData.print.units : 'in',
       printSurface: editData.forPrint ? editData.print.surface : '',
       printFraming: editData.forPrint
         ? editData.print.framing
           ? 'yes'
           : 'no'
-        : '',
+        : 'no',
     };
   }, [editMode, editData]);
 
@@ -482,6 +482,9 @@ function UploadWork({
                             }),
                             ...(values.saleStyle !== '' && {
                               style: values.saleStyle,
+                            }),
+                            ...(values.saleOrientation !== '' && {
+                              orientation: values.saleOrientation,
                             }),
                             ...(values.saleFraming !== '' && {
                               framing: values.saleFraming,
@@ -594,13 +597,12 @@ function UploadWork({
                     images: arrayUnion(...imageReferences),
                   });
                   await updateWorksIndex(workId + '');
+
                   if (!editMode) {
-                    onClose();
                     router.push(`/work/${workId}`);
                     window.location.reload();
-                  } else {
-                    onClose();
                   }
+                  onClose();
                 } catch (error: any) {
                   console.log(error);
                   throw error;
@@ -1166,6 +1168,14 @@ function UploadWork({
                                       ]}
                                     >
                                       <option value="" disabled />
+
+                                      <option value={'xx'} disabled>
+                                        val : {values.saleOrientation}
+                                      </option>
+                                      <option value={'324432'}>
+                                        val2 : {values.saleOrientation}
+                                      </option>
+
                                       {saleOrientations.map((value, i) => (
                                         <option key={i} value={value}>
                                           {value}

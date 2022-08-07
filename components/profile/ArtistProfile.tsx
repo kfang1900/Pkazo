@@ -40,7 +40,7 @@ const ArtistProfile = ({
   artistData: QueryDocumentSnapshot<DocumentData>[];
   isCurrentUserPage?: boolean;
 }) => {
-  const { artistId, user, showLoginModal } = useAuth();
+  const { artistId, user, showLoginModal, refreshUserData } = useAuth();
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   const isSmall = !useMediaQuery({ query: `(min-width: 1024px)` });
 
@@ -257,9 +257,11 @@ const ArtistProfile = ({
 
                           updateDoc(doc(db, 'users', user.uid), {
                             chats: arrayUnion(artistData[0].id),
-                          }).then(() => {
-                            return router.push(`/chat#${artistData[0].id}`);
-                          });
+                          })
+                            .then(() => refreshUserData())
+                            .then(() => {
+                              return router.push(`/chat#${artistData[0].id}`);
+                            });
                         }}
                       >
                         <div tw="pb-[1px] pl-[1px]">

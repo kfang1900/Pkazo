@@ -114,14 +114,22 @@ export default function FirebaseProvider({
           setArtistData(snapshot.data() as ArtistData);
           setLoading(false);
         });
-
-        const userDataSnapshot = await getDoc(doc(db, 'users', user.uid));
-        setUserData((userDataSnapshot.data() as UserData) || {});
       })();
     });
 
     return unsubscribe;
   }, []);
+
+  const refreshUserData = useCallback(async () => {
+    if (!user) {
+      return;
+    }
+    const db = getFirestore();
+
+    const userDataSnapshot = await getDoc(doc(db, 'users', user.uid));
+    setUserData((userDataSnapshot.data() as UserData) || {});
+  }, [user]);
+
   const [loginModalDefaultSignup, setLoginModalDefaultSignup] = useState(false);
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const auth = getAuth();
@@ -159,6 +167,7 @@ export default function FirebaseProvider({
         loading,
         artistData,
         userData,
+        refreshUserData,
         artistId,
         loginModalVisible,
         loginModalDefaultSignup,

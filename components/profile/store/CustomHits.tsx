@@ -1,5 +1,10 @@
 import styles from '../../../styles/ProfilePortfolio.module.css';
-import { Hits, HitsProps, useHits } from 'react-instantsearch-hooks-web';
+import {
+  Hits,
+  HitsProps,
+  useHits,
+  useInstantSearch,
+} from 'react-instantsearch-hooks-web';
 import Hit from './Hit';
 import Masonry from 'react-masonry-css';
 import React, { useEffect, useReducer } from 'react';
@@ -12,6 +17,7 @@ import {
 export default function CustomHits(props: HitsProps<ForSaleWorkRecord>) {
   console.log(props);
   const { hits } = useHits(props);
+
   console.log(hits);
   const [memonizedImageURLS, addMemonizedImageURL] = useReducer(
     (state: Record<string, string>, [workId, imageURL]: [string, string]) => {

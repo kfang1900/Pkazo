@@ -12,9 +12,9 @@ import {
   where,
 } from 'firebase/firestore';
 import { loadStorageImage } from '../../helpers/FirebaseFunctions';
-import { Field, Form, Formik } from 'formik';
+import { Field, Form, Formik, FormikConfig, FormikProps } from 'formik';
 import tw from 'twin.macro';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import useAuth from '../../utils/auth/useAuth';
 import useRequireOnboarding from '../../utils/hooks/useRequireOnboarding';
@@ -25,6 +25,7 @@ import { useMediaQuery } from 'react-responsive';
 import { showEdu, showExp, showExh } from '../profile/ArtistInfoHelper';
 import EditProfilePopups from './EditProfilePopups';
 import { show } from 'dom7';
+import { useRouter } from 'next/router';
 
 export default function EditProfilePage() {
   const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
@@ -41,7 +42,7 @@ export default function EditProfilePage() {
     | undefined
   >();
   const [artistId, setArtistId] = useState('');
-  const { user, loading } = useAuth();
+  const { user, loading, artistData } = useAuth();
   useEffect(() => {
     console.log(loading, user);
     if (loading || !user) {
@@ -73,7 +74,7 @@ export default function EditProfilePage() {
       })();
     }
   }, [loading, user]);
-
+  const router = useRouter();
   const [isModified, setIsModified] = useState(false);
   const isDataModified = useCallback(
     (values: {
@@ -93,6 +94,17 @@ export default function EditProfilePage() {
     },
     [data]
   );
+
+  const formRef = useRef<
+    | undefined
+    | FormikProps<{
+        name: string;
+        discipline: string;
+        location: string;
+        bio: string;
+        rerenderCounter: number;
+      }>
+  >(undefined);
 
   const [showPopup, setShowPopup] = useState(-1);
 
@@ -158,9 +170,18 @@ export default function EditProfilePage() {
                 </div>
                 <div tw="w-10">
                   {isModified && (
-                    <div tw="cursor-pointer text-[14px] font-semibold text-[#E44C4D]">
+                    <button
+                      tw="cursor-pointer text-[14px] font-semibold text-[#E44C4D]"
+                      onClick={() => {
+                        if (formRef && formRef.current) {
+                          (
+                            formRef.current as unknown as FormikProps<any>
+                          ).handleSubmit();
+                        }
+                      }}
+                    >
                       Save
-                    </div>
+                    </button>
                   )}
                 </div>
               </div>
@@ -222,6 +243,7 @@ export default function EditProfilePage() {
 
           {data && (
             <Formik
+              innerRef={formRef as any}
               initialValues={{
                 name: data.name,
                 discipline: data.discipline,
@@ -258,61 +280,75 @@ export default function EditProfilePage() {
                   values.rerenderCounter + 1
                 );
                 console.log('updated');
+
+                // on mobile, the save button is on the top right, so
+                // it also closes the popup and sends the user back.
+                // todo: make a better ui for saving that's consistent on mobile and desktop
+                if (isMobile && artistData?.username) {
+                  router.push('/' + artistData?.username);
+                }
               }}
             >
-              {({ values, setValues }) => (
-                <Form>
-                  <div
-                    css={[
-                      isMobile
-                        ? tw`mt-5 grid grid-cols-[80px auto] px-4 gap-x-2 gap-y-3`
-                        : tw`w-full mt-6 grid grid-cols-[115px 506px] gap-x-7 gap-y-6`,
-                    ]}
-                  >
-                    <div css={styles.label}>Name</div>
-                    <Field type="input" name="name" css={styles.input} />
-                    <div css={styles.label}>Discipline</div>
-                    <Field type="input" name="discipline" css={styles.input} />
-                    <div css={styles.label}>Location</div>
-                    <Field type="input" name="location" css={styles.input} />
-                    <div css={styles.label}>Bio</div>
-                    <Field
-                      component="textarea"
-                      name="bio"
+              {({ values, setValues }) => {
+                isDataModified(values);
+                return (
+                  <Form>
+                    <div
                       css={[
-                        styles.input,
-                        tw`h-[80px] md:h-[160px] py-2 resize-none`,
-                        isMobile && tw`col-span-2 -mt-1`,
+                        isMobile
+                          ? tw`mt-5 grid grid-cols-[80px auto] px-4 gap-x-2 gap-y-3`
+                          : tw`w-full mt-6 grid grid-cols-[115px 506px] gap-x-7 gap-y-6`,
                       ]}
-                    />
-                    {!isMobile && <div />}
+                    >
+                      <div css={styles.label}>Name</div>
+                      <Field type="input" name="name" css={styles.input} />
+                      <div css={styles.label}>Discipline</div>
+                      <Field
+                        type="input"
+                        name="discipline"
+                        css={styles.input}
+                      />
+                      <div css={styles.label}>Location</div>
+                      <Field type="input" name="location" css={styles.input} />
+                      <div css={styles.label}>Bio</div>
+                      <Field
+                        component="textarea"
+                        name="bio"
+                        css={[
+                          styles.input,
+                          tw`h-[80px] md:h-[160px] py-2 resize-none`,
+                          isMobile && tw`col-span-2 -mt-1`,
+                        ]}
+                      />
+                      {!isMobile && <div />}
 
-                    {isDataModified(values) && (
-                      <div>
-                        <input
-                          type="submit"
-                          value="Save"
-                          tw="h-9 w-20 relative -top-0.5 text-white bg-theme-red rounded-[6px] px-4 py-1 cursor-pointer hover:bg-[#be4040]"
-                        />
-                        <button
-                          tw="ml-5 h-9 w-24 border border-[#D8D8D8] rounded-[6px] px-4 text-[#3C3C3C] text-[16px] hover:bg-[#F5F5F5]"
-                          onClick={() => {
-                            setValues({
-                              name: data.name,
-                              discipline: data.discipline,
-                              location: data.location,
-                              bio: data.bio,
-                              rerenderCounter: values.rerenderCounter,
-                            });
-                          }}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </Form>
-              )}
+                      {!isMobile && isDataModified(values) && (
+                        <div>
+                          <input
+                            type="submit"
+                            value="Save"
+                            tw="h-9 w-20 relative -top-0.5 text-white bg-theme-red rounded-[6px] px-4 py-1 cursor-pointer hover:bg-[#be4040]"
+                          />
+                          <button
+                            tw="ml-5 h-9 w-24 border border-[#D8D8D8] rounded-[6px] px-4 text-[#3C3C3C] text-[16px] hover:bg-[#F5F5F5]"
+                            onClick={() => {
+                              setValues({
+                                name: data.name,
+                                discipline: data.discipline,
+                                location: data.location,
+                                bio: data.bio,
+                                rerenderCounter: values.rerenderCounter,
+                              });
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </Form>
+                );
+              }}
             </Formik>
           )}
           <div css={styles.section}>Cover Image</div>

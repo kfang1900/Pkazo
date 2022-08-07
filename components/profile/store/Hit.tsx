@@ -10,6 +10,7 @@ import { loadStorageImage } from '../../../helpers/FirebaseFunctions';
 import { useMediaQuery } from 'react-responsive';
 import UploadWork from '../../uploading/UploadWork';
 import useAuth from '../../../utils/auth/useAuth';
+import { useInstantSearch } from 'react-instantsearch-hooks-web';
 
 export default function Hit({
   hit: work,
@@ -21,11 +22,20 @@ export default function Hit({
   const { user, artistId: userArtistId } = useAuth();
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   const [editing, setEditing] = useState(false);
+  const { refresh } = useInstantSearch();
+
   return (
     <>
       {editing && (
         <UploadWork
-          onClose={() => setEditing(false)}
+          onClose={() => {
+            setEditing(false);
+            refresh();
+            const timeoutIds = [500, 1000, 1500, 2000, 3000, 5000].map((ms) =>
+              setTimeout(() => refresh(), ms)
+            );
+            return () => timeoutIds.forEach((id) => clearTimeout(id));
+          }}
           workId={work.id}
           toShow={editing}
         />
@@ -61,23 +71,14 @@ export default function Hit({
           ) : (
             <div tw="mt-4">
               <div tw="text-[#3C3C3C] text-[20px] leading-[1em] font-semibold">
-                {work.title}{' '}
-                <button
-                  tw={'underline italic ml-8'}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setEditing(true);
-                  }}
-                >
-                  Edit
-                </button>
+                {work.title}
               </div>
               <div tw="flex justify-between mt-2">
                 <div tw="text-[#838383] text-[18px] leading-[1em] italic">
                   {work.medium}
                 </div>
                 <div tw="text-black text-[24px] leading-[1em] font-bold">
-                  ${work.sale ? work.sale.price : 'NFS!!'}
+                  {work.sale ? '$' + work.sale.price : ''}
                 </div>
               </div>
             </div>

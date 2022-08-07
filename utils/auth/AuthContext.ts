@@ -23,6 +23,7 @@ export type Auth = {
   artistData: ArtistData | null;
   artistId: string | null;
   userData: UserData | null;
+  refreshUserData: () => Promise<void>;
   isArtist: boolean | null;
   showLoginModal: (defaultSignup?: boolean) => void;
   hideLoginModal: () => void;
@@ -57,6 +58,7 @@ const AuthContext = createContext<Auth>({
   artistData: null,
   artistId: null,
   userData: null,
+  refreshUserData: () => Promise.resolve(),
   isArtist: null,
   showLoginModal: () => {
     /* noop */

@@ -79,7 +79,7 @@ const ChatPage: NextPage = () => {
     const app = getApp();
     const db = getFirestore(app);
     const rtdb = getDatabase(app);
-
+    console.log(userData.chats);
     Promise.all(
       userData.chats.map(async (id) => {
         const snapshot = await getDoc(doc(db, 'artists', id));
@@ -123,7 +123,11 @@ const ChatPage: NextPage = () => {
         return data;
       })
     ).then((data) => {
-      if (!selectedChat && data.length > 0) {
+      if (
+        !selectedChat &&
+        (!window.location.hash || window.location.hash === '#') &&
+        data.length > 0
+      ) {
         window.location.hash = data[0].id;
         setSelectedChat(data[0].id);
       }
@@ -160,6 +164,7 @@ const ChatPage: NextPage = () => {
         <meta name="description" content="" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <div tw="absolute top-0 bottom-0 left-0 right-0 flex flex-col">
         <Header />
         <Container tw="w-full max-h-full flex overflow-hidden">
