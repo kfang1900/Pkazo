@@ -66,7 +66,6 @@ const Header = (props: {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showChooseWorkDropdown, setShowChooseWorkDropdown] = useState(false);
   const [showUploadWorkPopup, setShowUploadWorkPopup] = useState(false);
-  const [loginPopup, setLoginPopup] = useState(false);
 
   // search states
   const [showSearch, setShowSearch] = useState(false);
@@ -138,13 +137,20 @@ const Header = (props: {
   //   );
   // }
 
+  if (isMobile && loginModalVisible) {
+    console.log('REDIR');
+    router.push(
+      `/signin?redirect=${encodeURIComponent(window.location.pathname)}`
+    );
+  }
+
   return (
     <>
       {props.isSticky && <div tw="mb-10 md:mb-[60px] w-full" />}
       <div css={navStyle}>
-        {!isMobile && loginPopup && (
+        {!isMobile && loginModalVisible && (
           <LoginForm
-            onClose={() => setLoginPopup(false)}
+            onClose={() => hideLoginModal()}
             defaultSignUp={loginModalDefaultSignup}
           />
         )}
@@ -278,7 +284,7 @@ const Header = (props: {
                 >
                   <button
                     tw="text-[12px] md:text-[14px] text-[#222222] font-semibold py-1 flex-shrink-0"
-                    onClick={() => setLoginPopup(true)}
+                    onClick={() => showLoginModal()}
                   >
                     Sign in
                   </button>

@@ -142,6 +142,7 @@ const ArtistProfile = ({
                         tw="text-[#3B3B3B] w-8 h-8 md:w-12 md:h-12 p-0 flex items-center justify-center md:border-2"
                         onClick={() => {
                           if (!user || !artistData[0].id) {
+                            showLoginModal();
                             return;
                           }
                           const app = getApp();

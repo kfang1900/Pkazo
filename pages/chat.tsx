@@ -46,7 +46,7 @@ export type ChatMessage = {
   id: string;
 };
 const ChatPage: NextPage = () => {
-  const { userData, loading: authLoading, user } = useAuth();
+  const { userData, artistData, loading: authLoading, user } = useAuth();
   const [selectedChat, setSelectedChat] = useState('');
 
   const [selected, setSelected] = useState(0);
@@ -149,7 +149,7 @@ const ChatPage: NextPage = () => {
     return () => window.removeEventListener('hashchange', handler);
   }, [setSelectedChat]);
   useEffect(() => {
-    if (selectedChat !== window.location.hash.substring(1)) {
+    if (selectedChat && selectedChat !== window.location.hash.substring(1)) {
       window.location.hash = selectedChat;
     }
   }, [selectedChat]);
@@ -164,7 +164,6 @@ const ChatPage: NextPage = () => {
         <meta name="description" content="" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <div tw="absolute top-0 bottom-0 left-0 right-0 flex flex-col">
         <Header />
         <Container tw="w-full max-h-full flex overflow-hidden">

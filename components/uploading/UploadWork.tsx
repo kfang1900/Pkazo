@@ -233,7 +233,7 @@ function UploadWork({
   workId,
   toShow,
 }: {
-  onClose: (newData: WorkData) => void;
+  onClose: () => void;
   workId?: string;
   toShow: boolean;
 }) {

@@ -114,6 +114,9 @@ export default function FirebaseProvider({
           setArtistData(snapshot.data() as ArtistData);
           setLoading(false);
         });
+
+        const userDataSnapshot = await getDoc(doc(db, 'users', user.uid));
+        setUserData((userDataSnapshot.data() as UserData) || {});
       })();
     });
 
