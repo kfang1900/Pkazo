@@ -148,9 +148,13 @@ const ArtistProfile = ({
                           const app = getApp();
                           const db = getFirestore(app);
 
-                          updateDoc(doc(db, 'users', user.uid), {
-                            chats: arrayUnion(artistData[0].id),
-                          }).then(() => {
+                          setDoc(
+                            doc(db, 'users', user.uid),
+                            {
+                              chats: arrayUnion(artistData[0].id),
+                            },
+                            { merge: true }
+                          ).then(() => {
                             return router.push(`/chat#${artistData[0].id}`);
                           });
                         }}
