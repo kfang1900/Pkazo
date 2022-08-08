@@ -15,6 +15,7 @@ import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { showEdu, showExp, showExh } from './ArtistInfoHelper';
 import UploadWork from '../uploading/UploadWork';
 import useAuth from '../../utils/auth/useAuth';
+import { useRouter } from 'next/router';
 
 interface PortfolioObject {
   Portfolios: Record<string, any>[];
@@ -99,12 +100,17 @@ function GallerySection({
   //   });
   // }, []);
   const [activeEditingWork, setActiveEditingWork] = useState('');
+  const router = useRouter();
+
   return (
     <div>
       {activeEditingWork && (
         <UploadWork
           workId={activeEditingWork}
-          onClose={() => setActiveEditingWork('')}
+          onClose={() => {
+            return router.push('/work/' + activeEditingWork);
+            // setActiveEditingWork('')
+          }}
           toShow={!!activeEditingWork}
         />
       )}

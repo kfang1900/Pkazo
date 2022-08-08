@@ -107,6 +107,15 @@ const Header = (props: {
     window.addEventListener('click', handler);
     return () => window.removeEventListener('click', handler);
   });
+
+  useEffect(() => {
+    if (isMobile && loginModalVisible) {
+      router.push(
+        `/signin?redirect=${encodeURIComponent(window.location.pathname)}`
+      );
+    }
+  }, [isMobile, loginModalVisible]);
+
   if (props.logoOnly) {
     return (
       <div tw="top-0 z-50 w-full">
@@ -136,13 +145,6 @@ const Header = (props: {
   //     </div>
   //   );
   // }
-
-  if (isMobile && loginModalVisible) {
-    console.log('REDIR');
-    router.push(
-      `/signin?redirect=${encodeURIComponent(window.location.pathname)}`
-    );
-  }
 
   return (
     <>

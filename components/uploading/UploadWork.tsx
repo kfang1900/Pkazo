@@ -640,7 +640,7 @@ function UploadWork({
                       </div>
                       <button
                         type={'submit'}
-                        tw="text-[16px] leading-[1em] text-[#3C3C3C] font-semibold"
+                        tw="text-[16px] leading-[1em] text-[#E44C4D] font-semibold"
                       >
                         Save
                       </button>
@@ -1168,14 +1168,6 @@ function UploadWork({
                                       ]}
                                     >
                                       <option value="" disabled />
-
-                                      <option value={'xx'} disabled>
-                                        val : {values.saleOrientation}
-                                      </option>
-                                      <option value={'324432'}>
-                                        val2 : {values.saleOrientation}
-                                      </option>
-
                                       {saleOrientations.map((value, i) => (
                                         <option key={i} value={value}>
                                           {value}

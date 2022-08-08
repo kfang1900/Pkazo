@@ -11,6 +11,7 @@ import { useMediaQuery } from 'react-responsive';
 import UploadWork from '../../uploading/UploadWork';
 import useAuth from '../../../utils/auth/useAuth';
 import { useInstantSearch } from 'react-instantsearch-hooks-web';
+import { useRouter } from 'next/router';
 
 export default function Hit({
   hit: work,
@@ -26,24 +27,26 @@ export default function Hit({
 
   const [isRefreshEnabled, enableRefresh] = useReducer(() => true, false);
 
-  useEffect(() => {
-    if (!isRefreshEnabled) return;
-
-    refresh();
-    const timeoutIds = [500, 1000, 1500, 2000, 3000, 5000].map((ms) =>
-      setTimeout(() => refresh(), ms)
-    );
-
-    return () => timeoutIds.forEach((id) => clearTimeout(id));
-  }, [isRefreshEnabled]);
-
+  // useEffect(() => {
+  //   if (!isRefreshEnabled) return;
+  //
+  //   refresh();
+  //   const timeoutIds = [500, 1000, 1500, 2000, 3000, 5000].map((ms) =>
+  //     setTimeout(() => refresh(), ms)
+  //   );
+  //
+  //   return () => timeoutIds.forEach((id) => clearTimeout(id));
+  // }, [isRefreshEnabled]);
+  const router = useRouter();
   return (
     <>
       {editing && (
         <UploadWork
           onClose={() => {
-            setEditing(false);
-            enableRefresh();
+            // setEditing(false);
+            // enableRefresh();
+            return router.push('/work/' + work.id);
+            // setActiveEditingWork('')
           }}
           workId={work.id}
           toShow={editing}
