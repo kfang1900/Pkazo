@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Header from 'components/Header';
@@ -13,15 +13,22 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 const LoginPage: NextPage = () => {
   const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
   const router = useRouter();
+  const redirect = useMemo(() => {
+    if (typeof window === 'undefined') {
+      return '/';
+    }
+    const queryParam =
+      queryString.parse(window.location.search).redirect + '' || '/';
+    return queryParam.indexOf('/signin') !== 0 ? queryParam : '/';
+  }, []);
+  console.log(redirect);
   useEffect(() => {
-    onAuthStateChanged(getAuth(), (user) => {
+    return onAuthStateChanged(getAuth(), (user) => {
       if (user) {
         // TODO: why is queryString.exclude used? the query string in the redirect should be URL encoded so there shouldn't
         // be a need to pass through any query parameters
-        router.push(
-          ((queryString.parse(window.location.search).redirect as string) ||
-            '/') + queryString.exclude(window.location.search, ['redirect'])
-        );
+
+        router.push(redirect);
       }
     });
   }, []);
@@ -34,12 +41,9 @@ const LoginPage: NextPage = () => {
       <div tw="flex justify-center w-full">
         <Login
           onClose={() => 0}
-          redirect={() =>
-            router.push(
-              ((queryString.parse(window.location.search).redirect as string) ||
-                '/') + queryString.exclude(window.location.search, ['redirect'])
-            )
-          }
+          redirect={() => {
+            router.push(redirect);
+          }}
           defaultSignUp={
             typeof window !== 'undefined' &&
             typeof queryString.parse(window.location.search).register !==

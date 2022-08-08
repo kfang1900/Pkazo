@@ -110,6 +110,7 @@ const Header = (props: {
 
   useEffect(() => {
     if (isMobile && loginModalVisible) {
+      hideLoginModal();
       router.push(
         `/signin?redirect=${encodeURIComponent(window.location.pathname)}`
       );
