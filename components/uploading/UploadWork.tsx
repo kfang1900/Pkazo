@@ -352,6 +352,12 @@ function UploadWork({
         {
           title: '',
           description: '',
+          height: '',
+          width: '',
+          saleColor: '',
+          printPrice: '',
+          printHeight: '',
+          printWidth: '',
         }
       );
     }
