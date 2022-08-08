@@ -30,6 +30,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { ArtistData, UserData } from '../../types/dbTypes';
+import { useMediaQuery } from 'react-responsive';
 
 export default function FirebaseProvider({
   children,
@@ -136,6 +137,15 @@ export default function FirebaseProvider({
   const [loginModalDefaultSignup, setLoginModalDefaultSignup] = useState(false);
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const auth = getAuth();
+
+  const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    if (isMobile !== mediaQuery) setIsMobile(mediaQuery);
+  }, [mediaQuery, isMobile]);
+
+  const largeQuery = useMediaQuery({ query: `(min-width: 1280px)` });
+
   return (
     <AuthContext.Provider
       value={{

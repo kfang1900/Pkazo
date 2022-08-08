@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import Link from 'next/link';
 import 'twin.macro';
 import {
@@ -24,17 +24,26 @@ export default function Hit({
   const [editing, setEditing] = useState(false);
   const { refresh } = useInstantSearch();
 
+  const [isRefreshEnabled, enableRefresh] = useReducer(() => true, false);
+
+  useEffect(() => {
+    if (!isRefreshEnabled) return;
+
+    refresh();
+    const timeoutIds = [500, 1000, 1500, 2000, 3000, 5000].map((ms) =>
+      setTimeout(() => refresh(), ms)
+    );
+
+    return () => timeoutIds.forEach((id) => clearTimeout(id));
+  }, [isRefreshEnabled]);
+
   return (
     <>
       {editing && (
         <UploadWork
           onClose={() => {
             setEditing(false);
-            refresh();
-            const timeoutIds = [500, 1000, 1500, 2000, 3000, 5000].map((ms) =>
-              setTimeout(() => refresh(), ms)
-            );
-            return () => timeoutIds.forEach((id) => clearTimeout(id));
+            enableRefresh();
           }}
           workId={work.id}
           toShow={editing}

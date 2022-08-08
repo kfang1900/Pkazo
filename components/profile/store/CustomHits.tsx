@@ -15,13 +15,10 @@ import {
 } from '../../../helpers/FirebaseFunctions';
 
 export default function CustomHits(props: HitsProps<ForSaleWorkRecord>) {
-  console.log(props);
   const { hits } = useHits(props);
 
-  console.log(hits);
   const [memonizedImageURLS, addMemonizedImageURL] = useReducer(
     (state: Record<string, string>, [workId, imageURL]: [string, string]) => {
-      console.log(state, workId, imageURL);
       return {
         ...state,
         [workId]: imageURL,
