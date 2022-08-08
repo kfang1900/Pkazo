@@ -108,15 +108,6 @@ const Header = (props: {
     return () => window.removeEventListener('click', handler);
   });
 
-  useEffect(() => {
-    if (isMobile && loginModalVisible) {
-      hideLoginModal();
-      router.push(
-        `/signin?redirect=${encodeURIComponent(window.location.pathname)}`
-      );
-    }
-  }, [isMobile, loginModalVisible]);
-
   if (props.logoOnly) {
     return (
       <div tw="top-0 z-50 w-full">
@@ -300,7 +291,7 @@ const Header = (props: {
                   onClick={() => {
                     if (isMobile)
                       router.push('/signin?redirect=onboarding&register');
-                    else window.open('/onboarding', '_self');
+                    else router.push('/onboarding');
                   }}
                 >
                   Sell on Pkazo
@@ -314,7 +305,11 @@ const Header = (props: {
                     buttons.red,
                     tw`font-semibold w-[108px] md:w-[121px] h-[32px] md:h-[42px] text-[12px] md:text-[14px] px-0 py-0 flex-shrink-0`,
                   ]}
-                  onClick={() => window.open('/onboarding', '_self')}
+                  onClick={() => {
+                    if (isMobile)
+                      router.push('/signin?redirect=onboarding&register');
+                    else router.push('/onboarding');
+                  }}
                 >
                   Sell on Pkazo
                 </button>

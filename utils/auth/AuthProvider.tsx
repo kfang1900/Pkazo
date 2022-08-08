@@ -138,13 +138,7 @@ export default function FirebaseProvider({
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const auth = getAuth();
 
-  const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    if (isMobile !== mediaQuery) setIsMobile(mediaQuery);
-  }, [mediaQuery, isMobile]);
-
-  const largeQuery = useMediaQuery({ query: `(min-width: 1280px)` });
+  const isMobile = !useMediaQuery({ query: `(min-width: 768px)` });
 
   return (
     <AuthContext.Provider
@@ -185,6 +179,12 @@ export default function FirebaseProvider({
         loginModalVisible,
         loginModalDefaultSignup,
         showLoginModal: (defaultSignup = false) => {
+          console.log('Called');
+          if (isMobile) {
+            return router.push(
+              `/signin?redirect=${encodeURIComponent(window.location.pathname)}`
+            );
+          }
           setLoginModalDefaultSignup(defaultSignup);
           setLoginModalVisible(true);
         },

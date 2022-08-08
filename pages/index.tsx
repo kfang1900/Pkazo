@@ -91,9 +91,9 @@ const Home: NextPage = () => {
                 onClick={() =>
                   router.push(
                     isMobile && !user
-                      ? `/signin?redirect=/onboarding${
-                          username && '&username=' + username
-                        }&register`
+                      ? `/signin?redirect=${encodeURIComponent(
+                          `/onboarding?username=${username}`
+                        )}&register`
                       : `/onboarding${username && '?username=' + username}`
                   )
                 }

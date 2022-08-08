@@ -21,13 +21,13 @@ const LoginPage: NextPage = () => {
       queryString.parse(window.location.search).redirect + '' || '/';
     return queryParam.indexOf('/signin') !== 0 ? queryParam : '/';
   }, []);
-  console.log(redirect);
+  console.log(
+    'LOADED',
+    typeof window !== 'undefined' ? window.location.href : 'undef'
+  );
   useEffect(() => {
     return onAuthStateChanged(getAuth(), (user) => {
       if (user) {
-        // TODO: why is queryString.exclude used? the query string in the redirect should be URL encoded so there shouldn't
-        // be a need to pass through any query parameters
-
         router.push(redirect);
       }
     });
