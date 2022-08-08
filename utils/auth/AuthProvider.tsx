@@ -193,6 +193,7 @@ export default function FirebaseProvider({
           setLoginModalVisible(false);
         },
         signOut: () => {
+          localStorage.removeItem('pkazo-upload-work-saved-data');
           return signOut(getAuth());
         },
         // TODO actually differentiate between artists and non artists

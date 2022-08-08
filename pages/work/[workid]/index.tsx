@@ -605,25 +605,27 @@ const IndividualWork: NextPage = () => {
             </div>
           </div>
           <div tw="ml-16 w-full">
-            <div tw="flex items-center">
-              <div tw="w-[60px] h-[60px] overflow-hidden rounded-full flex items-center">
-                <Image
-                  src={artistPicture}
-                  alt="profile_image"
-                  width="60px"
-                  height="60px"
-                  objectFit="cover"
-                />
-              </div>
-              <div tw="ml-5">
-                <div tw="text-[20px] leading-[1em] font-bold text-[#3C3C3C]">
-                  {artistData.name}
+            <Link href={'/' + artistData.username}>
+              <div tw="flex items-center cursor-pointer">
+                <div tw="w-[60px] h-[60px] overflow-hidden rounded-full flex items-center">
+                  <Image
+                    src={artistPicture}
+                    alt="profile_image"
+                    width="60px"
+                    height="60px"
+                    objectFit="cover"
+                  />
                 </div>
-                <div tw="mt-[6px] text-[16px] leading-[1em] font-semibold text-[#838383]">
-                  {artistData.location}
+                <div tw="ml-5">
+                  <div tw="text-[20px] leading-[1em] font-bold text-[#3C3C3C]">
+                    {artistData.name}
+                  </div>
+                  <div tw="mt-[6px] text-[16px] leading-[1em] font-semibold text-[#838383]">
+                    {artistData.location}
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
             {workData.forPrint && (
               <div tw="mt-3 grid grid-cols-[94px 94px] justify-center w-full gap-x-10 text-[22px] font-semibold">
                 {['Original', 'Print'].map((type, i) => (
