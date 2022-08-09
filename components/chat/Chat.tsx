@@ -39,7 +39,7 @@ export default function Chat({
   pfp: string;
   name: string;
   scrollRef: React.Ref<HTMLDivElement>;
-  messageRef: React.Ref<HTMLInputElement>;
+  messageRef: React.Ref<HTMLTextAreaElement>;
   messages: ChatMessage[];
 }) {
   const { user } = useAuth();
@@ -67,15 +67,14 @@ export default function Chat({
   }, [user, text, setText, partnerId]);
 
   return (
-    <div tw="flex-grow-[2] px-7 flex flex-col relative">
-      <div tw="pt-7 pb-5 border-b border-b-[#D8D8D8] flex items-center">
-        <div tw="ml-2 w-[52px] h-[52px] relative overflow-hidden rounded-full">
+    <div tw="flex-grow-[2]flex flex-col relative">
+      <div tw=" px-7 pt-4 pb-4 border-b border-b-[#D8D8D8] flex items-center">
+        <div tw="ml-2 w-[48px] h-[48px] relative overflow-hidden rounded-full">
           <Image src={pfp} alt="pfp" layout="fill" objectFit="cover" />
         </div>
         <div tw="ml-4">
-          <div tw="text-[20px] font-semibold text-black leading-[1em]">
-            {name}
-          </div>
+          <div tw="text-[20px] text-black leading-[1.25em]">{name}</div>
+          <div tw="text-[18px] text-gray-400 leading-[1em]">Painter</div>
           {/*<div tw="text-[14px] text-[#838383] leading-[1em] mt-2">Online</div>*/}
         </div>
       </div>
@@ -117,7 +116,7 @@ export default function Chat({
                     <div tw="w-12" />
                   )}
                   <div
-                    tw="max-w-[75%] py-2 px-4 rounded-[20px]"
+                    tw="max-w-[360px] py-2 px-4 rounded-[20px] text-[#222222] break-words"
                     css={[
                       isCurrentUser
                         ? tw`bg-[#F4F4F4]`
@@ -148,11 +147,11 @@ export default function Chat({
           })}
         </div>
       </div>
-      <div tw="mt-auto py-4 bg-white">
-        <div tw="flex items-center rounded-[25px] bg-[#F4F4F4] h-11 px-6">
-          <input
+      <div tw="mt-auto px-4 bg-white flex-grow">
+        <div tw="flex items-center rounded-[25px] border border-[#D8D8D8] mb-4 mt-4 px-6">
+          <textarea
             ref={messageRef}
-            tw="w-full bg-transparent outline-none text-[14px]"
+            tw="w-full mt-2 resize-none bg-transparent outline-none text-[14px] focus:outline-none focus:resize-y text-[#222222]"
             placeholder="Message..."
             value={text}
             onChange={(e) => setText(e.target.value)}

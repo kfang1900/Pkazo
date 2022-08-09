@@ -36,34 +36,35 @@ export default function ChatSidebarItem({
   name: string;
   latestMessage: ChatMessage | null;
 }) {
-  console.log(latestMessage, "LMLMLMLMLMLM");
+  //console.log(latestMessage, "LMLMLMLMLMLM");
 
   // TODO
   const read = !selected;
   return (
     <div
-      tw="border-t border-t-[#D8D8D8] pt-4 pb-5 flex items-center justify-between cursor-pointer hover:bg-[#FAFAFA]"
+      tw="border-t border-t-[#D8D8D8] pt-4 pb-5 flex items-center justify-between cursor-pointer w-full"
+      css={[read ? tw`bg-white hover:bg-[#fafafa]` : tw`bg-[#efefef]`]}
       onClick={() => onSelect()}
     >
-      <div tw="flex">
-        <div tw="relative w-[50px] h-[50px] overflow-hidden rounded-full">
+      <div tw="flex pl-7 pr-7">
+        <div tw="relative w-[52px] h-[52px] overflow-hidden rounded-full">
           <Image src={pfp} alt="pfp" layout="fill" objectFit="cover" />
         </div>
         <div tw="ml-4">
           <div
             tw="text-[20px] text-black leading-[1em]"
-            css={[read ? tw`font-semibold` : tw`font-bold`]}
+            //css={tw`font-semibold`}
           >
             {name}
           </div>
-          <div tw="text-[14px] leading-[1em] mt-2">
+          <div tw="text-[14px] leading-[1.2em] mt-2">
             <span
-              tw="text-[#3C3C3C] overflow-ellipsis overflow-hidden whitespace-nowrap"
-              css={[!read && tw`font-semibold`]}
+              tw="text-[#3C3C3C] overflow-ellipsis max-w-[180px] inline-block overflow-x-hidden whitespace-nowrap"
+              //css={tw`font-semibold`}
             >
               {latestMessage && latestMessage.text}
             </span>
-            <span tw="text-[#838383]">
+            <span tw="text-[#838383] text-[14px]">
               {' · '}
               {latestMessage?.timestamp && timeElapsed(latestMessage.timestamp)}
             </span>

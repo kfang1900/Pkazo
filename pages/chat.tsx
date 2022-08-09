@@ -53,7 +53,7 @@ const ChatPage: NextPage = () => {
   // to reset scroll on different user click
   const scrollRef = useRef<HTMLDivElement>(null);
   // to reset message on different user click
-  const msgRef = useRef<HTMLInputElement>(null);
+  const msgRef = useRef<HTMLTextAreaElement>(null);
 
   const getLatestChat = (msgs: ChatMessage[]) => {
     return msgs[msgs.length - 1] ?? { content: '', time: 0, me: false };
@@ -167,10 +167,19 @@ const ChatPage: NextPage = () => {
       <div tw="absolute top-0 bottom-0 left-0 right-0 flex flex-col">
         <Header />
         <Container tw="w-full max-h-full flex overflow-hidden">
-          <div tw="w-full flex border-[1px] border-[#D8D8D8] mb-12 mt-3 rounded-[6px]">
-            <div tw="flex-grow-[1] px-7 overflow-auto">
-              <div tw="pt-7 sticky top-0 bg-white text-[28px] text-black font-bold z-30">
-                Messages
+          <div tw="w-full flex border-[1px] border-[#D8D8D8] mb-2 mt-3 rounded-[6px]">
+            <div tw="flex-shrink-['1'] max-w-[360px] pt-4 overflow-auto">
+              <div tw="pt-1 pb-3 sticky top-0 bg-white text-[28px] text-black font-bold z-30">
+                <div tw="pl-6 pr-5 rounded-[48px] h-10 focus-within:border-[#838383] outline-none flex items-center">
+                  <img
+                    src="/assets/svgs/search.svg"
+                    tw="ml-3 w-[13px] h-[13px] opacity-25"
+                  />
+                  <input
+                    tw="w-full bg-white outline-none text-[19px] ml-3 focus:outline-none"
+                    placeholder="Search"
+                  />
+                </div>
               </div>
               <div tw="mt-2">
                 {chats
@@ -195,7 +204,7 @@ const ChatPage: NextPage = () => {
                   ))}
               </div>
             </div>
-            <div tw="w-[1px] h-full bg-[#D8D8D8] flex-shrink-0" />
+            <div tw="w-[1px] h-full bg-[#D8D8D8] flex-shrink-['1']" />
             {chats.length > 0 && (
               <Chat
                 partnerId={selectedChatData?.id || chats[0].id}
