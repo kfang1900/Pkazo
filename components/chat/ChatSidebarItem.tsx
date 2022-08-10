@@ -1,26 +1,10 @@
-import useAuth from '../../utils/auth/useAuth';
 import 'twin.macro';
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  getDatabase,
-  onChildAdded,
-  onValue,
-  push,
-  ref,
-} from '@firebase/database';
-import { getApp } from 'firebase/app';
+
 import tw from 'twin.macro';
-import {
-  collection,
-  getDocs,
-  getFirestore,
-  query,
-  where,
-} from 'firebase/firestore';
+
 import Image from 'next/image';
 import { timeElapsed } from '../popups/ShowComment';
-import { loadStorageImage } from '../../helpers/FirebaseFunctions';
-import { ArtistData } from '../../types/dbTypes';
 import { ChatMessage } from '../../pages/chat';
 
 export default function ChatSidebarItem({
@@ -29,12 +13,14 @@ export default function ChatSidebarItem({
   pfp,
   name,
   latestMessage,
+  isMobile,
 }: {
   selected: boolean;
   onSelect: () => void;
   pfp: string;
   name: string;
   latestMessage: ChatMessage | null;
+  isMobile: boolean;
 }) {
   //console.log(latestMessage, "LMLMLMLMLMLM");
 
@@ -42,8 +28,11 @@ export default function ChatSidebarItem({
   const read = !selected;
   return (
     <div
-      tw="border-t border-t-[#D8D8D8] pt-4 pb-5 flex items-center justify-between cursor-pointer w-full"
-      css={[read ? tw`bg-white hover:bg-[#fafafa]` : tw`bg-[#efefef]`]}
+      tw="pt-4 pb-5 flex items-center justify-between cursor-pointer w-full"
+      css={[
+        [read ? tw`bg-white hover:bg-[#fafafa]` : tw`bg-[#efefef]`],
+        [isMobile ? tw`` : tw`border-t border-t-[#D8D8D8]`],
+      ]}
       onClick={() => onSelect()}
     >
       <div tw="flex pl-7 pr-7">
