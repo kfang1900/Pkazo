@@ -58,7 +58,7 @@ export default function Chat({
   return (
     <div
       tw="w-full flex flex-col relative"
-      css={[isMobile ? tw`h-[100vh]` : tw`h-[80vh]`]}
+      css={[isMobile ? tw`max-h-[70vh]` : tw`max-h-[70vh]`]}
     >
       <div tw="px-7 pt-4 pb-4 border-b border-b-[#D8D8D8] flex items-center">
         {isMobile && (
@@ -146,8 +146,8 @@ export default function Chat({
           );
         })}
       </div>
-      <div tw="relative mt-auto px-4 bg-white">
-        <div tw="flex items-center rounded-[25px] border border-[#D8D8D8] mb-4 mt-4 px-6">
+      <div tw="mt-auto px-4 bg-white">
+        <div tw="flex relative items-center rounded-[25px] border border-[#D8D8D8] mb-4 mt-4 px-6">
           <textarea
             ref={messageRef}
             tw="w-full mt-2 resize-none bg-transparent outline-none text-[14px] focus:outline-none focus:resize-y text-[#222222]"
