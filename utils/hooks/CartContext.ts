@@ -17,8 +17,8 @@ export type CartContextType = {
   hideCart: () => void;
   cart: Cart;
   cartLoading: boolean;
-  addCartItem: (item: CartItem) => Promise<void>;
-  removeCartItem: (itemId: string) => Promise<void>;
+  addCartItem: (item: CartItem) => void;
+  removeCartItem: (itemId: string) => void;
 };
 
 const CartContext = createContext<CartContextType>({
