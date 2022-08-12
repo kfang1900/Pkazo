@@ -33,7 +33,6 @@ export default function Chat({
 }) {
   const { user } = useAuth();
   const [text, setText] = useState('');
-
   useEffect(() => {
     if (!user) return;
   }, [user, partnerId]);
@@ -57,10 +56,10 @@ export default function Chat({
   console.log('This is a mobile device', isMobile);
   return (
     <div
-      tw="w-full flex flex-col relative"
-      css={[isMobile ? tw`max-h-[70vh]` : tw`max-h-[70vh]`]}
+      tw="w-full h-full relative h-[100px] flex flex-col flex-wrap justify-center items-center"
+      css={[isMobile ? tw`h-full` : tw`h-full`]}
     >
-      <div tw="px-7 pt-4 pb-4 border-b border-b-[#D8D8D8] flex items-center">
+      <div tw=" w-full px-7 pt-4 pb-4 border-b border-b-[#D8D8D8] flex items-center">
         {isMobile && (
           <button tw="flex items-center" onClick={() => setSelectedChat('')}>
             <Image
@@ -79,7 +78,15 @@ export default function Chat({
           {/*<div tw="text-[14px] text-[#838383] leading-[1em] mt-2">Online</div>*/}
         </div>
       </div>
-      <div tw="flex flex-col overflow-y-scroll flex-grow pr-1" ref={scrollRef}>
+      <div
+        tw=" w-full bottom-[100px] flex-col overflow-y-scroll flex-grow pr-1"
+        css={[
+          isMobile
+            ? tw`max-h-[calc(100vh - 200px)]`
+            : tw`max-h-[calc(100vh - 300px)]`,
+        ]}
+        ref={scrollRef}
+      >
         {messages.map((msg, i, msgs) => {
           const showTime =
             i === 0 || msg.timestamp - msgs[i - 1].timestamp > 1000 * 60 * 15;
@@ -124,19 +131,19 @@ export default function Chat({
                     i > 0 &&
                       isCurrentUser &&
                       msgs[i - 1].author === user?.uid &&
-                      tw`rounded-tr-[6px]`,
+                      tw`rounded-[30px]`,
                     i > 0 &&
                       !isCurrentUser &&
                       !(msgs[i - 1].author === user?.uid) &&
-                      tw`rounded-tl-[6px]`,
+                      tw`rounded-[30px]`,
                     i + 1 < msgs.length &&
                       isCurrentUser &&
                       msgs[i + 1].author === user?.uid &&
-                      tw`rounded-br-[6px]`,
+                      tw`rounded-[30px]`,
                     i + 1 < msgs.length &&
                       !isCurrentUser &&
                       !(msgs[i + 1].author === user?.uid) &&
-                      tw`rounded-bl-[6px]`,
+                      tw`rounded-[30px]`,
                   ]}
                 >
                   {msg.text}
@@ -146,11 +153,11 @@ export default function Chat({
           );
         })}
       </div>
-      <div tw="mt-auto px-4 bg-white">
+      <div tw=" w-full bottom-[0px]  mt-auto px-4 bg-white">
         <div tw="flex relative items-center rounded-[25px] border border-[#D8D8D8] mb-4 mt-4 px-6">
           <textarea
             ref={messageRef}
-            tw="w-full mt-2 resize-none bg-transparent outline-none text-[14px] focus:outline-none focus:resize-y text-[#222222]"
+            tw="w-full h-[28px] mt-2 resize-none bg-transparent outline-none text-[14px] focus:outline-none focus:resize-y text-[#222222]"
             placeholder="Message..."
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -169,3 +176,6 @@ export default function Chat({
     </div>
   );
 }
+/*
+
+/*/
