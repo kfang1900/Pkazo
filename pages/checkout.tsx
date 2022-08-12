@@ -7,6 +7,7 @@ import tw from 'twin.macro';
 import Header from 'components/Header';
 import CheckoutForm from 'components/cart/CheckoutForm';
 import CheckoutCart from 'components/cart/CheckoutCart';
+import createShippingRates from '../utils/shipping/createShippingRates';
 
 const Checkout: NextPage = () => {
   const mediaQuery = !useMediaQuery({ query: `(min-width: 768px)` });
@@ -22,7 +23,11 @@ const Checkout: NextPage = () => {
   }, [largeQuery, isLargeScreen]);
 
   const [page, setPage] = useState(0);
+  const [shippingCost, setShippingCost] = useState<number | null>(null);
 
+  useEffect(() => {
+    createShippingRates().then((r) => console.log(r));
+  }, []);
   return (
     <div tw="min-h-[100vh] flex flex-col">
       <Head>
@@ -40,9 +45,11 @@ const Checkout: NextPage = () => {
           setPage={setPage}
           isMobile={isMobile}
           isLargeScreen={isLargeScreen}
+          shippingCost={shippingCost}
+          setShippingCost={setShippingCost}
         />
         <div tw="w-[1px] bg-[#DCDCDC] ml-16 flex-none" />
-        <CheckoutCart page={page} />
+        <CheckoutCart page={page} shippingCost={shippingCost} />
         <div tw="min-w-[36px] xl:min-w-[60px] flex-grow bg-[#FAFAFA]" />
       </div>
     </div>

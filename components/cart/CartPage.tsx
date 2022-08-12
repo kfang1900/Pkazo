@@ -24,6 +24,7 @@ import CartItem from './CartItem';
 import formatCurrency from '../../utils/formatCurrency';
 import axios from 'axios';
 import Modal from '../popups/Modal';
+import Link from 'next/link';
 
 const LineBreak = styled.div`
   ${tw`h-[0.5px] bg-[#E3E3E3]`}
@@ -324,9 +325,11 @@ export function CartComponent() {
           <div tw="sticky w-full bottom-0 bg-white mt-4">
             <LineBreak />
             <div tw="px-4">
-              <button tw="w-full h-11 mt-[14px] mb-4 bg-[#2C1D1D] hover:bg-[#3B2727] rounded-[30px] text-center text-white text-[14px] font-bold">
-                Proceed to checkout
-              </button>
+              <Link href={'/checkout'} passHref>
+                <button tw="w-full h-11 mt-[14px] mb-4 bg-[#2C1D1D] hover:bg-[#3B2727] rounded-[30px] text-center text-white text-[14px] font-bold">
+                  Proceed to checkout
+                </button>
+              </Link>
             </div>
           </div>
         </div>
