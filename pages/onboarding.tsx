@@ -193,6 +193,7 @@ function Onboarding() {
     console.log('profile creation complete');
     setSubmitting(false);
     router.push('/' + username);
+    router.reload();
     return 0;
   };
   useEffect(() => {
