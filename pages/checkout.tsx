@@ -22,7 +22,7 @@ const Checkout: NextPage = () => {
     if (isLargeScreen !== largeQuery) setIsLargeScreen(largeQuery);
   }, [largeQuery, isLargeScreen]);
 
-  const [page, setPage] = useState(0);
+  const [pageIndex, setPageIndex] = useState(0);
   const [shippingCost, setShippingCost] = useState<number | null>(null);
 
   useEffect(() => {
@@ -41,15 +41,15 @@ const Checkout: NextPage = () => {
         <div tw="min-w-[36px] xl:min-w-[60px] flex-grow" />
         <CheckoutForm
           country="United States"
-          page={page}
-          setPage={setPage}
+          pageIndex={pageIndex}
+          setPageIndex={setPageIndex}
           isMobile={isMobile}
           isLargeScreen={isLargeScreen}
           shippingCost={shippingCost}
           setShippingCost={setShippingCost}
         />
         <div tw="w-[1px] bg-[#DCDCDC] ml-16 flex-none" />
-        <CheckoutCart page={page} shippingCost={shippingCost} />
+        <CheckoutCart pageIndex={pageIndex} shippingCost={shippingCost} />
         <div tw="min-w-[36px] xl:min-w-[60px] flex-grow bg-[#FAFAFA]" />
       </div>
     </div>

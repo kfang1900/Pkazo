@@ -188,16 +188,16 @@ function ShippingSelection({
 
 const CheckoutForm = ({
   country,
-  page,
-  setPage,
+  pageIndex,
+  setPageIndex,
   isMobile,
   isLargeScreen,
   shippingCost,
   setShippingCost,
 }: {
   country: string;
-  page: number;
-  setPage: (x: number) => void;
+  pageIndex: number;
+  setPageIndex: (x: number) => void;
   isMobile?: boolean;
   isLargeScreen?: boolean;
   shippingCost: number | null;
@@ -226,7 +226,27 @@ const CheckoutForm = ({
   const addressRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<FormikProps<CheckoutValues>>(null);
   const [formFocus, setFormFocus] = useState(0);
+  const [pagesCompleted, setPagesCompleted] = useState<number[]>([]);
   const { cart } = useCart();
+
+  const setPage = (nextPageIndex: number) => {
+    // Allow the user to go back to previous pages or go to the next page if it's complete.
+    if (
+      pagesCompleted.includes(pageIndex) ||
+      pagesCompleted.includes(nextPageIndex)
+    ) {
+      setPageIndex(nextPageIndex);
+    }
+  };
+
+  const continueToPayment = (shippingMethod: string) => {
+    // Check to be sure a shipping method was selected.
+    console.log('continue to payment ', shippingMethod);
+    if (shippingMethod) {
+      setPagesCompleted([...pagesCompleted, 1]);
+      setPage(2);
+    }
+  };
 
   useEffect(() => {
     const refs = [null, emailRef, addressRef];
@@ -238,7 +258,7 @@ const CheckoutForm = ({
   const [shippingRates, setShippingRates] = useState<ShippingRate[]>([]);
   const [stripeSecret, setStripeSecret] = useState('');
   useEffect(() => {
-    if (page !== 2) return;
+    if (pageIndex !== 2) return;
     if (!formRef?.current?.values) return;
     console.log(formRef.current?.values);
 
@@ -254,7 +274,7 @@ const CheckoutForm = ({
         return;
       }
     })();
-  }, [formRef, page]);
+  }, [formRef, pageIndex]);
 
   return (
     <div tw="max-w-[572px] w-full mt-8 lg:mt-16 pb-[100px] px-4 md:px-0">
@@ -279,7 +299,7 @@ const CheckoutForm = ({
             )}
             <div
               tw="text-[14px] md:text-[16px] font-semibold cursor-pointer"
-              css={[page === i ? tw`text-black` : tw`text-[#737373]`]}
+              css={[pageIndex === i ? tw`text-black` : tw`text-[#737373]`]}
               onClick={() => setPage(i)}
             >
               {p}
@@ -329,12 +349,14 @@ const CheckoutForm = ({
             return errors;
           }}
           onSubmit={() => {
-            if (page < 2) setPage(page + 1);
+            if (!pagesCompleted.includes(pageIndex))
+              setPagesCompleted([...pagesCompleted, pageIndex]);
+            if (pageIndex < 2) setPage(pageIndex + 1);
           }}
         >
           {({ values, errors, touched, setFieldValue }) => (
             <Form>
-              {page === 0 && (
+              {pageIndex === 0 && (
                 <>
                   <div css={[styles.label]}>Contact Information</div>
                   <div>
@@ -466,7 +488,7 @@ const CheckoutForm = ({
                   </div>
                 </>
               )}
-              {page === 1 && (
+              {pageIndex === 1 && (
                 <>
                   <div css={[styles.back]}>
                     <div tw="text-[#5B5B5B] font-semibold w-12 flex-none">
@@ -531,14 +553,14 @@ const CheckoutForm = ({
                     <button
                       type="button"
                       css={[buttons.red, tw`px-[30px] h-[52px]`]}
-                      onClick={() => setPage(2)}
+                      onClick={() => continueToPayment(values.shipping)}
                     >
                       Continue to Payment
                     </button>
                   </div>
                 </>
               )}
-              {page === 2 && (
+              {pageIndex === 2 && (
                 <>
                   <div css={[styles.back]}>
                     <div tw="text-[#5B5B5B] font-semibold w-12 flex-none">

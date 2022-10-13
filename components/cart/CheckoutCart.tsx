@@ -29,10 +29,10 @@ type CartItemWork = CartItem & {
   price: number;
 };
 const CheckoutCart = ({
-  page,
+  pageIndex,
   shippingCost,
 }: {
-  page: number;
+  pageIndex: number;
   shippingCost: number | null;
 }) => {
   // const [works, setWorks] = useState<
