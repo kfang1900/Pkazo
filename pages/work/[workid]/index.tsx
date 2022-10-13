@@ -204,6 +204,11 @@ const IndividualWork: NextPage = () => {
     }
   };
 
+  const buyNow = async (isOriginal = true) => {
+    await addToCart(isOriginal);
+    router.push('/checkout');
+  };
+
   const [expandedFAQ, setExpandedFAQ] = useState(-1);
 
   if (!workData || loading || !artistData) {
@@ -362,6 +367,7 @@ const IndividualWork: NextPage = () => {
                     buttons.white,
                     tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`,
                   ]}
+                  onClick={() => buyNow(isOriginal)}
                 >
                   Buy now
                 </button>
@@ -703,6 +709,7 @@ const IndividualWork: NextPage = () => {
                     buttons.white,
                     tw`border-[1.5px] border-[#3C3C3C] h-12 text-[16px] text-[#3C3C3C] w-full`,
                   ]}
+                  onClick={() => buyNow(isOriginal)}
                 >
                   Buy now
                 </button>
