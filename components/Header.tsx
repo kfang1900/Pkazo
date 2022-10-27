@@ -151,7 +151,7 @@ const Header = (props: {
         {!isMobile && (
           <CartPopup onClose={() => hideCart()} toShow={cartVisible} />
         )}
-        {isMobile && onSearch && <SearchBox />}
+        {/* {isMobile && onSearch && <SearchBox />} */}
         <UploadWork
           onClose={() => setShowUploadWorkPopup(false)}
           toShow={showUploadWorkPopup}
@@ -168,9 +168,7 @@ const Header = (props: {
             />
           </Link>
           {!isMobile && (
-            <div tw="relative flex-grow ml-5">
-              <SearchBox />
-            </div>
+            <div tw="relative flex-grow ml-5">{/* <SearchBox /> */}</div>
           )}
           <div tw="md:ml-10 flex items-center gap-x-4 md:gap-x-8 flex-shrink-0">
             {isMobile && (

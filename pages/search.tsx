@@ -80,7 +80,7 @@ const SearchPage: NextPage = () => {
             Search
           </h1>
           <InstantSearch searchClient={searchClient} indexName="pkazo-works">
-            <SearchBox />
+            {/* <SearchBox /> */}
             <RefinementList attribute="medium" />
             <Hits hitComponent={Hit} />
           </InstantSearch>
