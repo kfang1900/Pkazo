@@ -191,7 +191,7 @@ const IndividualWork: NextPage = () => {
     }
   }, [router.isReady, workData, workId]);
 
-  const addToCart = async (isOriginal = true) => {
+  const addToCart = async (isOriginal: boolean) => {
     if (!cartLoading) {
       await addCartItem({
         id: workId + '',
@@ -709,7 +709,7 @@ const IndividualWork: NextPage = () => {
                 <button
                   tw="mt-3"
                   css={[buttons.red, tw`h-12 text-[16px] text-white w-full`]}
-                  onClick={() => addToCart()}
+                  onClick={() => addToCart(isOriginal)}
                 >
                   {inCart ? 'In your cart' : 'Add to cart'}
                 </button>
