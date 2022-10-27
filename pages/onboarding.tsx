@@ -73,7 +73,7 @@ function Onboarding() {
   const [signupFormActive, setSignupFormActive] = useState(false);
   const [artistId, setArtistId] = useState('');
   const [formValues, setFormValues] = useState({});
-  const { user, loading } = useAuth();
+  const { user, loading, refreshUserData } = useAuth();
   const [submitting, setSubmitting] = useState(false);
 
   const router = useRouter();
@@ -193,7 +193,7 @@ function Onboarding() {
     console.log('profile creation complete');
     setSubmitting(false);
     router.push('/' + username);
-    router.reload();
+    refreshUserData();
     return 0;
   };
   useEffect(() => {
