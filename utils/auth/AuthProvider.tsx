@@ -132,6 +132,7 @@ export default function FirebaseProvider({
 
     const userDataSnapshot = await getDoc(doc(db, 'users', user.uid));
     setUserData((userDataSnapshot.data() as UserData) || {});
+    router.reload();
   }, [user]);
 
   const [loginModalDefaultSignup, setLoginModalDefaultSignup] = useState(false);
